@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  trello_url: MyString
+  pitch_on: 2016-05-22 14:59:43
+
+two:
+  name: MyString
+  trello_url: MyString
+  pitch_on: 2016-05-22 14:59:43

@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  fit: 1
+  team: 1
+  product: 1
+  market: 1
+  overall: 1
+  reason: MyText
+  final: false
+  user_id: 
+
+two:
+  fit: 1
+  team: 1
+  product: 1
+  market: 1
+  overall: 1
+  reason: MyText
+  final: false
+  user_id: 
