@@ -7,7 +7,7 @@ class CreateVotes < ActiveRecord::Migration
       t.integer :market, blank: false, null: false
       t.integer :overall
       t.text :reason
-      t.boolean :final, null: false
+      t.boolean :final, null: false, default: false
       t.belongs_to :user, index: true
       t.belongs_to :company, index: true
 

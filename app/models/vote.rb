@@ -6,8 +6,8 @@ class Vote < ActiveRecord::Base
 
   validates :company, uniqueness: { scope: [:user, :final] }
   validates :final, inclusion: [true, false]
-  validates :overall, numericality: { greater_than:0, less_than:6 }, if: :final?
-  validates :reason, presense: true, if: :final?
+  validates :overall, numericality: { in: 1..5 }, if: :final?
+  validates :reason, presence: true, if: :final?
 
-  METRICS.each { |metric| validates metric, numericality: { greater_than:0, less_than:6 } }
+  METRICS.each { |metric| validates metric, numericality: { in: 1..5 } }
 end
