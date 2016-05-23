@@ -23,4 +23,8 @@ class Vote < ActiveRecord::Base
   def no?
     !yes?
   end
+
+  def self.metrics(votes)
+    METRICS.map { |metric| [metric, votes.select(metric).average] }.to_h
+  end
 end

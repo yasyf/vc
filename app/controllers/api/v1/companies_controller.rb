@@ -2,7 +2,7 @@ module Api
   module V1
     class CompaniesController < ApplicationController
       def index
-        render json: { companies: Companies.all }
+        render json: { companies: Companies.pitch.order(pitch_on, :desc) }
       end
 
       def create

@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
       no_votes: votes.no.count,
       agreed: agreed,
       disagreed: disagreed,
-      averages: averages
+      averages: Votes.metrics(votes)
     }
   end
 
@@ -34,9 +34,5 @@ class User < ActiveRecord::Base
 
   def company_votes
     @company_votes ||= votes.map { |vote| [vote.company, vote] }.to_h
-  end
-
-  def averages
-    Votes::METRICS.map { |metric| [metric, votes.select(metric).average] }.to_h
   end
 end
