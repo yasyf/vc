@@ -4,9 +4,11 @@ class User < ActiveRecord::Base
   has_many :votes
 
   validates :username, presence: true, uniqueness: true
-  validates :active, inclusion: [true, false]
+
+  scope :inactive, Proc.new { |since| where('inactive_since <= ?', since || Time.now) }
+  scope :active, Proc.new { |since| inactive(since).not }
 
   def self.quorum
-    @quorum ||= (where(active: true).count * QUORUM_PERCENTAGE).to_i
+    @quorum ||= (active.count * QUORUM_PERCENTAGE).to_i
   end
 end

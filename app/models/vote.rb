@@ -12,7 +12,7 @@ class Vote < ActiveRecord::Base
   METRICS.each { |metric| validates metric, numericality: { in: 1..5 } }
 
   scope :final, -> { where(final: true) }
-  scope :valid, -> { final.joins(:user).where(users: { active: true }) }
+  scope :valid, Proc.new { |since| final.joins(:user).merge User.active(since) }
   scope :yes, -> { final.where('overall > ?', 3) }
   scope :no, -> { final.where('overall < ?', 3) }
 end

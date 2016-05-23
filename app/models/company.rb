@@ -4,11 +4,11 @@ class Company < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   validates :trello_url, presence: true, uniqueness: true
 
-  def quorum?
-    votes.valid.count >= User.quorum
+  def quorum?(at: Time.now)
+    votes.valid(at).count >= User.quorum
   end
 
-  def funded?
-    quorum? && votes.yes.count > votes.no.count
+  def funded?(at: Time.now)
+    quorum?(at) && votes.yes.count > votes.no.count
   end
 end
