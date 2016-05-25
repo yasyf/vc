@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resource :vote, only: [:show, :create]
+  resources :votes, only: [:show, :create]
   root 'companies#index'
 
   namespace :api, constraints: { format: :json } do
