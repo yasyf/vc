@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   validates :username, presence: true, uniqueness: true
 
   scope :inactive, Proc.new { |since| where('inactive_since <= ?', since || Time.now) }
-  scope :active, Proc.new { |since| inactive(since).not }
+  scope :active, Proc.new { |since| where.not(inactive(since).where_values) }
 
   def self.quorum
     @quorum ||= (active.count * QUORUM_PERCENTAGE).to_i
