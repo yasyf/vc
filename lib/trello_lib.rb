@@ -1,12 +1,4 @@
 class TrelloLib
-  class DateTimeNotFound < StandardError
-    def log!(card)
-      to = card.members.map(&:email)
-      to = ENV['LIST_EMAIL'] unless to.present?
-      LoggedError.log! :datetime_not_found, card, to, card.list.name, card.name, card.url
-    end
-  end
-
   def sync
     Trello::Board.find(ENV['TRELLO_BOARD']).cards.each do |card|
       yield parse(card)
@@ -14,6 +6,14 @@ class TrelloLib
   end
 
   private
+
+  class DateTimeNotFound < StandardError
+    def log!(card)
+      to = card.members.map(&:email)
+      to = ENV['LIST_EMAIL'] unless to.present?
+      LoggedError.log! :datetime_not_found, card, to, card.list.name, card.name, card.url
+    end
+  end
 
   def parse(card)
     pitch_on = begin

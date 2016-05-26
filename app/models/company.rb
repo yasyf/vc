@@ -24,9 +24,9 @@ class Company < ActiveRecord::Base
 
   def self.sync!
     TrelloLib.new.sync do |card_data|
-      Company.where(trello_id: card_data[:trello_id]).first_or_create! do |new_company|
-        new_company.assign_attributes card_data
-      end
+      company = Company.where(trello_id: card_data[:trello_id]).first_or_create!
+      company.assign_attributes card_data
+      company.save! if company.changed?
     end
   end
 end
