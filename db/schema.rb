@@ -11,21 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160522185943) do
+ActiveRecord::Schema.define(version: 20160526081845) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",       null: false
-    t.string   "trello_url", null: false
+    t.string   "trello_id",  null: false
     t.datetime "pitch_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   add_index "companies", ["name"], name: "index_companies_on_name", using: :btree
-  add_index "companies", ["trello_url"], name: "index_companies_on_trello_url", using: :btree
+  add_index "companies", ["trello_id"], name: "index_companies_on_trello_id", using: :btree
+
+  create_table "logged_errors", force: :cascade do |t|
+    t.text     "reason",                 null: false
+    t.integer  "record_id",              null: false
+    t.integer  "count",      default: 0, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "logged_errors", ["reason", "record_id"], name: "index_logged_errors_on_reason_and_record_id", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username",       null: false

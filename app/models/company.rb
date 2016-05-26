@@ -1,8 +1,8 @@
 class Company < ActiveRecord::Base
   has_many :votes
 
-  validates :name, presence: true, uniqueness: true
-  validates :trello_url, presence: true, uniqueness: true
+  validates :name, presence: true
+  validates :trello_id, presence: true, uniqueness: true
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
 
@@ -20,5 +20,13 @@ class Company < ActiveRecord::Base
       no_votes: votes.no.count,
       averages: Votes.metrics(votes)
     }
+  end
+
+  def self.sync!
+    TrelloLib.new.sync do |card_data|
+      Company.where(trello_id: card_data[:trello_id]).first_or_create! do |new_company|
+        new_company.assign_attributes card_data
+      end
+    end
   end
 end

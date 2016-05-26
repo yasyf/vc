@@ -4,7 +4,7 @@ class Vote < ActiveRecord::Base
   belongs_to :user
   belongs_to :company
 
-  validates :company, uniqueness: { scope: [:user, :final] }
+  validates :company, presence: true, uniqueness: { scope: [:user, :final] }
   validates :final, inclusion: [true, false]
   validates :overall, numericality: { in: (1..5).to_a - [3] }, if: :final?
   validates :reason, presence: true, if: :final?

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  reason: MyText
+  record: 1
+  count: 1
+
+two:
+  reason: MyText
+  record: 1
+  count: 1
