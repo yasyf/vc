@@ -1,5 +1,5 @@
 class LoggedError < ActiveRecord::Base
-  include Concerns::Slackable
+
 
   validates :reason, presence: true, uniqueness: { scope: [:record_id] }
   validates :count, presence: true
@@ -9,17 +9,8 @@ class LoggedError < ActiveRecord::Base
     log.increment! :count
     unless log.count > notify
       emailer = "#{reason}_email"
-      return unless ErrorMailer.respond_to? emailer
       users = parse_to(to)
-      if users.present?
-        mail = ErrorMailer.public_send(emailer, users.map(&:email), *args)
-        mail.deliver_later
-        users.each { |user| user.send! mail.text_part.body.decoded }
-      else
-        mail = ErrorMailer.public_send(emailer, ENV['LIST_EMAIL'], *args)
-        mail.deliver_later
-        slack_send! ENV['SLACK_CHANNEL'], message, notify: true
-      end
+      ErrorMailer.email_and_slack! emailer, users, *args
     end
   end
 
