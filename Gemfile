@@ -34,6 +34,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'ruby-trello'
 gem 'chronic'
+gem 'picky'
+gem 'slack-ruby-client'
 
 group :development do
   gem 'letter_opener'

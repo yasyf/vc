@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Concerns::Slackable
+
   QUORUM_PERCENTAGE = 0.6
 
   has_many :votes
@@ -22,7 +24,31 @@ class User < ActiveRecord::Base
     }
   end
 
+  def first_name
+    name.split.first
+  end
+
+  def email
+    "#{username}@dormroomfund.com"
+  end
+
+  def send!(message)
+    slack_send! slack_id, message
+  end
+
   private
+
+  def slack_id
+    @slack_user ||= slack_user.id
+  end
+
+  def slack_user
+    @slack_user ||= begin
+      members = slack_client.users_search(user: first_name).members
+      members = slack_client.users_search(user: username).members unless members.present?
+      members.first
+    end
+  end
 
   def agreed
     company_votes.select { |c, v| c.funded? && v.yes? }.count

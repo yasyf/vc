@@ -17,11 +17,12 @@ ActiveRecord::Schema.define(version: 20160526081845) do
   enable_extension "plpgsql"
 
   create_table "companies", force: :cascade do |t|
-    t.string   "name",       null: false
-    t.string   "trello_id",  null: false
-    t.datetime "pitch_on"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",        null: false
+    t.string   "trello_id",   null: false
+    t.date     "pitch_on"
+    t.datetime "decision_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "companies", ["name"], name: "index_companies_on_name", using: :btree
@@ -39,6 +40,7 @@ ActiveRecord::Schema.define(version: 20160526081845) do
 
   create_table "users", force: :cascade do |t|
     t.string   "username",       null: false
+    t.string   "name",           null: false
     t.datetime "inactive_since"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false

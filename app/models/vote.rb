@@ -25,6 +25,6 @@ class Vote < ActiveRecord::Base
   end
 
   def self.metrics(votes)
-    METRICS.map { |metric| [metric, votes.select(metric).average] }.to_h
+    METRICS.map { |metric| [metric, votes.average(metric) || 0.0] }.to_h
   end
 end
