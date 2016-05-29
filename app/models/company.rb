@@ -1,6 +1,4 @@
 class Company < ActiveRecord::Base
-  include Concerns::Slackable
-
   has_many :votes
 
   validates :name, presence: true
@@ -25,13 +23,7 @@ class Company < ActiveRecord::Base
   end
 
   def notify_team!
-    not_s = funded? ? '' : ' not'
-    yes_percentage = votes.count > 0 ? stats[:yes_votes].to_f / votes.count : 0
-    percentage_s = "#{(yes_percentage * 100).round(0)}\%"
-    message = "\nBoston *will#{not_s}* be funding _#{name}_!\n"
-    message << "#{percentage_s} voted to fund, with #{stats[:yes_votes]} in favor and #{stats[:no_votes]} against.\n"
-    message << stats[:averages].map { |met, val| "*#{met.titleize}*: #{val}" }.join(' | ')
-    slack_send! ENV['SLACK_CHANNEL'], message, notify: true
+    VoteMailer.email_and_slack!(:funding_decision_email, nil, self)
   end
 
   def self.sync!(disable_notifications: false)

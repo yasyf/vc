@@ -1,5 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
-  include Concerns::Slackable
+  extend Concerns::Slackable
+
+  SUBJECT_HEADER = '[Boston Bot]'
 
   default from: ENV['GMAIL_USERNAME']
   layout 'mailer'

@@ -1,6 +1,4 @@
 class ErrorMailer < ApplicationMailer
-  SUBJECT_HEADER = '[Boston Bot]'
-
   def datetime_not_found_email(to, list_name, card_name, card_link)
     @list_name = list_name
     @card_name = card_name
