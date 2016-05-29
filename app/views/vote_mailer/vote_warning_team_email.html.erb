@@ -1,0 +1,9 @@
+<div>
+  <p>
+    Votes are <% if @late %>late<% else %>needed<% end %> for the final funding decision of <i><%= @company.name %></i>!
+  </p>
+  <p>
+    The following team members have yet to submit their votes:
+    <%= @missing_users.map(&:name).join(', ') %>.
+  </p>
+</div>

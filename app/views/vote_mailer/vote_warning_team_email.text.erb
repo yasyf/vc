@@ -1,0 +1,2 @@
+Votes are <% if @late %>late<% else %>needed<% end %> for the final funding decision of _<%= @company.name %>_!
+<%= @missing_users.map(&:slack_name).join(' ') %> please submit your <%= 'vote'.pluralize(@missing_users.count) %>.

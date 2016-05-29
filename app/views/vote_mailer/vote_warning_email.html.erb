@@ -1,0 +1,16 @@
+<div>
+  <p>
+    Your vote is <% if @late %>late<% else %>needed<% end %> for the final funding decision of <i><%= @company.name %></i>!
+    The deadline
+    <% if @late %>
+      was <%= distance_of_time_in_words(@deadline, Time.now) %> ago.
+    <% else %>
+     is in <%= distance_of_time_in_words(Time.now, @deadline) %>.
+    <% end %>
+  </p>
+  <p>
+    Please go to the
+    <a href="<%= url_for action: 'create', controller: 'votes' %>">voting page for <%= @company.name %></a>
+    and submit your vote now.
+  </p>
+</div>

@@ -9,6 +9,7 @@ class ApplicationMailer < ActionMailer::Base
   def self.email_and_slack!(emailer, users, *args)
     raise NoMethodError unless respond_to? emailer
     if users.present?
+      users = Array.wrap(users)
       mail = public_send(emailer, users.map(&:email), *args)
       mail.deliver_later
       users.each { |user| user.send! mail.text_part.body.decoded }

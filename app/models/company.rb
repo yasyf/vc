@@ -26,6 +26,10 @@ class Company < ActiveRecord::Base
     VoteMailer.email_and_slack!(:funding_decision_email, nil, self)
   end
 
+  def warn_team!(missing_users, time_remaining)
+    VoteMailer.email_and_slack!(:vote_warning_team_email, nil, missing_users, self, time_remaining.to_i)
+  end
+
   def self.sync!(disable_notifications: false)
     TrelloLib.new.sync do |card_data|
       company = Company.where(trello_id: card_data[:trello_id]).first_or_create

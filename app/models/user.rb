@@ -32,6 +32,10 @@ class User < ActiveRecord::Base
     "#{username}@dormroomfund.com"
   end
 
+  def slack_name
+    "@#{slack_user.name}"
+  end
+
   def send!(message)
     slack_send! slack_id, message
   end

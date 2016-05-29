@@ -24,6 +24,10 @@ class Vote < ActiveRecord::Base
     !yes?
   end
 
+  def warn!(time_remaining)
+    VoteMailer.email_and_slack!(:vote_warning_email, user, company, time_remaining.to_i)
+  end
+
   def self.metrics(votes)
     METRICS.map { |metric| [metric, votes.average(metric) || 0.0] }.to_h
   end
