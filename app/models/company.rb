@@ -34,10 +34,11 @@ class Company < ActiveRecord::Base
     slack_send! ENV['SLACK_CHANNEL'], message, notify: true
   end
 
-  def self.sync!
+  def self.sync!(disable_notifications: false)
     TrelloLib.new.sync do |card_data|
       company = Company.where(trello_id: card_data[:trello_id]).first_or_create
       company.assign_attributes card_data
+      company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
       company.save! if company.changed?
     end
   end

@@ -9,9 +9,8 @@ class TrelloLib
 
   class DateTimeNotFound < StandardError
     def log!(card)
-      to = card.members.map(&:email)
-      to = ENV['LIST_EMAIL'] unless to.present?
-      LoggedError.log! :datetime_not_found, card, to, card.list.name, card.name, card.url
+      usernames = card.members.map { |mem| mem.email.split('@').first }
+      LoggedError.log! :datetime_not_found, card, usernames, card.list.name, card.name, card.url
     end
   end
 
