@@ -15,13 +15,13 @@ class TrelloLib
   end
 
   def parse(card)
-    pitch_on = begin
-      parse_pitch_on(card) if card.list_id == ENV['TRELLO_LIST']
+    parsed = { trello_id: card.id, name: card.name }
+    begin
+      parsed.merge! parse_pitch_on(card) if card.list_id == ENV['TRELLO_LIST']
     rescue DateTimeNotFound => dtnf
       dtnf.log! card
-      nil
     end
-    { trello_id: card.id, name: card.name, pitch_on: pitch_on }
+    parsed
   end
 
   def parse_pitch_on(card)
@@ -30,6 +30,6 @@ class TrelloLib
     datestring = card.name[index..-1]
     date = Chronic.parse(datestring)
     raise DateTimeNotFound, datestring unless date.present?
-    date
+    { pitch_on: date, name: card.name.split('-').first.strip }
   end
 end

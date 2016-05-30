@@ -2,11 +2,11 @@
   <p>
     Your vote is <% if @late %>late<% else %>needed<% end %> for the final funding decision of <i><%= @company.name %></i>!
     The deadline
-    <% if @late %>
+    <%- if @late -%>
       was <%= distance_of_time_in_words(@deadline, Time.now) %> ago.
-    <% else %>
+    <%- else -%>
      is in <%= distance_of_time_in_words(Time.now, @deadline) %>.
-    <% end %>
+    <%- end -%>
   </p>
   <p>
     Please go to the
