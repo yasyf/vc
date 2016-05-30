@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Concerns::Slackable
+  include Concerns::Cacheable
 
   QUORUM_PERCENTAGE = 0.6
 
@@ -7,11 +8,25 @@ class User < ActiveRecord::Base
 
   validates :username, presence: true, uniqueness: true
 
-  scope :inactive, Proc.new { |since| where('inactive_since <= ?', since || Time.now) }
-  scope :active, Proc.new { |since| where.not(inactive(since).where_values) }
+  def self.inactive(since = Time.now)
+    where(
+      arel_table[:inactive_since].lt(since).
+      or(arel_table[:created_at].gt(since))
+    )
+  end
 
-  def self.quorum
-    @quorum ||= (active.count * QUORUM_PERCENTAGE).to_i
+  def self.active(since = Time.now)
+    where(
+      arel_table[:inactive_since].gteq(since).
+      or(arel_table[:inactive_since].eq(nil))
+    )
+    .where(
+      arel_table[:created_at].lteq(since)
+    )
+  end
+
+  def self.quorum(at)
+    (active(at).count * QUORUM_PERCENTAGE).to_i
   end
 
   def stats
@@ -20,12 +35,8 @@ class User < ActiveRecord::Base
       no_votes: votes.no.count,
       agreed: agreed,
       disagreed: disagreed,
-      averages: Votes.metrics(votes)
+      averages: Vote.metrics(votes)
     }
-  end
-
-  def first_name
-    name.split.first
   end
 
   def email
@@ -40,6 +51,14 @@ class User < ActiveRecord::Base
     slack_send! slack_id, message
   end
 
+  %w(real_name first_name last_name title).each do |field|
+    define_method field do
+      key_cached [field] { slack_user.profile.public_send(field).titleize }
+    end
+  end
+
+  alias_method :name, :real_name
+
   private
 
   def slack_id
@@ -48,14 +67,14 @@ class User < ActiveRecord::Base
 
   def slack_user
     @slack_user ||= begin
-      members = slack_client.users_search(user: first_name).members
+      members = slack_client.users_search(user: email).members
       members = slack_client.users_search(user: username).members unless members.present?
       members.first
     end
   end
 
   def agreed
-    company_votes.select { |c, v| c.funded? && v.yes? }.count
+    company_votes.select { |c, v| c.funded? == v.yes? }.count
   end
 
   def disagreed
@@ -63,6 +82,6 @@ class User < ActiveRecord::Base
   end
 
   def company_votes
-    @company_votes ||= votes.map { |vote| [vote.company, vote] }.to_h
+    @company_votes ||= votes.final.map { |vote| [vote.company, vote] }.to_h
   end
 end

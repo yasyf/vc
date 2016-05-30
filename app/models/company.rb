@@ -7,11 +7,11 @@ class Company < ActiveRecord::Base
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
 
   def quorum?
-    votes.valid(pitch_on || created_at).count >= User.quorum
+    pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on)
   end
 
   def funded?
-    pitch_on.present? && quorum? && votes.yes.count > votes.no.count
+    quorum? && votes.yes.count > votes.no.count
   end
 
   def stats
@@ -31,7 +31,7 @@ class Company < ActiveRecord::Base
   end
 
   def self.sync!(disable_notifications: false)
-    TrelloLib.new.sync do |card_data|
+    Importers::Trello.new.sync! do |card_data|
       company = Company.where(trello_id: card_data[:trello_id]).first_or_create
       company.assign_attributes card_data
       company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
