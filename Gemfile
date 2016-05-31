@@ -36,6 +36,10 @@ gem 'ruby-trello'
 gem 'chronic'
 gem 'picky'
 gem 'slack-ruby-client'
+gem 'devise'
+gem 'omniauth'
+gem "omniauth-google-oauth2"
+gem "twitter-bootstrap-rails"
 
 group :development do
   gem 'letter_opener'

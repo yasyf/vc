@@ -1,6 +1,8 @@
 module Api
   module V1
     class VotesController < ApplicationController
+      before_action :authenticate_user!
+
       def index
         render json: { votes: company.votes }
       end

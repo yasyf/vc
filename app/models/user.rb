@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
 
   validates :username, presence: true, uniqueness: true
 
+  devise :omniauthable, omniauth_providers: [:google_oauth2]
+
   def self.inactive(since = Time.now)
     where(
       arel_table[:inactive_since].lt(since).
@@ -40,7 +42,7 @@ class User < ActiveRecord::Base
   end
 
   def email
-    "#{username}@dormroomfund.com"
+    "#{username}@#{ENV['DOMAIN']}"
   end
 
   def slack_name
@@ -58,6 +60,12 @@ class User < ActiveRecord::Base
   end
 
   alias_method :name, :real_name
+
+  def self.from_omniauth(auth)
+    username, domain = auth.info['email'].split('@')
+    return nil unless domain == ENV['DOMAIN']
+    where(username: username).first_or_create!
+  end
 
   private
 
