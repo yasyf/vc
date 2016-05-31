@@ -21,7 +21,7 @@ module Concerns
     end
 
     def base_cache_key
-      "#{cache_key}/#{caller_locations(1,1).first.label}"
+      "#{cache_key}/#{caller_locations(2,1).first.label}"
     end
   end
 end

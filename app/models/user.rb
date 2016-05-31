@@ -33,8 +33,8 @@ class User < ActiveRecord::Base
     {
       yes_votes: votes.yes.count,
       no_votes: votes.no.count,
-      agreed: agreed,
-      disagreed: disagreed,
+      agreed: agreed.count,
+      disagreed: disagreed.count,
       averages: Vote.metrics(votes)
     }
   end
@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   end
 
   def slack_name
-    "@#{slack_user.name}"
+    cached { "@#{slack_user.name}" }
   end
 
   def send!(message)
@@ -62,7 +62,7 @@ class User < ActiveRecord::Base
   private
 
   def slack_id
-    @slack_user ||= slack_user.id
+    cached { slack_user.id }
   end
 
   def slack_user
@@ -74,14 +74,14 @@ class User < ActiveRecord::Base
   end
 
   def agreed
-    company_votes.select { |c, v| c.funded? == v.yes? }.count
+    @agreed ||= company_votes.select { |c, v| c.funded? == v.yes? }
   end
 
   def disagreed
-    company_votes.size - agreed
+    @disagreed ||= company_votes.except(agreed.keys)
   end
 
   def company_votes
-    @company_votes ||= votes.final.map { |vote| [vote.company, vote] }.to_h
+    @company_votes ||= votes.includes(:company).final.map { |vote| [vote.company, vote] }.to_h
   end
 end

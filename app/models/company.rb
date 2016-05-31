@@ -1,4 +1,6 @@
 class Company < ActiveRecord::Base
+  include Concerns::Cacheable
+
   has_many :votes
 
   validates :name, presence: true
@@ -7,19 +9,21 @@ class Company < ActiveRecord::Base
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
 
   def quorum?
-    pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on)
+    cached { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
   end
 
   def funded?
-    quorum? && votes.yes.count > votes.no.count
+    cached { quorum? && votes.yes.count > votes.no.count }
   end
 
   def stats
-    @stats ||= {
-      yes_votes: votes.yes.count,
-      no_votes: votes.no.count,
-      averages: Vote.metrics(votes)
-    }
+    cached do
+      {
+        yes_votes: votes.yes.count,
+        no_votes: votes.no.count,
+        averages: Vote.metrics(votes)
+      }
+    end
   end
 
   def notify_team!
