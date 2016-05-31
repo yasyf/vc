@@ -1,5 +1,7 @@
 module Importers
   class Trello
+    SEPARATOR = '-'
+
     def sync!
       ::Trello::Board.find(ENV['TRELLO_BOARD']).cards.each do |card|
         yield parse(card)
@@ -26,12 +28,19 @@ module Importers
     end
 
     def parse_pitch_on(card)
-      index = card.name.index /\d/
-      raise DateTimeNotFound, card.name unless index.present?
-      datestring = card.name[index..-1]
-      date = Chronic.parse(datestring)
-      raise DateTimeNotFound, datestring unless date.present?
-      { pitch_on: date, name: card.name.split('-').first.strip }
+      name, datestring = split_name card
+      index = datestring.index /\d/
+      raise DateTimeNotFound, name unless index.present?
+      date = Chronic.parse(datestring[index..-1])
+      raise DateTimeNotFound, name unless date.present?
+      { pitch_on: date, name: name }
+    end
+
+    def split_name(card)
+      raise DateTimeNotFound, card.name unless card.name.include?(SEPARATOR)
+      *nameparts, datestring = card.name.split(SEPARATOR)
+      name = nameparts.join(SEPARATOR).strip
+      [name, datestring]
     end
   end
 end

@@ -1,3 +1,7 @@
+<% title 'Sign In' %>
+<% header 'Sign In' %>
+
+<p>Please sign in to your DRF Google account to access the voting site.</p>
 <p>
-  <%= link_to "Sign in with Google", user_omniauth_authorize_path(:google_oauth2) %>
+  <%= button_to "Sign in with Google", user_omniauth_authorize_path(:google_oauth2), class: 'btn btn-large btn-primary' %>
 </p>
