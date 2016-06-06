@@ -39,7 +39,8 @@ gem 'slack-ruby-client'
 gem 'devise'
 gem 'omniauth'
 gem "omniauth-google-oauth2"
-gem "twitter-bootstrap-rails"
+gem 'twitter-bootstrap-rails'
+gem 'workers'
 
 group :development do
   gem 'letter_opener'
