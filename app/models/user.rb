@@ -70,7 +70,17 @@ class User < ActiveRecord::Base
   alias_method :name, :real_name
 
   def self.from_omniauth(auth)
-    username, domain = auth.info['email'].split('@')
+    from_username_domain *auth.info['email'].split('@')
+  end
+
+  def self.from_slack(slack_id)
+    user = slack_client_factory.users_info(user: slack_id).user
+    from_username_domain *user.profile.email.split('@')
+  rescue Slack::Web::Api::Error
+    nil
+  end
+
+  def self.from_username_domain(username, domain)
     return nil unless domain == ENV['DOMAIN']
     where(username: username).first_or_create!
   end

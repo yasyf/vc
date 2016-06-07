@@ -12,5 +12,11 @@ module Concerns
     def slack_client
       @slack_client ||= Slack::Web::Client.new
     end
+
+    class_methods do
+      def slack_client_factory
+        Slack::Web::Client.new
+      end
+    end
   end
 end
