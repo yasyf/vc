@@ -1,0 +1,17 @@
+<% title 'Evergreen Knowlege' %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>Evergreen Knowlege</h1>
+  </div>
+  <div class="panel-body">
+    <p class='lead'>The following tidbits of information have been highlighted on Slack as useful for new partners.</p>
+  </div>
+
+  <!-- List group -->
+  <ul class="list-group">
+    <% @knowledges.each do |knowledge| %>
+      <li class="list-group-item knowledge-item"><%= knowledge.decoded %></li>
+    <% end %>
+  </ul>
+</div>
