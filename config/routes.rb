@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   resources :votes, only: [:show, :create]
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
+      resource :user, only: :show do
+        post 'toggle_active'
+      end
       resources :companies do
         resources :votes
       end

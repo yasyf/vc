@@ -31,6 +31,14 @@ class User < ActiveRecord::Base
     (active(at).count * QUORUM_PERCENTAGE).to_i
   end
 
+  def active?
+    (inactive_since.blank? || inactive_since >= Time.now) && created_at <= Time.now
+  end
+
+  def toggle_active!
+    update!(inactive_since: active? ? Time.now : nil)
+  end
+
   def stats
     {
       yes_votes: votes.yes.count,

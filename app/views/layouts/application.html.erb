@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DRF Vote - <%= yield(:title) %></title>
+  <title>VoteCollector - <%= yield(:title) %></title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <!--[if lt IE 9]>
@@ -15,7 +15,16 @@
 </head>
 <body>
   <div class="container">
-    nav
+    <%= nav_bar fixed: :top, brand: 'VoteCollector' do %>
+      <% if current_user %>
+        <%= menu_group pull: :right do %>
+          <%= drop_down "<span id='user_drop' class=#{'inactive_user' unless current_user.active?}>#{current_user.name}</span>" do %>
+            <%= menu_item current_user.active? ? 'Go Inactive' : 'Go Active',
+                toggle_active_api_v1_user_path, remote: true, method: :post, id: 'toggle_active' %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
     <div class="body">
       <%= bootstrap_flash %>
       <% if content_for?(:header) %>
