@@ -75,11 +75,6 @@ test:
 #
 # You can use this database configuration with:
 #
-#   production:
-#     url: <%= ENV['DATABASE_URL'] %>
-#
+
 production:
-  <<: *default
-  database: drfvote_production
-  username: drfvote
-  password: <%= ENV['DRFVOTE_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
