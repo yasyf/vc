@@ -1,7 +1,7 @@
 jQuery ->
-  $('#toggle_active').on 'ajax:success', (ev) ->
+  $('#toggle_active').on 'ajax:success', (ev, res) ->
     $('#user_drop').toggleClass 'inactive_user'
-    if $('#toggle_active').text() is 'Go Active'
+    if res.active
       $('#toggle_active').text 'Go Inactive'
     else
       $('#toggle_active').text 'Go Active'

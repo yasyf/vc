@@ -1,3 +1,3 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+jQuery ->
+  $('#toggle_active').on 'ajax:success', (ev, res) ->
+    $('#vote-submit').prop('disabled', not res.active)
