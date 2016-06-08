@@ -31,7 +31,7 @@ module Importers
       name, datestring = split_name card
       index = datestring.index /\d/
       raise DateTimeNotFound, name unless index.present?
-      date = Chronic.parse(datestring[index..-1])
+      date = Chronic.parse(datestring[index..-1], context: :past)
       raise DateTimeNotFound, name unless date.present?
       { pitch_on: date, name: name }
     end

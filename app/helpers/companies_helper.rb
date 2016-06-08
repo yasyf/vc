@@ -4,6 +4,8 @@ module CompaniesHelper
       ''
     elsif !company.pitched?
       'info'
+    elsif !company.past_deadline?
+      'warning'
     elsif company.funded?
       'success'
     else

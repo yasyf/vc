@@ -5,7 +5,7 @@
     <h1>All Companies</h1>
   </div>
   <div class="panel-body">
-    <p class='lead'>Soon-to-be pitching companies are shown in blue.</p>
+    <p class='lead'>Soon-to-be pitching companies are shown in blue. Companies being voted on are yellow.</p>
   </div>
   <div class="list-group">
     <% @companies.each do |company| %>
@@ -18,7 +18,7 @@
         </h2>
         <br>
         <p class="list-group-item-text">
-          <% if company.pitched? %>
+          <% if company.past_deadline? %>
             <p class='heading-inline'>
               Yes <br> <%= company.stats[:yes_votes] %>
             </p>
@@ -31,6 +31,10 @@
                 <%= name.titleize %> <br> <%= value.round(1) %>
               </p>
             <% end %>
+          <% elsif company.pitched? %>
+            <p class='heading-inline'>
+              Pitched on <%= company.pitch_on.to_s(:long) %>
+            </p>
           <% else %>
             <p class='heading-inline'>
               Pitching on <%= company.pitch_on.to_s(:long) %>

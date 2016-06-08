@@ -8,8 +8,16 @@ class Company < ActiveRecord::Base
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
 
+  def deadline
+    super || pitch_on + 2.days if pitch_on.present?
+  end
+
   def pitched?
     pitch_on.present? && pitch_on < Time.now
+  end
+
+  def past_deadline?
+    pitched? && deadline < Time.now
   end
 
   def quorum?

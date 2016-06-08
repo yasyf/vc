@@ -1,5 +1,4 @@
 class VoteMonitorJob < ActiveJob::Base
-  DEADLINE = 2.days
   THRESHOLD = 1.hour
 
   queue_as :default
@@ -7,8 +6,7 @@ class VoteMonitorJob < ActiveJob::Base
   def perform
     pending = Company.where('pitch_on < ?', Time.now - 1.day).where(decision_at: nil)
     pending.each do |company|
-      deadline = company.pitch_on + DEADLINE
-      time_remaining = (DateTime.now - deadline.to_datetime).days
+      time_remaining = (DateTime.now - company.deadline.to_datetime).days
       missing_users = company.votes.where(final: false).map(&:user) - company.votes.final.map(&:user)
       missing_votes = company.votes.where(final: false).where(user: missing_users)
       if missing_users.count == 0
