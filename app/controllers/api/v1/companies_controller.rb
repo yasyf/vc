@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_user!
 
       def index
-        render json: { companies: Company.pitch.order(pitch_on, :desc) }
+        render json: { companies: Company.pitch.order(pitch_on: :desc) }
       end
 
       def create

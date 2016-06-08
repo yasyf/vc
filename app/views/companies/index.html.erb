@@ -1,6 +1,48 @@
 <% title 'Home' %>
-<% header 'All Companies' %>
 
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>All Companies</h1>
+  </div>
+  <div class="panel-body">
+    <p class='lead'>Soon-to-be pitching companies are shown in blue.</p>
+  </div>
+  <div class="list-group">
+    <% @companies.each do |company| %>
+      <a
+        class="list-group-item list-group-item-<%= company_class(company) %> company-item"
+        href="<%= new_company_vote_path(company) %>"
+      >
+        <h2 class="list-group-item-heading">
+          <%= company.name %>
+        </h2>
+        <br>
+        <p class="list-group-item-text">
+          <% if company.pitched? %>
+            <p class='heading-inline'>
+              Yes <br> <%= company.stats[:yes_votes] %>
+            </p>
+            <p class='heading-inline'>
+              No <br> <%= company.stats[:no_votes] %>
+            </p>
+            <br>
+            <% company.stats[:averages].each do |name, value| %>
+              <p class='heading-inline'>
+                <%= name.titleize %> <br> <%= value.round(1) %>
+              </p>
+            <% end %>
+          <% else %>
+            <p class='heading-inline'>
+              Pitching on <%= company.pitch_on.to_s(:long) %>
+            </p>
+          <% end %>
+        </p>
+      </a>
+    <% end %>
+  </div>
+</div>
+
+<!--
 <h1>Companies#index</h1>
 <p>
   <ul>
@@ -10,3 +52,4 @@
     <li>Click to go to Votes#show</li>
   </ul>
 </p>
+ -->

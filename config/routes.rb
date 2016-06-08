@@ -3,9 +3,10 @@ Rails.application.routes.draw do
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
-  get '/companies', to: 'companies#index'
   resources :knowledges, only: [:index]
-  resources :votes, only: [:show, :create]
+  resources :companies, only: :index do
+    resources :votes, only: [:show, :create, :new]
+  end
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
       resource :user, only: :show do

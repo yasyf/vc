@@ -8,6 +8,10 @@ class Company < ActiveRecord::Base
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
 
+  def pitched?
+    pitch_on.present? && pitch_on < Time.now
+  end
+
   def quorum?
     cached { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
   end
