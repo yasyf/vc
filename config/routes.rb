@@ -12,9 +12,6 @@ Rails.application.routes.draw do
       resource :user, only: :show do
         post 'toggle_active'
       end
-      resources :companies do
-        resources :votes
-      end
     end
   end
 end

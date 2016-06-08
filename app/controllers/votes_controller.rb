@@ -4,6 +4,27 @@ class VotesController < ApplicationController
   def show
   end
 
+  def new
+    @vote = company.votes.where(user: current_user).order(created_at: :desc).first_or_initialize
+  end
+
   def create
+    vote = company.votes.create vote_params.merge(user: current_user)
+    if vote.valid?
+      flash[:success] = "Vote submitted!"
+    else
+      flash_errors vote
+    end
+    redirect_to action: :new
+  end
+
+  private
+
+  def vote_params
+    params.require(:vote).permit(:final, :overall, :reason, *Vote::METRICS)
+  end
+
+  def company
+    @company ||= Company.find(params[:company_id])
   end
 end

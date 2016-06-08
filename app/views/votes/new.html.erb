@@ -1,3 +1,46 @@
+<% title 'Submit Vote' %>
+<% if @vote.persisted? %>
+  <% header @vote.final? ? 'Final Vote' : 'Submit Final Vote' %>
+<% else %>
+  <% header 'Submit Pre-Vote' %>
+<% end %>
+
+<%= form_for [@company, Vote.new], html: { class: 'form-horizontal' } do |f| %>
+  <% Vote::METRICS.each do |metric| %>
+    <div class="form-group">
+      <%= f.label metric, class: 'col-sm-offset-4 col-sm-2 control-label' %>
+      <div class="col-sm-1">
+        <%= f.number_field metric, value: @vote.send(metric), class: 'form-control',
+            min: 1, max: 5, autocomplete: 'off', step: 1, required: true, readonly: @vote.final? && @vote.persisted? %>
+      </div>
+    </div>
+  <% end %>
+  <% if @vote.persisted? %>
+    <%= f.hidden_field :final, value: true %>
+    <div class="form-group">
+      <%= f.label :overall, class: 'col-sm-offset-4 col-sm-2 control-label' %>
+      <div class="col-sm-1">
+        <%= f.number_field :overall, class: 'form-control', min: 1, max: 5, value: @vote.overall,
+            step: 1, autocomplete: 'off', required: true, readonly: @vote.final? && @vote.persisted? %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :reason, class: 'col-sm-offset-4 col-sm-2 control-label' %>
+      <div class="col-sm-5">
+        <%= f.text_area :reason, class: 'form-control', value: @vote.reason, readonly: @vote.final? && @vote.persisted?, rows: 1 %>
+      </div>
+    </div>
+  <% end %>
+  <% unless @vote.final? && @vote.persisted? %>
+    <div class="form-group">
+      <div class="col-sm-offset-5 col-sm-2">
+        <%= f.submit 'Submit', class: 'btn btn-default' %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<!--
 <h1>Votes#new</h1>
 <p>
   <ul>
@@ -6,3 +49,4 @@
     <li>Submit button</li>
   </ul>
 </p>
+ -->

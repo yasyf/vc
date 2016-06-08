@@ -30,6 +30,7 @@
       <%= bootstrap_flash %>
       <% if content_for?(:header) %>
         <h1> <%= yield(:header) %></h1>
+        <br>
       <% end %>
       <%= yield %>
     </div>
