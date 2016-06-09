@@ -18,6 +18,8 @@
   <%= nav_bar fixed: :top, brand: 'VoteCollector' do %>
     <% if current_user %>
       <%= menu_group pull: :right do %>
+        <%= menu_item 'Voting', companies_path %>
+        <%= menu_item 'Knowledge', knowledges_path %>
         <%= drop_down "<span id='user_drop' class=#{'inactive_user' unless current_user.active?}>#{current_user.name}</span>" do %>
           <%= menu_item current_user.active? ? 'Go Inactive' : 'Go Active',
               toggle_active_api_v1_user_path, remote: true, method: :post, id: 'toggle_active' %>
