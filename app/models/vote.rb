@@ -9,7 +9,9 @@ class Vote < ActiveRecord::Base
   validates :overall, inclusion: { in: (1..5).to_a - [3], message: 'cannot be 3' }, if: :final?
   validates :reason, presence: true, if: :final?
 
-  METRICS.each { |metric| validates metric, numericality: { in: 1..5 } }
+  METRICS.each do |metric|
+    validates metric, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 5, only_integer: true }
+  end
 
   scope :final, -> { where(final: true) }
   scope :valid, Proc.new { |since| final.joins(:user).merge User.active(since) }
