@@ -67,7 +67,9 @@ class User < ActiveRecord::Base
     end
   end
 
-  alias_method :name, :real_name
+  def name
+    real_name.present? ? real_name : slack_name
+  end
 
   def self.from_omniauth(auth)
     from_username_domain *auth.info['email'].split('@')
