@@ -28,6 +28,10 @@ class Company < ActiveRecord::Base
     cached { quorum? && votes.yes.count > votes.no.count }
   end
 
+  def user_votes(user)
+    votes.where(user: user).order(created_at: :desc)
+  end
+
   def stats
     cached do
       {

@@ -5,7 +5,7 @@ class VotesController < ApplicationController
   end
 
   def new
-    @vote = company.votes.where(user: current_user).order(created_at: :desc).first_or_initialize
+    @vote = company.user_votes(current_user).first_or_initialize
   end
 
   def create

@@ -34,6 +34,15 @@
           <% elsif company.pitched? %>
             <p class='heading-inline'>
               Pitched on <%= company.pitch_on.to_s(:long) %>
+              <br>
+              <% vote = company.user_votes(current_user).first %>
+              <% if vote.blank? %>
+                You have not yet voted
+              <% elsif vote.final? %>
+                You have submitted your final vote
+              <% else %>
+                You have submitted your pre-vote
+              <% end %>
             </p>
           <% else %>
             <p class='heading-inline'>
