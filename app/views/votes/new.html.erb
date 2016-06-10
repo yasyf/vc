@@ -34,7 +34,7 @@
   <% unless @vote.final? && @vote.persisted? %>
     <div class="form-group">
       <div class="col-sm-offset-5 col-sm-2">
-        <%= f.submit 'Submit', class: 'btn btn-default', id: 'vote-submit', disabled: !current_user.active? %>
+        <%= f.submit 'Submit', class: 'btn btn-default', id: 'vote-submit', disabled: !current_user.active? || @company.past_deadline? %>
       </div>
     </div>
   <% end %>

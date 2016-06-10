@@ -1,3 +1,10 @@
+class EligibleValidator < ActiveModel::Validator
+  def validate(record)
+    record.errors[:user] << 'must be active' if !record.user.active?
+    record.errors[:company] << 'voting deadline has passed' if record.company.past_deadline?
+  end
+end
+
 class Vote < ActiveRecord::Base
   METRICS = %w(fit team product market)
 
@@ -8,6 +15,7 @@ class Vote < ActiveRecord::Base
   validates :final, inclusion: [true, false]
   validates :overall, inclusion: { in: (1..5).to_a - [3], message: 'cannot be 3' }, if: :final?
   validates :reason, presence: true, if: :final?
+  validates_with EligibleValidator
 
   METRICS.each do |metric|
     validates metric, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 5, only_integer: true }
