@@ -21,7 +21,7 @@ module Importers
 
     def sync!
       ::CSV.foreach(@filename, headers: true) do |row|
-        parsed = HEADERS.map { |h,s| [h, row[s].strip] }.to_h
+        parsed = HEADERS.map { |h,s| [h, row[s].try(:strip)] }.to_h
         next unless parsed[:date].present? && parsed[:email].present? && parsed[:company].present?
 
         date = Chronic.parse(parsed[:date])
