@@ -17,7 +17,7 @@ class Company < ActiveRecord::Base
   end
 
   def past_deadline?
-    pitched? && deadline < Time.now
+    pitched? && (decision_at.present? || deadline < Time.now)
   end
 
   def quorum?
