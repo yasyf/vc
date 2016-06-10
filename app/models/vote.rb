@@ -15,7 +15,7 @@ class Vote < ActiveRecord::Base
   validates :final, inclusion: [true, false]
   validates :overall, inclusion: { in: (1..5).to_a - [3], message: 'cannot be 3' }, if: :final?
   validates :reason, presence: true, if: :final?
-  validates_with EligibleValidator
+  validates_with EligibleValidator, unless: :skip_eligibility?
 
   METRICS.each do |metric|
     validates metric, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 5, only_integer: true }
@@ -40,5 +40,15 @@ class Vote < ActiveRecord::Base
 
   def self.metrics(votes)
     METRICS.map { |metric| [metric, votes.average(metric) || 0.0] }.to_h
+  end
+
+  def skip_eligibility!
+    @skip_eligibility = true
+  end
+
+  private
+
+  def skip_eligibility?
+    @skip_eligibility
   end
 end

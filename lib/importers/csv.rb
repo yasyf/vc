@@ -53,7 +53,9 @@ module Importers
         vote_data[:user] = user
         vote_data[:company] = company
         begin
-          Vote.create! vote_data
+          vote = Vote.new vote_data
+          vote.skip_eligibility!
+          vote.save!
         rescue ActiveRecord::RecordInvalid
           next
         end
