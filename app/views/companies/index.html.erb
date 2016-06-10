@@ -2,7 +2,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h1>All Companies</h1>
+    <h1><%= @heading %></h1>
   </div>
   <div class="panel-body">
     <h4>
@@ -46,20 +46,18 @@
             </div>
           <% elsif company.pitched? %>
             <p class='companies--heading'>
-              Pitched on <%= company.pitch_on.to_s(:long) %>
-              <br>
               <% vote = company.user_votes(current_user).first %>
               <% if vote.blank? %>
-                You have not yet voted
+                You have not yet voted.
               <% elsif vote.final? %>
-                You have submitted your final vote
+                You have submitted your final vote.
               <% else %>
-                You have submitted your pre-vote
+                You have submitted your pre-vote.
               <% end %>
             </p>
           <% else %>
             <p class='companies--heading'>
-              Pitching on <%= company.pitch_on.to_s(:long) %>
+              Pitch has not yet occured.
             </p>
           <% end %>
         </div>

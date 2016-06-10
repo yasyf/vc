@@ -7,6 +7,7 @@ class Company < ActiveRecord::Base
   validates :trello_id, presence: true, uniqueness: true
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
+  scope :undecided, -> { where(decision_at: nil) }
 
   def deadline
     super || pitch_on + 2.days if pitch_on.present?

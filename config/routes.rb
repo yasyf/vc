@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
   resources :knowledges, only: [:index]
+  get 'voting', to: 'companies#voting'
   resources :companies, only: :index do
     resources :votes, only: [:show, :create, :new]
   end
