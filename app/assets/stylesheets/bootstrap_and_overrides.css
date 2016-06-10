@@ -24,3 +24,7 @@ a.list-group-item, a.list-group-item:hover {
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
   color: rgb(0, 245, 249);
 }
+
+a.list-group-item:hover, a.list-group-item:focus {
+  background-color: #3c3b3b;
+}
