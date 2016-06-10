@@ -41,6 +41,8 @@ gem 'omniauth'
 gem "omniauth-google-oauth2"
 gem 'twitter-bootstrap-rails'
 gem 'workers'
+gem 'nokogiri'
+gem 'premailer-rails'
 
 group :production do
   gem 'rails_12factor'
