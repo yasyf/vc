@@ -1,4 +1,5 @@
 require 'csv'
+require 'open-uri'
 
 module Importers
   class Csv
@@ -15,12 +16,12 @@ module Importers
     }
 
     def initialize(filename)
-      @filename = filename
+      @filename = url?(filename) ? save(filename) : filename
     end
 
     def sync!
       ::CSV.foreach(@filename, headers: true) do |row|
-        parsed = HEADERS.map { |h,s| [h, row[s]] }.to_h
+        parsed = HEADERS.map { |h,s| [h, row[s].strip] }.to_h
         next unless parsed[:date].present? && parsed[:email].present? && parsed[:company].present?
 
         date = Chronic.parse(parsed[:date])
@@ -28,7 +29,10 @@ module Importers
         date_plus_epsilon = date + 1.minute
 
         company = Company.where(name: parsed[:company]).first
-        next unless company.present?
+        unless company.present?
+          Rails.logger.warn "Skipping record #{parsed}"
+          next
+        end
         company.decision_at = [company.decision_at, date].compact.max
         company.pitch_on = [company.pitch_on, date.to_date].compact.min
         company.save! if company.changed?
@@ -54,6 +58,18 @@ module Importers
           next
         end
       end
+    end
+
+    private
+
+    def url?(filename)
+      filename =~ /\A#{URI::regexp(%w(ftp http https))}\z/
+    end
+
+    def save(url)
+      file = Tempfile.new 'csv'
+      IO.copy_stream open(url), file.path
+      file.path
     end
   end
 end
