@@ -3,6 +3,8 @@
     <%= value.is_a?(Integer) ? value : value.round(1) %>
   </p>
   <p class='stat--smaller'>
-    <%= name.to_s.titleize %>
+    <span class='<%= 'stat--underline' if local_assigns.fetch(:underline, false) %>'>
+      <%= name.to_s.titleize %>
+    </span>
   </p>
 </div>

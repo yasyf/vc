@@ -11,12 +11,13 @@
 </div>
 <div class="list-group-item-text">
   <% if company.past_deadline? %>
+    <% vote = company.user_votes(current_user).final.first %>
     <div class="row">
       <div class="col-sm-6 text-success">
-        <%= render partial: 'stat', locals: {name: 'yes', value: company.stats["yes_votes"]} %>
+        <%= render partial: 'stat', locals: {name: 'yes', value: company.stats["yes_votes"], underline: vote.try(:yes?)} %>
       </div>
       <div class="col-sm-6 text-danger">
-        <%= render partial: 'stat', locals: {name: 'no', value: company.stats["no_votes"]} %>
+        <%= render partial: 'stat', locals: {name: 'no', value: company.stats["no_votes"], underline: vote.try(:no?)} %>
       </div>
     </div>
     <br>
@@ -28,8 +29,8 @@
       <% end %>
     </div>
   <% elsif company.pitched? %>
+    <% vote = company.user_votes(current_user).first %>
     <p class='companies--heading'>
-      <% vote = company.user_votes(current_user).first %>
       <% if vote.blank? %>
         You have not yet voted.
       <% elsif vote.final? %>
