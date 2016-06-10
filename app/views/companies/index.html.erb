@@ -25,6 +25,9 @@
             <p class='heading-inline'>
               No <br> <%= company.stats[:no_votes] %>
             </p>
+            <p class='heading-inline'>
+              Required <br> <%= company.stats[:required_votes] %>
+            </p>
             <br>
             <% company.stats[:averages].each do |name, value| %>
               <p class='heading-inline'>
