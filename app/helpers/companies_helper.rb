@@ -1,7 +1,7 @@
 module CompaniesHelper
   def company_class(company)
     if company.pitch_on.blank?
-      ''
+      'muted'
     elsif !company.pitched?
       'info'
     elsif !company.past_deadline?
