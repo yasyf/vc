@@ -1,6 +1,6 @@
 namespace :sync do
   desc "Sync companies from Trello"
   task trello: :environment do
-      Company.sync!
+    Company.sync!
   end
 end
