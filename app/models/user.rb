@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
       agreed: agreed.count,
       disagreed: disagreed.count,
       averages: Vote.metrics(votes)
-    }
+    }.with_indifferent_access
   end
 
   def email
@@ -61,14 +61,22 @@ class User < ActiveRecord::Base
     slack_send! slack_id, message
   end
 
-  %w(real_name first_name last_name title).each do |field|
-    define_method field do
-      key_cached [field] { slack_user.profile.public_send(field).titleize }
+  def name
+    slack_or_block :real_name do
+      trello_user.try(:full_name).present? ? trello_user.full_name : slack_name
     end
   end
 
-  def name
-    real_name.present? ? real_name : slack_name
+  def first_name
+    slack_or_block(:first_name) { name.split(' ').first }
+  end
+
+  def last_name
+    slack_or_block(:last_name) { name.split(' ').drop(1).join(' ') }
+  end
+
+  def title
+    slack_or_block :title
   end
 
   def self.from_omniauth(auth)
@@ -82,6 +90,14 @@ class User < ActiveRecord::Base
     nil
   end
 
+  def self.from_trello(trello_id)
+    user = Trello::Member.find trello_id
+    return nil unless user.email.present?
+    from_username_domain *user.email.split('@')
+  rescue Trello::Error
+    nil
+  end
+
   def self.from_username_domain(username, domain)
     return nil unless domain == ENV['DOMAIN']
     where(username: username).first_or_create!
@@ -89,8 +105,27 @@ class User < ActiveRecord::Base
 
   private
 
+  def slack_or_block(property)
+    key_cached [property] do
+      from_slack = slack_user.profile.public_send(property)
+      if from_slack.present?
+        from_slack.titleize
+      else
+        yield if block_given?
+      end
+    end
+  end
+
   def slack_id
     cached { slack_user.id }
+  end
+
+  def trello_user
+    @trello_user ||= begin
+      Trello::Member.find email
+    rescue Trello::Error
+      nil
+    end
   end
 
   def slack_user

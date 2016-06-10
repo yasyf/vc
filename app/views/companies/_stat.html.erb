@@ -1,0 +1,8 @@
+<div class='stat--heading'>
+  <p class='stat--larger'>
+    <%= value.is_a?(Integer) ? value : value.round(1) %>
+  </p>
+  <p class='stat--smaller'>
+    <%= name.to_s.titleize %>
+  </p>
+</div>

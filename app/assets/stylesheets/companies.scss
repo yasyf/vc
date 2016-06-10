@@ -1,5 +1,38 @@
-.heading-inline {
+$muted: #a9aebd;
+
+.companies--large-heading {
+  font-size: 4.5em;
+  margin-bottom: -.04em;
+}
+
+.companies--heading {
   font-size: 1.5em;
-  padding-left: 5px;
-  display: inline-block;
+  margin-bottom: 0;
+}
+
+.companies--sub-heading {
+  color: $muted;
+  margin-bottom: 0;
+}
+
+.companies--smaller {
+  font-size: 60%;
+}
+
+.stat--heading {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+
+.stat--larger {
+  font-size: 4em;
+  margin-bottom: -0.2em;
+}
+
+.stat--smaller {
+  font-size: 0.7em;
+  margin-bottom: 0;
+  letter-spacing: .15em;
+  color: $muted;
+  text-transform: uppercase;
 }

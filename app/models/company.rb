@@ -39,8 +39,12 @@ class Company < ActiveRecord::Base
         no_votes: votes.no.count,
         required_votes: User.quorum(pitch_on),
         averages: Vote.metrics(votes.final)
-      }
+      }.with_indifferent_access
     end
+  end
+
+  def partner_initials
+    cached { trello_card.members.map(&:initials).compact }
   end
 
   def notify_team!
@@ -58,5 +62,11 @@ class Company < ActiveRecord::Base
       company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
       company.save! if company.changed?
     end
+  end
+
+  private
+
+  def trello_card
+    @trello_card ||= Trello::Card.find trello_id
   end
 end

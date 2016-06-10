@@ -9,7 +9,7 @@ class Vote < ActiveRecord::Base
   METRICS = %w(fit team product market)
 
   belongs_to :user
-  belongs_to :company
+  belongs_to :company, touch: true
 
   validates :company, presence: true, uniqueness: { scope: [:user, :final] }
   validates :final, inclusion: [true, false]

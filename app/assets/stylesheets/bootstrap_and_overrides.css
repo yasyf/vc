@@ -1,7 +1,26 @@
 /*
-  =require twitter-bootstrap-static/bootstrap
+=require twitter-bootstrap-static/bootstrap
 
-  Use Font Awesome icons (default)
-  To use Glyphicons sprites instead of Font Awesome, replace with "require twitter-bootstrap-static/sprites"
-  =require twitter-bootstrap-static/fontawesome
-  */
+Use Font Awesome icons (default)
+To use Glyphicons sprites instead of Font Awesome, replace with "require twitter-bootstrap-static/sprites"
+=require twitter-bootstrap-static/fontawesome
+*/
+
+@import "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/darkly/bootstrap.css";
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic";
+
+body {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.text-success, .text-success:hover {
+  color: #3ce76a;
+}
+
+a.list-group-item, a.list-group-item:hover {
+  color: #e2e3e7;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: rgb(0, 245, 249);
+}
