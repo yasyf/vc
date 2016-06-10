@@ -38,7 +38,7 @@ class Company < ActiveRecord::Base
         yes_votes: votes.yes.count,
         no_votes: votes.no.count,
         required_votes: User.quorum(pitch_on),
-        averages: Vote.metrics(votes)
+        averages: Vote.metrics(votes.final)
       }
     end
   end
