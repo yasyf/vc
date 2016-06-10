@@ -47,6 +47,8 @@ gem 'premailer-rails'
 group :production do
   gem 'rails_12factor'
   gem 'puma'
+  gem 'dalli'
+  gem 'connection_pool'
 end
 
 group :development do

@@ -53,8 +53,10 @@ GEM
     coffee-script-source (1.10.0)
     commonjs (0.2.7)
     concurrent-ruby (1.0.2)
+    connection_pool (2.2.0)
     css_parser (1.4.1)
       addressable
+    dalli (2.7.6)
     debug_inspector (0.0.2)
     devise (4.1.1)
       bcrypt (~> 3.0)
@@ -250,6 +252,8 @@ DEPENDENCIES
   byebug
   chronic
   coffee-rails (~> 4.1.0)
+  connection_pool
+  dalli
   devise
   dotenv-rails
   jbuilder (~> 2.0)
