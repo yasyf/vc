@@ -2,7 +2,7 @@ class CompaniesController < ApplicationController
   before_action :authenticate_user!
 
   def all
-    @companies = Company.order(:name)
+    @lists = Company.includes(:list).order(:name).group_by(&:list).sort_by { |l, _| l.pos }
   end
 
   def index

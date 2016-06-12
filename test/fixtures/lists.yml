@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  trello_id: MyString
+  name: MyString
+  prop: 1.5
+
+two:
+  trello_id: MyString
+  name: MyString
+  prop: 1.5

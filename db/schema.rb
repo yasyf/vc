@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608201717) do
+ActiveRecord::Schema.define(version: 20160612002622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,8 +24,10 @@ ActiveRecord::Schema.define(version: 20160608201717) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.date     "deadline"
+    t.integer  "list_id"
   end
 
+  add_index "companies", ["list_id"], name: "index_companies_on_list_id", using: :btree
   add_index "companies", ["name"], name: "index_companies_on_name", using: :btree
   add_index "companies", ["trello_id"], name: "index_companies_on_trello_id", using: :btree
 
@@ -39,6 +41,14 @@ ActiveRecord::Schema.define(version: 20160608201717) do
 
   add_index "knowledges", ["ts"], name: "index_knowledges_on_ts", using: :btree
   add_index "knowledges", ["user_id"], name: "index_knowledges_on_user_id", using: :btree
+
+  create_table "lists", force: :cascade do |t|
+    t.string   "trello_id",  null: false
+    t.string   "name",       null: false
+    t.float    "pos",        null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "logged_errors", force: :cascade do |t|
     t.text     "reason",                 null: false
@@ -77,6 +87,7 @@ ActiveRecord::Schema.define(version: 20160608201717) do
   add_index "votes", ["company_id"], name: "index_votes_on_company_id", using: :btree
   add_index "votes", ["user_id"], name: "index_votes_on_user_id", using: :btree
 
+  add_foreign_key "companies", "lists"
   add_foreign_key "knowledges", "users"
   add_foreign_key "votes", "users"
 end

@@ -17,7 +17,11 @@ module Concerns
     end
 
     def base_options
-      { expires_in: 1.week + (rand * 7).days }
+      { expires_in: jitter(1, :week) }
+    end
+
+    def jitter(value, period)
+      value.send(period) + (rand * value).send(period)
     end
 
     def base_cache_key
