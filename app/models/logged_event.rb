@@ -1,4 +1,4 @@
-class LoggedError < ActiveRecord::Base
+class LoggedEvent < ActiveRecord::Base
 
 
   validates :reason, presence: true, uniqueness: { scope: [:record_id] }

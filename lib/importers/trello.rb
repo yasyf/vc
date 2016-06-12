@@ -13,7 +13,7 @@ module Importers
     class DateTimeNotFound < StandardError
       def log!(card)
         usernames = card.members.map { |mem| mem.email.split('@').first }
-        LoggedError.log! :datetime_not_found, card, usernames, card.list.name, card.name, card.url
+        LoggedEvent.log! :datetime_not_found, card, usernames, card.list.name, card.name, card.url
       end
     end
 

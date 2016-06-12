@@ -1,6 +1,6 @@
-class CreateLoggedErrors < ActiveRecord::Migration
+class CreateLoggedEvents < ActiveRecord::Migration
   def change
-    create_table :logged_errors do |t|
+    create_table :logged_events do |t|
       t.text :reason, null: false
       t.integer :record_id, null: false
       t.integer :count, null: false, default: 0

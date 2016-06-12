@@ -50,16 +50,6 @@ ActiveRecord::Schema.define(version: 20160612002622) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "logged_errors", force: :cascade do |t|
-    t.text     "reason",                 null: false
-    t.integer  "record_id",              null: false
-    t.integer  "count",      default: 0, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "logged_errors", ["reason", "record_id"], name: "index_logged_errors_on_reason_and_record_id", unique: true, using: :btree
-
   create_table "users", force: :cascade do |t|
     t.string   "username",       null: false
     t.datetime "inactive_since"
