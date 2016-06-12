@@ -3,4 +3,9 @@ namespace :jobs do
   task vote_monitor: :environment do
     VoteMonitorJob.perform_now
   end
+
+  desc "Run CacheWarmJob"
+  task cache_warm: :environment do
+    CacheWarmJob.perform_now
+  end
 end
