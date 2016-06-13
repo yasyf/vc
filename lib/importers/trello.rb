@@ -13,12 +13,12 @@ module Importers
     class DateTimeNotFound < StandardError
       def log!(card)
         usernames = card.members.map { |mem| mem.email.split('@').first }
-        LoggedEvent.log! :datetime_not_found, card, usernames, card.list.name, card.name, card.url
+        LoggedEvent.log! :datetime_not_found, card, card.list.name, card.name, card.url, to: usernames
       end
     end
 
     def parse(card)
-      parsed = { trello_id: card.id, name: card.name, list_id: card.list_id }
+      parsed = { trello_id: card.id, name: card.name, trello_list_id: card.list_id }
       begin
         parsed.merge! parse_pitch_on(card) if card.list_id == ENV['TRELLO_LIST']
       rescue DateTimeNotFound => dtnf

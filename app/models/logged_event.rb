@@ -4,7 +4,7 @@ class LoggedEvent < ActiveRecord::Base
   validates :reason, presence: true, uniqueness: { scope: [:record_id] }
   validates :count, presence: true
 
-  def self.log!(reason, record, to, *args, notify: 1)
+  def self.log!(reason, record, *args, notify: 1, to: nil)
     log = first_or_create!(record_id: record.id, reason: reason)
     log.increment! :count
     unless log.count > notify

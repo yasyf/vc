@@ -59,10 +59,14 @@ class Company < ActiveRecord::Base
 
   def self.sync!(disable_notifications: false)
     Importers::Trello.new.sync! do |card_data|
+      list = List.where(trello_id: card_data[:trello_list_id]).first!
       company = Company.where(trello_id: card_data[:trello_id]).first_or_create
       company.assign_attributes card_data
       company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
-      company.list = List.where(trello_id: card_data[:list_id]).first!
+      if company.list.present? && company.list != list
+        LoggedEvent.log! :company_list_changed, company, notify: 0
+      end
+      company.list = list
       company.save! if company.changed?
     end
   end
