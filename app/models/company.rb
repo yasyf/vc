@@ -66,6 +66,10 @@ class Company < ActiveRecord::Base
     trello_card.save
   end
 
+  def self.search(term)
+    where('name ILIKE ?', "%#{term}%")
+  end
+
   def self.sync!(disable_notifications: false)
     Importers::Trello.new.sync! do |card_data|
       list = List.where(trello_id: card_data[:trello_list_id]).first!
