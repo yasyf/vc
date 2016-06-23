@@ -57,6 +57,15 @@ class Company < ActiveRecord::Base
     VoteMailer.email_and_slack!(:vote_warning_team_email, nil, missing_users, self, time_remaining.to_i)
   end
 
+  def move_to_post_pitch_list!
+    list = funded? ? List.funded : List.passed
+    trello_card.move_to_list list.trello_id
+    update! list: list
+
+    trello_card.name = name
+    trello_card.save
+  end
+
   def self.sync!(disable_notifications: false)
     Importers::Trello.new.sync! do |card_data|
       list = List.where(trello_id: card_data[:trello_list_id]).first!

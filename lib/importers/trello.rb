@@ -20,7 +20,7 @@ module Importers
     def parse(card)
       parsed = { trello_id: card.id, name: card.name, trello_list_id: card.list_id }
       begin
-        parsed.merge! parse_pitch_on(card) if card.list_id == ENV['TRELLO_LIST']
+        parsed.merge! parse_pitch_on(card) if card.list_id == List.pitched.trello_id
       rescue DateTimeNotFound => dtnf
         dtnf.log! card
       end
