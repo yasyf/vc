@@ -15,7 +15,7 @@ body {
   color: #3ce76a;
 }
 
-a.list-group-item, a.list-group-item:hover {
+a.list-group-item, a.list-group-item:hover, a.list-group-item:focus {
   color: #e2e3e7;
 }
 

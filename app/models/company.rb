@@ -30,8 +30,8 @@ class Company < ActiveRecord::Base
     cached { quorum? && votes.yes.count > votes.no.count }
   end
 
-  def user_votes(user)
-    votes.where(user: user).order(created_at: :desc)
+  def vote_for_user(user)
+    user_votes(user).final.first
   end
 
   def stats
@@ -85,6 +85,10 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def user_votes(user)
+    votes.where(user: user).order(created_at: :desc)
+  end
 
   def trello_card
     @trello_card ||= Trello::Card.find trello_id

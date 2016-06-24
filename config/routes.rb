@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :knowledges, only: [:index]
   get 'all', to: 'companies#all'
   get 'voting', to: 'companies#voting'
-  resources :companies, only: :index do
+  resources :companies, only: [:index, :show] do
     resources :votes, only: [:show, :create, :new]
   end
   namespace :api, constraints: { format: :json } do

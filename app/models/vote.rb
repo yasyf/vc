@@ -38,12 +38,20 @@ class Vote < ActiveRecord::Base
     VoteMailer.email_and_slack!(:vote_warning_email, user, company, time_remaining.to_i)
   end
 
-  def self.metrics(votes)
-    METRICS.map { |metric| [metric, votes.average(metric) || 0.0] }.to_h
+  def self.metrics(votes, method: :average)
+    METRICS.map { |metric| [metric, votes.public_send(method, metric) || 0.0] }.to_h
   end
 
   def skip_eligibility!
     @skip_eligibility = true
+  end
+
+  def stats
+    {
+      yes_votes: yes? ? 1 : 0,
+      no_votes: no? ? 1 : 0,
+      averages: self.class.metrics(self, method: :public_send)
+    }.with_indifferent_access
   end
 
   private

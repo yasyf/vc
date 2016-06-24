@@ -1,2 +1,18 @@
-<h1>Votes#show</h1>
-<p>Find me in app/views/votes/show.html.erb</p>
+<% title "#{@company.name} Final Vote" %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
+  </div>
+  <div class="panel-body">
+    <h4><%= @vote.user.name %>'s <%= @vote.final? ? 'Final Vote' : 'Pre-Vote' %></h4>
+  </div>
+  <div class="list-group">
+    <a class="list-group-item companies--item" href="#">
+      <%= render partial: 'shared/stats', locals: {vote: nil, stats: @vote.stats} %>
+    </a>
+    <a class="list-group-item companies--item" href="#">
+      <%= @vote.reason %>
+    </a>
+  </div>
+</div>

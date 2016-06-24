@@ -2,6 +2,7 @@ class VotesController < ApplicationController
   before_action :authenticate_user!
 
   def show
+    @vote = fetch_vote
   end
 
   def new
@@ -22,6 +23,12 @@ class VotesController < ApplicationController
 
   def vote_params
     params.require(:vote).permit(:final, :overall, :reason, *Vote::METRICS)
+  end
+
+  def fetch_vote
+    vote = Vote.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless vote.company == company
+    vote
   end
 
   def company

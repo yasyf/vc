@@ -11,23 +11,7 @@
 </div>
 <div class="list-group-item-text">
   <% if company.past_deadline? %>
-    <% vote = company.user_votes(current_user).final.first %>
-    <div class="row">
-      <div class="col-sm-6 text-success">
-        <%= render partial: 'stat', locals: {name: 'yes', value: company.stats["yes_votes"], underline: vote.try(:yes?)} %>
-      </div>
-      <div class="col-sm-6 text-danger">
-        <%= render partial: 'stat', locals: {name: 'no', value: company.stats["no_votes"], underline: vote.try(:no?)} %>
-      </div>
-    </div>
-    <br>
-    <div class="row companies--smaller">
-      <% company.stats[:averages].each do |name, value| %>
-        <div class="col-sm-3">
-          <%= render partial: 'stat', locals: {name: name, value: value} %>
-        </div>
-      <% end %>
-    </div>
+    <%= render partial: 'shared/stats', locals: {vote: company.vote_for_user(current_user), stats: company.stats} %>
   <% elsif company.pitched? %>
     <% vote = company.user_votes(current_user).first %>
     <p class='companies--heading'>

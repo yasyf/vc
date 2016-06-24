@@ -1,0 +1,22 @@
+<% title @company.name %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
+  </div>
+  <div class="panel-body">
+    <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
+      <h4>View Your Vote</h4>
+    </a>
+  </div>
+  <div class="list-group">
+    <a class="list-group-item companies--item" href="#">
+      <%= render partial: 'shared/stats', locals: {vote: @vote, stats: @company.stats} %>
+    </a>
+    <% @company.votes.final.each do |vote| %>
+      <a class="list-group-item companies--item" href="<%= company_vote_path(@company, vote) %>">
+        <%= vote.reason %>
+      </a>
+    <% end %>
+  </div>
+</div>

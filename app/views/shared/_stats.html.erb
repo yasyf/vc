@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-sm-6 text-success">
+    <%= render partial: 'shared/stat', locals: {name: 'yes', value: stats["yes_votes"], underline: vote.try(:yes?)} %>
+  </div>
+  <div class="col-sm-6 text-danger">
+    <%= render partial: 'shared/stat', locals: {name: 'no', value: stats["no_votes"], underline: vote.try(:no?)} %>
+  </div>
+</div>
+<br>
+<div class="row companies--smaller">
+  <% stats[:averages].each do |name, value| %>
+    <div class="col-sm-3">
+      <%= render partial: 'shared/stat', locals: {name: name, value: value} %>
+    </div>
+  <% end %>
+</div>

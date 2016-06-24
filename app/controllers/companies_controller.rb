@@ -10,6 +10,11 @@ class CompaniesController < ApplicationController
     @heading = 'All Pitches'
   end
 
+  def show
+    @company = Company.find(params[:id])
+    @vote = @company.vote_for_user(current_user)
+  end
+
   def voting
     @companies = Company.pitch.undecided.order(pitch_on: :desc)
     @heading = 'Recent Pitches'
