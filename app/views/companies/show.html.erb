@@ -5,9 +5,13 @@
     <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
   </div>
   <div class="panel-body">
-    <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
-      <h4>View Your Vote</h4>
-    </a>
+    <% if @vote.present? %>
+      <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
+        <h4>View Your Vote</h4>
+      </a>
+    <% else %>
+      <h4>You did not vote for this pitch</h4>
+    <% end %>
   </div>
   <div class="list-group">
     <a class="list-group-item companies--item" href="#">
