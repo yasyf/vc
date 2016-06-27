@@ -2,11 +2,12 @@ class CompaniesController < ApplicationController
   before_action :authenticate_user!
 
   def all
-    @lists = Company.includes(:list).order(:name).group_by(&:list).sort_by { |l, _| l.pos }
+    companies = apply_filter Company.includes(:list).order(:name)
+    @lists = companies.group_by(&:list).sort_by { |l, _| l.pos }
   end
 
   def index
-    @companies = Company.pitch.order(pitch_on: :desc)
+    @companies = apply_filter Company.pitch.order(pitch_on: :desc)
     @heading = 'All Pitches'
   end
 
@@ -16,8 +17,21 @@ class CompaniesController < ApplicationController
   end
 
   def voting
-    @companies = Company.pitch.undecided.order(pitch_on: :desc)
+    @companies = apply_filter Company.pitch.undecided.order(pitch_on: :desc)
     @heading = 'Recent Pitches'
     render 'index'
+  end
+
+  private
+
+  def apply_filter(companies)
+    return companies unless params[:filter].present?
+    filtered = companies.search(params[:filter])
+    if filtered.count > 0
+      filtered
+    else
+      flash_warning "No matches found for '#{params[:filter]}'!"
+      companies
+    end
   end
 end

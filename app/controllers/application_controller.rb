@@ -3,6 +3,11 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  def flash_warning(warning)
+    flash.now[:warning] ||= []
+    flash.now[:warning] << warning
+  end
+
   def flash_errors(record)
     flash[:alert] ||= []
     record.errors.messages.each do |attribute, messages|

@@ -5,6 +5,11 @@
     <div class="panel-heading">
       <h1><%= list.name %></h1>
     </div>
+    <div class="panel-body">
+      <%= form_tag "", method: :get, class: 'companies--filter-form' do %>
+        <%= text_field_tag :filter, params[:filter], placeholder: 'Filter...', class: 'form-control companies--filter-input', autocomplete: :off %>
+      <% end %>
+    </div>
     <div class="list-group">
       <% companies.each do |company| %>
         <a class="list-group-item companies--item" href="https://trello.com/c/<%= company.trello_id %>" target="_blank">

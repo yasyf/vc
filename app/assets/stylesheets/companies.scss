@@ -1,4 +1,4 @@
-$muted: #a9aebd;
+@import "variables";
 
 .companies--list-group-item-heading {
   margin-bottom: 0;
@@ -24,24 +24,19 @@ $muted: #a9aebd;
   margin-bottom: 0.5em;
 }
 
-.stat--heading {
-  font-size: 1.5em;
-  margin-bottom: 0.5em;
+.companies--filter-form {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.stat--underline {
-  border-bottom: 1px groove;
-}
-
-.stat--larger {
-  font-size: 3.8em;
-  margin-bottom: -0.2em;
-}
-
-.stat--smaller {
-  font-size: 0.7em;
-  margin-bottom: 0;
-  letter-spacing: .15em;
+.companies--filter-input {
+  text-align: center;
+  background-color: $muted-white;
   color: $muted;
-  text-transform: uppercase;
+}
+
+.companies--filter-input:focus::-webkit-input-placeholder
+{
+    color: transparent;
 }

@@ -9,6 +9,7 @@ class Company < ActiveRecord::Base
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
   scope :undecided, -> { where(decision_at: nil) }
+  scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
   def deadline
     super || pitch_on + 2.days if pitch_on.present?
@@ -64,10 +65,6 @@ class Company < ActiveRecord::Base
 
     trello_card.name = name
     trello_card.save
-  end
-
-  def self.search(term)
-    where('name ILIKE ?', "%#{term}%")
   end
 
   def self.sync!(disable_notifications: false)
