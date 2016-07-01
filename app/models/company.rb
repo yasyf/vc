@@ -81,11 +81,11 @@ class Company < ActiveRecord::Base
     end
   end
 
-  private
-
   def user_votes(user)
     votes.where(user: user).order(created_at: :desc)
   end
+
+  private
 
   def trello_card
     @trello_card ||= Trello::Card.find trello_id
