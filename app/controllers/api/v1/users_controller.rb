@@ -1,10 +1,14 @@
 module Api
   module V1
-    class UsersController < ApplicationController
-      before_action :authenticate_user!
+    class UsersController < ApiV1Controller
+      before_action :authenticate_api_user!
 
       def show
         render json: current_user
+      end
+
+      def token
+        render json: { token: current_user.ensure_token }
       end
 
       def toggle_active

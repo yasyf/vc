@@ -79,13 +79,19 @@ class User < ActiveRecord::Base
     slack_or_block :title
   end
 
+  def ensure_token
+    authentication_token || Devise.friendly_token.tap do |token|
+      update! authentication_token: token
+    end
+  end
+
   def self.from_omniauth(auth)
-    from_username_domain *auth.info['email'].split('@')
+    from_email auth.info['email']
   end
 
   def self.from_slack(slack_id)
     user = slack_client_factory.users_info(user: slack_id).user
-    from_username_domain *user.profile.email.split('@')
+    from_email user.profile.email
   rescue Slack::Web::Api::Error
     nil
   end
@@ -93,9 +99,13 @@ class User < ActiveRecord::Base
   def self.from_trello(trello_id)
     user = Trello::Member.find trello_id
     return nil unless user.email.present?
-    from_username_domain *user.email.split('@')
+    from_email user.email
   rescue Trello::Error
     nil
+  end
+
+  def self.from_email(email)
+    from_username_domain *email.split('@')
   end
 
   def self.from_username_domain(username, domain)

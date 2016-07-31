@@ -11,7 +11,13 @@ Rails.application.routes.draw do
   end
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
+      resources :companies, only: [:index, :show] do
+        collection do
+          get 'search'
+        end
+      end
       resource :user, only: :show do
+        get 'token'
         post 'toggle_active'
       end
     end
