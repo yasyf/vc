@@ -8,6 +8,7 @@ class Company < ActiveRecord::Base
   validates :trello_id, presence: true, uniqueness: true
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
+  scope :decided, -> { where.not(decision_at: nil) }
   scope :undecided, -> { where(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
@@ -102,7 +103,10 @@ class Company < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super options.reverse_merge(methods: :trello_url)
+    super options.reverse_merge(
+      methods: :trello_url,
+      only: [:id, :name, :trello_id]
+    )
   end
 
   private
