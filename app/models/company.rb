@@ -101,6 +101,10 @@ class Company < ActiveRecord::Base
     trello_card.save
   end
 
+  def as_json(options = {})
+    super options.reverse_merge(methods: :trello_url)
+  end
+
   private
 
   def trello_card
