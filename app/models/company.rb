@@ -9,6 +9,7 @@ class Company < ActiveRecord::Base
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
   scope :undecided, -> { where(decision_at: nil) }
+  scope :decided, -> { where.not(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
   def deadline
@@ -43,6 +44,15 @@ class Company < ActiveRecord::Base
         required_votes: User.quorum(pitch_on),
         averages: Vote.metrics(votes.final)
       }.with_indifferent_access
+    end
+  end
+
+  def features
+    cached do
+      {
+        funded: funded?,
+      }.merge Vote.metrics(votes.pre)
+       .with_indifferent_access
     end
   end
 

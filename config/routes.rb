@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   end
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
+      resources :companies, only: [:index]
       resource :user, only: :show do
         post 'toggle_active'
       end

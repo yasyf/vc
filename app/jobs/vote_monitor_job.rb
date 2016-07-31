@@ -7,8 +7,8 @@ class VoteMonitorJob < ActiveJob::Base
     pending = Company.where('pitch_on < ?', Time.now - 1.day).where(decision_at: nil)
     pending.each do |company|
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
-      missing_users = company.votes.where(final: false).map(&:user) - company.votes.final.map(&:user)
-      missing_votes = company.votes.where(final: false).where(user: missing_users)
+      missing_users = company.votes.pre.map(&:user) - company.votes.final.map(&:user)
+      missing_votes = company.votes.pre.where(user: missing_users)
       if missing_users.count == 0
         company.update! decision_at: Time.now
         company.notify_team!

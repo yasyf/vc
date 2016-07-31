@@ -22,6 +22,7 @@ class Vote < ActiveRecord::Base
   end
 
   scope :final, -> { where(final: true) }
+  scope :pre, -> { where(final: false) }
   scope :valid, Proc.new { |since| final.joins(:user).merge User.active(since) }
   scope :yes, -> { final.where('overall > ?', 3) }
   scope :no, -> { final.where('overall < ?', 3) }
