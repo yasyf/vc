@@ -86,6 +86,10 @@ class Company < ActiveRecord::Base
     votes.where(user: user).order(created_at: :desc)
   end
 
+  def trello_url
+    "https://trello.com/c/#{trello_id}"
+  end
+
   private
 
   def trello_card

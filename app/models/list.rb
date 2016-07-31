@@ -1,4 +1,6 @@
 class List < ActiveRecord::Base
+  has_many :companies
+
   validates :trello_id, presence: true, uniqueness:true
   validates :name, presence: true
   validates :pos, presence: true, uniqueness: true

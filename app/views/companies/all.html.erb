@@ -12,7 +12,7 @@
     </div>
     <div class="list-group">
       <% companies.each do |company| %>
-        <a class="list-group-item companies--item" href="https://trello.com/c/<%= company.trello_id %>" target="_blank">
+        <a class="list-group-item companies--item" href="<%= company.trello_url %>" target="_blank">
           <div class="list-group-item-heading companies--list-group-item-heading">
             <p class="companies--large-heading text-<%= company_class(company) %>">
               <%= company.name %>
