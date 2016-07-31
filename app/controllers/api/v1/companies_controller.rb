@@ -19,6 +19,8 @@ module Api
         company = Company.find(params[:id])
         user = User.from_slack(params[:user_trello_id])
 
+        return head :bad_request unless company.list == List.application
+
         company.add_user user
         company.move_to_list! List.allocated
 
