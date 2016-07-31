@@ -1,6 +1,8 @@
 module Api
   module V1
     class ApiV1Controller < ApplicationController
+      protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
+
       private
 
       def authenticate_api_user!

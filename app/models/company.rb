@@ -58,10 +58,16 @@ class Company < ActiveRecord::Base
     VoteMailer.email_and_slack!(:vote_warning_team_email, nil, missing_users, self, time_remaining.to_i)
   end
 
+  def move_to_list!(list)
+    trello_card.move_to_list list.trello_id
+    trello_card.save
+
+    update! list: list
+  end
+
   def move_to_post_pitch_list!
     list = funded? ? List.funded : List.passed
-    trello_card.move_to_list list.trello_id
-    update! list: list
+    move_to_list! list
 
     trello_card.name = name
     trello_card.save
@@ -88,6 +94,11 @@ class Company < ActiveRecord::Base
 
   def trello_url
     "https://trello.com/c/#{trello_id}"
+  end
+
+  def add_user(user)
+    trello_card.add_member user.trello_user
+    trello_card.save
   end
 
   private

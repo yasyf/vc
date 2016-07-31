@@ -14,6 +14,16 @@ module Api
       def search
         render json: { results: Company.search(params[:q]) }
       end
+
+      def allocate
+        company = Company.find(params[:id])
+        user = User.from_slack(params[:user_trello_id])
+
+        company.add_user user
+        company.move_to_list! List.allocated
+
+        head :ok
+      end
     end
   end
 end

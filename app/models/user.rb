@@ -113,6 +113,14 @@ class User < ActiveRecord::Base
     where(username: username).first_or_create!
   end
 
+  def trello_user
+    @trello_user ||= begin
+      Trello::Member.find email
+    rescue Trello::Error
+      nil
+    end
+  end
+
   private
 
   def slack_or_block(property)
@@ -128,14 +136,6 @@ class User < ActiveRecord::Base
 
   def slack_id
     cached { slack_user.id }
-  end
-
-  def trello_user
-    @trello_user ||= begin
-      Trello::Member.find email
-    rescue Trello::Error
-      nil
-    end
   end
 
   def slack_user
