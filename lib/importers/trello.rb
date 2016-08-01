@@ -19,7 +19,12 @@ module Importers
     end
 
     def parse(card)
-      parsed = { trello_id: card.id, name: card.name, trello_list_id: card.list_id }
+      parsed = {
+        trello_id: card.id,
+        name: card.name,
+        trello_list_id: card.list_id,
+        members: card.members
+      }
       begin
         parsed.merge! parse_pitch_on(card) if card.list_id == List.pitched.trello_id
       rescue DateTimeNotFound => dtnf
@@ -40,7 +45,7 @@ module Importers
     def split_name(card)
       raise DateTimeNotFound, card.name unless card.name.include?(SEPARATOR)
       *nameparts, datestring = card.name.split(SEPARATOR)
-      name = nameparts.join(SEPARATOR).strip
+      name = nameparts.join(SEPARATOR).split(/[\(\[]/).first.strip
       [name, datestring]
     end
   end

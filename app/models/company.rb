@@ -3,6 +3,7 @@ class Company < ActiveRecord::Base
 
   has_many :votes
   belongs_to :list
+  has_and_belongs_to_many :users
 
   validates :name, presence: true
   validates :trello_id, presence: true, uniqueness: true
@@ -48,7 +49,11 @@ class Company < ActiveRecord::Base
   end
 
   def partner_initials
-    cached { trello_card.members.map(&:initials).compact }
+    cached { users.map(&:initials) }
+  end
+
+  def partner_names
+    cached { users.map(&:name) }
   end
 
   def notify_team!
@@ -76,7 +81,20 @@ class Company < ActiveRecord::Base
 
   def self.sync!(disable_notifications: false)
     Importers::Trello.new.sync! do |card_data|
+      users = card_data.delete(:members).map do |member|
+        if member.email.present?
+          User.from_email member.email
+        else
+          User.where(cached_name: member.full_name).first
+        end.tap do |user|
+          if user.present?
+            user.trello_id = member.id
+            user.save! if user.changed?
+          end
+        end
+      end.compact
       list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
+
       company = Company.where(trello_id: card_data[:trello_id]).first_or_create
       company.assign_attributes card_data
       company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
@@ -85,6 +103,7 @@ class Company < ActiveRecord::Base
           notify: 0, data: { from: company.list.trello_id, to: list.trello_id }
       end
       company.list = list
+      company.users = users
       company.save! if company.changed?
     end
   end

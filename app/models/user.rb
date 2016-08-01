@@ -5,8 +5,15 @@ class User < ActiveRecord::Base
   QUORUM_PERCENTAGE = 0.6
 
   has_many :votes
+  has_and_belongs_to_many :companies
 
   validates :username, presence: true, uniqueness: true
+  validates :cached_name, presence: true, uniqueness: true
+  validates :slack_id, uniqueness: { allow_nil: true }
+  validates :trello_id, uniqueness: { allow_nil: true }
+
+  before_create :set_slack_id
+  before_create :set_cached_name
 
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
@@ -63,7 +70,7 @@ class User < ActiveRecord::Base
 
   def name
     slack_or_block :real_name do
-      trello_user.try(:full_name).present? ? trello_user.full_name : slack_name
+      trello_user.try(:full_name).present? ? trello_user.full_name : cached_name
     end
   end
 
@@ -73,6 +80,10 @@ class User < ActiveRecord::Base
 
   def last_name
     slack_or_block(:last_name) { name.split(' ').drop(1).join(' ') }
+  end
+
+  def initials
+    cached { trello_user.try(:initials) || "#{first_name.first}#{last_name.first}" }
   end
 
   def title
@@ -90,6 +101,9 @@ class User < ActiveRecord::Base
   end
 
   def self.from_slack(slack_id)
+    user = where(slack_id: slack_id).first
+    return user if user.present?
+
     user = slack_client_factory.users_info(user: slack_id).user
     from_email user.profile.email
   rescue Slack::Web::Api::Error
@@ -97,6 +111,9 @@ class User < ActiveRecord::Base
   end
 
   def self.from_trello(trello_id)
+    user = where(trello_id: trello_id).first
+    return user if user.present?
+
     user = Trello::Member.find trello_id
     return nil unless user.email.present?
     from_email user.email
@@ -113,15 +130,35 @@ class User < ActiveRecord::Base
     where(username: username).first_or_create!
   end
 
+  def self.from_multi(multi)
+    Array.wrap(multi).map do |item|
+      item if item.is_a?(User)
+      find(item) if item.is_a?(Integer)
+      where(username: item).first if item.is_a?(String)
+    end.compact
+  end
+
   def trello_user
     @trello_user ||= begin
-      Trello::Member.find email
+      Trello::Member.find(trello_id || email)
     rescue Trello::Error
       nil
     end
   end
 
   private
+
+  def set_cached_name
+    self.cached_name = name
+  end
+
+  def set_slack_id
+    self.slack_id ||= begin
+      members = slack_client.users_search(user: email).members
+      members = slack_client.users_search(user: username).members unless members.present?
+      members.first
+    end.try(:id)
+  end
 
   def slack_or_block(property)
     key_cached [property] do
@@ -134,16 +171,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def slack_id
-    cached { slack_user.id }
-  end
-
   def slack_user
-    @slack_user ||= begin
-      members = slack_client.users_search(user: email).members
-      members = slack_client.users_search(user: username).members unless members.present?
-      members.first
-    end
+    @slack_user ||= slack_client.users_info(user: slack_id).user
   end
 
   def agreed

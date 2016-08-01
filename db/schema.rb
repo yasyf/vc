@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160731015127) do
+ActiveRecord::Schema.define(version: 20160801014311) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 20160731015127) do
     t.index ["list_id"], name: "index_companies_on_list_id", using: :btree
     t.index ["name"], name: "index_companies_on_name", using: :btree
     t.index ["trello_id"], name: "index_companies_on_trello_id", using: :btree
+  end
+
+  create_table "companies_users", id: false, force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.integer "user_id",    null: false
+    t.index ["company_id", "user_id"], name: "index_companies_users_on_company_id_and_user_id", using: :btree
+    t.index ["user_id", "company_id"], name: "index_companies_users_on_user_id_and_company_id", using: :btree
   end
 
   create_table "knowledges", force: :cascade do |t|
@@ -63,6 +70,9 @@ ActiveRecord::Schema.define(version: 20160731015127) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.string   "authentication_token"
+    t.string   "cached_name",          null: false
+    t.string   "trello_id"
+    t.string   "slack_id"
     t.index ["username"], name: "index_users_on_username", using: :btree
   end
 
