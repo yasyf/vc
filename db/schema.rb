@@ -10,20 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160801014943) do
+ActiveRecord::Schema.define(version: 20160801040510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "companies", force: :cascade do |t|
-    t.string   "name",        null: false
-    t.string   "trello_id",   null: false
+    t.string   "name",                            null: false
+    t.string   "trello_id",                       null: false
     t.date     "pitch_on"
     t.datetime "decision_at"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.date     "deadline"
     t.integer  "list_id"
+    t.boolean  "override_quorum", default: false, null: false
     t.index ["list_id"], name: "index_companies_on_list_id", using: :btree
     t.index ["name"], name: "index_companies_on_name", using: :btree
     t.index ["trello_id"], name: "index_companies_on_trello_id", using: :btree

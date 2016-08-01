@@ -6,6 +6,7 @@ class Company < ActiveRecord::Base
   has_and_belongs_to_many :users
 
   validates :name, presence: true
+  validates :override_quorum, presence: true
   validates :trello_id, presence: true, uniqueness: true
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
@@ -26,7 +27,7 @@ class Company < ActiveRecord::Base
   end
 
   def quorum?
-    cached { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
+    override_quorum? || cached { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
   end
 
   def funded?

@@ -35,6 +35,7 @@ module Importers
         end
         company.decision_at = [company.decision_at, date].compact.max
         company.pitch_on = [company.pitch_on, date.to_date].compact.min
+        company.override_quorum = true
         company.save! if company.changed?
 
         username = parsed[:email].split('@').first
