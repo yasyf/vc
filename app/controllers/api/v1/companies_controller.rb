@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_api_user!
 
       def index
-        render json: { companies: Company.decided }
+        render json: { companies: Company.all }
       end
 
       def show

@@ -30,7 +30,7 @@ class Company < ActiveRecord::Base
   end
 
   def funded?
-    cached { quorum? && votes.yes.count > votes.no.count }
+    cached { quorum? && yes_votes > no_votes }
   end
 
   def vote_for_user(user)
@@ -40,8 +40,8 @@ class Company < ActiveRecord::Base
   def stats
     cached do
       {
-        yes_votes: votes.yes.count,
-        no_votes: votes.no.count,
+        yes_votes: yes_votes,
+        no_votes: no_votes,
         required_votes: User.quorum(pitch_on),
         averages: Vote.metrics(votes.final)
       }.with_indifferent_access
@@ -50,10 +50,6 @@ class Company < ActiveRecord::Base
 
   def partner_initials
     cached { users.map(&:initials) }
-  end
-
-  def partner_names
-    cached { users.map(&:name) }
   end
 
   def notify_team!
@@ -122,13 +118,28 @@ class Company < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super options.reverse_merge(
-      methods: :trello_url,
+    options.reverse_merge!(
+      methods: [:trello_url, :stats],
       only: [:id, :name, :trello_id]
+    )
+    super(options).merge(
+      pitch_on: pitch_on&.to_time&.to_i,
+      funded: funded?,
+      past_deadline: past_deadline?,
+      pitched: pitched?,
+      partners: users.map { |user| { name: user.name, slack_id: user.slack_id }  }
     )
   end
 
   private
+
+  def yes_votes
+    votes.yes.count
+  end
+
+  def no_votes
+    votes.no.count
+  end
 
   def trello_card
     @trello_card ||= Trello::Card.find trello_id

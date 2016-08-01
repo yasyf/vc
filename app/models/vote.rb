@@ -39,7 +39,7 @@ class Vote < ActiveRecord::Base
   end
 
   def self.metrics(votes, method: :average)
-    METRICS.map { |metric| [metric, votes.public_send(method, metric) || 0.0] }.to_h
+    METRICS.map { |metric| [metric, votes.public_send(method, metric).to_f || 0.0] }.to_h
   end
 
   def skip_eligibility!
