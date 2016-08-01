@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :companies
 
   validates :username, presence: true, uniqueness: true
-  validates :cached_name, uniqueness: true
+  validates :cached_name, presence: true, uniqueness: true
   validates :slack_id, uniqueness: { allow_nil: true }
   validates :trello_id, uniqueness: { allow_nil: true }
 
