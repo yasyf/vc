@@ -149,7 +149,7 @@ class User < ActiveRecord::Base
   private
 
   def set_cached_name
-    self.cached_name = name
+    self.cached_name ||= name || username
   end
 
   def set_slack_id
