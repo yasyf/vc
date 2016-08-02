@@ -43,6 +43,7 @@ gem 'twitter-bootstrap-rails'
 gem 'workers'
 gem 'nokogiri'
 gem 'premailer-rails'
+gem 'httparty'
 
 group :production do
   gem 'rails_12factor'

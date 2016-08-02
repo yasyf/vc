@@ -21,7 +21,7 @@ module Importers
     def parse(card)
       parsed = {
         trello_id: card.id,
-        name: card.name,
+        name: clean_name(card.name),
         trello_list_id: card.list_id,
         members: card.members
       }
@@ -39,14 +39,17 @@ module Importers
       raise DateTimeNotFound, name unless index.present?
       date = Chronic.parse(datestring[index..-1], context: :past)
       raise DateTimeNotFound, name unless date.present?
-      { pitch_on: date, name: name }
+      { pitch_on: date, name: clean_name(name) }
+    end
+
+    def clean_name(name)
+      name.split(/[\(\[]/).first.strip
     end
 
     def split_name(card)
       raise DateTimeNotFound, card.name unless card.name.include?(SEPARATOR)
       *nameparts, datestring = card.name.split(SEPARATOR)
-      name = nameparts.join(SEPARATOR).split(/[\(\[]/).first.strip
-      [name, datestring]
+      [nameparts.join(SEPARATOR), datestring]
     end
   end
 end

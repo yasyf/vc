@@ -6,13 +6,14 @@ class Company < ActiveRecord::Base
   has_and_belongs_to_many :users
 
   validates :name, presence: true
-  validates :override_quorum, presence: true
   validates :trello_id, presence: true, uniqueness: true
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
   scope :decided, -> { where.not(decision_at: nil) }
   scope :undecided, -> { where(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
+
+  after_create :add_to_wit
 
   def deadline
     super || pitch_on + 2.days if pitch_on.present?
@@ -133,6 +134,10 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def add_to_wit
+    Http::Wit::Entity.new('company').add_value name
+  end
 
   def yes_votes
     votes.yes.count
