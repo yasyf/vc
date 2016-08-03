@@ -44,6 +44,8 @@ gem 'workers'
 gem 'nokogiri'
 gem 'premailer-rails'
 gem 'httparty'
+gem 'googleauth'
+gem 'google-api-client'
 
 group :production do
   gem 'rails_12factor'

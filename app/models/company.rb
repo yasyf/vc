@@ -13,6 +13,7 @@ class Company < ActiveRecord::Base
   scope :undecided, -> { where(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
+  before_create :set_snapshot_link
   after_create :add_to_wit
 
   def deadline
@@ -122,7 +123,7 @@ class Company < ActiveRecord::Base
   def as_json(options = {})
     options.reverse_merge!(
       methods: [:trello_url, :stats],
-      only: [:id, :name, :trello_id]
+      only: [:id, :name, :trello_id, :snapshot_link]
     )
     super(options).merge(
       pitch_on: pitch_on&.to_time&.to_i,
@@ -134,6 +135,10 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def set_snapshot_link
+    self.snapshot_link ||= GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
+  end
 
   def add_to_wit
     Http::Wit::Entity.new('company').add_value name
