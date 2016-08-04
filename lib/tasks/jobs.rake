@@ -1,16 +1,14 @@
 namespace :jobs do
-  desc "Run VoteMonitorJob"
-  task vote_monitor: :environment do
-    VoteMonitorJob.perform_now
-  end
-
-  desc "Run CacheWarmJob"
-  task cache_warm: :environment do
-    CacheWarmJob.perform_now
-  end
-
-  desc "Run ApplicationMonitorJob"
-  task application_monitor: :environment do
-    ApplicationMonitorJob.perform_now
+  [
+    'VoteMonitorJob',
+    'CacheWarmJob',
+    'ApplicationMonitorJob',
+    'CardMonitorJob',
+  ].each do |klass|
+    name = klass.sub('Job', '').underscore
+    desc "Run #{klass}"
+    task name => :environment do
+      klass.constantize.perform_now
+    end
   end
 end

@@ -5,10 +5,18 @@ class List < ActiveRecord::Base
   validates :name, presence: true
   validates :pos, presence: true, uniqueness: true
 
-  %w(application allocated pitched funded passed).each do |list_type|
+  %w(application allocated scheduled pitched funded passed ice_box).each do |list_type|
     define_singleton_method(list_type) do
-      where(name: ENV["TRELLO_#{list_type.upcase}_LIST"]).first!
+      if (result = instance_variable_get("@#{list_type}")).nil?
+        result = where(name: ENV["TRELLO_#{list_type.upcase}_LIST"]).first!
+        instance_variable_set "@#{list_type}", result
+      end
+      result
     end
+  end
+
+  def self.funnel
+    where('pos > ?', ice_box.pos).where('pos < ?', scheduled.pos).or(where('id = ?', allocated.id))
   end
 
   def self.sync!
