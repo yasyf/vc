@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
 
   before_create :set_slack_id
   before_create :set_cached_name
+  after_create :add_to_wit
 
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
@@ -147,6 +148,10 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  def add_to_wit
+    Http::Wit::Entity.new('slack_user').add_value("<@#{slack_id}>") if slack_id.present?
+  end
 
   def set_cached_name
     self.cached_name ||= name || username
