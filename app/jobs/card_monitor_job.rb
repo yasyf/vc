@@ -5,10 +5,11 @@ class CardMonitorJob < ActiveJob::Base
 
   def perform
     companies = Company.where(list: List.funnel).map do |company|
-      move_event = LoggedEvent.for(company, :company_list_changed).order(created_at: :desc).first
-      if move_event && move_event.created_at < 1.week.ago
+      move_event = LoggedEvent.for(company, :company_list_changed)
+      if move_event && move_event.updated_at < 1.week.ago
+        move_event.touch
         users = company.users.map { |user| "<@#{user.slack_id}>" }.join(', ')
-        "#{users}: <#{company.trello_url}|#{company.name}> (#{company.list.name}, #{move_event.created_at.to_date.to_s(:short)})"
+        "#{users}: <#{company.trello_url}|#{company.name}> (#{company.list.name}, #{move_event.updated_at.to_date.to_s(:long)})"
       end
     end.compact.join("\n")
 

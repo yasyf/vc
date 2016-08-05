@@ -4,7 +4,7 @@ class LoggedEvent < ActiveRecord::Base
   validates :count, presence: true
 
   def self.for(record, reason)
-    where(record_id: record.id, reason: reason)
+    where(record_id: record.id, reason: reason).first
   end
 
   def self.log!(reason, record, *args, notify: 1, to: nil, data: nil)
