@@ -43,7 +43,7 @@ module Importers
     end
 
     def clean_name(name)
-      name.split(/[\(\[]/).first.strip
+      name.split(/[\(\[\-]/).first.strip
     end
 
     def split_name(card)
