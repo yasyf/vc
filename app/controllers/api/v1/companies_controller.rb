@@ -17,7 +17,7 @@ module Api
 
       def allocate
         company = Company.find(params[:id])
-        user = User.from_slack(params[:user_trello_id])
+        user = User.from_slack(params[:user_slack_id])
 
         return head :bad_request unless company.list == List.application
 
