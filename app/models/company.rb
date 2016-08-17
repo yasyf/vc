@@ -99,7 +99,7 @@ class Company < ActiveRecord::Base
       company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
       if company.list.present? && company.list != list
         LoggedEvent.log! :company_list_changed, company,
-          notify: 0, data: { from: company.list.trello_id, to: list.trello_id }
+          notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
       end
       company.list = list
       company.users = users
