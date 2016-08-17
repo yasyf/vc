@@ -1,6 +1,6 @@
 module Importers
   class Trello
-    SEPARATOR = '-'
+    SEPARATOR = ' - '
 
     def sync!
       ::Trello::Board.find(ENV['TRELLO_BOARD']).cards.each do |card|
@@ -43,7 +43,7 @@ module Importers
     end
 
     def clean_name(name)
-      name.split(/[\(\[\-]/).first.strip
+      name.split(/\s[\(\[\-]/).first.strip
     end
 
     def split_name(card)
