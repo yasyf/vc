@@ -1,5 +1,6 @@
 class Company < ActiveRecord::Base
   include Concerns::Cacheable
+  include ActionView::Helpers::NumberHelper
 
   has_many :votes
   belongs_to :list
@@ -120,7 +121,8 @@ class Company < ActiveRecord::Base
   end
 
   def capital_raised
-    funded? ? 20_000 : 0
+    amount = funded? ? 20_000 : 0
+    number_to_human(amount, locale: :money)
   end
 
   def add_user(user)
