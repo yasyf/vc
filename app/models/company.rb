@@ -115,6 +115,14 @@ class Company < ActiveRecord::Base
     "https://trello.com/c/#{trello_id}"
   end
 
+  def rdv_funded?
+    cached { Http::Rdv.new.invested? name }
+  end
+
+  def capital_raised
+    funded? ? 20_000 : 0
+  end
+
   def add_user(user)
     trello_card.add_member user.trello_user
     trello_card.save
@@ -122,12 +130,13 @@ class Company < ActiveRecord::Base
 
   def as_json(options = {})
     options.reverse_merge!(
-      methods: [:trello_url, :stats],
+      methods: [:trello_url, :stats, :capital_raised],
       only: [:id, :name, :trello_id, :snapshot_link]
     )
     super(options).merge(
       pitch_on: pitch_on&.to_time&.to_i,
       funded: funded?,
+      rdv_funded: rdv_funded?,
       past_deadline: past_deadline?,
       pitched: pitched?,
       partners: users.map { |user| { name: user.name, slack_id: user.slack_id }  }

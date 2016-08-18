@@ -15,6 +15,17 @@
   </div>
   <div class="list-group">
     <a class="list-group-item companies--item" href="#">
+      <div class="row">
+        <div class="col-sm-6">
+          <%= render partial: 'shared/stat', locals: {name: 'RDV Funded', value: @company.rdv_funded?} %>
+        </div>
+        <div class="col-sm-6">
+          <%= render partial: 'shared/stat',
+            locals: {name: 'Raised', value: number_to_human(@company.capital_raised, locale: 'money')} %>
+        </div>
+      </div>
+    </a>
+    <a class="list-group-item companies--item" href="#">
       <%= render partial: 'shared/stats', locals: {vote: @vote, stats: @company.stats} %>
     </a>
     <% @company.votes.final.each do |vote| %>
