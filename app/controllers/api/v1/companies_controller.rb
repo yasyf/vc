@@ -26,6 +26,14 @@ module Api
 
         head :ok
       end
+
+      def reject
+        company = Company.find(params[:id])
+        return head :bad_request if company.list.in?([List.rejected, List.passed, List.scheduled, List.funded])
+        company.move_to_rejected_list!
+
+        head :ok
+      end
     end
   end
 end

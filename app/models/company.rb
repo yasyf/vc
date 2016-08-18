@@ -71,6 +71,11 @@ class Company < ActiveRecord::Base
     update! list: list
   end
 
+  def move_to_rejected_list!
+    list = pitched? ? List.passed : List.rejected
+    move_to_list! list
+  end
+
   def move_to_post_pitch_list!
     list = funded? ? List.funded : List.passed
     move_to_list! list

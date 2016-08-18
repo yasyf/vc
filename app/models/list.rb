@@ -5,7 +5,7 @@ class List < ActiveRecord::Base
   validates :name, presence: true
   validates :pos, presence: true, uniqueness: true
 
-  %w(application allocated scheduled pitched funded passed ice_box).each do |list_type|
+  %w(application allocated rejected scheduled pitched funded passed ice_box).each do |list_type|
     define_singleton_method(list_type) do
       if (result = instance_variable_get("@#{list_type}")).nil?
         result = where(name: ENV["TRELLO_#{list_type.upcase}_LIST"]).first!

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :companies, only: [:index, :show] do
         member do
           post 'allocate'
+          post 'reject'
         end
         collection do
           get 'search'
