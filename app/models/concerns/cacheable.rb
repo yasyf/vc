@@ -4,6 +4,12 @@ module Concerns
 
     private
 
+    %w(hour day week month year).each do |period|
+      define_method("cache_for_a_#{period}") do |options = {}, &block|
+        cached(options.merge({ expires_in: jitter(1, period) }), &block)
+      end
+    end
+
     def cached(options = {}, &block)
       cache_fetch base_cache_key, options, &block
     end
@@ -26,7 +32,8 @@ module Concerns
     end
 
     def base_cache_key
-      "#{cache_key}/#{caller_locations(2,1).first.label}"
+      location = caller_locations.find { |loc| !loc.to_s.include?(__FILE__) }
+      "#{cache_key}/#{location.label}"
     end
   end
 end

@@ -41,11 +41,11 @@ class Company < ActiveRecord::Base
   end
 
   def quorum?
-    override_quorum? || cached { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
+    override_quorum? || cache_for_a_hour { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
   end
 
   def funded?
-    cached { quorum? && yes_votes > no_votes }
+    cache_for_a_hour { quorum? && yes_votes > no_votes }
   end
 
   def vote_for_user(user)
@@ -133,15 +133,15 @@ class Company < ActiveRecord::Base
   end
 
   def description
-    cached { crunchbase_org.description }
+    cache_for_a_hour { crunchbase_org.description }
   end
 
   def rdv_funded?
-    cached { crunchbase_org.has_investor?('Rough Draft Ventures') || Http::Rdv.new.invested?(name) }
+    cache_for_a_hour { crunchbase_org.has_investor?('Rough Draft Ventures') || Http::Rdv.new.invested?(name) }
   end
 
   def capital_raised
-    amount = cached { [crunchbase_org.total_funding || 0, funded? ? 20_000 : 0].max }
+    amount = cache_for_a_hour { [crunchbase_org.total_funding || 0, funded? ? 20_000 : 0].max }
     number_to_human(amount, locale: :money)
   end
 
