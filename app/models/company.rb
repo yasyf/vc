@@ -172,7 +172,7 @@ class Company < ActiveRecord::Base
   end
 
   def set_crunchbase_id
-    org = crunchbase_org(nil)
+    org = crunchbase_org(5)
     self.crunchbase_id ||= org.permalink
     self.domain ||= org.url
   end
@@ -189,7 +189,7 @@ class Company < ActiveRecord::Base
     votes.no.count
   end
 
-  def crunchbase_org(timeout = 1)
+  def crunchbase_org(timeout = 0.3)
     @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
   end
 
