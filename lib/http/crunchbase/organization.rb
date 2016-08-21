@@ -46,6 +46,8 @@ module Http::Crunchbase
       current = search
       current = current[path.shift] while path.present?
       multi ? current['items'] : current
+    rescue JSON::ParserError # when we hit rate limiting
+      multi ? [] : nil
     end
 
     def found?
