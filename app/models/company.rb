@@ -120,6 +120,8 @@ class Company < ActiveRecord::Base
       end
       company.list = list
       company.users = users
+      company.set_snapshot_link
+      company.set_crunchbase_id
       company.save! if company.changed?
     end
   end
