@@ -9,14 +9,15 @@ module Concerns
     end
 
     def key_cached(key_hash, options = {}, &block)
-      cache_fetch "#{base_cache_key}/#{key_hash.sort.to_param}", options, &block
+      key = "#{base_cache_key}/#{key_hash.sort.to_param.gsub('/', '%2F')}"
+      cache_fetch key, options, &block
     end
 
     def cache_fetch(key, options, &block)
-      Rails.cache.fetch(key, options.reverse_merge(base_options), &block)
+      Rails.cache.fetch(key, options.reverse_merge(cache_options), &block)
     end
 
-    def base_options
+    def cache_options
       { expires_in: jitter(1, :week) }
     end
 

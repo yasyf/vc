@@ -172,8 +172,9 @@ class Company < ActiveRecord::Base
   end
 
   def set_crunchbase_id
-    self.crunchbase_id ||= crunchbase_org.permalink
-    self.domain ||= crunchbase_org.url
+    org = crunchbase_org(nil)
+    self.crunchbase_id ||= org.permalink
+    self.domain ||= org.url
   end
 
   def add_to_wit
@@ -188,8 +189,8 @@ class Company < ActiveRecord::Base
     votes.no.count
   end
 
-  def crunchbase_org
-    @crunchbase_org ||= Http::Crunchbase::Organization.new(self)
+  def crunchbase_org(timeout = 1)
+    @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
   end
 
   def trello_card

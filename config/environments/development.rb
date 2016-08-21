@@ -13,10 +13,10 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join('tmp/caching-dev.txt').exist?
+  if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
 
-    config.cache_store = :memory_store
+    config.cache_store = :file_store, Rails.root.join('tmp', 'cache')
     config.public_file_server.headers = {
       'Cache-Control' => 'public, max-age=172800'
     }

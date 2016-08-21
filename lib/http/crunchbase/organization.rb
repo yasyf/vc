@@ -1,13 +1,16 @@
 module Http::Crunchbase
   class Organization
+    extend Concerns::Cacheable
+
     include HTTParty
     base_uri 'https://api.crunchbase.com/v/3/organizations'
     format :json
     headers 'Content-Type': 'application/json'
     default_params user_key: ENV['CB_API_KEY']
 
-    def initialize(company)
+    def initialize(company, timeout = nil)
       @company = company
+      @timeout = timeout
     end
 
     def permalink
@@ -37,16 +40,30 @@ module Http::Crunchbase
     private
 
     def self.api_get(path, query = {}, multi = true)
-      data = get(path, query: query).parsed_response['data']
+      data = key_cached(query.merge(path: path)) do
+        get(path, query: query).parsed_response['data']
+      end
       multi ? data['items'] : data
     end
 
-    def get_in(*path, multi: false)
+    def self.base_cache_key
+      "http/crunchbase/organizations"
+    end
+
+    def get_in_raw(path, multi)
       return nil unless found?
       current = search
       current = current[path.shift] while path.present?
       multi ? current['items'] : current
-    rescue JSON::ParserError # when we hit rate limiting
+    end
+
+    def get_in(*path, multi: false)
+      if @timeout.present?
+        Timeout::timeout(@timeout) { get_in_raw(path, multi) }
+      else
+        get_in_raw(path, multi)
+      end
+    rescue Timeout::Error, JSON::ParserError # when we hit rate limiting
       multi ? [] : nil
     end
 
@@ -69,8 +86,10 @@ module Http::Crunchbase
       if @company.crunchbase_id.present?
         return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
       end
-      data = self.class.api_get("/", domain_name: @company.domain).first
-      return data if data.present?
+      if @company.domain.present?
+        data = self.class.api_get("/", domain_name: @company.domain).first
+        return data if data.present?
+      end
       by_name = self.class.api_get("/", name: @company.name)
       by_name.find do |company_data|
         investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
