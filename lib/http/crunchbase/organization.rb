@@ -91,6 +91,7 @@ module Http::Crunchbase
         return data if data.present?
       end
       by_name = self.class.api_get("/", name: @company.name)
+      return by_name.first if by_name.size == 1
       by_name.find do |company_data|
         investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
         investors&.find { |inv| inv['properties']['name'] == 'Dorm Room Fund' }.present?
