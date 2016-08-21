@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803030126) do
+ActiveRecord::Schema.define(version: 20160821130511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 20160803030126) do
     t.integer  "list_id"
     t.boolean  "override_quorum", default: false, null: false
     t.string   "snapshot_link"
+    t.string   "domain"
+    t.string   "crunchbase_id"
     t.index ["list_id"], name: "index_companies_on_list_id", using: :btree
     t.index ["name"], name: "index_companies_on_name", using: :btree
     t.index ["trello_id"], name: "index_companies_on_trello_id", using: :btree

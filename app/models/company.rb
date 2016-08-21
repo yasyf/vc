@@ -8,6 +8,8 @@ class Company < ActiveRecord::Base
 
   validates :name, presence: true
   validates :trello_id, presence: true, uniqueness: true
+  validates :domain, uniqueness: { allow_nil: true }
+  validates :crunchbase_id, uniqueness: { allow_nil: true }
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
   scope :decided, -> { where.not(decision_at: nil) }
@@ -15,7 +17,16 @@ class Company < ActiveRecord::Base
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
   before_create :set_snapshot_link
+  before_create :set_crunchbase_id
   after_create :add_to_wit
+
+  def domain=(domain)
+    super begin
+      URI.parse(domain).host
+    rescue URI::InvalidURIError
+      domain
+    end
+  end
 
   def deadline
     super || pitch_on + 2.days if pitch_on.present?
@@ -121,12 +132,16 @@ class Company < ActiveRecord::Base
     "https://trello.com/c/#{trello_id}"
   end
 
+  def description
+    cached { crunchbase_org.description }
+  end
+
   def rdv_funded?
-    cached { Http::Rdv.new.invested? name }
+    cached { crunchbase_org.has_investor?('Rough Draft Ventures') || Http::Rdv.new.invested?(name) }
   end
 
   def capital_raised
-    amount = funded? ? 20_000 : 0
+    amount = cached { [crunchbase_org.total_funding || 0, funded? ? 20_000 : 0].max }
     number_to_human(amount, locale: :money)
   end
 
@@ -137,8 +152,8 @@ class Company < ActiveRecord::Base
 
   def as_json(options = {})
     options.reverse_merge!(
-      methods: [:trello_url, :stats, :capital_raised],
-      only: [:id, :name, :trello_id, :snapshot_link]
+      methods: [:trello_url, :stats, :capital_raised, :description],
+      only: [:id, :name, :trello_id, :snapshot_link, :domain]
     )
     super(options).merge(
       pitch_on: pitch_on&.to_time&.to_i,
@@ -156,6 +171,11 @@ class Company < ActiveRecord::Base
     self.snapshot_link ||= GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
   end
 
+  def set_crunchbase_id
+    self.crunchbase_id ||= crunchbase_org.permalink
+    self.domain ||= crunchbase_org.url
+  end
+
   def add_to_wit
     Http::Wit::Entity.new('company').add_value name
   end
@@ -166,6 +186,10 @@ class Company < ActiveRecord::Base
 
   def no_votes
     votes.no.count
+  end
+
+  def crunchbase_org
+    @crunchbase_org ||= Http::Crunchbase::Organization.new(self)
   end
 
   def trello_card
