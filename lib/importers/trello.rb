@@ -30,7 +30,7 @@ module Importers
         members: card.members
       }
       begin
-        parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.pitched.trello_id
+        parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.scheduled.trello_id
       rescue DateTimeNotFound => dtnf
         dtnf.log! card
       end
