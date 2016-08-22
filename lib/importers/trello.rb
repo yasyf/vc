@@ -2,8 +2,12 @@ module Importers
   class Trello
     SEPARATOR = ' - '
 
+    def initialize(team)
+      @team = team
+    end
+
     def sync!
-      ::Trello::Board.find(ENV['TRELLO_BOARD']).cards.each do |card|
+      ::Trello::Board.find(@team.trello_board_id).cards.each do |card|
         yield parse(card)
       end
     end
@@ -26,7 +30,7 @@ module Importers
         members: card.members
       }
       begin
-        parsed.merge! parse_pitch_on(card) if card.list_id == List.pitched.trello_id
+        parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.pitched.trello_id
       rescue DateTimeNotFound => dtnf
         dtnf.log! card
       end

@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
 
   QUORUM_PERCENTAGE = 0.6
 
+  belongs_to :team
   has_many :votes
   has_and_belongs_to_many :companies
 
@@ -18,15 +19,17 @@ class User < ActiveRecord::Base
 
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
-  def self.inactive(since = Time.now)
-    where(
+  def self.inactive(team, since = Time.now)
+    where(team: team)
+    .where(
       arel_table[:inactive_since].lt(since).
       or(arel_table[:created_at].gt(since))
     )
   end
 
-  def self.active(since = Time.now)
-    where(
+  def self.active(team, since = Time.now)
+    where(team: team)
+    .where(
       arel_table[:inactive_since].gteq(since).
       or(arel_table[:inactive_since].eq(nil))
     )
@@ -35,8 +38,8 @@ class User < ActiveRecord::Base
     )
   end
 
-  def self.quorum(at)
-    (active(at).count * QUORUM_PERCENTAGE).to_i
+  def self.quorum(team, at)
+    (active(team, at).count * QUORUM_PERCENTAGE).to_i
   end
 
   def active?

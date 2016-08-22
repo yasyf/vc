@@ -16,6 +16,11 @@ module Api
         render json: { active: current_user.active? }
       end
 
+      def set_team
+        current_user.update!(team: Team.send(params[:team]))
+        render json: { team: current_user.team.name, redirect: session[:original_path] }
+      end
+
       private
 
       def vote_params

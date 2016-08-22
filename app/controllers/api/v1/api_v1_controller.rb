@@ -5,6 +5,9 @@ module Api
 
       private
 
+      def check_team!
+      end
+
       def authenticate_api_user!
         (user_signed_in? && authenticate_user!) || authenticate_or_request_with_http_token do |token, options|
           email, token = token.split(':')

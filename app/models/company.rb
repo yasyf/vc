@@ -4,6 +4,7 @@ class Company < ActiveRecord::Base
 
   has_many :votes
   belongs_to :list
+  belongs_to :team
   has_and_belongs_to_many :users
 
   validates :name, presence: true
@@ -41,7 +42,7 @@ class Company < ActiveRecord::Base
   end
 
   def quorum?
-    override_quorum? || cache_for_a_hour { pitch_on.present? && votes.valid(pitch_on).count >= User.quorum(pitch_on) }
+    override_quorum? || cache_for_a_hour { pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on) }
   end
 
   def funded?
@@ -57,7 +58,7 @@ class Company < ActiveRecord::Base
       {
         yes_votes: yes_votes,
         no_votes: no_votes,
-        required_votes: User.quorum(pitch_on),
+        required_votes: User.quorum(team, pitch_on),
         averages: Vote.metrics(votes.final)
       }.with_indifferent_access
     end
@@ -68,11 +69,11 @@ class Company < ActiveRecord::Base
   end
 
   def notify_team!
-    VoteMailer.email_and_slack!(:funding_decision_email, nil, self)
+    VoteMailer.email_and_slack!(:funding_decision_email, team, self)
   end
 
   def warn_team!(missing_users, time_remaining)
-    VoteMailer.email_and_slack!(:vote_warning_team_email, nil, missing_users, self, time_remaining.to_i)
+    VoteMailer.email_and_slack!(:vote_warning_team_email, team, missing_users, self, time_remaining.to_i)
   end
 
   def move_to_list!(list)
@@ -83,12 +84,12 @@ class Company < ActiveRecord::Base
   end
 
   def move_to_rejected_list!
-    list = pitched? ? List.passed : List.rejected
+    list = pitched? ? team.lists.passed : team.lists.rejected
     move_to_list! list
   end
 
   def move_to_post_pitch_list!
-    list = funded? ? List.funded : List.passed
+    list = funded? ? team.lists.funded : team.lists.passed
     move_to_list! list
 
     trello_card.name = name
@@ -96,33 +97,37 @@ class Company < ActiveRecord::Base
   end
 
   def self.sync!(disable_notifications: false)
-    Importers::Trello.new.sync! do |card_data|
-      users = card_data.delete(:members).map do |member|
-        if member.email.present?
-          User.from_email member.email
-        else
-          User.where(cached_name: member.full_name).first
-        end.tap do |user|
-          if user.present?
-            user.trello_id = member.id
-            user.save! if user.changed?
+    Team.for_each do |team|
+      Importers::Trello.new(team).sync! do |card_data|
+        users = card_data.delete(:members).map do |member|
+          if member.email.present?
+            User.from_email member.email
+          else
+            User.where(cached_name: member.full_name).first
+          end.tap do |user|
+            if user.present?
+              user.team = team
+              user.trello_id = member.id
+              user.save! if user.changed?
+            end
           end
-        end
-      end.compact
-      list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
+        end.compact
+        list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
 
-      company = Company.where(trello_id: card_data[:trello_id]).first_or_create
-      company.assign_attributes card_data
-      company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
-      if company.list.present? && company.list != list
-        LoggedEvent.log! :company_list_changed, company,
-          notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
+        company = Company.where(trello_id: card_data[:trello_id]).first_or_create
+        company.assign_attributes card_data
+        company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
+        if company.list.present? && company.list != list
+          LoggedEvent.log! :company_list_changed, company,
+            notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
+        end
+        company.team = team
+        company.list = list
+        company.users = users
+        company.set_snapshot_link
+        company.set_crunchbase_id
+        company.save! if company.changed?
       end
-      company.list = list
-      company.users = users
-      company.set_snapshot_link
-      company.set_crunchbase_id
-      company.save! if company.changed?
     end
   end
 

@@ -1,0 +1,36 @@
+# Global config
+
+default:
+  ignore: true
+  name: boston
+  lists:
+    - application
+    - allocated
+    - ice_box
+    - scheduled
+    - pitched
+    - funded
+    - passed
+    - rejected
+
+# Define teams below
+
+boston: &boston
+  listserv: 'iteambos'
+  channel: 'iteambos'
+  board: '6hD5AVNy'
+  lists:
+    application: 'Applied at Website'
+    allocated: 'Allocated Point Partner'
+    ice_box: 'Ice Box'
+    scheduled: 'Scheduled to Pitch'
+    pitched: 'Came in to Pitch'
+    funded: 'Funded'
+    passed: 'Passed - Pitched'
+    rejected: 'Passed - No Pitch'
+
+test:
+  <<: *boston
+  ignore: <%= !Rails.env.development? %>
+  channel: 'bot_tests'
+  listserv: 'ym'

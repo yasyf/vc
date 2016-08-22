@@ -13,5 +13,7 @@ module Drfvote
     # -- all .rb files in that directory are automatically loaded.
 
     config.eager_load_paths << Rails.root.join('lib')
+
+    config.teams = YAML.load(ERB.new(File.read(Rails.root.join('config', 'teams.yml'))).result)
   end
 end

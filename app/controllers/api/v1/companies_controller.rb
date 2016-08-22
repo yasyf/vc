@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_api_user!
 
       def index
-        render json: { companies: Company.all }
+        render json: { companies: params[:team].present? ? Company.where(team: team) : Company.all }
       end
 
       def show
@@ -19,17 +19,23 @@ module Api
         company = Company.find(params[:id])
         user = User.from_slack(params[:user_slack_id])
 
-        return head :bad_request unless company.list == List.application
+        return head :bad_request unless company.team == user.team
+        return head :bad_request unless company.list == company.team.lists.application
 
         company.add_user user
-        company.move_to_list! List.allocated
+        company.move_to_list! company.team.lists.allocated
 
         head :ok
       end
 
       def reject
         company = Company.find(params[:id])
-        return head :bad_request if company.list.in?([List.rejected, List.passed, List.scheduled, List.funded])
+        return head :bad_request if company.list.in?([
+          company.team.lists.rejected,
+          company.team.lists.passed,
+          company.team.lists.scheduled,
+          company.team.lists.funded,
+        ])
         company.move_to_rejected_list!
 
         head :ok
