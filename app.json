@@ -1,0 +1,49 @@
+{
+  "name": "VoteCollector",
+  "description": "Voting Platform for Dorm Room Fund",
+  "website": "https://github.com/yasyf/vc",
+  "addons": ["heroku-postgresql:hobby-dev", "memcachier:dev", "scheduler"],
+  "env": {
+    "TRELLO_KEY": {
+      "description": "Trello API Key"
+    },
+    "TRELLO_TOKEN": {
+      "description": "Trello API Token"
+    },
+    "GMAIL_USERNAME": {
+      "description": "SMTP username for email notifications"
+    },
+    "GMAIL_PASSWORD": {
+      "description": "SMTP password for email notifications"
+    },
+    "SLACK_TOKEN": {
+      "description": "Slack API Token"
+    },
+    "GOOGLE_CLIENT_ID": {
+      "description": "Google Client ID"
+    },
+    "GOOGLE_CLIENT_SECRET": {
+      "description": "Google Client Secret"
+    },
+    "GOOGLE_CREDENTIAL_BLOB": {
+      "description": "Base-64 encoded Google application credentials"
+    },
+    "DOMAIN": {
+      "description": "Domain for authenticating emails",
+      "value": "dormroomfund.com"
+    },
+    "WIT_API_VERSION": {
+      "description": "Wit.ai API version",
+      "value": "20160526"
+    },
+    "WIT_API_TOKEN": {
+      "description": "Wit.ai API token",
+    },
+    "CB_API_KEY": {
+      "description": "CrunchBase API key",
+    }
+  },
+  "scripts": {
+    "postdeploy": "./postdeploy.sh"
+  }
+}
