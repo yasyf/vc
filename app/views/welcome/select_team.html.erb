@@ -4,6 +4,7 @@
 <% Team.for_each do |team| %>
   <a
     class='btn btn-default select_team'
+    data-disable-with="Saving..."
     data-method='post'
     data-params='<%= { team: team.name }.to_json %>'
     data-remote='true'
