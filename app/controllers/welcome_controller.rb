@@ -12,9 +12,11 @@ class WelcomeController < ApplicationController
   end
 
   def send_slack_feedback
-    message = "<@#{params[:bot]}>: <@#{current_user.slack_id}> found that annoying!"
-    slack_send! params[:channel], message
-    flash[:success] = 'Thanks for your feedback!'
+    if user_signed_in?
+      message = "<@#{params[:bot]}>: <@#{current_user.slack_id}> found that annoying!"
+      slack_send! params[:channel], message
+      flash[:success] = 'Thanks for your feedback!'
+    end
     redirect_to root_path
   end
 end

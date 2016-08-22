@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   end
 
   def team
-    @team ||= params[:team].present? ? Team.send(params[:team]) : current_user.team
+    @team ||= params[:team].present? ? Team.send(params[:team]) : current_user&.team
   end
 
   def flash_warning(warning)
