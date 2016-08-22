@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
   get 'team', to: 'welcome#select_team'
+  get 'feedback', to: 'welcome#send_slack_feedback'
 
   scope "(:team)", constraints: TeamConstraint.new do
     resources :knowledges, only: [:index]
