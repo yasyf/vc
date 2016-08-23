@@ -41,6 +41,10 @@ class Company < ActiveRecord::Base
     pitched? && (decision_at.present? || deadline < Time.now)
   end
 
+  def passed?
+    list.in?([team.lists.rejected, team.lists.passed])
+  end
+
   def quorum?
     override_quorum? || cache_for_a_hour { pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on) }
   end
@@ -165,6 +169,7 @@ class Company < ActiveRecord::Base
     super(options).merge(
       pitch_on: pitch_on&.to_time&.to_i,
       funded: funded?,
+      passed: passed?,
       rdv_funded: rdv_funded?,
       past_deadline: past_deadline?,
       pitched: pitched?,
