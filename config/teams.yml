@@ -40,6 +40,32 @@ nyc:
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
 
+sf:
+  listserv: 'iteamsfbay'
+  channel: 'iteamsf'
+  board: 'SrQ9nxXP'
+  lists:
+    application: 'Applied at Website'
+    allocated: 'Needs 1st Meeting'
+    ice_box: 'Hold'
+    scheduled: 'Ready for partner meeting'
+    funded: 'Yes - Money not yet wired'
+    passed: 'Passed - Pitched'
+    rejected: 'Passed - No Pitch'
+
+phl:
+  listserv: 'iteamphl'
+  channel: 'philly-iteam'
+  board: 'GSYLWzGT'
+  lists:
+    application: 'Applied at Website'
+    allocated: 'In Discussions'
+    ice_box: 'Deferred / Check-In Later'
+    scheduled: 'Pitching'
+    funded: 'Invested'
+    passed: 'Passed - Pitched'
+    rejected: 'Passed - No Pitch'
+
 test:
   <<: *boston
   ignore: <%= !Rails.env.development? %>
