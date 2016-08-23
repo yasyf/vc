@@ -4,7 +4,7 @@ module Http
     base_uri 'roughdraft.vc'
 
     def investments
-      @investments ||= Set.new self.class.get("/investments").parsed_response.scan(/<h4>(\w+)<\/h4>/).flatten.map(&:downcase)
+      @investments ||= Set.new self.class.get("/investments").parsed_response.scan(/<h4>([\w\s]+)<\/h4>/).flatten.map(&:downcase)
     end
 
     def invested?(company)
