@@ -17,8 +17,8 @@ class Company < ActiveRecord::Base
   scope :undecided, -> { where(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
-  before_create :set_snapshot_link
-  before_create :set_crunchbase_id
+  before_create :set_snapshot_link!
+  before_create :set_crunchbase_id!
   after_create :add_to_wit
 
   def domain=(domain)
@@ -128,8 +128,8 @@ class Company < ActiveRecord::Base
         company.team = team
         company.list = list
         company.users = users
-        company.set_snapshot_link
-        company.set_crunchbase_id
+        company.send(:set_snapshot_link!)
+        company.send(:set_crunchbase_id!)
         company.save! if company.changed?
       end
     end
@@ -179,11 +179,11 @@ class Company < ActiveRecord::Base
 
   private
 
-  def set_snapshot_link
+  def set_snapshot_link!
     self.snapshot_link ||= GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
   end
 
-  def set_crunchbase_id
+  def set_crunchbase_id!
     org = crunchbase_org(5)
     self.crunchbase_id ||= org.permalink
     self.domain ||= org.url
