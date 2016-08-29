@@ -4,7 +4,7 @@ class List < ActiveRecord::Base
   validates :trello_board_id, presence: true
   validates :trello_id, presence: true, uniqueness:true
   validates :name, presence: true
-  validates :pos, presence: true, uniqueness: true
+  validates :pos, presence: true, uniqueness: { scope: :trello_board_id }
 
   def self.funnel(team)
     where('pos > ?', team.list.ice_box.pos)
