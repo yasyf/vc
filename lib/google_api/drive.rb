@@ -11,6 +11,8 @@ module GoogleApi
 
     def find(term, fields = 'files/webViewLink')
       @drive.list_files(q: "name = '#{term}'", fields: fields).files.first
+    rescue Google::Apis::ClientError
+      nil
     end
   end
 end
