@@ -39,7 +39,8 @@ module Http::Crunchbase
 
     private
 
-    def self.api_get(path, query = {}, multi = true)
+    def self.api_get(raw_path, query = {}, multi = true)
+      path = URI.encode raw_path
       data = key_cached(query.merge(path: path)) do
         get(path, query: query).parsed_response['data']
       end
