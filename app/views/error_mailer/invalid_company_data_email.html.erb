@@ -1,0 +1,12 @@
+<div>
+  <p>
+    The following company data for <a href="<%= @trello_url %>"><%= @company_json['name'] %></a> (fetched from <%= @list_name %> on Trello) violated a constraint when we tried to import it into the system.
+  </p>
+  <p>
+    The error was <code><%= @error_message %></code>.
+  </p>
+</div>
+
+<div>
+  <pre><%= JSON.pretty_generate(@company_json) %></pre>
+</div>

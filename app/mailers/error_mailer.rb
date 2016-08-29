@@ -5,4 +5,12 @@ class ErrorMailer < ApplicationMailer
     @card_link = card_link
     mail to: to, subject: "#{SUBJECT_HEADER} Invalid Trello Card Title"
   end
+
+  def invalid_company_data_email(to, company_json, error_message, trello_url, list_name)
+    @company_json = company_json
+    @error_message = error_message
+    @trello_url = trello_url
+    @list_name = list_name
+    mail to: to, subject: "#{SUBJECT_HEADER} Invalid Trello Data For #{company_json['name']}"
+  end
 end
