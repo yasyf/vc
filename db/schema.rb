@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160821220809) do
+ActiveRecord::Schema.define(version: 20160829195559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20160821220809) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.string   "trello_board_id", null: false
+    t.index ["pos", "trello_board_id"], name: "index_lists_on_pos_and_trello_board_id", unique: true, using: :btree
   end
 
   create_table "logged_events", force: :cascade do |t|

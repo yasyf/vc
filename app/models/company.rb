@@ -134,7 +134,7 @@ class Company < ActiveRecord::Base
           company.save! if company.changed?
         rescue ActiveRecord::RecordInvalid => e
           LoggedEvent.log! :invalid_company_data, company, company.as_json_original, e.message, company.trello_url,
-            , list.name, to: users, data: { json: company.as_json_original.to_json }
+            list.name, to: users, data: { json: company.as_json_original.to_json }
         end
       end
     end
