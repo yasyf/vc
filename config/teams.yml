@@ -42,7 +42,7 @@ nyc:
     rejected: 'Passed - No Pitch'
 
 sf:
-  ignore: <%= !Rails.env.production? %>
+  ignore: true
   listserv: 'iteamsfbay'
   channel: 'iteamsf'
   board: 'lSsw6XnH'
@@ -56,7 +56,7 @@ sf:
     rejected: 'Passed - No Pitch'
 
 phl:
-  ignore: <%= !Rails.env.production? %>
+  ignore: true
   listserv: 'iteamphl'
   channel: 'philly-iteam'
   board: 'GSYLWzGT'
