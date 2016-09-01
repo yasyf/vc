@@ -13,7 +13,7 @@ class LoggedEvent < ActiveRecord::Base
     log.data[log.count] = data
     log.increment :count
     log.save!
-    unless log.count > notify
+    if log.count <= notify && to.present?
       emailer = "#{reason}_email"
       users = User.from_multi(to)
       ErrorMailer.email_and_slack! emailer, users, *args
