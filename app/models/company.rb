@@ -133,8 +133,8 @@ class Company < ActiveRecord::Base
         begin
           company.save! if company.changed?
         rescue ActiveRecord::RecordInvalid => e
-          LoggedEvent.log! :invalid_company_data, company, company.as_json_original, e.message, company.trello_url,
-            list.name, to: users, data: { json: company.as_json_original.to_json }
+          LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
+            list.name, to: users, data: { company: company.serializable_hash }
         end
       end
     end
@@ -165,8 +165,6 @@ class Company < ActiveRecord::Base
     trello_card.add_member user.trello_user
     trello_card.save
   end
-
-  alias as_json_original as_json
 
   def as_json(options = {})
     options.reverse_merge!(
