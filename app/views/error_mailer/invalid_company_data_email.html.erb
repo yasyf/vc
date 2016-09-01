@@ -1,6 +1,6 @@
 <div>
   <p>
-    The following company data for <a href="<%= @trello_url %>"><%= @company_json['name'] %></a> (fetched from <%= @list_name %> on Trello) violated a constraint when we tried to import it into the system.
+    The following company data for <a href="<%= @trello_url %>"><%= @company_json['name'] %></a> (fetched from <%= @list_name %> on Trello) violated a constraint when we tried to import it into the system. This is normally due to a duplicate card.
   </p>
   <p>
     The error was <code><%= @error_message %></code>.
