@@ -8,6 +8,7 @@ class LoggedEvent < ActiveRecord::Base
   end
 
   def self.log!(reason, record, *args, notify: 1, to: nil, data: nil)
+    Rails.logger.info "[LoggedEvent] #{reason} from #{record.class.name}(#{record.id})"
     log = where(record_id: record.id, reason: reason).first_or_initialize
     log.data[log.count] = data
     log.increment :count

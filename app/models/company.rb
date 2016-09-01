@@ -103,6 +103,8 @@ class Company < ActiveRecord::Base
   def self.sync!(disable_notifications: false)
     Team.for_each do |team|
       Importers::Trello.new(team).sync! do |card_data|
+        Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
+
         users = card_data.delete(:members).map do |member|
           if member.email.present?
             User.from_email member.email
@@ -134,7 +136,7 @@ class Company < ActiveRecord::Base
           company.save! if company.changed?
         rescue ActiveRecord::RecordInvalid => e
           LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
-            list.name, to: users, data: { company: company.serializable_hash }
+            list.name, to: users, data: { company: company.serializable_hash, message: e.message }
         end
       end
     end
