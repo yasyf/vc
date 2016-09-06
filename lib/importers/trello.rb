@@ -27,7 +27,7 @@ module Importers
         trello_id: card.id,
         name: clean_name(card.name),
         trello_list_id: card.list_id,
-        members: card.members
+        members: card.members,
       }
       begin
         parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.scheduled.trello_id
@@ -38,6 +38,7 @@ module Importers
     end
 
     def parse_pitch_on(card)
+      return { pitch_on: card.due } if card.due.present?
       name, datestring = split_name card
       index = datestring.index /\d/
       raise DateTimeNotFound, name unless index.present?
