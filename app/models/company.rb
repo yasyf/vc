@@ -19,8 +19,7 @@ class Company < ActiveRecord::Base
   scope :undecided, -> { where(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
-  before_create :set_snapshot_link!
-  before_create :set_crunchbase_id!
+  before_create :set_extra_attributes!
   after_create :add_to_wit
 
   def domain=(domain)
