@@ -132,18 +132,8 @@ class Company < ActiveRecord::Base
         company.team = team
         company.list = list
         company.users = users
-        company.set_extra_attributes!
 
         if company.changed?
-          if !quiet
-            if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
-              message = "#{company.name} has now raised at least #{company.capital_raised(format: true)}!"
-              company.add_comment message, notify: true
-            end
-            if company.rdv_funded? && !company.rdv_funded_was
-              company.add_comment "RDV has now funded #{company.name}!", notify: true
-            end
-          end
           begin
             company.save!
           rescue ActiveRecord::RecordInvalid => e
@@ -151,6 +141,20 @@ class Company < ActiveRecord::Base
               list.name, to: users, notify: quiet ? 0 : 1, data: { company: company.serializable_hash, message: e.message }
           end
         end
+
+        company.set_extra_attributes!
+        next unless company.changed?
+        if !quiet
+          if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
+            message = "#{company.name} has now raised at least #{company.capital_raised(format: true)}!"
+            company.add_comment message, notify: true
+          end
+          if company.rdv_funded? && !company.rdv_funded_was
+            company.add_comment "RDV has now funded #{company.name}!", notify: true
+          end
+        end
+        company.save!
+
       end
     end
   end
