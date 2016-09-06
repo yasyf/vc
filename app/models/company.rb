@@ -145,11 +145,11 @@ class Company < ActiveRecord::Base
         next unless company.changed?
         if !quiet
           if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
-            message = "#{company.name} has now raised at least #{company.capital_raised(format: true)}!"
+            message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
             company.add_comment message, notify: true
           end
           if company.rdv_funded? && !company.rdv_funded_was
-            company.add_comment "RDV has now funded #{company.name}!", notify: true
+            company.add_comment "RDV has now funded *#{company.name}*!", notify: true
           end
         end
         company.save!
@@ -176,7 +176,7 @@ class Company < ActiveRecord::Base
   end
 
   def add_comment(comment, notify: false)
-    team.notify!(comment, all: false) if notify
+    team.notify!(comment) if notify
     trello_card.add_comment "[DRFBot] #{comment}"
   end
 
