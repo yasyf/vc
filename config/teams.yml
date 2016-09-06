@@ -16,7 +16,7 @@ default:
 
 boston: &boston
   listserv: 'iteambos'
-  channel: 'iteambos'
+  channel: 'bot_tests'
   board: '6hD5AVNy'
   lists:
     application: 'Applied at Website'
