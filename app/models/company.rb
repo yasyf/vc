@@ -142,7 +142,7 @@ class Company < ActiveRecord::Base
         end
 
         company.set_extra_attributes!
-        next unless company.changed?
+        next unless company.changed? && company.valid?
         if !quiet
           if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
             message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
@@ -177,7 +177,7 @@ class Company < ActiveRecord::Base
 
   def add_comment(comment, notify: false)
     team.notify!(comment) if notify
-    trello_card.add_comment "[DRFBot] #{comment}"
+    trello_card.add_comment "**[DRFBot]** #{comment}"
   end
 
   def as_json(options = {})
