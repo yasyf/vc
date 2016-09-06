@@ -2,7 +2,7 @@ namespace :sync do
   desc "Sync companies and lists from Trello"
   task trello: :environment do
     List.sync!
-    Company.sync!
+    Company.sync!(quiet: !Rails.env.production?)
   end
 
   desc "Sync votes from remote CSV"

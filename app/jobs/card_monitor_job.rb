@@ -1,6 +1,4 @@
 class CardMonitorJob < ActiveJob::Base
-  include Concerns::Slackable
-
   queue_as :default
 
   def perform
@@ -17,7 +15,7 @@ class CardMonitorJob < ActiveJob::Base
 
       if companies.present?
         message = "The following companies have been stuck in the same stage of the pipeline for over a week!\n#{companies}"
-        slack_send! team.slack_channel, message
+        team.notify! message, all: false
       end
     end
   end

@@ -1,7 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  extend Concerns::Slackable
-
-  SUBJECT_HEADER = '[Boston Bot]'
+  SUBJECT_HEADER = '[DRFBot]'
 
   default from: ENV['GMAIL_USERNAME']
   layout 'mailer'
@@ -11,7 +9,7 @@ class ApplicationMailer < ActionMailer::Base
     if users.is_a?(Team)
       mail = public_send(emailer, users.email_list, *args)
       mail.deliver_later
-      slack_send! users.slack_channel, mail.text_part.body.decoded, notify: true
+      users.notify! mail.text_part.body.decoded
     else
       users = Array.wrap(users)
       mail = public_send(emailer, users.map(&:email), *args)

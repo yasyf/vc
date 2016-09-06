@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160829195559) do
+ActiveRecord::Schema.define(version: 20160906100605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,9 @@ ActiveRecord::Schema.define(version: 20160829195559) do
     t.string   "domain"
     t.string   "crunchbase_id"
     t.integer  "team_id",                         null: false
+    t.boolean  "rdv_funded",      default: false, null: false
+    t.integer  "capital_raised",  default: 0,     null: false
+    t.text     "description"
     t.index ["list_id"], name: "index_companies_on_list_id", using: :btree
     t.index ["name"], name: "index_companies_on_name", using: :btree
     t.index ["team_id"], name: "index_companies_on_team_id", using: :btree

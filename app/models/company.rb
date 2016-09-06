@@ -11,6 +11,8 @@ class Company < ActiveRecord::Base
   validates :trello_id, presence: true, uniqueness: true
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+  validates :rdv_funded, inclusion: [true, false]
+  validates :capital_raised, presence: true, numericality: { only_integer: true }
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
   scope :decided, -> { where.not(decision_at: nil) }
@@ -100,7 +102,7 @@ class Company < ActiveRecord::Base
     trello_card.save
   end
 
-  def self.sync!(disable_notifications: false)
+  def self.sync!(quiet: true, importing: false)
     Team.for_each do |team|
       Importers::Trello.new(team).sync! do |card_data|
         Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
@@ -122,7 +124,7 @@ class Company < ActiveRecord::Base
 
         company = Company.where(trello_id: card_data[:trello_id]).first_or_create
         company.assign_attributes card_data
-        company.decision_at ||= Time.now if disable_notifications && company.pitch_on == nil
+        company.decision_at ||= Time.now if importing && company.pitch_on == nil
         if company.list.present? && company.list != list
           LoggedEvent.log! :company_list_changed, company,
             notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
@@ -130,13 +132,24 @@ class Company < ActiveRecord::Base
         company.team = team
         company.list = list
         company.users = users
-        company.send(:set_snapshot_link!)
-        company.send(:set_crunchbase_id!)
-        begin
-          company.save! if company.changed?
-        rescue ActiveRecord::RecordInvalid => e
-          LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
-            list.name, to: users, data: { company: company.serializable_hash, message: e.message }
+        company.set_extra_attributes!
+
+        if company.changed?
+          if !quiet
+            if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
+              message = "#{company.name} has now raised at least #{company.capital_raised(format: true)}!"
+              company.add_comment message, notify: true
+            end
+            if company.rdv_funded? && !company.rdv_funded_was
+              company.add_comment "RDV has now funded #{company.name}!", notify: true
+            end
+          end
+          begin
+            company.save!
+          rescue ActiveRecord::RecordInvalid => e
+            LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
+              list.name, to: users, notify: quiet ? 0 : 1, data: { company: company.serializable_hash, message: e.message }
+          end
         end
       end
     end
@@ -150,17 +163,8 @@ class Company < ActiveRecord::Base
     "https://trello.com/c/#{trello_id}"
   end
 
-  def description
-    cache_for_a_hour { crunchbase_org.description }
-  end
-
-  def rdv_funded?
-    cache_for_a_hour { crunchbase_org.has_investor?('Rough Draft Ventures') || Http::Rdv.new.invested?(name) }
-  end
-
-  def capital_raised
-    amount = cache_for_a_hour { [crunchbase_org.total_funding || 0, funded? ? 20_000 : 0].max }
-    number_to_human(amount, locale: :money)
+  def capital_raised(format: false)
+    format ? number_to_human(super(), locale: :money) : super()
   end
 
   def add_user(user)
@@ -168,20 +172,32 @@ class Company < ActiveRecord::Base
     trello_card.save
   end
 
+  def add_comment(comment, notify: false)
+    team.notify(comment, all: false) if notify?
+    trello_card.add_comment "[DRFBot] #{comment}"
+  end
+
   def as_json(options = {})
     options.reverse_merge!(
-      methods: [:trello_url, :stats, :capital_raised, :description],
-      only: [:id, :name, :trello_id, :snapshot_link, :domain]
+      methods: [:trello_url, :stats],
+      only: [:id, :name, :trello_id, :snapshot_link, :domain, :rdv_funded, :description]
     )
     super(options).merge(
+      capital_raised: capital_raised(format: true),
       pitch_on: pitch_on&.to_time&.to_i,
       funded: funded?,
       passed: passed?,
-      rdv_funded: rdv_funded?,
       past_deadline: past_deadline?,
       pitched: pitched?,
       partners: users.map { |user| { name: user.name, slack_id: user.slack_id }  }
     )
+  end
+
+  def set_extra_attributes!
+    set_snapshot_link!
+    set_crunchbase_attributes!
+    set_rdv_funded!
+    set_capital_raised!
   end
 
   private
@@ -190,10 +206,19 @@ class Company < ActiveRecord::Base
     self.snapshot_link ||= GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
   end
 
-  def set_crunchbase_id!
+  def set_crunchbase_attributes!
     org = crunchbase_org(5)
-    self.crunchbase_id ||= org.permalink
-    self.domain ||= org.url
+    self.crunchbase_id = org.permalink
+    self.domain = org.url
+    self.description = org.description
+  end
+
+  def set_rdv_funded!
+    self.rdv_funded = crunchbase_org(5).has_investor?('Rough Draft Ventures') || Http::Rdv.new.invested?(name)
+  end
+
+  def set_capital_raised!
+    self.capital_raised = [crunchbase_org(5).total_funding.to_i || 0, funded? ? 20_000 : 0].max
   end
 
   def add_to_wit
@@ -208,7 +233,7 @@ class Company < ActiveRecord::Base
     votes.no.count
   end
 
-  def crunchbase_org(timeout = 0.3)
+  def crunchbase_org(timeout = 1)
     @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
   end
 

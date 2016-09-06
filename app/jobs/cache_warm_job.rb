@@ -3,6 +3,7 @@ class CacheWarmJob < ActiveJob::Base
 
   def perform
     Company.all.each do |company|
+      company.send(:crunchbase_org, 5)
       begin
         %w(quorum? funded? stats partner_initials as_json).each do |method|
           company.public_send(method)

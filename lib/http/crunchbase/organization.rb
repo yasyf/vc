@@ -44,7 +44,7 @@ module Http::Crunchbase
       data = key_cached(query.merge(path: path)) do
         get(path, query: query).parsed_response['data']
       end
-      multi ? data['items'] : data
+      multi ? data && data['items'] : data
     end
 
     def self.base_cache_key

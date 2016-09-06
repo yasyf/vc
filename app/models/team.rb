@@ -1,4 +1,6 @@
 class Team < ApplicationRecord
+  include Concerns::Slackable
+
   has_many :companies
   has_many :users
 
@@ -45,6 +47,11 @@ class Team < ApplicationRecord
 
   def slack_channel
     config['channel']
+  end
+
+  def notify!(message, all: true)
+    return if config['ignore']
+    slack_send! slack_channel, message, notify: all
   end
 
   private
