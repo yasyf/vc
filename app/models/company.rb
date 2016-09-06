@@ -173,7 +173,7 @@ class Company < ActiveRecord::Base
   end
 
   def add_comment(comment, notify: false)
-    team.notify(comment, all: false) if notify?
+    team.notify!(comment, all: false) if notify
     trello_card.add_comment "[DRFBot] #{comment}"
   end
 
