@@ -46,6 +46,7 @@ gem 'premailer-rails'
 gem 'httparty'
 gem 'googleauth'
 gem 'google-api-client'
+gem 'levenshtein-ffi', require: 'levenshtein'
 
 group :production do
   gem 'rails_12factor'
