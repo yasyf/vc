@@ -42,7 +42,7 @@ class Team < ApplicationRecord
   end
 
   def email_list
-    config['listserv']
+    "#{config['listserv']}@#{ENV['DOMAIN']}"
   end
 
   def slack_channel
