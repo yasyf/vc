@@ -1,0 +1,9 @@
+<div>
+  <p><%= @company.name %> will be pitching in <%= @company.team.name.titleize %> on <% @company.pitch_on.to_date.to_s(:long) %>.</p>
+  <% if @company.snapshot_link.present? %>
+    <p>The snapshot can be found <a href="<%= @company.snapshot_link %>">here</a>.</p>
+  <% end %>
+  <p>
+    <%= @company.team.name.titleize %> partners, please add your comments to the snapshot by <% (@company.pitch_on.to_date - 1.day).to_s(:long) %>. Everyone else, please feel free to add comments!
+  </p>
+</div>

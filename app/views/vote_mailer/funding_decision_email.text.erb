@@ -1,4 +1,4 @@
-Boston ​*will<%= @company.funded? ? '' : ' not' %>*​ be funding ​_<%= @company.name %>_​!
+<%= @company.team.name.titleize %> ​*will<%= @company.funded? ? '' : ' not' %>*​ be funding ​_<%= @company.name %>_​!
 <%= (@yes_percent * 100).round(0) %>% voted to fund, with <%= @stats[:yes_votes] %> in favor and <%= @stats[:no_votes] %> against.
 <% @stats[:averages].each_with_index do |(met, val), i| %>
   *<%= met.titleize %>*: <%= val.round(1) %> <%= i == (@stats[:averages].size - 1) ? '' : '|' -%>

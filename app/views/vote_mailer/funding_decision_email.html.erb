@@ -1,6 +1,6 @@
 <div>
   <p>
-    Boston ​<b>will<%= @company.funded? ? '' : ' not' %></b> be funding ​<i><%= @company.name %></i>!<br>
+    <%= @company.team.name.titleize %> ​<b>will<%= @company.funded? ? '' : ' not' %></b> be funding ​<i><%= @company.name %></i>!<br>
     <%= (@yes_percent * 100).round(0) %>% voted to fund, with <%= @stats[:yes_votes] %> in favor and <%= @stats[:no_votes] %> against.
   </p>
 </div>

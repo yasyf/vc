@@ -77,6 +77,10 @@ class Company < ActiveRecord::Base
     VoteMailer.email_and_slack!(:funding_decision_email, team, self)
   end
 
+  def prepare_team!
+    VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self)
+  end
+
   def warn_team!(missing_users, time_remaining)
     VoteMailer.email_and_slack!(:vote_warning_team_email, team, missing_users, self, time_remaining.to_i)
   end
@@ -127,6 +131,9 @@ class Company < ActiveRecord::Base
         if company.list.present? && company.list != list
           LoggedEvent.log! :company_list_changed, company,
             notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
+          if list == team.lists.scheduled
+            company.prepare_team!
+          end
         end
         company.team = team
         company.list = list

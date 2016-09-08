@@ -1,4 +1,9 @@
 class VoteMailer < ApplicationMailer
+  def upcoming_pitch_email(to, company)
+    @company = company
+    mail to: to, subject: "#{SUBJECT_HEADER} #{company.name} Upcoming Pitch"
+  end
+
   def funding_decision_email(to, company)
     @company = company
     @stats = company.stats
