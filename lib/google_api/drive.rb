@@ -22,7 +22,7 @@ module GoogleApi
     end
 
     def raw_find(term, fields)
-      @drive.list_files(q: "name = '#{term}'", fields: fields).files.first
+      @drive.list_files(q: "name = '#{term}'", order_by: 'createdTime desc', fields: fields).files.first
     rescue Google::Apis::ClientError
       nil
     end

@@ -213,7 +213,7 @@ class Company < ActiveRecord::Base
   private
 
   def set_snapshot_link!
-    self.snapshot_link ||= GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
+    self.snapshot_link = GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
   end
 
   def set_crunchbase_attributes!
