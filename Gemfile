@@ -47,6 +47,7 @@ gem 'httparty'
 gem 'googleauth'
 gem 'google-api-client'
 gem 'levenshtein-ffi', require: 'levenshtein'
+gem 'airbrake'
 
 group :production do
   gem 'rails_12factor'
