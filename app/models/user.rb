@@ -13,8 +13,8 @@ class User < ActiveRecord::Base
   validates :slack_id, uniqueness: { allow_nil: true }
   validates :trello_id, uniqueness: { allow_nil: true }
 
-  before_create :set_slack_id
-  before_create :set_cached_name
+  before_validation :set_slack_id, on: :create
+  before_validation :set_cached_name, on: :create
   after_create :add_to_wit
 
   devise :omniauthable, omniauth_providers: [:google_oauth2]

@@ -38,8 +38,9 @@ module Concerns
     end
 
     def base_cache_key
+      from_model = defined?(:id) && id.blank? ? "#{cache_key}/#{rand}" : cache_key
       location = caller_locations.find { |loc| !loc.to_s.include?(__FILE__) }
-      "#{cache_key}/#{location.label}"
+      "#{from_model}/#{location.label}"
     end
   end
 end

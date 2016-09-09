@@ -6,8 +6,14 @@ namespace :sync do
   end
 
   desc "Sync votes from remote CSV"
-  task :csv, [:url] => [:environment] do |t, args|
-    Importers::Csv.new(args[:url]).sync!
+  task :csv, [:url, :team] => [:environment] do |t, args|
+    Importers::Csv.new(args[:url], args[:team]).sync!
+  end
+
+
+  desc "Sync votes from NYC Google Drive Folder"
+  task :nyc, [:folder_id] => [:environment] do |t, args|
+    Importers::Folders::Nyc.new(args[:folder_id]).sync!
   end
 
   desc "Sync teams with config"

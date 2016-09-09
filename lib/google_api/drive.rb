@@ -15,6 +15,14 @@ module GoogleApi
       key_cached({ term: term, fields: fields }) { raw_find(term, fields) }
     end
 
+    def list(folder_id, fields = 'files(id,modifiedTime,name)')
+      @drive.list_files(q: "'#{folder_id}' in parents", fields: fields).files
+    end
+
+    def export(file_id, mime_type)
+      @drive.export_file file_id, mime_type, download_dest: StringIO.new
+    end
+
     private
 
     def cache_options
