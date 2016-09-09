@@ -46,7 +46,7 @@ class Team < ApplicationRecord
   end
 
   def slack_channel
-    config['channel']
+    "##{config['channel']}"
   end
 
   def notify!(message, all: true)
