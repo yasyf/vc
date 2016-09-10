@@ -24,6 +24,7 @@ module Importers
       ::CSV.foreach(@filename, headers: true) do |row|
         parsed = HEADERS.map { |h,s| [h, row[s].try(:strip)] }.to_h
         import! parsed
+      end
     end
 
     private
