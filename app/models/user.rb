@@ -65,7 +65,7 @@ class User < ActiveRecord::Base
   end
 
   def slack_name
-    cached { "@#{slack_user.name}" }
+    cached { "@#{slack_user.name}" } if slack_user.present?
   end
 
   def send!(message)
@@ -170,7 +170,7 @@ class User < ActiveRecord::Base
 
   def slack_or_block(property)
     key_cached [property] do
-      from_slack = slack_user.profile.public_send(property)
+      from_slack = slack_user&.profile&.public_send(property)
       if from_slack.present?
         from_slack.titleize
       else
@@ -180,7 +180,7 @@ class User < ActiveRecord::Base
   end
 
   def slack_user
-    @slack_user ||= slack_client.users_info(user: slack_id).user
+    @slack_user ||= slack_client.users_info(user: slack_id).user if slack_id.present?
   end
 
   def agreed
