@@ -7,6 +7,8 @@ module Importers
       return unless parsed[:date].present? && parsed[:email].present? && parsed[:company].present?
 
       date = parsed[:date].is_a?(String) ? Chronic.parse(parsed[:date]) : parsed[:date]
+      return unless date.present?
+
       date_minus_epsilon = date - 1.minute
       date_plus_epsilon = date + 1.minute
 
