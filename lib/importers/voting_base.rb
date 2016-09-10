@@ -45,7 +45,8 @@ module Importers
         vote = Vote.new vote_data
         vote.skip_eligibility!
         vote.save!
-      rescue ActiveRecord::RecordInvalid
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.warn "Skipping record due to invalid vote (#{e.message}): #{parsed}"
         return
       end
     end
