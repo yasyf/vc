@@ -7,9 +7,9 @@ class List < ActiveRecord::Base
   validates :pos, presence: true, uniqueness: { scope: :trello_board_id }
 
   def self.funnel(team)
-    where('pos > ?', team.lists.ice_box.pos)
-    .where('pos < ?', team.lists.scheduled.pos)
-    .or(where('id = ?', team.lists.allocated.id))
+    where(trello_board_id: team.trello_board_id)
+    .where('pos >= ? AND pos < ?', team.lists.allocated.pos, team.lists.scheduled.pos)
+    .where('pos != ?', team.lists.ice_box.pos)
   end
 
   def self.sync!
