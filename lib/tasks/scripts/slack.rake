@@ -37,6 +37,7 @@ namespace :scripts do
         evergreen = select_reactioned history.messages, "evergreen_tree"
         evergreen.each do |message|
           Knowledge.where(ts: message.ts).first_or_create! do |knowledge|
+            knowledge.team = team
             knowledge.body = message.text
             knowledge.user = User.from_slack(message.user)
           end

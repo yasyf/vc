@@ -8,6 +8,8 @@ class Company < ActiveRecord::Base
   has_and_belongs_to_many :users
 
   validates :name, presence: true
+  validates :team, presence: true
+  validates :list, presence: true
   validates :trello_id, presence: true, uniqueness: true
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
