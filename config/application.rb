@@ -14,6 +14,9 @@ module Drfvote
 
     config.eager_load_paths << Rails.root.join('lib')
 
-    config.teams = YAML.load(ERB.new(File.read(Rails.root.join('config', 'teams.yml'))).result)
+    %w(teams overrides).each do |name|
+      result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)
+      config.send("#{name}=", result)
+    end
   end
 end
