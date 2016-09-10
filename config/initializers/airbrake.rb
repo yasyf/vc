@@ -54,3 +54,11 @@ end
 # line below. It might simplify debugging of background Airbrake workers, which
 # can silently die.
 # Thread.abort_on_exception = ['test', 'development'].include?(Rails.env)
+
+IGNORED_ERRORS = %w(SignalException)
+
+Airbrake.add_filter do |notice|
+  if notice[:errors].any? { |error| IGNORED_ERRORS.include?(error[:type]) }
+    notice.ignore!
+  end
+end

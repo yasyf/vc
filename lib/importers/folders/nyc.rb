@@ -54,11 +54,12 @@ module Importers::Folders
 
     def parse_rows(sheets)
       old_style_rows = extract_old_style_rows(sheets.sheet(0))
-      if sheets.count == 1
-        old_style_rows
-      else
-        extract_new_style_rows(sheets.sheet(1)) + old_style_rows
+      new_style_rows = begin
+        sheets.count == 1 ? [] : extract_new_style_rows(sheets.sheet(1))
+      rescue ArgumentError
+        []
       end
+      old_style_rows + new_style_rows
     end
 
     def process_file!(file)
