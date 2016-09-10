@@ -37,6 +37,7 @@ module Importers
       user.save! if user.changed?
 
       vote_data = parsed.slice(:product, :market, :team, :fit, :overall, :reason)
+      vote_data[:fit] ||= 3 # Handle legacy votes where fit was not a category
       vote_data[:final] = vote_data[:overall].present?
       vote_data[:reason] = 'No reason given!' if vote_data[:final] && vote_data[:reason].blank?
       vote_data[:user] = user
