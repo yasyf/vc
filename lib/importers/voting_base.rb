@@ -13,7 +13,8 @@ module Importers
       date_plus_epsilon = date + 1.minute
 
       company_name = Rails.application.config.overrides['import']['company']['name'][parsed[:company]] || parsed[:company]
-      company = Company.where(name: company_name).first
+      companies = Company.search(company_name)
+      company = Company.where(name: company_name).first || companies.first if companies.count == 1
       unless company.present?
         Rails.logger.warn "Skipping record #{parsed}"
         return
