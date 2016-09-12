@@ -4,8 +4,13 @@
   <div class="panel-heading">
     <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
   </div>
-  <% if @company.past_deadline? %>
-   <div class="panel-body">
+  <div class="panel-body">
+    <% if @company.snapshot_link.present? %>
+      <a class="btn btn-default" href="<%= @company.snapshot_link %>" role="button" target="_blank">
+        <h4>View Snapshot</h4>
+      </a>
+    <% end %>
+    <% if @company.past_deadline? %>
       <% if @vote.present? %>
         <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
           <h4>View Your Vote</h4>
@@ -13,9 +18,7 @@
       <% else %>
         <h4>You did not vote for this pitch</h4>
       <% end %>
-    </div>
-  <% else %>
-   <div class="panel-body">
+    <% else %>
       <h4>
         <% if @company.passed? %>
           We passed on this company without seeing a pitch
@@ -23,8 +26,8 @@
          This company is in the pipeline
         <% end %>
       </h4>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
   <div class="list-group">
     <a class="list-group-item companies--item" href="#">
       <div class="row">
