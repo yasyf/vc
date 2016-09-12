@@ -6,9 +6,7 @@
       <h1><%= list.name %></h1>
     </div>
     <div class="panel-body">
-      <%= form_tag "", method: :get, class: 'companies--filter-form' do %>
-        <%= text_field_tag :filter, params[:filter], placeholder: 'Filter...', class: 'form-control companies--filter-input', autocomplete: :off %>
-      <% end %>
+      <%= render partial: 'filter' %>
     </div>
     <div class="list-group">
       <% companies.each do |company| %>

@@ -1,0 +1,4 @@
+<%= form_tag "", method: :get, class: 'companies--filter-form' do %>
+  <%= text_field_tag :filter, params[:filter], placeholder: 'Filter...',
+    class: 'form-control companies--filter-input', autocomplete: :off %>
+<% end %>
