@@ -16,9 +16,9 @@ module Importers
 
     class DateTimeNotFound < StandardError
       def log!(card)
-        usernames = card.members.map { |mem| User.from_trello(mem.id)&.email }.compact
+        users = card.members.map { |mem| User.from_trello(mem.id) }.compact
         LoggedEvent.log! :datetime_not_found, card, card.list.name, card.name, card.url,
-          to: usernames, data: { name: card.name }
+          to: users, data: { name: card.name }
       end
     end
 
