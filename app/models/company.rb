@@ -80,7 +80,7 @@ class Company < ActiveRecord::Base
   end
 
   def prepare_team!
-    VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true)
+    VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true) if pitch_on.present?
   end
 
   def warn_team!(missing_users, time_remaining)

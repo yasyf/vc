@@ -8,7 +8,8 @@ module Importers
 
     def sync!
       ::Trello::Board.find(@team.trello_board_id).cards.each do |card|
-        yield parse(card)
+        parsed = parse(card)
+        yield parsed if parsed.present?
       end
     end
 
@@ -33,6 +34,7 @@ module Importers
         parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.scheduled.trello_id
       rescue DateTimeNotFound => dtnf
         dtnf.log! card
+        return nil
       end
       parsed
     end
