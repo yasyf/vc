@@ -1,8 +1,8 @@
 <% title 'Submit Vote' %>
 <% if @vote.persisted? %>
-  <% header @vote.final? ? 'Final Vote' : 'Submit Final Vote' %>
+  <% header "#{@vote.final? ? 'Final Vote' : 'Submit Final Vote'} For #{@company.name}" %>
 <% else %>
-  <% header 'Submit Pre-Vote' %>
+  <% header "Submit Pre-Vote For #{@company.name}" %>
 <% end %>
 
 <%= form_for [@company, Vote.new], html: { class: 'form-horizontal' } do |f| %>
