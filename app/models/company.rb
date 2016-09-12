@@ -146,7 +146,7 @@ class Company < ActiveRecord::Base
             company.save!
           rescue ActiveRecord::RecordInvalid => e
             LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
-              list.name, to: users, notify: quiet ? 0 : 1, data: { company: company.serializable_hash, message: e.message }
+              list.name, to: users, notify: 0, data: { company: company.serializable_hash, message: e.message }
           end
         end
 
