@@ -1,14 +1,4 @@
-<div class="list-group-item-heading companies--list-group-item-heading">
-  <p class="companies--large-heading text-<%= company_class(company) %>">
-    <%= company.name %>
-  </p>
-  <p class='companies--sub-heading' title="Quorum at <%= company.stats["required_votes"] %>">
-    <%= company.pitch_on.to_s(:long) %>
-  </p>
-  <p class='companies--sub-heading'>
-   <%= company.partner_initials.join(', ') %>
-  </p>
-</div>
+<%= render partial: 'summary', locals: {company: company} %>
 <div class="list-group-item-text">
   <% if company.past_deadline? %>
     <%= render partial: 'shared/stats', locals: {vote: company.vote_for_user(current_user), stats: company.stats} %>

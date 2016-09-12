@@ -71,8 +71,8 @@ class Company < ActiveRecord::Base
     end
   end
 
-  def partner_initials
-    cached { users.map(&:initials) }
+  def partner_names
+    cached { users.map(&:name) }
   end
 
   def notify_team!

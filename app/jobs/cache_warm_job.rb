@@ -5,7 +5,7 @@ class CacheWarmJob < ActiveJob::Base
     Company.all.each do |company|
       company.send(:crunchbase_org, 5)
       begin
-        %w(quorum? funded? stats partner_initials as_json).each do |method|
+        %w(quorum? funded? stats partner_names as_json).each do |method|
           company.public_send(method)
         end
       rescue Trello::Error => e
