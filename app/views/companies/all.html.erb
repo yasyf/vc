@@ -12,7 +12,7 @@
     </div>
     <div class="list-group">
       <% companies.each do |company| %>
-        <a class="list-group-item companies--item" href="<%= company.trello_url %>" target="_blank">
+        <a class="list-group-item companies--item" href="<%= company_path(company) %>">
           <%= render partial: 'summary', locals: {company: company} %>
         </a>
       <% end %>

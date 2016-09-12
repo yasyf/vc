@@ -4,15 +4,27 @@
   <div class="panel-heading">
     <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
   </div>
-  <div class="panel-body">
-    <% if @vote.present? %>
-      <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
-        <h4>View Your Vote</h4>
-      </a>
-    <% else %>
-      <h4>You did not vote for this pitch</h4>
-    <% end %>
-  </div>
+  <% if @company.past_deadline? %>
+   <div class="panel-body">
+      <% if @vote.present? %>
+        <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
+          <h4>View Your Vote</h4>
+        </a>
+      <% else %>
+        <h4>You did not vote for this pitch</h4>
+      <% end %>
+    </div>
+  <% else %>
+   <div class="panel-body">
+      <h4>
+        <% if @company.passed? %>
+          We passed on this company without seeing a pitch
+        <% else %>
+         This company is in the pipeline
+        <% end %>
+      </h4>
+    </div>
+  <% end %>
   <div class="list-group">
     <a class="list-group-item companies--item" href="#">
       <div class="row">
@@ -25,9 +37,11 @@
         </div>
       </div>
     </a>
-    <a class="list-group-item companies--item" href="#">
-      <%= render partial: 'shared/stats', locals: {vote: @vote, stats: @company.stats} %>
-    </a>
+    <% if @company.past_deadline? %>
+      <a class="list-group-item companies--item" href="#">
+        <%= render partial: 'shared/stats', locals: {vote: @vote, stats: @company.stats} %>
+      </a>
+    <% end %>
     <% @company.votes.final.each do |vote| %>
       <a class="list-group-item companies--item" href="<%= company_vote_path(@company, vote) %>">
         <%= vote.reason %>
