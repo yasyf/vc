@@ -113,11 +113,7 @@ class Company < ActiveRecord::Base
         Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
 
         users = card_data.delete(:members).map do |member|
-          if member.email.present?
-            User.from_email member.email
-          else
-            User.where(cached_name: member.full_name).first
-          end.tap do |user|
+          User.from_trello(member.id).tap do |user|
             if user.present?
               user.team = team
               user.trello_id = member.id

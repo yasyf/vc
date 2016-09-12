@@ -119,8 +119,11 @@ class User < ActiveRecord::Base
     return user if user.present?
 
     user = Trello::Member.find trello_id
-    return nil unless user.email.present?
-    from_email user.email
+    if user.email.present?
+      from_email user.email
+    else
+      where(cached_name: user.full_name).first
+    end
   rescue Trello::Error
     nil
   end
