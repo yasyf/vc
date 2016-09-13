@@ -6,6 +6,7 @@ class VoteMonitorJob < ActiveJob::Base
   def perform
     pending = Company.where('pitch_on < ?', Time.now).where(decision_at: nil)
     pending.each do |company|
+      next unless company.votes.present?
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
       missing_users = company.votes.where(final: false).map(&:user) - company.votes.final.map(&:user)
       missing_votes = company.votes.where(final: false).where(user: missing_users)
