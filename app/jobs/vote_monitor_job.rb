@@ -9,6 +9,7 @@ class VoteMonitorJob < ActiveJob::Base
     pending.each do |company|
       next unless company.votes.present?
       next if company.votes.order(created_at: :asc).first + REQUIRED_AGE > Time.now
+      next unless company.quorum?
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
       missing_users = company.votes.where(final: false).map(&:user) - company.votes.final.map(&:user)
       missing_votes = company.votes.where(final: false).where(user: missing_users)
