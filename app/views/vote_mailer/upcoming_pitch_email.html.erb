@@ -4,7 +4,7 @@
     <p>The snapshot can be found <a href="<%= @company.snapshot_link %>">here</a>.</p>
   <% else %>
     <p>
-      I couldn't find a file named "<%= @company.team.name.titleize %> Snapshot" in Drive. Please ask one of the involved partners (<%= @company.users.map(&:name).join(', ') %>) to send out the snapshot.
+      I couldn't find a file named "<%= @company.name %> Snapshot" in Drive. Please ask one of the involved partners (<%= @company.users.map(&:name).join(', ') %>) to send out the snapshot.
     </p>
   <% end %>
   <p>
