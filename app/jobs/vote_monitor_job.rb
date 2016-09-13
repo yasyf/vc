@@ -1,5 +1,6 @@
 class VoteMonitorJob < ActiveJob::Base
-  THRESHOLD = 1.hour
+  REQUIRED_AGE = 1.hour
+  REMAINING_THRESHOLD = 1.hour
 
   queue_as :default
 
@@ -7,6 +8,7 @@ class VoteMonitorJob < ActiveJob::Base
     pending = Company.where('pitch_on < ?', Time.now).where(decision_at: nil)
     pending.each do |company|
       next unless company.votes.present?
+      next if company.votes.order(created_at: :asc).first + REQUIRED_AGE > Time.now
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
       missing_users = company.votes.where(final: false).map(&:user) - company.votes.final.map(&:user)
       missing_votes = company.votes.where(final: false).where(user: missing_users)
@@ -14,7 +16,7 @@ class VoteMonitorJob < ActiveJob::Base
         company.update! decision_at: Time.now
         company.notify_team!
         company.move_to_post_pitch_list!
-      elsif time_remaining <= THRESHOLD && time_remaining >= -THRESHOLD
+      elsif time_remaining <= REMAINING_THRESHOLD && time_remaining >= -REMAINING_THRESHOLD
         missing_votes.each { |vote| vote.warn!(time_remaining) }
         company.warn_team!(missing_users, time_remaining)
       end
