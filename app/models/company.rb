@@ -211,7 +211,11 @@ class Company < ActiveRecord::Base
   private
 
   def set_snapshot_link!
-    self.snapshot_link = GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")&.web_view_link
+    self.snapshot_link = if team.snapshot_folder_ids.present?
+      GoogleApi::Drive.new.find(name.gsub(/['"]/, ''), in_folders: team.snapshot_folder_ids)
+    else
+      GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")
+    end&.web_view_link
   end
 
   def set_crunchbase_attributes!

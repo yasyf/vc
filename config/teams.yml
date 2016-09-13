@@ -18,6 +18,8 @@ boston: &boston
   listserv: 'iteambos'
   channel: 'iteambos'
   board: '6hD5AVNy'
+  snapshots:
+    - '0B2FgZYzHz3i9fk1Zbnl1SEluNEltVEljU251dEdlb2dDb0FtcFpKQy1PNVJvZHR4NlVrWlU'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
@@ -32,6 +34,11 @@ nyc:
   listserv: 'iteamnyc'
   channel: 'iteamnyc'
   board: 'WtHewJmA'
+  snapshots:
+    - '0B40v9HWp1QGqZFlKTUsxTGpYbFk'
+    - '0B40v9HWp1QGqMnlCLXVxYUswa00'
+    - '0BxwhX9OPjSH_M0ozSGZKRzVMV1k'
+    - '0BxwhX9OPjSH_blpueVNpVlIzZHc'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'

@@ -49,6 +49,10 @@ class Team < ApplicationRecord
     "##{config['channel']}"
   end
 
+  def snapshot_folder_ids
+    config['snapshots']
+  end
+
   def notify!(message, all: true)
     return if config['ignore']
     slack_send! slack_channel, message, notify: all

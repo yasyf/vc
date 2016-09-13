@@ -11,8 +11,11 @@ module GoogleApi
       @drive.authorization = authorization
     end
 
-    def find(term, fields = 'files/webViewLink')
-      key_cached({ term: term, fields: fields }) { raw_find(term, fields) }
+    def find(term, fields = 'files/webViewLink', in_folders: [])
+      components = ["name contains '#{term}'"]
+      components << in_folders.map { |folder| "'#{folder}' in parents" }.join(' or ') if in_folders.present?
+      query = components.join(' and ')
+      key_cached({ query: query, fields: fields }) { raw_find(query, fields) }
     end
 
     def list(folder_id, fields = 'files(id,modifiedTime,name)')
@@ -29,8 +32,8 @@ module GoogleApi
       { expires_in: jitter(1, :day) }
     end
 
-    def raw_find(term, fields)
-      @drive.list_files(q: "name = '#{term}'", order_by: 'createdTime desc', fields: fields).files.first
+    def raw_find(query, fields)
+      @drive.list_files(q: query, order_by: 'createdTime desc', fields: fields).files.first
     rescue Google::Apis::ClientError
       nil
     end
