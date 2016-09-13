@@ -27,11 +27,11 @@ class Vote < ActiveRecord::Base
   scope :no, -> { final.where('overall < ?', 3) }
 
   def yes?
-    overall > 3
+    overall.present? && overall > 3
   end
 
   def no?
-    !yes?
+    overall.present? && !yes?
   end
 
   def warn!(time_remaining)

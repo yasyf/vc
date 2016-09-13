@@ -10,17 +10,25 @@
         <h4>View Snapshot</h4>
       </a>
     <% end %>
-    <% if @company.past_deadline? %>
-      <% if @vote.present? %>
+    <% if @vote.present? %>
+      <% if @vote.final? %>
         <a class="btn btn-default" href="<%= company_vote_path(@company, @vote) %>" role="button">
           <h4>View Your Vote</h4>
         </a>
       <% else %>
-        <h4>You did not vote for this pitch</h4>
+        <a class="btn btn-default" href="<%= new_company_vote_path(@company) %>" role="button">
+          <h4>Submit Final Vote</h4>
+        </a>
       <% end %>
+    <% elsif @company.pitched? %>
+      <a class="btn btn-default" href="<%= new_company_vote_path(@company) %>" role="button">
+        <h4>Submit Pre-Vote</h4>
+      </a>
     <% else %>
       <h4>
-        <% if @company.passed? %>
+        <% if @company.past_deadline? %>
+          You did not vote for this pitch
+        <% elsif @company.passed? %>
           We passed on this company without seeing a pitch
         <% else %>
          This company is in the pipeline
@@ -44,11 +52,27 @@
       <a class="list-group-item companies--item" href="#">
         <%= render partial: 'shared/stats', locals: {vote: @vote, stats: @company.stats} %>
       </a>
-    <% end %>
-    <% @company.votes.final.each do |vote| %>
-      <a class="list-group-item companies--item" href="<%= company_vote_path(@company, vote) %>">
-        <%= vote.reason %>
-      </a>
+      <% @company.votes.final.each do |vote| %>
+        <a class="list-group-item companies--item" href="<%= company_vote_path(@company, vote) %>">
+          <p class='companies--name-heading'>
+            <%= vote.user.name %>
+          </p>
+          <p class="companies--larger">
+            <%= vote.reason %>
+          </p>
+        </a>
+      <% end %>
+    <% else %>
+      <% @company.votes.where(final: false).each do |vote| %>
+        <a class="list-group-item companies--item" href="<%= company_vote_path(@company, vote) %>">
+          <p class='companies--name-heading'>
+            <%= vote.user.name %>
+            <br>
+            Prevote
+          </p>
+          <%= render partial: 'shared/averages', locals: {stats: vote.stats, force_int: true} %>
+        </a>
+      <% end %>
     <% end %>
   </div>
 </div>

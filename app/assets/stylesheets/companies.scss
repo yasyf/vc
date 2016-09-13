@@ -19,9 +19,18 @@
   margin-bottom: 0;
 }
 
+.companies--name-heading {
+  color: $muted;
+  margin-bottom: 0.5em;
+}
+
 .companies--smaller {
   font-size: 60%;
   margin-bottom: 0.5em;
+}
+
+.companies--larger {
+  font-size: 140%;
 }
 
 .companies--filter-form {

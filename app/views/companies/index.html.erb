@@ -14,7 +14,11 @@
     <% @companies.each do |company| %>
       <a
         class="list-group-item companies--item"
-        href="<%= company.past_deadline? ? company_path(company) : new_company_vote_path(company) %>"
+        href="<%=
+          company.user_votes(current_user).present? || company.past_deadline? \
+          ? company_path(company) \
+          : new_company_vote_path(company)
+        %>"
       >
         <%= render partial: 'pitched_company', locals: {company: company} %>
       </a>

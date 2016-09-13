@@ -7,10 +7,4 @@
   </div>
 </div>
 <br>
-<div class="row companies--smaller">
-  <% stats[:averages].each do |name, value| %>
-    <div class="col-sm-3">
-      <%= render partial: 'shared/stat', locals: {name: name, value: value} %>
-    </div>
-  <% end %>
-</div>
+<%= render partial: 'shared/averages', locals: {stats: stats} %>

@@ -13,10 +13,11 @@ class VotesController < ApplicationController
     vote = company.votes.create vote_params.merge(user: current_user)
     if vote.valid?
       flash[:success] = "Vote submitted!"
+      redirect_to company_path(company)
     else
       flash_errors vote
+      redirect_to action: :new
     end
-    redirect_to action: :new
   end
 
   private

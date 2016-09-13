@@ -13,7 +13,7 @@ class CompaniesController < ApplicationController
 
   def show
     @company = Company.find(params[:id])
-    @vote = @company.vote_for_user(current_user)
+    @vote = @company.user_votes(current_user).first
   end
 
   def voting

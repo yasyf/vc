@@ -1,7 +1,9 @@
 <div class='stat--heading'>
   <p class='stat--larger'>
     <%=
-      if value.in?([true, false])
+      if local_assigns[:force_int]
+        value.to_i
+      elsif value.in?([true, false])
         (value ? '&#10003;' : '&#10007;').html_safe
       elsif value.is_a?(Float)
         value.round(1)
