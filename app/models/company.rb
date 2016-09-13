@@ -151,10 +151,10 @@ class Company < ActiveRecord::Base
         if !quiet
           if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
             message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
-            company.add_comment message, notify: true
+            company.add_comment! message, notify: true
           end
           if company.rdv_funded? && !company.rdv_funded_was
-            company.add_comment "RDV has now funded *#{company.name}*!", notify: true
+            company.add_comment! "RDV has now funded *#{company.name}*!", notify: true
           end
         end
         company.save!
@@ -165,6 +165,14 @@ class Company < ActiveRecord::Base
 
   def user_votes(user)
     votes.where(user: user).order(created_at: :desc)
+  end
+
+  def missing_vote_users
+    votes.where(final: false).map(&:user) - votes.final.map(&:user)
+  end
+
+  def missing_votes
+    votes.where(final: false).where(user: missing_vote_users)
   end
 
   def trello_url
@@ -180,7 +188,7 @@ class Company < ActiveRecord::Base
     trello_card.save
   end
 
-  def add_comment(comment, notify: false)
+  def add_comment!(comment, notify: false)
     team.notify!(comment, all: false) if notify
     trello_card.add_comment "**[DRFBot]** #{comment}"
   end

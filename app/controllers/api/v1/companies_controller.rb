@@ -15,6 +15,20 @@ module Api
         render json: { results: Company.search(params[:q]) }
       end
 
+      def voting_status
+        company = Company.find(params[:id])
+        unless company.votes.present?
+          render json: { status: :not_started }
+          return
+        end
+        users = company.missing_vote_users
+        if users.present?
+          render json: { status: :missing_users, users: users }
+        else
+          render json: { status: :complete, funded: company.funded? }
+        end
+      end
+
       def allocate
         company = Company.find(params[:id])
         user = User.from_slack(params[:user_slack_id])

@@ -153,6 +153,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  def as_json(options = {})
+    options.reverse_merge!(
+      only: [:username, :inactive_since, :trello_id, :slack_id]
+    )
+    super(options).merge(
+      name: cached_name,
+      team: team.name
+    )
+  end
+
   private
 
   def add_to_wit

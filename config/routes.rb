@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       scope "(:team)", constraints: TeamConstraint.new do
         resources :companies, only: [:index, :show] do
           member do
+            get 'voting_status'
             post 'allocate'
             post 'reject'
           end

@@ -11,14 +11,12 @@ class VoteMonitorJob < ActiveJob::Base
       next if company.votes.order(created_at: :asc).first.created_at + REQUIRED_AGE > Time.now
       next unless company.quorum?
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
-      missing_users = company.votes.where(final: false).map(&:user) - company.votes.final.map(&:user)
-      missing_votes = company.votes.where(final: false).where(user: missing_users)
-      if missing_users.count == 0
+      if company.missing_vote_users.count == 0
         company.update! decision_at: Time.now
         company.notify_team!
         company.move_to_post_pitch_list!
       elsif time_remaining <= REMAINING_THRESHOLD && time_remaining >= -REMAINING_THRESHOLD
-        missing_votes.each { |vote| vote.warn!(time_remaining) }
+        company.missing_votes.each { |vote| vote.warn!(time_remaining) }
         company.warn_team!(missing_users, time_remaining)
       end
     end
