@@ -10,7 +10,7 @@
   </div>
 
   <div>
-    <table align="center" width="50%">
+    <table align="center" width="75%" bgcolor="#303030">
       <tr>
         <% @stats[:averages].each do |met, _| %>
           <th><span class="metric"><%= met.titleize %></span></th>
@@ -18,7 +18,7 @@
       </tr>
       <tr>
         <% @stats[:averages].each do |_, val| %>
-          <td width="25%"><span class="result"><%= val.round(1) %></span></td>
+          <td width="25%" align="center"><span class="result"><%= val.round(1) %></span></td>
         <% end %>
       </tr>
     </table>

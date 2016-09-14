@@ -7,13 +7,16 @@
     color: $muted-white;
     font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: center;
+    padding: 20px;
   }
 
   .metric {
     font-size: 120%;
+    color: $muted-white;
   }
   .result {
     font-size: 110%;
+    color: $muted-white;
   }
 
   a {
@@ -37,5 +40,6 @@
 
   table {
     table-layout: fixed;
+    background-color: #303030;
   }
 }
