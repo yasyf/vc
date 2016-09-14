@@ -14,7 +14,7 @@ module GoogleApi
     def find(term, fields = 'files/webViewLink', in_folders: [])
       components = ["name contains '#{term}'"]
       components << in_folders.map { |folder| "'#{folder}' in parents" }.join(' or ') if in_folders.present?
-      query = components.join(' and ')
+      query = components.map { |comp| "(#{comp})" }.join(' and ')
       key_cached({ query: query, fields: fields }) { raw_find(query, fields) }
     end
 
