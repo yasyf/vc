@@ -1,44 +1,46 @@
-<div>
-  <h1 class="<%= @company.funded? ? 'success' : 'failure' %>"><%= @company.name %></h1>
-
-  <p>
-    <%= @company.team.name.titleize %> ​<b>will<%= @company.funded? ? '' : ' not' %></b> be funding ​<a href="<%= company_url(id: @company.id) %>"><%= @company.name %></a>!
-    <br>
-    <%= (@yes_percent * 100).round(0) %>% voted to fund, with <%= @stats[:yes_votes] %> in favor and <%= @stats[:no_votes] %> against.
-  </p>
-</div>
-
-<div>
-  <table align="center" width="50%">
-    <tr>
-      <% @stats[:averages].each do |met, _| %>
-        <th><span class="metric"><%= met.titleize %></span></th>
-      <% end %>
-    </tr>
-    <tr>
-      <% @stats[:averages].each do |_, val| %>
-        <td width="25%"><span class="result"><%= val.round(1) %></span></td>
-      <% end %>
-    </tr>
-  </table>
-</div>
-
-<% if @stats[:yes_votes] > 0 %>
-  <h1>Yes Votes</h1>
+<div class="container">
   <div>
-    <% @company.votes.yes.each do |vote| %>
-      <h4><%= vote.user.name %></h4>
-      <p class="reason"><%= vote.reason %></p>
-    <% end %>
-  </div>
-<% end %>
+    <h1 class="<%= @company.funded? ? 'success' : 'failure' %>"><%= @company.name %></h1>
 
-<% if @stats[:no_votes] > 0 %>
-  <h1>No Votes</h1>
-  <div>
-    <% @company.votes.no.each do |vote| %>
-      <h4><%= vote.user.name %></h4>
-      <p class="reason"><%= vote.reason %></p>
-    <% end %>
+    <p>
+      <%= @company.team.name.titleize %> ​<b>will<%= @company.funded? ? '' : ' not' %></b> be funding ​<a href="<%= company_url(id: @company.id) %>"><%= @company.name %></a>!
+      <br>
+      <%= (@yes_percent * 100).round(0) %>% voted to fund, with <%= @stats[:yes_votes] %> in favor and <%= @stats[:no_votes] %> against.
+    </p>
   </div>
-<% end %>
+
+  <div>
+    <table align="center" width="50%">
+      <tr>
+        <% @stats[:averages].each do |met, _| %>
+          <th><span class="metric"><%= met.titleize %></span></th>
+        <% end %>
+      </tr>
+      <tr>
+        <% @stats[:averages].each do |_, val| %>
+          <td width="25%"><span class="result"><%= val.round(1) %></span></td>
+        <% end %>
+      </tr>
+    </table>
+  </div>
+
+  <% if @stats[:yes_votes] > 0 %>
+    <h1>Yes Votes</h1>
+    <div>
+      <% @company.votes.yes.each do |vote| %>
+        <h4><%= vote.user.name %></h4>
+        <p class="reason"><%= vote.reason %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @stats[:no_votes] > 0 %>
+    <h1>No Votes</h1>
+    <div>
+      <% @company.votes.no.each do |vote| %>
+        <h4><%= vote.user.name %></h4>
+        <p class="reason"><%= vote.reason %></p>
+      <% end %>
+    </div>
+  <% end %>
+</div>

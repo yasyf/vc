@@ -1,14 +1,14 @@
 @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic";
 @import "variables";
 
-body.email-only {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-align: center;
-  background-color: #303030;
-  color: $muted-white;
-}
-
 .email-only {
+  .container {
+    background-color: #303030;
+    color: $muted-white;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: center;
+  }
+
   .metric {
     font-size: 120%;
   }
