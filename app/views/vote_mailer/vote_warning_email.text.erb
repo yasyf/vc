@@ -1,4 +1,4 @@
 Your vote is <% if @late %>late<% else %>needed<% end %> for the final funding decision of _<%= @company.name %>_!
 The deadline <% if @late %> was <%= distance_of_time_in_words(@deadline, Time.now) %> ago. <% else %> is in <%= distance_of_time_in_words(Time.now, @deadline) %>.<% end %>
 
-<%= url_for action: 'create', controller: 'votes' %>
+<%= company_url(id: @company.id) %>

@@ -1,3 +1,41 @@
-table, th, td {
-  border: 1px solid black;
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic";
+@import "variables";
+
+body.email-only {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+  background-color: #303030;
+  color: $muted-white;
+}
+
+.email-only {
+  .metric {
+    font-size: 120%;
+  }
+  .result {
+    font-size: 110%;
+  }
+
+  a {
+    color: $navbar-focus;
+    text-decoration: none;
+  }
+
+  .reason {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .success {
+    color: $success;
+  }
+
+  .failure {
+    color: $failure;
+  }
+
+  table {
+    table-layout: fixed;
+  }
 }

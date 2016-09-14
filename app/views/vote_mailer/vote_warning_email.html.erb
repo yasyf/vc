@@ -10,7 +10,7 @@
   </p>
   <p>
     Please go to the
-    <a href="<%= url_for action: 'create', controller: 'votes' %>">voting page for <%= @company.name %></a>
+    <a href="<%= company_url(id: @company.id) %>">voting page for <%= @company.name %></a>
     and submit your vote now.
   </p>
 </div>
