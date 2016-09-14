@@ -46,4 +46,8 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: '/emails'
+  end
 end

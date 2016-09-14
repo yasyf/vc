@@ -129,6 +129,10 @@ GEM
       tilt
     letter_opener (1.4.1)
       launchy (~> 2.2)
+    letter_opener_web (1.3.0)
+      actionmailer (>= 3.2)
+      letter_opener (~> 1.0)
+      railties (>= 3.2)
     levenshtein-ffi (1.1.0)
       ffi (~> 1.9)
     listen (3.1.5)
@@ -328,7 +332,7 @@ DEPENDENCIES
   httparty
   jbuilder (~> 2.0)
   jquery-rails
-  letter_opener
+  letter_opener_web
   levenshtein-ffi
   listen
   nokogiri
