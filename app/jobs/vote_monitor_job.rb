@@ -1,5 +1,4 @@
 class VoteMonitorJob < ActiveJob::Base
-  REQUIRED_AGE = 1.hour
   REMAINING_THRESHOLD = 1.hour
 
   queue_as :default
@@ -8,7 +7,6 @@ class VoteMonitorJob < ActiveJob::Base
     pending = Company.where('pitch_on < ?', Time.now).where(decision_at: nil)
     pending.each do |company|
       next unless company.votes.present?
-      next if company.votes.order(created_at: :asc).first.created_at + REQUIRED_AGE > Time.now
       next unless company.quorum?
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
       if company.missing_vote_users.count == 0
