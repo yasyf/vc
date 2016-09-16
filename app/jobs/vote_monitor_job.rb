@@ -4,7 +4,7 @@ class VoteMonitorJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    pending = Company.where('pitch_on < ?', Time.now).where(decision_at: nil)
+    pending = Company.where('pitch_on <= ?', Date.today).where(decision_at: nil)
     pending.each do |company|
       next unless company.votes.present?
       next unless company.quorum?
