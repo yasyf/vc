@@ -63,13 +63,17 @@ sf:
     rejected: 'Passed - No Pitch'
 
 phl:
-  ignore: true
+  ignore: <%= !Rails.env.production? %>
   listserv: 'iteamphl'
   channel: 'philly-iteam'
   board: 'GSYLWzGT'
+  snapshots:
+    - '0B8PQ_6u1wbLuS1AxeFA4TkdXQmM'
+    - '0B8PQ_6u1wbLuTEFUV2hBRmROQzA'
+    - '0B5YV7AKNT7yoVlNER3dscVZPdk0'
   lists:
     application: 'Applied at Website'
-    allocated: 'In Discussions'
+    allocated: 'Allocated Point Partner'
     ice_box: 'Deferred / Check-In Later'
     scheduled: 'Pitching'
     funded: 'Invested'

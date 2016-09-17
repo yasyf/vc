@@ -1,6 +1,6 @@
 # VoteCollector & DRFBot
 
-If you're a DRF partner and are looking for the walkthrough, [go here](WALKTHROUGH.md).
+If you're a DRF partner and are looking for the walkthrough, [go here](docs/WALKTHROUGH.md).
 
 VoteCollector is the new pipeline management and vote collection web app that's currently being used by the Boston DRF team. The hope is to expand it very quickly to the other cities. Its accompanied by two Slack bots: VoteBot and DRFBot.
 
