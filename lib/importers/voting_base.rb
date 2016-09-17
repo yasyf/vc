@@ -38,7 +38,7 @@ module Importers
 
       vote_data = parsed.slice(:product, :market, :team, :fit, :overall, :reason)
       vote_data[:fit] ||= 3 # Handle legacy votes where fit was not a category
-      vote_data[:overall] = 2 if vote_data[:overall] == 3 # Handle legacy votes where an overall of 3 was valid as a pass
+      vote_data[:overall] = 2 if vote_data[:overall].to_i == 3 # Handle legacy votes where an overall of 3 was valid as a pass
       vote_data[:final] = vote_data[:overall].present?
       vote_data[:reason] = 'No reason given!' if vote_data[:final] && vote_data[:reason].blank?
       vote_data[:user] = user
@@ -54,6 +54,10 @@ module Importers
     end
 
     private
+
+    def extract_email(name, emails = {})
+      emails[name] || team.users.where('cached_name ILIKE ?', "#{name}%").first&.username
+    end
 
     def url?(filename)
       filename =~ /\A#{URI::regexp(%w(ftp http https))}\z/
