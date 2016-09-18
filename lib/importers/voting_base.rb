@@ -37,8 +37,13 @@ module Importers
       user.save! if user.changed?
 
       vote_data = parsed.slice(:product, :market, :team, :fit, :overall, :reason)
-      vote_data[:fit] ||= 3 # Handle legacy votes where fit was not a category
-      vote_data[:overall] = 2 if vote_data[:overall].to_i == 3 # Handle legacy votes where an overall of 3 was valid as a pass
+      vote_data.each do |k, v|
+        next if k == :reason
+        vote_data[k] = v.to_i
+        vote_data[k] = nil if vote_data[k] == 0
+      end
+      vote_data[:fit] = 3 unless vote_data[:fit].present? # Handle legacy votes where fit was not a category
+      vote_data[:overall] = 2 if vote_data[:overall] == 3 # Handle legacy votes where an overall of 3 was valid as a pass
       vote_data[:final] = vote_data[:overall].present?
       vote_data[:reason] = 'No reason given!' if vote_data[:final] && vote_data[:reason].blank?
       vote_data[:user] = user
@@ -48,7 +53,7 @@ module Importers
         vote.skip_eligibility!
         vote.save!
       rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.warn "Skipping record due to invalid vote (#{e.message}): #{parsed}"
+        Rails.logger.warn "Skipping record due to invalid vote (#{e.message}): #{vote_data}"
         return
       end
     end

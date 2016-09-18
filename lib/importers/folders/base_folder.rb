@@ -84,7 +84,6 @@ module Importers::Folders
         parsed[:date] ||= file.modified_time
         parsed[:email] ||= extract_email(parsed[:name], emails) if parsed[:name].present?
         next unless parsed[:email].present?
-        parsed[:overall] = nil if parsed[:overall].is_a?(String)
         parsed[:company] = parse_filename file.name
         import! parsed
       end
