@@ -8,7 +8,7 @@
     data-method='post'
     data-params='<%= { team: team.name }.to_json %>'
     data-remote='true'
-    href='<%= set_team_api_v1_user_path %>'
+    href='<%= set_team_api_v1_user_path(team: team.name) %>'
     role='button'
   >
     <%= team.name.titleize %>
