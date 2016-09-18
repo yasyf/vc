@@ -157,8 +157,12 @@ class Company < ActiveRecord::Base
             company.add_comment! "RDV has now funded *#{company.name}*!", notify: true
           end
         end
-        company.save!
 
+        begin
+          company.save!
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+          Rails.logger.warn "#{e.message}: #{company.serializable_hash}"
+        end
       end
     end
   end
