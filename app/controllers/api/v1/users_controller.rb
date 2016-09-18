@@ -18,7 +18,8 @@ module Api
 
       def set_team
         current_user.update!(team: Team.send(params[:team]))
-        render json: { team: current_user.team.name, redirect: session[:original_path] }
+        team_name = current_user.team.name
+        render json: { team: team_name, redirect: session[:original_path].gsub('<TEAM>', team_name) }
       end
 
       private

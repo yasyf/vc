@@ -8,9 +8,13 @@ class ApplicationController < ActionController::Base
   private
 
   def check_team!
-    if current_user.present? && current_user.team.blank? && !view_context.current_page?(team_path)
-      session[:original_path] = request.path
-      redirect_to team_path
+    if current_user.present? && !view_context.current_page?(team_path)
+      if current_user.team.blank?
+        session[:original_path] = request.path
+        redirect_to team_path
+      else
+        session[:original_path] = request.path.gsub(current_user.team.name, '<TEAM>')
+      end
     end
   end
 
