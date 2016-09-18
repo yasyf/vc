@@ -14,6 +14,7 @@ class LoggedEvent < ActiveRecord::Base
     log.increment :count
     log.save!
     if log.count <= notify && to.present?
+      Rails.logger.info "[LoggedEvent] Notifying #{to} of #{reason} (id: #{log.id})"
       emailer = "#{reason}_email"
       users = User.from_multi(to)
       ErrorMailer.email_and_slack! emailer, users, *args

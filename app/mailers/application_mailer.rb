@@ -6,17 +6,15 @@ class ApplicationMailer < ActionMailer::Base
 
   def self.email_and_slack!(emailer, users, *args, cc_all: false)
     raise NoMethodError unless respond_to? emailer
-    if users.is_a?(Team)
-      mail = public_send(emailer, "#{users.name.titleize} Team <#{users.email_list}>", *args)
-      mail.cc = ENV['ALL_TEAMS_MAILING_LIST'] if cc_all
-      mail.deliver_now
-      users.notify! mail.text_part.body.decoded
-    else
-      users = Array.wrap(users)
-      mail = public_send(emailer, users.map { |u| "#{u.name} <#{u.email}>" }, *args)
-      mail.cc = ENV['ALL_TEAMS_MAILING_LIST'] if cc_all
-      mail.deliver_now
-      users.each { |user| user.send! mail.text_part.body.decoded }
+    emails = Array.wrap(users).map do |u|
+      u.is_a?(Team) ? "#{u.name.titleize} Team <#{u.email_list}>" : "#{u.name} <#{u.email}>"
+    end
+    mail = public_send(emailer, emails, *args)
+    mail.cc = ENV['ALL_TEAMS_MAILING_LIST'] if cc_all
+    mail.deliver_now
+    text = mail.text_part.body.decoded
+    Array.wrap(users).each do |u|
+      u.is_a?(Team) ? u.notify!(text) : u.send!(text)
     end
   end
 end
