@@ -49,11 +49,11 @@ class Company < ActiveRecord::Base
   end
 
   def quorum?
-    override_quorum? || cache_for_a_hour { pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on) }
+    override_quorum? || pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on)
   end
 
   def funded?
-    cache_for_a_hour { quorum? && yes_votes > no_votes }
+    quorum? && yes_votes > no_votes
   end
 
   def vote_for_user(user)
