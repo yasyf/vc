@@ -140,7 +140,7 @@ class Company < ActiveRecord::Base
         if company.changed?
           begin
             company.save!
-          rescue ActiveRecord::RecordInvalid => e
+          rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
             LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
               list.name, to: users, notify: 0, data: { company: company.serializable_hash, message: e.message }
           end

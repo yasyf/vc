@@ -27,7 +27,7 @@ class AddUniqueIndices < ActiveRecord::Migration[5.0]
   end
 
   def add_uniq!(klass, column)
-    klass.all.group_by(&column).select { |_, r| r.count > 1 }.each do |_, records|
+    klass.all.group_by(&column).select { |c, r| c.present? && r.count > 1 }.each do |_, records|
       keep = records.pop
       records.each do |record|
         klass.reflect_on_all_associations.each do |assoc|
