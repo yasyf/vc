@@ -139,9 +139,9 @@ class User < ActiveRecord::Base
 
   def self.from_multi(multi)
     Array.wrap(multi).map do |item|
-      item if item.is_a?(User) || item.is_a?(Team)
-      find(item) if item.is_a?(Integer)
-      where(username: item).first if item.is_a?(String)
+      return item if item.is_a?(User) || item.is_a?(Team)
+      return find(item) if item.is_a?(Integer)
+      return where(username: item).first if item.is_a?(String)
     end.compact
   end
 
