@@ -1,7 +1,7 @@
 class EligibleValidator < ActiveModel::Validator
   def validate(record)
     record.errors[:user] << 'must be active' if !record.user.active?
-    record.errors[:company] << 'voting deadline has passed' if record.company.past_deadline?
+    record.errors[:company] << 'voting deadline has passed' if record.company.decision_at.present?
   end
 end
 
