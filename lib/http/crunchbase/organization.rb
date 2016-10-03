@@ -93,10 +93,12 @@ module Http::Crunchbase
         return by_name.first
       end
 
-      parameterized_name = @company.name.gsub(' ', '').parameterize
-      from_name = self.class.api_get("/#{parameterized_name}", {}, false)
-      from_name_check = self.class.api_get("/#{parameterized_name}-2", {}, false)
-      return from_name if from_name.present? && from_name_check.blank?
+      if by_name.size <= 3
+        parameterized_name = @company.name.gsub(' ', '').parameterize
+        from_name = self.class.api_get("/#{parameterized_name}", {}, false)
+        from_name_check = self.class.api_get("/#{parameterized_name}-2", {}, false)
+        return from_name if from_name.present? && from_name_check.blank?
+      end
 
       by_name.find do |company_data|
         investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
