@@ -230,7 +230,7 @@ class Company < ActiveRecord::Base
     self.crunchbase_id = "#{Http::Crunchbase::Organization::INVALID_KEY}_#{param_name}"
     self.domain = nil
     self.description = nil
-    set_capital_raised!
+    self.capital_raised = funded? ? 20_000 : 0
     save!
   end
 
@@ -256,6 +256,7 @@ class Company < ActiveRecord::Base
 
   def set_crunchbase_attributes!
     org = crunchbase_org(5)
+    return unless org.permalink
     self.crunchbase_id = org.permalink
     self.domain = org.url
     self.description = org.description
