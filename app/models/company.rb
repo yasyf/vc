@@ -49,11 +49,13 @@ class Company < ActiveRecord::Base
   end
 
   def quorum?
-    override_quorum? || pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on)
+    cached(cache_if_decided_options) do
+      override_quorum? || pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on)
+    end
   end
 
   def funded?
-    quorum? && yes_votes > no_votes
+    cached(cache_if_decided_options) { quorum? && yes_votes > no_votes }
   end
 
   def vote_for_user(user)
@@ -61,7 +63,7 @@ class Company < ActiveRecord::Base
   end
 
   def stats
-    cached do
+    cached(cache_if_decided_options) do
       {
         yes_votes: yes_votes,
         no_votes: no_votes,
@@ -221,6 +223,12 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def cache_if_decided_options
+    options = {}
+    options[:force] = true unless decision_at.present?
+    options
+  end
 
   def set_snapshot_link!
     self.snapshot_link = begin

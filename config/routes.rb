@@ -9,6 +9,8 @@ class TeamConstraint
 end
 
 Rails.application.routes.draw do
+  get 'stats/show'
+
   root 'welcome#index'
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
@@ -18,6 +20,7 @@ Rails.application.routes.draw do
 
   scope "(:team)", constraints: TeamConstraint.new do
     resources :knowledges, only: [:index]
+    resources :stats, only: [:index]
     get 'all', to: 'companies#all'
     get 'voting', to: 'companies#voting'
     resources :companies, only: [:index, :show] do

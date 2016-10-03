@@ -1,5 +1,7 @@
 class Team < ApplicationRecord
   include Concerns::Slackable
+  include Concerns::Cacheable
+  include ActionView::Helpers::NumberHelper
 
   has_many :companies
   has_many :users
@@ -56,6 +58,18 @@ class Team < ApplicationRecord
   def notify!(message, all: true)
     return if config['ignore']
     slack_send! slack_channel, message, notify: all
+  end
+
+  def portfolio_follow_on
+    cache_for_a_day do
+      number_to_human(companies.select(&:funded?).sum(&:capital_raised), locale: :money)
+    end
+  end
+
+  def anti_portfolio_follow_on
+    cache_for_a_day do
+      number_to_human(companies.reject(&:funded?).sum(&:capital_raised), locale: :money)
+    end
   end
 
   private

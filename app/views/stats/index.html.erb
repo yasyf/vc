@@ -1,0 +1,24 @@
+<% title 'Stats' %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>Stats</h1>
+  </div>
+  <div class="panel-body">
+    <h4>
+      Most of this information is scraped or comes from CrunchBase, so take it with a grain of salt.
+    </h4>
+  </div>
+  <ul class="list-group">
+    <%= render partial: 'stat', locals: {
+      name: 'Portfolio Follow-On',
+      value: @team.portfolio_follow_on,
+      value_class: 'text-success',
+    } %>
+    <%= render partial: 'stat', locals: {
+      name: 'Anti-Portfolio Follow-On',
+      value: @team.anti_portfolio_follow_on,
+      value_class: 'text-danger',
+    } %>
+  </ul>
+</div>

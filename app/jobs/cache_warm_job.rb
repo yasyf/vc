@@ -12,5 +12,10 @@ class CacheWarmJob < ActiveJob::Base
         company.destroy! if e.message =~ /not found/
       end
     end
+    Team.for_each do |team|
+      %w(portfolio_follow_on anti_portfolio_follow_on).each do |method|
+        team.public_send(method)
+      end
+    end
   end
 end
