@@ -50,7 +50,7 @@ class Company < ActiveRecord::Base
   end
 
   def quorum?
-    cached(cache_if_decided_options) do
+    cached(cache_unless_voting) do
       override_quorum? || pitch_on.present? && votes.valid(team, pitch_on).count >= User.quorum(team, pitch_on)
     end
   end
@@ -64,7 +64,7 @@ class Company < ActiveRecord::Base
   end
 
   def stats
-    cached(cache_if_decided_options) do
+    cached(cache_unless_voting) do
       {
         yes_votes: yes_votes,
         no_votes: no_votes,
@@ -233,9 +233,9 @@ class Company < ActiveRecord::Base
 
   private
 
-  def cache_if_decided_options
+  def cache_unless_voting
     options = {}
-    options[:force] = true unless decision_at.present?
+    options[:force] = true if pitch_on.present? && decision_at.blank?
     options
   end
 
