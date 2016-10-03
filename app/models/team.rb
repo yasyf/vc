@@ -61,15 +61,11 @@ class Team < ApplicationRecord
   end
 
   def portfolio_follow_on
-    cache_for_a_day do
-      number_to_human(companies.select(&:funded?).sum(&:capital_raised), locale: :money)
-    end
+    number_to_human(companies.select(&:funded?).sum(&:capital_raised), locale: :money)
   end
 
   def anti_portfolio_follow_on
-    cache_for_a_day do
-      number_to_human(companies.reject(&:funded?).sum(&:capital_raised), locale: :money)
-    end
+    number_to_human(companies.reject(&:funded?).sum(&:capital_raised), locale: :money)
   end
 
   private
