@@ -113,7 +113,7 @@ module Http::Crunchbase
     end
 
     def fetch_data
-      is_valid = !@company.crunchbase_id.starts_with?(INVALID_KEY)
+      is_valid = @company.crunchbase_id.blank? || !@company.crunchbase_id.starts_with?(INVALID_KEY)
       if @company.crunchbase_id.present? && is_valid
         return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
       end
