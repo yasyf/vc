@@ -224,11 +224,15 @@ class Company < ActiveRecord::Base
   end
 
   def invalidate_crunchbase_id!
-    self.crunchbase_id = Http::Crunchbase::Organization::INVALID_KEY
+    self.crunchbase_id = "#{Http::Crunchbase::Organization::INVALID_KEY}_#{param_name}"
     self.domain = nil
     self.description = nil
     set_capital_raised!
     save!
+  end
+
+  def param_name
+    name.gsub(' ', '').parameterize
   end
 
   private

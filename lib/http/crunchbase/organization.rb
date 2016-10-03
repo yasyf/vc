@@ -101,9 +101,8 @@ module Http::Crunchbase
       return nil unless try_guess
 
       if by_name.size <= 3
-        parameterized_name = @company.name.gsub(' ', '').parameterize
-        from_name = self.class.api_get("/#{parameterized_name}", {}, false)
-        from_name_check = self.class.api_get("/#{parameterized_name}-2", {}, false)
+        from_name = self.class.api_get("/#{@company.param_name}", {}, false)
+        from_name_check = self.class.api_get("/#{@company.param_name}-2", {}, false)
         return from_name if from_name.present? && from_name_check.blank?
       end
 
@@ -114,14 +113,15 @@ module Http::Crunchbase
     end
 
     def fetch_data
-      if @company.crunchbase_id.present? && @company.crunchbase_id != INVALID_KEY
+      is_valid = !@company.crunchbase_id.starts_with?(INVALID_KEY)
+      if @company.crunchbase_id.present? && is_valid
         return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
       end
       if @company.domain.present?
         data = self.class.api_get("/", domain_name: @company.domain).first
         return data if data.present?
       end
-      fetch_from_name(@company.crunchbase_id != INVALID_KEY)
+      fetch_from_name(is_valid)
     end
   end
 end
