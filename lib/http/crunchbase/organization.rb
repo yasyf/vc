@@ -2,6 +2,8 @@ module Http::Crunchbase
   class Organization
     extend Concerns::Cacheable
 
+    INVALID_KEY = '_invalid_magic_cb_org_key'
+
     include HTTParty
     base_uri 'https://api.crunchbase.com/v/3/organizations'
     format :json
@@ -75,7 +77,7 @@ module Http::Crunchbase
     def search
       @search ||= begin
         data = fetch_data
-        if @company.crunchbase_id.present?
+        if @company.crunchbase_id.present? && @company.crunchbase_id != INVALID_KEY
           data
         elsif data.present?
           self.class.api_get("/#{data['properties']['permalink']}", {}, false)
@@ -107,7 +109,7 @@ module Http::Crunchbase
     end
 
     def fetch_data
-      if @company.crunchbase_id.present?
+      if @company.crunchbase_id.present? && @company.crunchbase_id != INVALID_KEY
         return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
       end
       if @company.domain.present?

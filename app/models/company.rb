@@ -223,6 +223,10 @@ class Company < ActiveRecord::Base
     set_capital_raised!
   end
 
+  def invalidate_crunchbase_id!
+    update! crunchbase_id: Http::Crunchbase::Organization::INVALID_KEY
+  end
+
   private
 
   def cache_if_decided_options
