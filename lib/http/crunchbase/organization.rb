@@ -3,6 +3,7 @@ module Http::Crunchbase
     extend Concerns::Cacheable
 
     INVALID_KEY = '_invalid_magic_cb_org_key'
+    SIGNAL_INVESTORS = ['Dorm Room Fund', 'Rough Draft Ventures']
 
     include HTTParty
     base_uri 'https://api.crunchbase.com/v/3/organizations'
@@ -92,7 +93,9 @@ module Http::Crunchbase
         by_name.first['properties']['primary_role'] == 'company' &&
         Levenshtein.distance(by_name.first['properties']['name'].downcase, @company.name.downcase) <= 3
       )
-        return by_name.first
+        return by_name.first if try_guess
+        investors = self.class.api_get("/#{by_name.first['properties']['permalink']}/investors")
+        return by_name.first if investors&.find { |inv| SIGNAL_INVESTORS.include?(inv['properties']['name']) }.present?
       end
 
       return nil unless try_guess
@@ -106,7 +109,7 @@ module Http::Crunchbase
 
       by_name.find do |company_data|
         investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
-        investors&.find { |inv| inv['properties']['name'] == 'Dorm Room Fund' }.present?
+        investors&.find { |inv| SIGNAL_INVESTORS.include?(inv['properties']['name']) }.present?
       end
     end
 
