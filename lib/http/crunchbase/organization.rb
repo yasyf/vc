@@ -99,6 +99,8 @@ module Http::Crunchbase
       )
         return by_name.first
       end
+      from_name = self.class.api_get("/#{@company.name.gsub(' ', '').parameterize}", {}, false)
+      return from_name if from_name.present?
       by_name.find do |company_data|
         investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
         investors&.find { |inv| inv['properties']['name'] == 'Dorm Room Fund' }.present?
