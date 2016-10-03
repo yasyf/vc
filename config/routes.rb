@@ -36,6 +36,7 @@ Rails.application.routes.draw do
             get 'voting_status'
             post 'allocate'
             post 'reject'
+            post 'invalidate_crunchbase'
           end
           collection do
             get 'search'

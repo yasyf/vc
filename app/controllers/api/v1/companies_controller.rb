@@ -29,6 +29,12 @@ module Api
         end
       end
 
+      def invalidate_crunchbase
+        Company.find(params[:id]).invalidate_crunchbase_id!
+
+        head :ok
+      end
+
       def allocate
         company = Company.find(params[:id])
         user = User.from_slack(params[:user_slack_id])
