@@ -78,7 +78,7 @@ module Http::Crunchbase
     def search
       @search ||= begin
         data = fetch_data
-        if @company.crunchbase_id.present? && @company.crunchbase_id != INVALID_KEY
+        if @company.crunchbase_id.present? && id_valid?
           data
         elsif data.present?
           self.class.api_get("/#{data['properties']['permalink']}", {}, false)
@@ -112,16 +112,19 @@ module Http::Crunchbase
       end
     end
 
+    def id_valid?
+      @company.crunchbase_id.blank? || !@company.crunchbase_id.starts_with?(INVALID_KEY)
+    end
+
     def fetch_data
-      is_valid = @company.crunchbase_id.blank? || !@company.crunchbase_id.starts_with?(INVALID_KEY)
-      if @company.crunchbase_id.present? && is_valid
+      if @company.crunchbase_id.present? && id_valid?
         return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
       end
       if @company.domain.present?
         data = self.class.api_get("/", domain_name: @company.domain).first
         return data if data.present?
       end
-      fetch_from_name(is_valid)
+      fetch_from_name(id_valid?)
     end
   end
 end
