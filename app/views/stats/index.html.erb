@@ -10,15 +10,34 @@
     </h4>
   </div>
   <ul class="list-group">
-    <%= render partial: 'stat', locals: {
+    <% items = @team.portfolio_top_performers(6) %>
+    <%= render layout: 'stat', locals: {
       name: 'Portfolio Follow-On',
       value: @team.portfolio_follow_on,
       value_class: 'text-success',
-    } %>
-    <%= render partial: 'stat', locals: {
+      items: items,
+    } do |company| %>
+      <% render partial: 'sub_stat', locals: {
+        name: company.name,
+        value: company.capital_raised(format: true),
+        value_class: 'text-success',
+        item_count: items.count,
+      } %>
+    <% end %>
+
+    <% items = @team.anti_portfolio_top_performers(6) %>
+    <%= render layout: 'stat', locals: {
       name: 'Anti-Portfolio Follow-On',
       value: @team.anti_portfolio_follow_on,
       value_class: 'text-danger',
-    } %>
+      items: items,
+    } do |company| %>
+      <% render partial: 'sub_stat', locals: {
+        name: company.name,
+        value: company.capital_raised(format: true),
+        value_class: 'text-danger',
+        item_count: items.count,
+      } %>
+    <% end %>
   </ul>
 </div>

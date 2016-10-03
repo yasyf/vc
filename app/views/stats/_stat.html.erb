@@ -3,8 +3,13 @@
     <p class="companies--name-heading companies--larger">
       <%= name %>
     </p>
-    <p class='companies--large-heading <%= local_assigns.fetch(:value_class, '') %>'>
+    <p class='stats--large-heading <%= local_assigns.fetch(:value_class, '') %>'>
       <%= value %>
     </p>
+    <div class="row">
+      <% local_assigns.fetch(:items, []).each do |item| %>
+        <%= yield(item) %>
+      <% end %>
+    </div>
   </div>
 </li>

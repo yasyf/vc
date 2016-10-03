@@ -60,6 +60,14 @@ class Team < ApplicationRecord
     slack_send! slack_channel, message, notify: all
   end
 
+  def portfolio_top_performers(n = 5)
+    companies.order(capital_raised: :desc).select(&:funded?).first(n)
+  end
+
+  def anti_portfolio_top_performers(n = 5)
+    companies.order(capital_raised: :desc).select(&:passed?).first(n)
+  end
+
   def portfolio_follow_on
     number_to_human(companies.select(&:funded?).sum(&:capital_raised), locale: :money)
   end
