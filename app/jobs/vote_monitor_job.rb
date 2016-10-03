@@ -10,7 +10,7 @@ class VoteMonitorJob < ActiveJob::Base
       next unless company.quorum?
       time_remaining = (DateTime.now - company.deadline.to_datetime).days
       if company.missing_vote_users.count == 0
-        company.update! decision_at: Time.now
+        company.update! decision_at: Time.now, cached_funded: company.funded?
         company.notify_team!
         company.move_to_post_pitch_list!
       elsif time_remaining <= REMAINING_THRESHOLD && time_remaining >= -REMAINING_THRESHOLD

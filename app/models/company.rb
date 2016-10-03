@@ -14,6 +14,7 @@ class Company < ActiveRecord::Base
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
   validates :rdv_funded, inclusion: [true, false]
+  validates :cached_funded, inclusion: [true, false]
   validates :capital_raised, presence: true, numericality: { only_integer: true }
 
   scope :pitch, -> { where('pitch_on IS NOT NULL') }
@@ -55,7 +56,7 @@ class Company < ActiveRecord::Base
   end
 
   def funded?
-    cached(cache_if_decided_options) { quorum? && yes_votes > no_votes }
+    cached_funded || (quorum? && yes_votes > no_votes)
   end
 
   def vote_for_user(user)
