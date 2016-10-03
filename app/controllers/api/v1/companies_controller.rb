@@ -34,7 +34,7 @@ module Api
         user = User.from_slack(params[:user_slack_id])
 
         return head :bad_request unless company.team == user.team
-        return head :bad_request unless company.list == company.team.lists.application
+        return head :bad_request unless company.list.pos < company.team.lists.allocated.pos
 
         company.add_user user
         company.move_to_list! company.team.lists.allocated
