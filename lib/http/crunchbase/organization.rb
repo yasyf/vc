@@ -83,14 +83,7 @@ module Http::Crunchbase
       end
     end
 
-    def fetch_data
-      if @company.crunchbase_id.present?
-        return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
-      end
-      if @company.domain.present?
-        data = self.class.api_get("/", domain_name: @company.domain).first
-        return data if data.present?
-      end
+    def fetch_from_name
       by_name = self.class.api_get("/", name: @company.name)
       if (
         by_name.size == 1 &&
@@ -99,12 +92,27 @@ module Http::Crunchbase
       )
         return by_name.first
       end
-      from_name = self.class.api_get("/#{@company.name.gsub(' ', '').parameterize}", {}, false)
-      return from_name if from_name.present?
+
+      parameterized_name = @company.name.gsub(' ', '').parameterize
+      from_name = self.class.api_get("/#{parameterized_name}", {}, false)
+      from_name_check = self.class.api_get("/#{parameterized_name}-2", {}, false)
+      return from_name if from_name.present? && from_name_check.blank?
+
       by_name.find do |company_data|
         investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
         investors&.find { |inv| inv['properties']['name'] == 'Dorm Room Fund' }.present?
       end
+    end
+
+    def fetch_data
+      if @company.crunchbase_id.present?
+        return self.class.api_get("/#{@company.crunchbase_id}", {}, false)
+      end
+      if @company.domain.present?
+        data = self.class.api_get("/", domain_name: @company.domain).first
+        return data if data.present?
+      end
+      fetch_from_name
     end
   end
 end
