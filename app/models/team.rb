@@ -65,7 +65,7 @@ class Team < ApplicationRecord
   end
 
   def anti_portfolio_follow_on
-    number_to_human(companies.reject(&:funded?).sum(&:capital_raised), locale: :money)
+    number_to_human(companies.select(&:passed?).sum(&:capital_raised), locale: :money)
   end
 
   private

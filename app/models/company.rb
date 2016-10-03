@@ -56,7 +56,7 @@ class Company < ActiveRecord::Base
   end
 
   def funded?
-    cached_funded || (quorum? && yes_votes > no_votes)
+    cached_funded || list == team.lists.funded || (quorum? && yes_votes > no_votes)
   end
 
   def vote_for_user(user)
@@ -139,6 +139,9 @@ class Company < ActiveRecord::Base
         company.team = team
         company.list = list
         company.users = users
+
+        company.cached_funded = true if company.funded?
+        company.cached_funded = false if company.passed?
 
         if company.changed?
           begin
