@@ -23,7 +23,7 @@ class Company < ActiveRecord::Base
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
 
   before_create :set_extra_attributes!
-  after_create :add_to_wit
+  after_create :add_to_wit!
 
   def domain=(domain)
     super begin
@@ -129,6 +129,7 @@ class Company < ActiveRecord::Base
         company = Company.where(trello_id: card_data[:trello_id]).first_or_create
         company.assign_attributes card_data
         company.decision_at ||= Time.now if importing && company.pitch_on == nil
+
         if company.list.present? && company.list != list
           LoggedEvent.log! :company_list_changed, company,
             notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
@@ -136,6 +137,7 @@ class Company < ActiveRecord::Base
             company.prepare_team!
           end
         end
+
         company.team = team
         company.list = list
         company.users = users
@@ -150,6 +152,10 @@ class Company < ActiveRecord::Base
             LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
               list.name, to: users, notify: 0, data: { company: company.serializable_hash, message: e.message }
           end
+        end
+
+        if company.name != company.name_was
+          company.send(:add_to_wit!)
         end
 
         company.set_extra_attributes!
@@ -270,7 +276,7 @@ class Company < ActiveRecord::Base
     self.capital_raised = [crunchbase_org(5).total_funding.to_i || 0, funded? ? 20_000 : 0].max
   end
 
-  def add_to_wit
+  def add_to_wit!
     Http::Wit::Entity.new('company').add_value name
   end
 
