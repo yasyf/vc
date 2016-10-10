@@ -11,11 +11,17 @@ module GoogleApi
       @drive.authorization = authorization
     end
 
-    def find(term, fields = 'files/webViewLink', in_folders: [])
+    def create(name, mime_type, upload_source, parents = [], file_mime_type = nil, fields = 'id,webViewLink')
+      file_mime_type ||= Rack::Mime.mime_type ".#{upload_source.split('.').last}" if upload_source.is_a?(String)
+      metadata = { name: name, mime_type: mime_type, parents: Array.wrap(parents) }
+      @drive.create_file metadata, fields: fields, upload_source: upload_source, content_type: file_mime_type
+    end
+
+    def find(term, fields = 'files/webViewLink', in_folders: [], cache: true)
       components = ["name contains '#{term}'"]
-      components << in_folders.map { |folder| "'#{folder}' in parents" }.join(' or ') if in_folders.present?
+      components << Array.wrap(in_folders).map { |folder| "'#{folder}' in parents" }.join(' or ') if in_folders.present?
       query = components.map { |comp| "(#{comp})" }.join(' and ')
-      key_cached({ query: query, fields: fields }) { raw_find(query, fields) }
+      key_cached({ query: query, fields: fields }, cache ? {} : { force: true }) { raw_find(query, fields) }
     end
 
     def list(folder_id, fields = 'files(id,modifiedTime,name)')

@@ -244,6 +244,20 @@ class Company < ActiveRecord::Base
     name.gsub(' ', '').parameterize
   end
 
+  def prevote_comments_doc
+    file_name = "[#{id}] #{name} Prevote Discussion"
+    drive = GoogleApi::Drive.new
+    begin
+      drive.find(file_name, in_folders: team.prevote_discussions_folder_id, cache: false) || drive.create(
+        file_name,
+        'application/vnd.google-apps.document',
+        StringIO.new(User.active(team).map { |user| "<div><h2>#{user.name}</h2></div>" }.join("\n")),
+        team.prevote_discussions_folder_id,
+        'text/html',
+      )
+    end.web_view_link
+  end
+
   private
 
   def cache_unless_voting

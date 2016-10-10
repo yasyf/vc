@@ -55,6 +55,10 @@ class Team < ApplicationRecord
     config['snapshots']
   end
 
+  def prevote_discussions_folder_id
+    config['prevote_discussions']
+  end
+
   def notify!(message, all: true)
     return if config['ignore']
     slack_send! slack_channel, message, notify: all

@@ -16,6 +16,9 @@
           <h4>View Your Vote</h4>
         </a>
       <% else %>
+        <a class="btn btn-default" href="<%= @company.prevote_comments_doc %>" target="_blank" role="button">
+          <h4>Prevote Discussion Doc</h4>
+        </a>
         <a class="btn btn-default" href="<%= new_company_vote_path(@company) %>" role="button">
           <h4>Submit Final Vote</h4>
         </a>

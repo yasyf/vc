@@ -20,6 +20,7 @@ boston: &boston
   board: '6hD5AVNy'
   snapshots:
     - '0B2FgZYzHz3i9fk1Zbnl1SEluNEltVEljU251dEdlb2dDb0FtcFpKQy1PNVJvZHR4NlVrWlU'
+  prevote_discussions: '0B5YV7AKNT7yoU1lDUWI5ajRON1U'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
@@ -39,6 +40,7 @@ nyc:
     - '0B40v9HWp1QGqMnlCLXVxYUswa00'
     - '0BxwhX9OPjSH_M0ozSGZKRzVMV1k'
     - '0BxwhX9OPjSH_blpueVNpVlIzZHc'
+  prevote_discussions: '0B5YV7AKNT7yocjBRa3NrdmtQWk0'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
@@ -53,6 +55,7 @@ sf:
   listserv: 'iteamsfbay'
   channel: 'iteamsf'
   board: 'lSsw6XnH'
+  prevote_discussions: '0B5YV7AKNT7yoVmoxT1VsaHdiLUk'
   lists:
     application: 'Applied at Website'
     allocated: 'Needs 1st Meeting'
@@ -72,6 +75,7 @@ phl:
     - '0B8PQ_6u1wbLuTEFUV2hBRmROQzA'
     - '0B5YV7AKNT7yoVlNER3dscVZPdk0'
     - '0B8PQ_6u1wbLudXVOaERXcXN0cFE'
+  prevote_discussions: '0B5YV7AKNT7yoUGNhYXlfa182MUU'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
