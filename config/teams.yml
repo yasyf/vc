@@ -8,7 +8,7 @@ default:
     - allocated
     - ice_box
     - scheduled
-    - funded
+    - pre_funded
     - passed
     - rejected
 
@@ -26,7 +26,11 @@ boston: &boston
     allocated: 'Allocated Point Partner'
     ice_box: 'Ice Box'
     scheduled: 'Scheduled to Pitch'
-    funded: 'Funded'
+    pre_funded: 'Invested'
+    funded:
+      - 'Invested'
+      - 'Administered Note'
+      - 'Funded'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
 
@@ -46,22 +50,30 @@ nyc:
     allocated: 'Allocated Point Partner'
     ice_box: 'Waiting for more progress'
     scheduled: 'Scheduled to Pitch'
-    funded: 'Invested'
+    pre_funded: 'Invested'
+    funded:
+      - 'Invested'
+      - 'Shutdown'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
 
 sf:
-  ignore: true
   listserv: 'iteamsfbay'
   channel: 'iteamsf'
   board: 'lSsw6XnH'
   prevote_discussions: '0B5YV7AKNT7yoVmoxT1VsaHdiLUk'
   lists:
     application: 'Applied at Website'
-    allocated: 'Needs 1st Meeting'
+    allocated: 'Allocated Point Partner'
     ice_box: 'Hold'
-    scheduled: 'Ready for partner meeting'
-    funded: 'Yes - Money not yet wired'
+    scheduled: 'Scheduled to Pitch'
+    pre_funded: 'Yes - Money not yet wired'
+    funded:
+        - 'Yes - Money not yet wired'
+        - 'Invested - Active'
+        - 'Invested - Dissolved'
+        - 'Invested - Exited'
+        - 'Inactive deals'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
 
@@ -81,7 +93,12 @@ phl:
     allocated: 'Allocated Point Partner'
     ice_box: 'Deferred / Check-In Later'
     scheduled: 'Pitching'
-    funded: 'Invested'
+    pre_funded: 'Invested'
+    funded:
+      - 'Invested'
+      - 'Exited'
+      - 'Returned at Par'
+      - 'Shut Down'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
 

@@ -56,7 +56,7 @@ class Company < ActiveRecord::Base
   end
 
   def funded?
-    cached_funded || list == team.lists.funded || (quorum? && yes_votes > no_votes)
+    cached_funded || list.in?(team.funded_lists) || (quorum? && yes_votes > no_votes)
   end
 
   def vote_for_user(user)
@@ -103,7 +103,7 @@ class Company < ActiveRecord::Base
   end
 
   def move_to_post_pitch_list!
-    list = funded? ? team.lists.funded : team.lists.passed
+    list = funded? ? team.lists.pre_funded : team.lists.passed
     move_to_list! list
 
     trello_card.name = name

@@ -54,8 +54,8 @@ module Api
           company.team.lists.rejected,
           company.team.lists.passed,
           company.team.lists.scheduled,
-          company.team.lists.funded,
-        ])
+          company.team.lists.pre_funded,
+        ] + company.team.funded_lists)
         company.move_to_rejected_list!
 
         head :ok

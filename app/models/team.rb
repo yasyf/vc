@@ -39,6 +39,12 @@ class Team < ApplicationRecord
     end
   end
 
+  def funded_lists
+    config['lists']['funded'].map do |name|
+      List.where(trello_board_id: trello_board_id, name: name).first!
+    end
+  end
+
   def trello_board_id
     config['board']
   end
