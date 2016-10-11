@@ -251,7 +251,7 @@ class Company < ActiveRecord::Base
       drive.find(file_name, in_folders: team.prevote_discussions_folder_id, cache: false) || drive.create(
         file_name,
         'application/vnd.google-apps.document',
-        StringIO.new(User.active(team).map { |user| "<div><h2>#{user.name}</h2></div>" }.join("\n")),
+        StringIO.new(User.active(team).shuffle.map { |user| "<div><h2>#{user.name}</h2></div>" }.join("\n")),
         team.prevote_discussions_folder_id,
         'text/html',
       )
