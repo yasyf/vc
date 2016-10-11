@@ -16,9 +16,9 @@ module Importers
     private
 
     class DateTimeNotFound < StandardError
-      def log!(card)
+      def log!(card, team)
         users = card.members.map { |mem| User.from_trello(mem.id) }.compact
-        users = @team unless users.present?
+        users = team unless users.present?
         LoggedEvent.log! :datetime_not_found, card, card.list.name, card.name, card.url,
           to: users, data: { name: card.name }
       end
@@ -34,7 +34,7 @@ module Importers
       begin
         parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.scheduled.trello_id
       rescue DateTimeNotFound => dtnf
-        dtnf.log! card
+        dtnf.log! card, @team
         return nil
       end
       parsed
