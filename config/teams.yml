@@ -58,9 +58,12 @@ nyc:
     rejected: 'Passed - No Pitch'
 
 sf:
+  ignore: <%= !Rails.env.production? %>
   listserv: 'iteamsfbay'
   channel: 'iteamsf'
   board: 'lSsw6XnH'
+  snapshots:
+    - '0B5YV7AKNT7yoT1QycnluOHJFd0k'
   prevote_discussions: '0B5YV7AKNT7yoVmoxT1VsaHdiLUk'
   lists:
     application: 'Applied at Website'
