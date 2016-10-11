@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def append_info_to_payload(payload)
+    super
+    payload[:host] = request.host
+    payload[:source_ip] = request.remote_ip
+    payload[:user_id] = current_user.try(:id)
+  end
+
   def check_team!
     if current_user.present? && !view_context.current_page?(team_path)
       if current_user.team.blank?

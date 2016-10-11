@@ -50,6 +50,7 @@ gem 'google-api-client'
 gem 'levenshtein-ffi', require: 'levenshtein'
 gem 'airbrake'
 gem 'roo'
+gem 'lograge'
 
 group :production do
   gem 'rails_12factor'
