@@ -1,6 +1,6 @@
 <%= render partial: 'summary', locals: {company: company} %>
 <div class="list-group-item-text">
-  <% if company.past_deadline? %>
+  <% if company.decision_at.present? %>
     <%= render partial: 'shared/stats', locals: {vote: company.vote_for_user(current_user), stats: company.stats} %>
   <% elsif company.pitched? %>
     <% vote = company.user_votes(current_user).first %>
