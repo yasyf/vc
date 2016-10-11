@@ -149,8 +149,7 @@ class Company < ActiveRecord::Base
           begin
             company.save!
           rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-            LoggedEvent.log! :invalid_company_data, list, company.serializable_hash, e.message, company.trello_url,
-              list.name, to: users, notify: 0, data: { company: company.serializable_hash, message: e.message }
+            Rails.logger.error "[Company Sync] Invalid Company Data (#{e.message})\n#{company.serializable_hash}"
           end
         end
 
