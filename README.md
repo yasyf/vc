@@ -2,7 +2,7 @@
 
 If you're a DRF partner and are looking for the walkthrough, [go here](docs/WALKTHROUGH.md).
 
-VoteCollector is the new pipeline management and vote collection web app that's currently being used by the Boston DRF team. The hope is to expand it very quickly to the other cities. Its accompanied by two Slack bots: VoteBot and DRFBot.
+VoteCollector is the new pipeline management and vote collection web app that's currently being used by the Boston DRF team. The hope is to expand it very quickly to the other cities. Its accompanied by two Slack bots: VoteBot and DRFBot. The code for DRFBot can be found at [yasyf/drfbot](https://github.com/yasyf/drfbot).
 
 VoteBot is a notifications-only bot that communicates with the team about new applications, upcoming pitches, funding decisions, and funding updates for any company either in the portfolio or in our pipeline (including companies we've passed on).
 
