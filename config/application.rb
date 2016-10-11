@@ -13,7 +13,6 @@ module Drfvote
     # -- all .rb files in that directory are automatically loaded.
 
     config.eager_load_paths << Rails.root.join('lib')
-    config.time_zone = 'Eastern Time (US & Canada)'
 
     %w(teams overrides).each do |name|
       result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)

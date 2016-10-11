@@ -34,7 +34,7 @@ class Company < ActiveRecord::Base
   end
 
   def deadline
-    super || pitch_on + 2.days if pitch_on.present?
+    super || pitch_on + (2.5).days if pitch_on.present?
   end
 
   def pitched?
