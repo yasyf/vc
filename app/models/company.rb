@@ -115,6 +115,11 @@ class Company < ActiveRecord::Base
       Importers::Trello.new(team).sync! do |card_data|
         Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
 
+        if card_data[:closed]
+          Company.where(trello_id: card_data[:trello_id]).destroy_all
+          next
+        end
+
         users = card_data.delete(:members).map do |member|
           User.from_trello(member.id).tap do |user|
             if user.present?

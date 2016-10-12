@@ -14,6 +14,9 @@ module Importers
         parsed = parse(card)
         yield parsed if parsed.present?
       end
+      board.cards(filter: :closed).each do |card|
+        yield { trello_id: card.id, closed: card.closed }
+      end
     end
 
     private
@@ -33,6 +36,7 @@ module Importers
         name: clean_name(card.name),
         trello_list_id: card.list_id,
         members: card.members,
+        closed: card.closed,
       }
       begin
         parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.scheduled.trello_id
