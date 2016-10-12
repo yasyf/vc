@@ -2,6 +2,8 @@ class Company < ActiveRecord::Base
   include Concerns::Cacheable
   include ActionView::Helpers::NumberHelper
 
+  DEFAULT_DEADLINE = (2.5).days
+
   has_many :votes
   belongs_to :list
   belongs_to :team
@@ -38,7 +40,7 @@ class Company < ActiveRecord::Base
   end
 
   def deadline
-    super || pitch_on + (2.5).days if pitch_on.present?
+    super || pitch_on + DEFAULT_DEADLINE if pitch_on.present?
   end
 
   def pitched?
@@ -87,7 +89,9 @@ class Company < ActiveRecord::Base
   end
 
   def prepare_team!
-    VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true) if pitch_on.present?
+    return if LoggedEvent.for(company, :prepare_team).present?
+    LoggedEvent.log! :prepare_team, company
+    VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true)
   end
 
   def warn_team!(missing_users, time_remaining)
@@ -142,9 +146,6 @@ class Company < ActiveRecord::Base
         if company.list.present? && company.list != list
           LoggedEvent.log! :company_list_changed, company,
             notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
-          if list == team.lists.scheduled
-            company.prepare_team!
-          end
         end
 
         company.team = team
@@ -168,6 +169,7 @@ class Company < ActiveRecord::Base
 
         company.set_extra_attributes!
         next unless company.changed? && company.valid?
+
         if !quiet
           if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
             message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
@@ -175,6 +177,12 @@ class Company < ActiveRecord::Base
           end
           if company.rdv_funded? && !company.rdv_funded_was
             company.add_comment! "RDV has now funded *#{company.name}*!", notify: true
+          end
+        end
+
+        if list == team.lists.scheduled && company.pitch_on.present?
+          if company.snapshot_link.present? || (company.pitch_on.to_datetime - team.datetime_now) < DEFAULT_DEADLINE
+            company.prepare_team!
           end
         end
 

@@ -19,5 +19,6 @@ class LoggedEvent < ActiveRecord::Base
       users = User.from_multi(to)
       ErrorMailer.email_and_slack! emailer, users, *args
     end
+    log.count
   end
 end
