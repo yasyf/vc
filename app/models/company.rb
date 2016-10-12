@@ -206,6 +206,10 @@ class Company < ActiveRecord::Base
   def add_user(user)
     trello_card.add_member user.trello_user
     trello_card.save
+
+    users << user
+    save!
+  rescue Trello::Error
   end
 
   def add_comment!(comment, notify: false)
