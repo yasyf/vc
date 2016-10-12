@@ -15,7 +15,7 @@ module Importers
         yield parsed if parsed.present?
       end
       board.cards(filter: :closed).each do |card|
-        yield { trello_id: card.id, closed: card.closed }
+        yield ({ trello_id: card.id, closed: card.closed })
       end
     end
 
