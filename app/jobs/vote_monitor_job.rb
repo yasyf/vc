@@ -8,7 +8,7 @@ class VoteMonitorJob < ActiveJob::Base
     pending.each do |company|
       next unless company.votes.present?
       next unless company.quorum?
-      time_remaining = team.datetime_now - company.deadline.to_datetime
+      time_remaining = company.team.datetime_now - company.deadline.to_datetime
       if company.missing_vote_users.count == 0
         company.update! decision_at: Time.current, cached_funded: company.funded?
         company.notify_team!
