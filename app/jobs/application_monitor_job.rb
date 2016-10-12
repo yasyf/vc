@@ -18,7 +18,7 @@ class ApplicationMonitorJob < ActiveJob::Base
       message = "The following companies applied and are waiting to hear back from us!" +
         " If you're already talking with one, please move it to the 'Allocated Point Partner' column." +
         "\n#{links.join(', ')}"
-      team.notify! message
+      team.notify! message, all: false
     end
   end
 end
