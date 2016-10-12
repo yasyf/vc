@@ -115,7 +115,7 @@ class Company < ActiveRecord::Base
       Importers::Trello.new(team).sync! do |card_data|
         Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
 
-        if card_data[:closed]
+        if card_data.delete(:closed)
           Company.where(trello_id: card_data[:trello_id]).destroy_all
           next
         end
