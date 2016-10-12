@@ -45,6 +45,18 @@ class Team < ApplicationRecord
     end
   end
 
+  def time_zone
+    config['time_zone']
+  end
+
+  def time_now
+    Time.current.in_time_zone(time_zone)
+  end
+
+  def datetime_now
+    DateTime.current.in_time_zone(time_zone)
+  end
+
   def trello_board_id
     config['board']
   end

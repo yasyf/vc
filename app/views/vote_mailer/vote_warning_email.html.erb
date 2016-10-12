@@ -3,9 +3,9 @@
     Your vote is <% if @late %>late<% else %>needed<% end %> for the final funding decision of <i><%= @company.name %></i>!
     The deadline
     <%- if @late -%>
-      was <%= distance_of_time_in_words(@deadline, Time.now) %> ago.
+      was <%= distance_of_time_in_words(@deadline, @company.team.time_now) %> ago.
     <%- else -%>
-     is in <%= distance_of_time_in_words(Time.now, @deadline) %>.
+     is in <%= distance_of_time_in_words(@company.team.time_now, @deadline) %>.
     <%- end -%>
   </p>
   <p>

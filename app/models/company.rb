@@ -33,16 +33,20 @@ class Company < ActiveRecord::Base
     end
   end
 
+  def pitch_on
+    super&.in_time_zone('UTC')&.in_time_zone(team.time_zone)
+  end
+
   def deadline
     super || pitch_on + (2.5).days if pitch_on.present?
   end
 
   def pitched?
-    pitch_on.present? && pitch_on < Time.now
+    pitch_on.present? && pitch_on < team.time_now
   end
 
   def past_deadline?
-    pitched? && (decision_at.present? || deadline < Time.now)
+    pitched? && (decision_at.present? || deadline < team.time_now)
   end
 
   def passed?
@@ -133,7 +137,7 @@ class Company < ActiveRecord::Base
 
         company = Company.where(trello_id: card_data[:trello_id]).first_or_create
         company.assign_attributes card_data
-        company.decision_at ||= Time.now if importing && company.pitch_on == nil
+        company.decision_at ||= team.time_now if importing && company.pitch_on == nil
 
         if company.list.present? && company.list != list
           LoggedEvent.log! :company_list_changed, company,

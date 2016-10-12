@@ -16,16 +16,16 @@ class VoteMailer < ApplicationMailer
 
   def vote_warning_email(to, company, time_remaining)
     @company = company
-    @deadline = Time.now + time_remaining.seconds
-    @late = @deadline < Time.now
+    @deadline = company.team.time_now + time_remaining.seconds
+    @late = @deadline < company.team.time_now
     mail to: to, subject: "#{SUBJECT_HEADER} [#{company.team.name.titleize}] #{company.name} Vote Needed"
   end
 
   def vote_warning_team_email(to, missing_users, company, time_remaining)
     @missing_users = missing_users
     @company = company
-    @deadline = Time.now + time_remaining.seconds
-    @late = @deadline < Time.now
+    @deadline = company.team.time_now + time_remaining.seconds
+    @late = @deadline < company.team.time_now
     mail to: to, subject: "#{SUBJECT_HEADER} [#{company.team.name.titleize}] #{company.name} Votes Needed"
   end
 end

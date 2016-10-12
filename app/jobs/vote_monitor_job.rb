@@ -1,5 +1,5 @@
 class VoteMonitorJob < ActiveJob::Base
-  REMAINING_THRESHOLD = 1.hour
+  REMAINING_THRESHOLD = 10.minutes
 
   queue_as :default
 
@@ -8,9 +8,9 @@ class VoteMonitorJob < ActiveJob::Base
     pending.each do |company|
       next unless company.votes.present?
       next unless company.quorum?
-      time_remaining = (DateTime.now - company.deadline.to_datetime).days
+      time_remaining = team.datetime_now - company.deadline.to_datetime
       if company.missing_vote_users.count == 0
-        company.update! decision_at: Time.now, cached_funded: company.funded?
+        company.update! decision_at: Time.current, cached_funded: company.funded?
         company.notify_team!
         company.move_to_post_pitch_list!
       elsif time_remaining <= REMAINING_THRESHOLD && time_remaining >= -REMAINING_THRESHOLD

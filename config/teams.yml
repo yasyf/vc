@@ -33,6 +33,7 @@ boston: &boston
       - 'Funded'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
+  time_zone: 'Eastern Time (US & Canada)'
 
 nyc:
   ignore: <%= !Rails.env.production? %>
@@ -56,6 +57,7 @@ nyc:
       - 'Shutdown'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
+  time_zone: 'Eastern Time (US & Canada)'
 
 sf:
   ignore: <%= !Rails.env.production? %>
@@ -79,6 +81,7 @@ sf:
         - 'Inactive deals'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
+  time_zone: 'Pacific Time (US & Canada)'
 
 phl:
   ignore: <%= !Rails.env.production? %>
@@ -104,6 +107,7 @@ phl:
       - 'Shut Down'
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
+  time_zone: 'Eastern Time (US & Canada)'
 
 test:
   <<: *boston
