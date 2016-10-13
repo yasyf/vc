@@ -89,8 +89,8 @@ class Company < ActiveRecord::Base
   end
 
   def prepare_team!
-    return if LoggedEvent.for(company, :prepare_team).present?
-    LoggedEvent.log! :prepare_team, company
+    return if LoggedEvent.for(self, :prepare_team).present?
+    LoggedEvent.log! :prepare_team, self
     VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true)
   end
 
