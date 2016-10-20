@@ -122,7 +122,7 @@ class User < ActiveRecord::Base
     if user.email.present?
       from_email user.email
     else
-      where(cached_name: user.full_name).first
+      where(cached_name: user.full_name).or(where(username: user.username)).first
     end
   rescue Trello::Error
     nil
@@ -146,10 +146,23 @@ class User < ActiveRecord::Base
   end
 
   def trello_user
-    @trello_user ||= begin
-      Trello::Member.find(trello_id || email)
-    rescue Trello::Error
-      nil
+    @trello_user ||= find_trello_user.tap do |user|
+      if user.present?
+        self.trello_id = user.id
+        save! if changed?
+      end
+    end
+  end
+
+  def find_trello_user
+    [trello_id, email, username, slack_user.name].each do |query|
+      next unless query.present?
+      user = begin
+        Trello::Member.find(query)
+      rescue Trello::Error
+        nil
+      end
+      return user if user.present?
     end
   end
 
