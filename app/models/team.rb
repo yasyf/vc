@@ -32,15 +32,14 @@ class Team < ApplicationRecord
 
   def lists
     @lists ||= begin
-      lists = DEFAULT['lists'].map do |name|
-        List.where(trello_board_id: trello_board_id, name: config['lists'][name]).first!
-      end
+      all_lists = List.where(trello_board_id: trello_board_id).map { |l| [l.name, l] }.to_h
+      lists = DEFAULT['lists'].map { |name| all_lists[config['lists'][name]] }
       Lists.new *lists
     end
   end
 
   def funded_lists
-    config['lists']['funded'].map do |name|
+    @funded_lists ||= config['lists']['funded'].map do |name|
       List.where(trello_board_id: trello_board_id, name: name).first!
     end
   end

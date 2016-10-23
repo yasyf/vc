@@ -234,15 +234,17 @@ class Company < ActiveRecord::Base
       methods: [:trello_url, :stats],
       only: [:id, :name, :trello_id, :snapshot_link, :domain, :rdv_funded, :description]
     )
-    super(options).merge(
-      capital_raised: capital_raised(format: true),
-      pitch_on: pitch_on&.to_time&.to_i,
-      funded: funded?,
-      passed: passed?,
-      past_deadline: past_deadline?,
-      pitched: pitched?,
-      partners: users.map { |user| { name: user.name, slack_id: user.slack_id }  }
-    )
+    key_cached(options, cache_unless_voting(expires_in: jitter(1, :hour))) do
+      super(options).merge(
+        capital_raised: capital_raised(format: true),
+        pitch_on: pitch_on&.to_time&.to_i,
+        funded: funded?,
+        passed: passed?,
+        past_deadline: past_deadline?,
+        pitched: pitched?,
+        partners: users.map { |user| { name: user.name, slack_id: user.slack_id }  }
+      )
+    end
   end
 
   def set_extra_attributes!
@@ -278,10 +280,13 @@ class Company < ActiveRecord::Base
     end.web_view_link
   end
 
+  def team
+    @team ||= Team.send(super.name)
+  end
+
   private
 
-  def cache_unless_voting
-    options = {}
+  def cache_unless_voting(options = {})
     options[:force] = true if pitch_on.present? && decision_at.blank?
     options
   end

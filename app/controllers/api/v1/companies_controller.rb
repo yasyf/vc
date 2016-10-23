@@ -4,19 +4,20 @@ module Api
       before_action :authenticate_api_user!
 
       def index
-        render json: { companies: params[:team].present? ? Company.where(team: team) : Company.all }
+        companies = params[:team].present? ? Company.where(team: team) : Company.all
+        render json: { companies: companies.includes(:team, :list, :users) }
       end
 
       def show
-        render json: { company: Company.find(params[:id]) }
+        render json: { company: Company.includes(:team, :list, :users).find(params[:id]) }
       end
 
       def search
-        render json: { results: Company.search(params[:q]) }
+        render json: { results: Company.includes(:team, :list, :users).search(params[:q]) }
       end
 
       def voting_status
-        company = Company.find(params[:id])
+        company = Company.includes(:votes).find(params[:id])
         unless company.votes.present?
           render json: { status: :not_started }
           return
