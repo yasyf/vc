@@ -281,7 +281,8 @@ class Company < ActiveRecord::Base
   end
 
   def team
-    @team ||= Team.send(super.name)
+    return nil unless (cached_team = super).present?
+    Team.send(cached_team.name)
   end
 
   private
