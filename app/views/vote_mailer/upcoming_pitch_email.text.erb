@@ -1,4 +1,4 @@
 <%= @company.name %> will be pitching on <%= @company.pitch_on.to_date.to_s(:long) %>.
 <% if @company.snapshot_link.present? %>
-  The snapshot can be found here: <%= @company.snapshot_link %>
+  The snapshot can be found <<%= @company.snapshot_link %>|here>.
 <% end %>
