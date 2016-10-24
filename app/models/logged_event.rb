@@ -3,6 +3,13 @@ class LoggedEvent < ActiveRecord::Base
   validates :reason, presence: true, uniqueness: { scope: [:record_id] }
   validates :count, presence: true
 
+  def self.do_once(record, reason)
+    return false if LoggedEvent.for(record, reason).present?
+    LoggedEvent.log! reason, record, notify: 0
+    yield
+    true
+  end
+
   def self.for(record, reason)
     where(record_id: record.id, reason: reason).first
   end

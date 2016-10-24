@@ -89,13 +89,15 @@ class Company < ActiveRecord::Base
   end
 
   def prepare_team!
-    return if LoggedEvent.for(self, :prepare_team).present?
-    LoggedEvent.log! :prepare_team, self
-    VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true)
+    LoggedEvent.do_once(self, :prepare_team) do
+      VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true)
+    end
   end
 
   def warn_team!(missing_users, time_remaining)
-    VoteMailer.email_and_slack!(:vote_warning_team_email, team, missing_users, self, time_remaining.to_i)
+    LoggedEvent.do_once(self, :warn_team) do
+      VoteMailer.email_and_slack!(:vote_warning_team_email, team, missing_users, self, time_remaining.to_i)
+    end
   end
 
   def move_to_list!(list)
