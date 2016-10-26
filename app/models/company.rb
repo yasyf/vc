@@ -233,14 +233,13 @@ class Company < ActiveRecord::Base
 
   def as_json(options = {})
     options.reverse_merge!(
-      methods: [:trello_url, :stats],
+      methods: [:trello_url, :stats, :competitors],
       only: [
         :id,
         :name,
         :trello_id,
         :snapshot_link,
         :domain,
-        :competitors,
         :description,
       ]
     )

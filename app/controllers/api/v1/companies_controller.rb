@@ -1,19 +1,21 @@
 module Api
   module V1
     class CompaniesController < ApiV1Controller
+      INCLUDES = %w(team list users competitors)
+
       before_action :authenticate_api_user!
 
       def index
         companies = params[:team].present? ? Company.where(team: team) : Company.all
-        render json: { companies: companies.includes(:team, :list, :users) }
+        render json: { companies: companies.includes(*INCLUDES) }
       end
 
       def show
-        render json: { company: Company.includes(:team, :list, :users).find(params[:id]) }
+        render json: { company: Company.includes(*INCLUDES).find(params[:id]) }
       end
 
       def search
-        render json: { results: Company.includes(:team, :list, :users).search(params[:q]) }
+        render json: { results: Company.includes(*INCLUDES).search(params[:q]) }
       end
 
       def voting_status
