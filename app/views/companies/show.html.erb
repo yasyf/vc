@@ -43,7 +43,10 @@
     <a class="list-group-item companies--item" href="#">
       <div class="row">
         <div class="col-sm-6">
-          <%= render partial: 'shared/stat', locals: {name: 'RDV Funded', value: @company.rdv_funded?} %>
+          <%= render partial: 'shared/stat', locals: {
+            name: 'Competitors',
+            value: Competitor.to_param(@company),
+          } %>
         </div>
         <div class="col-sm-6">
           <%= render partial: 'shared/stat',

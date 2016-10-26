@@ -8,6 +8,7 @@ class Company < ActiveRecord::Base
   belongs_to :list
   belongs_to :team
   has_and_belongs_to_many :users
+  has_and_belongs_to_many :competitors
 
   validates :name, presence: true
   validates :team, presence: true
@@ -15,7 +16,6 @@ class Company < ActiveRecord::Base
   validates :trello_id, presence: true, uniqueness: true
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
-  validates :rdv_funded, inclusion: [true, false]
   validates :cached_funded, inclusion: [true, false]
   validates :capital_raised, presence: true, numericality: { only_integer: true }
 
@@ -177,8 +177,8 @@ class Company < ActiveRecord::Base
             message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
             company.add_comment! message, notify: true
           end
-          if company.rdv_funded? && !company.rdv_funded_was
-            company.add_comment! "RDV has now funded *#{company.name}*!", notify: true
+          (company.competitors - company.competitors_was).each do |competitor|
+            company.add_comment! "#{competitor.acronym} has now funded *#{company.name}*!", notify: true
           end
         end
 
@@ -234,7 +234,15 @@ class Company < ActiveRecord::Base
   def as_json(options = {})
     options.reverse_merge!(
       methods: [:trello_url, :stats],
-      only: [:id, :name, :trello_id, :snapshot_link, :domain, :rdv_funded, :description]
+      only: [
+        :id,
+        :name,
+        :trello_id,
+        :snapshot_link,
+        :domain,
+        :competitors,
+        :description,
+      ]
     )
     key_cached(options, cache_unless_voting(expires_in: jitter(1, :hour))) do
       super(options).merge(
@@ -252,7 +260,7 @@ class Company < ActiveRecord::Base
   def set_extra_attributes!
     set_snapshot_link!
     set_crunchbase_attributes!
-    set_rdv_funded!
+    set_competitors!
     set_capital_raised!
   end
 
@@ -287,6 +295,10 @@ class Company < ActiveRecord::Base
     Team.send(cached_team.name)
   end
 
+  def crunchbase_org(timeout = 1)
+    @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
+  end
+
   private
 
   def cache_unless_voting(options = {})
@@ -310,8 +322,8 @@ class Company < ActiveRecord::Base
     self.description = org.description
   end
 
-  def set_rdv_funded!
-    self.rdv_funded = crunchbase_org(5).has_investor?('Rough Draft Ventures') || Http::Rdv.new.invested?(name)
+  def set_competitors!
+    self.competitors = Competitor.for_company(self)
   end
 
   def set_capital_raised!
@@ -328,10 +340,6 @@ class Company < ActiveRecord::Base
 
   def no_votes
     votes.no.count
-  end
-
-  def crunchbase_org(timeout = 1)
-    @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
   end
 
   def trello_card

@@ -33,11 +33,16 @@ module Http::Crunchbase
     end
 
     def has_investor?(name)
-      investors&.find { |inv| inv['properties']['name'] == name }.present?
+      investors&.find { |inv| inv['properties']['name'] == name || inv['permalink']['name'] == name }.present?
     end
 
     def total_funding
       get_in 'properties', 'total_funding_usd'
+    end
+
+    def self.find_investor_id(name)
+      result = api_get("/", name: name, organization_types: 'investor').first
+      result && result['properties']['permalink']
     end
 
     private
