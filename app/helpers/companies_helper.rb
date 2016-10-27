@@ -2,14 +2,14 @@ module CompaniesHelper
   def company_class(company)
     if company.funded?
       'success'
-    elsif company.pitch_on.blank?
-      'muted'
-    elsif !company.pitched?
-      'info'
-    elsif !company.past_deadline?
-      'warning'
-    else
+    elsif company.passed?
       'danger'
+    elsif company.pitched?
+      'warning'
+    elsif !company.pitch_on.blank?
+      'info'
+    else
+      'muted'
     end
   end
 end
