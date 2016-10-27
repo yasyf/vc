@@ -33,7 +33,7 @@ module Http::Crunchbase
     end
 
     def has_investor?(name)
-      investors&.find { |inv| inv['properties']['name'] == name || inv['permalink']['name'] == name }.present?
+      investors&.find { |inv| inv['properties']['name'] == name || inv['properties']['permalink'] == name }.present?
     end
 
     def total_funding
