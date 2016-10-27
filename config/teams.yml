@@ -28,7 +28,6 @@ boston: &boston
     scheduled: 'Scheduled to Pitch'
     pre_funded: 'Invested'
     funded:
-      - 'Accepted'
       - 'Invested'
       - 'Administered Note'
       - 'Funded'
