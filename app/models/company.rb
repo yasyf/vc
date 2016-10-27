@@ -177,8 +177,10 @@ class Company < ActiveRecord::Base
             message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
             company.add_comment! message, notify: true
           end
-          (company.competitors - company.competitors_was).each do |competitor|
-            company.add_comment! "#{competitor.acronym} has now funded *#{company.name}*!", notify: true
+          company.competitors.each do |competitor|
+            LoggedEvent.do_once(self, "notify_competitor_#{competitor.acronym.downcase}") do
+              company.add_comment! "#{competitor.acronym} has now funded *#{company.name}*!", notify: true
+            end
           end
         end
 
