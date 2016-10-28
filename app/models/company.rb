@@ -174,12 +174,12 @@ class Company < ActiveRecord::Base
 
         if !quiet
           if company.capital_raised > 20_000 && company.capital_raised != company.capital_raised_was
-            message = "*#{company.name}* has now raised at least #{company.capital_raised(format: true)}!"
+            message = "#{company.cb_slack_link} has now raised at least #{company.capital_raised(format: true)}!"
             company.add_comment! message, notify: true
           end
           company.competitors.each do |competitor|
             LoggedEvent.do_once(self, "notify_competitor_#{competitor.acronym.downcase}") do
-              company.add_comment! "#{competitor.acronym} has now funded *#{company.name}*!", notify: true
+              company.add_comment! "#{competitor.acronym} has now funded #{company.cb_slack_link}!", notify: true
             end
           end
         end
@@ -298,6 +298,10 @@ class Company < ActiveRecord::Base
 
   def crunchbase_org(timeout = 1)
     @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
+  end
+
+  def cb_slack_link
+    "<#{crunchbase_org.crunchbase_url}|#{name}>"
   end
 
   private

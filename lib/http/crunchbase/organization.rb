@@ -28,6 +28,11 @@ module Http::Crunchbase
       get_in 'properties', 'homepage_url'
     end
 
+    def crunchbase_url
+      path = get_in 'properties', 'web_path'
+      "https://www.crunchbase.com/#{path}"
+    end
+
     def investors
       get_in 'relationships', 'investors', multi: true
     end
