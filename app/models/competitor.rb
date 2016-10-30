@@ -34,6 +34,6 @@ class Competitor < ApplicationRecord
   end
 
   def acronym
-    name.split(' ').map(&:first).join('')
+    name.split('').select { |l| /[[:upper:]]/.match l }.join
   end
 end
