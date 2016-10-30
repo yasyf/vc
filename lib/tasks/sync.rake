@@ -22,4 +22,9 @@ namespace :sync do
       Team.where(name: name).first_or_create! unless config['ignore']
     end
   end
+
+  desc "Sync competitors with config"
+  task competitors: :environment do
+    Competitor::COMPETITORS.keys.each { |name| Competitor.create_from_name!(name) }
+  end
 end

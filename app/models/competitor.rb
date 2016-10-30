@@ -3,6 +3,7 @@ class Competitor < ApplicationRecord
     'Rough Draft Ventures': Http::Rdv,
     'Y Combinator': nil,
     'First Round Capital': nil,
+    'TechStars': nil,
   }
 
   has_and_belongs_to_many :companies
