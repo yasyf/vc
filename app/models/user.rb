@@ -155,7 +155,7 @@ class User < ActiveRecord::Base
   end
 
   def find_trello_user
-    [trello_id, email, username, slack_user.name].each do |query|
+    [trello_id, email, username, slack_user&.name].each do |query|
       next unless query.present?
       user = begin
         Trello::Member.find(query)
