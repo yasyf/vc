@@ -164,6 +164,7 @@ class User < ActiveRecord::Base
       end
       return user if user.present?
     end
+    nil
   end
 
   def as_json(options = {})
