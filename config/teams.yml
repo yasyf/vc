@@ -21,6 +21,8 @@ boston: &boston
   snapshots:
     - '0B2FgZYzHz3i9fk1Zbnl1SEluNEltVEljU251dEdlb2dDb0FtcFpKQy1PNVJvZHR4NlVrWlU'
     - '0B05wlJAiP95LSHR1MzB4eTdZX0k'
+  excludes:
+    - '0BzqJUvAXolWLVndIbG4ySFNYR0U'
   prevote_discussions: '0B5YV7AKNT7yoU1lDUWI5ajRON1U'
   lists:
     application: 'Applied at Website'

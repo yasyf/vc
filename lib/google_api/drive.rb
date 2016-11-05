@@ -17,9 +17,10 @@ module GoogleApi
       @drive.create_file metadata, fields: fields, upload_source: upload_source, content_type: file_mime_type
     end
 
-    def find(term, fields = 'files/webViewLink', in_folders: [], cache: true)
+    def find(term, fields = 'files/webViewLink', in_folders: [], excludes: [], cache: true)
       components = ["name contains '#{term}'"]
       components << Array.wrap(in_folders).map { |folder| "'#{folder}' in parents" }.join(' or ') if in_folders.present?
+      components << Array.wrap(excludes).map { |folder| "not '#{folder}' in parents" }.join(' or ') if excludes.present?
       query = components.map { |comp| "(#{comp})" }.join(' and ')
       key_cached({ query: query, fields: fields }, cache ? {} : { force: true }) { raw_find(query, fields) }
     end
