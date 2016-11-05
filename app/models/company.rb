@@ -314,12 +314,8 @@ class Company < ActiveRecord::Base
   def set_snapshot_link!
     self.snapshot_link = begin
       if team.snapshot_folder_ids.present?
-        GoogleApi::Drive.new.find(
-          name.gsub(/['"]/, ''),
-          in_folders: team.snapshot_folder_ids,
-          excludes: team.exclude_folder_ids,
-        )
-      end || GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot")
+        GoogleApi::Drive.new.find(name.gsub(/['"]/, ''), in_folders: team.snapshot_folder_ids)
+      end || GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot", excludes: team.exclude_folder_ids)
     end&.web_view_link
   end
 
