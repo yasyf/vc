@@ -2,7 +2,7 @@ class CacheWarmJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    Company.all.each do |company|
+    Company.includes(:team, :list, :users, :competitors).all.each do |company|
       company.send(:crunchbase_org, 5)
       begin
         %w(quorum? funded? stats partner_names as_json).each do |method|
