@@ -50,14 +50,15 @@ Rails.application.configure do
   config.log_tags = [ :request_id ]
 
   config.cache_store = :dalli_store,
-                    (ENV["MEMCACHIER_SERVERS"] || "").split(","),
+                    (ENV["MEMCACHEDCLOUD_SERVERS"] || "").split(","),
                     {
-                      :username => ENV["MEMCACHIER_USERNAME"],
-                      :password => ENV["MEMCACHIER_PASSWORD"],
-                      :failover => true,
-                      :socket_timeout => 1.5,
-                      :socket_failure_delay => 0.2,
-                      :pool_size => (ENV['RAILS_MAX_THREADS'] || 5).to_i
+                      username: ENV["MEMCACHEDCLOUD_USERNAME"],
+                      password: ENV["MEMCACHEDCLOUD_PASSWORD"],
+                      failover: true,
+                      socket_timeout: 1.5,
+                      socket_failure_delay: 0.2,
+                      pool_size: (ENV['RAILS_MAX_THREADS'] || 5).to_i,
+                      compress: true,
                     }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
