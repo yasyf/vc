@@ -245,7 +245,7 @@ class Company < ActiveRecord::Base
         :description,
       ]
     )
-    key_cached(options, cache_unless_voting(expires_in: jitter(1, :hour))) do
+    key_cached(options, cache_unless_voting(expires_in: jitter(1, :day))) do
       super(options).merge(
         capital_raised: capital_raised(format: true),
         pitch_on: pitch_on&.to_time&.to_i,
