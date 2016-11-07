@@ -179,7 +179,7 @@ class Company < ActiveRecord::Base
           end
           company.competitors.each do |competitor|
             LoggedEvent.do_once(company, "notify_competitor_#{competitor.acronym.downcase}") do
-              company.add_comment! "#{competitor.acronym} has now funded #{company.cb_slack_link}!", notify: true
+              company.add_comment! "#{competitor.name} has now funded #{company.cb_slack_link}!", notify: true
             end
           end
         end
