@@ -123,12 +123,12 @@ class Company < ActiveRecord::Base
   def self.sync!(quiet: true, importing: false)
     Team.for_each do |team|
       Importers::Trello.new(team).sync! do |card_data|
-        Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
-
         if card_data.delete(:closed)
           Company.where(trello_id: card_data[:trello_id]).destroy_all
           next
         end
+
+        Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
 
         users = card_data.delete(:members).map do |member|
           User.from_trello(member.id).tap do |user|
@@ -279,6 +279,8 @@ class Company < ActiveRecord::Base
 
   def prevote_comments_doc
     if prevote_doc_link.blank?
+      # Acquiring the lock reloads the model, so only one thread will actually create a new doc.
+      # The others will see the link after they acquire the lock, and will leave the record untouched.
       with_lock do
         self.prevote_doc_link ||= find_or_create_prevote_doc!
         save!

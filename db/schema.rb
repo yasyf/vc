@@ -10,28 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161026174157) do
+ActiveRecord::Schema.define(version: 20161108050658) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "companies", force: :cascade do |t|
-    t.string   "name",                            null: false
-    t.string   "trello_id",                       null: false
+    t.string   "name",                             null: false
+    t.string   "trello_id",                        null: false
     t.date     "pitch_on"
     t.datetime "decision_at"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.date     "deadline"
     t.integer  "list_id"
-    t.boolean  "override_quorum", default: false, null: false
+    t.boolean  "override_quorum",  default: false, null: false
     t.string   "snapshot_link"
     t.string   "domain"
     t.string   "crunchbase_id"
-    t.integer  "team_id",                         null: false
-    t.integer  "capital_raised",  default: 0,     null: false
+    t.integer  "team_id",                          null: false
+    t.integer  "capital_raised",   default: 0,     null: false
     t.text     "description"
-    t.boolean  "cached_funded",   default: false, null: false
+    t.boolean  "cached_funded",    default: false, null: false
+    t.string   "prevote_doc_link"
     t.index ["crunchbase_id"], name: "index_companies_on_crunchbase_id", unique: true, using: :btree
     t.index ["domain"], name: "index_companies_on_domain", unique: true, using: :btree
     t.index ["list_id"], name: "index_companies_on_list_id", using: :btree
