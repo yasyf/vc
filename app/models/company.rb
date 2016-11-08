@@ -141,7 +141,7 @@ class Company < ActiveRecord::Base
         end.compact
         list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
 
-        company = Company.where(trello_id: card_data[:trello_id]).first_or_create
+        company = Company.where(trello_id: card_data[:trello_id]).first_or_initialize
         company.assign_attributes card_data
         company.decision_at ||= team.time_now if importing && company.pitch_on == nil
 
@@ -278,17 +278,13 @@ class Company < ActiveRecord::Base
   end
 
   def prevote_comments_doc
-    file_name = "[#{id}] #{name} Prevote Discussion"
-    drive = GoogleApi::Drive.new
-    begin
-      drive.find(file_name, in_folders: team.prevote_discussions_folder_id, cache: false) || drive.create(
-        file_name,
-        'application/vnd.google-apps.document',
-        StringIO.new(User.active(team).shuffle.map { |user| "<div><h2>#{user.name}</h2></div>" }.join("\n")),
-        team.prevote_discussions_folder_id,
-        'text/html',
-      )
-    end.web_view_link
+    if prevote_doc_link.blank?
+      with_lock do
+        self.prevote_doc_link ||= find_or_create_prevote_doc!
+        save!
+      end
+    end
+    prevote_doc_link
   end
 
   def team
@@ -305,6 +301,20 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def find_or_create_prevote_doc!
+    file_name = "[#{id}] #{name} Prevote Discussion"
+    drive = GoogleApi::Drive.new
+    begin
+      drive.find(file_name, in_folders: team.prevote_discussions_folder_id, cache: false) || drive.create(
+        file_name,
+        'application/vnd.google-apps.document',
+        StringIO.new(User.active(team).shuffle.map { |user| "<div><h2>#{user.name}</h2></div>" }.join("\n")),
+        team.prevote_discussions_folder_id,
+        'text/html',
+      )
+    end.web_view_link
+  end
 
   def cache_unless_voting(options = {})
     options[:force] = true if pitch_on.present? && decision_at.blank?
