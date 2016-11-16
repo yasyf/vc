@@ -14,7 +14,8 @@ class VoteMonitorJob < ActiveJob::Base
         company.notify_team!
         company.move_to_post_pitch_list!
       elsif time_remaining <= REMAINING_THRESHOLD && time_remaining >= -REMAINING_THRESHOLD
-        company.missing_votes.each { |vote| vote.warn!(time_remaining) } if company.warn_team!
+        warned = company.warn_team! company.missing_vote_users, time_remaining
+        company.missing_votes.each { |vote| vote.warn!(time_remaining) } if warned
       end
     end
   end
