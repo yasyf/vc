@@ -6,6 +6,8 @@ services:
   - postgresql
   - memcached
   - redis-server
+addons:
+  postgresql: "9.4"
 script:
   - RAILS_ENV=test bundle exec rake db:migrate --trace
   - bundle exec rake db:test:prepare
