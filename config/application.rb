@@ -13,6 +13,7 @@ module Drfvote
     # -- all .rb files in that directory are automatically loaded.
 
     config.eager_load_paths << Rails.root.join('lib')
+    config.active_job.queue_adapter = :sidekiq
 
     %w(teams overrides).each do |name|
       result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)
