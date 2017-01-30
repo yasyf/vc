@@ -305,7 +305,15 @@ class Company < ActiveRecord::Base
     "<#{crunchbase_org.crunchbase_url}|#{name}>"
   end
 
+  def tweeter
+    Tweeter.where(username: twitter_username).first_or_create! if twitter_username.present?
+  end
+
   private
+
+  def twitter_username
+    cached { crunchbase_org.twitter }
+  end
 
   def find_or_create_prevote_doc!
     file_name = "[#{id}] #{name} Prevote Discussion"

@@ -51,6 +51,7 @@ gem 'levenshtein-ffi', require: 'levenshtein'
 gem 'airbrake'
 gem 'roo'
 gem 'lograge'
+gem 'twitter'
 
 group :production do
   gem 'rails_12factor'

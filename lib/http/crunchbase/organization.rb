@@ -37,6 +37,11 @@ module Http::Crunchbase
       get_in 'relationships', 'investors', multi: true
     end
 
+    def twitter
+      twitter = websites&.find { |site| site['properties']['website_type'] == 'twitter' }
+      twitter['properties']['url'].split('/').last if twitter.present?
+    end
+
     def has_investor?(name)
       investors&.find { |inv| inv['properties']['name'] == name || inv['properties']['permalink'] == name }.present?
     end
@@ -51,6 +56,10 @@ module Http::Crunchbase
     end
 
     private
+
+    def websites
+      get_in 'relationships', 'websites', multi: true
+    end
 
     def self.api_get(raw_path, query = {}, multi = true)
       path = URI.encode raw_path
