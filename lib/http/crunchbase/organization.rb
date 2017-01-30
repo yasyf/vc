@@ -75,7 +75,7 @@ module Http::Crunchbase
           raise "Crunchbase #{response.code}: #{path}/#{query}"
         end
       end
-      multi ? data && data['items'] : data
+      multi ? (data && data['items']) || [] : data
     end
 
     def self.base_cache_key

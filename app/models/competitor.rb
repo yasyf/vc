@@ -13,7 +13,7 @@ class Competitor < ApplicationRecord
 
   def self.create_from_name!(name)
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
-    where(name: name, crunchbase_id: crunchbase_id).first_or_create!
+    where(name: name, crunchbase_id: crunchbase_id).first_or_create! if crunchbase_id.present?
   end
 
   def self.for_company(company)
