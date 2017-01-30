@@ -1,0 +1,14 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.4
+services:
+  - postgresql
+  - memcached
+  - redis-server
+script:
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - bundle exec rake db:test:prepare
+  - bundle exec rake
+before_script:
+  - psql -c 'create database drfvote_test;' -U postgres

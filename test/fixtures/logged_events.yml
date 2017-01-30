@@ -2,10 +2,10 @@
 
 one:
   reason: MyText
-  record: 1
+  record_id: 1
   count: 1
 
 two:
   reason: MyText
-  record: 1
+  record_id: 2
   count: 1

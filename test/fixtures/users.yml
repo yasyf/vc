@@ -2,6 +2,8 @@
 
 one:
   username: MyString
+  cached_name: MyString
 
 two:
-  username: MyString
+  username: MyString2
+  cached_name: MyString2

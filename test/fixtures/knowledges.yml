@@ -2,10 +2,12 @@
 
 one:
   body: MyText
-  user_id: 
+  user_id: 1
+  team_id: 1
   ts: MyString
 
 two:
   body: MyText
-  user_id: 
-  ts: MyString
+  user_id: 2
+  team_id: 2
+  ts: MyString2

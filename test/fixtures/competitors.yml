@@ -5,5 +5,5 @@ one:
   crunchbase_id: MyString
 
 two:
-  name: MyString
-  crunchbase_id: MyString
+  name: MyString2
+  crunchbase_id: MyString2
