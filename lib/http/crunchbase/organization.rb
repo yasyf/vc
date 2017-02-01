@@ -68,6 +68,8 @@ module Http::Crunchbase
         case response.code
         when 200
           response.parsed_response['data']
+        when 404
+          nil
         when 401
           Rails.logger.warn "Crunchbase 401: #{path}/#{query}"
           nil
