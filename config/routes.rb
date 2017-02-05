@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 class TeamConstraint
   def initialize
     @teams = Team::ALL + [nil]
@@ -53,5 +55,9 @@ Rails.application.routes.draw do
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: '/emails'
+  end
+
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web, at: '/sidekiq'
   end
 end

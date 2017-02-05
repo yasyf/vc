@@ -53,6 +53,7 @@ gem 'roo'
 gem 'lograge'
 gem 'twitter'
 gem 'sidekiq'
+gem 'clockwork'
 
 group :production do
   gem 'rails_12factor'

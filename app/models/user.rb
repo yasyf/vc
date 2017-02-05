@@ -177,6 +177,10 @@ class User < ActiveRecord::Base
     )
   end
 
+  def admin?
+    username == ENV['ADMIN']
+  end
+
   private
 
   def add_to_wit

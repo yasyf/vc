@@ -49,6 +49,9 @@ GEM
     builder (3.2.3)
     byebug (9.0.6)
     chronic (0.10.2)
+    clockwork (2.0.0)
+      activesupport
+      tzinfo
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.1.x)
@@ -359,6 +362,7 @@ DEPENDENCIES
   airbrake
   byebug
   chronic
+  clockwork
   coffee-rails (~> 4.1.0)
   connection_pool
   dalli

@@ -5,6 +5,9 @@ require 'rails/test_help'
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
+  Rails.configuration.teams.keys.each do |name|
+    Team.where(name: name).first_or_create!
+  end
 end
 
 class ActionController::TestCase
