@@ -8,7 +8,7 @@ module Importers
 
     def sync!
       board = ::Trello::Board.find(@team.trello_board_id, { fields: 'dateLastActivity' })
-      return unless @team.updated_at < board.last_activity_date
+      return unless @team.updated_at < board.last_activity_date || @team.companies.pitch.undecided.present?
       @team.touch
       board.cards.each do |card|
         parsed = parse(card)

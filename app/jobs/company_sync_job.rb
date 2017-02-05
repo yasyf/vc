@@ -10,7 +10,7 @@ class CompanySyncJob < ApplicationJob
 
       Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
 
-      users = users_from_card_data card_data
+      users = users_from_card_data team, card_data
       list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
 
       company = Company.where(trello_id: card_data[:trello_id]).first_or_initialize
@@ -66,7 +66,7 @@ class CompanySyncJob < ApplicationJob
     end
   end
 
-  def users_from_card_data(card_data)
+  def users_from_card_data(team, card_data)
     card_data.delete(:members).map do |member|
       User.from_trello(member.id).tap do |user|
         if user.present?
