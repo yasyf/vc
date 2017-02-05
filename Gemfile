@@ -52,6 +52,7 @@ gem 'airbrake'
 gem 'roo'
 gem 'lograge'
 gem 'twitter'
+gem 'redis'
 gem 'sidekiq'
 gem 'clockwork'
 
