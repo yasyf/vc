@@ -2,6 +2,8 @@ class Tweeter < ApplicationRecord
   NEWSWORTHY_THRESHOLD = 3
   NEWSWORTHY_MIN = 1
 
+  validates :username, presence: true, uniqueness: true
+
   def newsworthy_tweets(n = 5)
     tweets = latest_tweets(n**2)
     count = tweets.count.to_f

@@ -4,6 +4,8 @@ class CreateTweets < ActiveRecord::Migration[5.0]
       t.bigint :twitter_id
 
       t.timestamps
+
+      t.index :twitter_id, unique: true
     end
   end
 end
