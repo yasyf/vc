@@ -23,6 +23,7 @@ class Company < ActiveRecord::Base
   scope :decided, -> { where.not(decision_at: nil) }
   scope :undecided, -> { where(decision_at: nil) }
   scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
+  scope :portfolio, -> { where(cached_funded: true) }
 
   before_create :set_extra_attributes!
   after_create :add_to_wit!
@@ -123,9 +124,9 @@ class Company < ActiveRecord::Base
     trello_card.save
   end
 
-  def self.sync!(quiet: true, importing: false)
+  def self.sync!(quiet: true, importing: false, deep: false)
     Team.for_each do |team|
-      CompanySyncJob.perform_later(team, quiet: quiet, importing: importing)
+      CompanySyncJob.perform_later(team, quiet: quiet, importing: importing, deep: deep)
     end
   end
 

@@ -1,8 +1,8 @@
 class CompanySyncJob < ApplicationJob
   queue_as :default
 
-  def perform(team, quiet: true, importing: false)
-    Importers::Trello.new(team).sync! do |card_data|
+  def perform(team, quiet: true, importing: false, deep: false)
+    Importers::Trello.new(team).sync!(deep: deep) do |card_data|
       if card_data.delete(:closed)
         Company.where(trello_id: card_data[:trello_id]).destroy_all
         next
