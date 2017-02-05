@@ -387,6 +387,7 @@ DEPENDENCIES
   puma
   rails (= 5.0.1)
   rails_12factor
+  redis
   roo
   ruby-trello
   sass-rails (~> 5.0)
