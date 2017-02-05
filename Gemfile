@@ -53,6 +53,7 @@ gem 'roo'
 gem 'lograge'
 gem 'twitter'
 gem 'redis'
+gem 'redis-namespace'
 gem 'sidekiq'
 gem 'clockwork'
 
