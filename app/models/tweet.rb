@@ -16,7 +16,7 @@ class Tweet < ApplicationRecord
   end
 
   def method_missing(m, *args, &block)
-    raw_tweet&.send(m, *args, &block)
+    raw_tweet.send(m, *args, &block)
   end
 
   def share!
