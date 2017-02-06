@@ -8,6 +8,8 @@ class Tweeter < ApplicationRecord
     tweets = latest_tweets(n**2)
     count = tweets.count.to_f
 
+    return [] unless tweets.present?
+
     threshold = lambda { |name| [NEWSWORTHY_THRESHOLD * (tweets.map(&name).sum / count), NEWSWORTHY_MIN].max }
 
     fave_threshold = threshold[:favorite_count]
