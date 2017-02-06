@@ -190,7 +190,7 @@ GEM
       faraday (~> 0.7)
       httpauth (~> 0.1)
       multi_json (~> 1.3)
-    omniauth (1.3.2)
+    omniauth (1.4.0)
       hashie (>= 1.2, < 4)
       rack (>= 1.0, < 3)
     omniauth-google-oauth2 (0.2.2)
@@ -266,10 +266,11 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     retriable (2.1.0)
+    retries (0.0.5)
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
-    ruby-trello (1.6.0)
+    ruby-trello (2.0.0)
       activemodel (>= 3.2.0)
       addressable (~> 2.3)
       json
@@ -391,6 +392,7 @@ DEPENDENCIES
   rails_12factor
   redis
   redis-namespace
+  retries
   roo
   ruby-trello
   sass-rails (~> 5.0)

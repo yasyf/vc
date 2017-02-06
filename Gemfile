@@ -56,6 +56,7 @@ gem 'redis'
 gem 'redis-namespace'
 gem 'sidekiq'
 gem 'clockwork'
+gem 'retries'
 
 group :production do
   gem 'rails_12factor'

@@ -1,5 +1,6 @@
 class Tweet < ApplicationRecord
   include Concerns::Slackable
+  include Concerns::Twitterable
 
   validates :twitter_id, presence: true, uniqueness: true
   validates :shared, inclusion: [true, false]
@@ -9,7 +10,7 @@ class Tweet < ApplicationRecord
   end
 
   def method_missing(m, *args, &block)
-    raw_tweet.send(m, *args, &block)
+    raw_tweet&.send(m, *args, &block)
   end
 
   def share!
@@ -20,6 +21,6 @@ class Tweet < ApplicationRecord
   private
 
   def raw_tweet
-    @raw_tweet ||= TwitterApi::Client.new.client.status(twitter_id)
+    @raw_tweet ||= twitter_client.with_client { |c| c.status(twitter_id) }
   end
 end

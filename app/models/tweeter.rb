@@ -1,4 +1,6 @@
 class Tweeter < ApplicationRecord
+  include Concerns::Twitterable
+
   NEWSWORTHY_THRESHOLD = 4
   NEWSWORTHY_MIN = 10
 
@@ -23,12 +25,8 @@ class Tweeter < ApplicationRecord
   private
 
   def latest_tweets(n = 5)
-    client.user_timeline(username, count: n * 2, include_rts: false, exclude_replies: true).first(n)
-  rescue Twitter::Error::NotFound
-    []
-  end
-
-  def client
-    @client ||= TwitterApi::Client.new.client
+    twitter_client.with_client do |client|
+      client.user_timeline(username, count: n * 2, include_rts: false, exclude_replies: true).first(n)
+    end || []
   end
 end
