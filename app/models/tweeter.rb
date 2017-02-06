@@ -20,6 +20,8 @@ class Tweeter < ApplicationRecord
 
   def latest_tweets(n = 5)
     client.user_timeline(username, count: n * 2, include_rts: false, exclude_replies: true).first(n)
+  rescue Twitter::Error::NotFound
+    []
   end
 
   def client
