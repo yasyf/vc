@@ -45,7 +45,7 @@ module Importers
         return nil
       end
       parsed
-    rescue Trello::Error => e
+    rescue ::Trello::Error => e
       Rails.logger.warn e
       nil
     end
