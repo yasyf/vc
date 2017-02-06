@@ -17,6 +17,8 @@ module Importers
       board.cards(filter: :closed).each do |card|
         yield ({ trello_id: card.id, closed: card.closed })
       end
+    rescue ::Trello::Error => e
+      Rails.logger.error e
     end
 
     private
