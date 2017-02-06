@@ -6,8 +6,6 @@ class Tweet < ApplicationRecord
 
   def self.wrap
     Array.wrap(yield).compact.map { |t| where(twitter_id: t.id).first_or_create! }
-  rescue Twitter::Error::NotFound
-    []
   end
 
   def method_missing(m, *args, &block)

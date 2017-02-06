@@ -40,7 +40,7 @@ module Http::Crunchbase
     def twitter
       twitter = websites&.find { |site| site['properties']['website_type'] == 'twitter' }
       url = twitter['properties']['url'].split('/') if twitter.present?
-      url.last if url.present? && url.length > 3
+      url.last.downcase if url.present? && url.length > 3
     end
 
     def has_investor?(name)

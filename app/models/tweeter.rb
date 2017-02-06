@@ -1,6 +1,6 @@
 class Tweeter < ApplicationRecord
-  NEWSWORTHY_THRESHOLD = 3
-  NEWSWORTHY_MIN = 1
+  NEWSWORTHY_THRESHOLD = 4
+  NEWSWORTHY_MIN = 10
 
   validates :username, presence: true, uniqueness: true
 
@@ -15,15 +15,17 @@ class Tweeter < ApplicationRecord
     fave_threshold = threshold[:favorite_count]
     rt_threshold = threshold[:retweet_count]
 
-    tweets.select { |t| t.favorite_count > fave_threshold && t.retweet_count > rt_threshold }
+    Tweet.wrap do
+      tweets.select { |t| t.favorite_count > fave_threshold && t.retweet_count > rt_threshold }
+    end
   end
 
   private
 
   def latest_tweets(n = 5)
-    Tweet.wrap do
-      client.user_timeline(username, count: n * 2, include_rts: false, exclude_replies: true).first(n)
-    end
+    client.user_timeline(username, count: n * 2, include_rts: false, exclude_replies: true).first(n)
+  rescue Twitter::Error::NotFound
+    []
   end
 
   def client
