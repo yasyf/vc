@@ -53,7 +53,7 @@ class Team < ApplicationRecord
   end
 
   def datetime_now
-    DateTime.current.in_time_zone(time_zone)
+    DateTime.current.in_time_zone(time_zone).to_datetime
   end
 
   def trello_board_id
