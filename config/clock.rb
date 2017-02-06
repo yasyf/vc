@@ -12,8 +12,8 @@ module Clockwork
 
   every(10.minutes, 'pitch.notify') { CompanyPrepareJob.perform_later }
 
-  every(1.day, at: '08:00', 'monitor.application') { ApplicationMonitorJob.perform_later }
-  every(1.day, at: '09:00', 'monitor.card') { CardMonitorJob.perform_later }
+  every(1.day, 'monitor.application', at: '08:00') { ApplicationMonitorJob.perform_later }
+  every(1.day, 'monitor.card', at: '09:00') { CardMonitorJob.perform_later }
   every(1.minute, 'monitor.vote') { VoteMonitorJob.perform_later }
   every(1.hour, 'monitor.news') { CompanyNewsJob.perform_later }
 end
