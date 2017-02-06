@@ -3,11 +3,16 @@ class Tweet < ApplicationRecord
   include Concerns::Slackable
   include Concerns::Twitterable
 
+  belongs_to :tweeter
   validates :twitter_id, presence: true, uniqueness: true
   validates :shared, inclusion: [true, false]
 
-  def self.wrap
-    Array.wrap(yield).compact.map { |t| where(twitter_id: t.id).first_or_create! }
+  def self.wrap(tweeter)
+    Array.wrap(yield).compact.map do |t|
+      where(twitter_id: t.id).first_or_create! do |tweet|
+        tweet.tweeter = tweeter
+      end
+    end
   end
 
   def method_missing(m, *args, &block)
@@ -16,7 +21,7 @@ class Tweet < ApplicationRecord
 
   def share!
     update! shared: true
-    slack_send! ENV['NEWS_CHANNEL'], url
+    slack_send! ENV['NEWS_CHANNEL'], "#{tweeter.company.name} has a newsworthy tweet!\n#{url}"
   end
 
   private

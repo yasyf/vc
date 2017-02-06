@@ -4,6 +4,7 @@ class Tweeter < ApplicationRecord
   NEWSWORTHY_THRESHOLD = 4
   NEWSWORTHY_MIN = 10
 
+  belongs_to :company
   validates :username, presence: true, uniqueness: true
 
   def newsworthy_tweets(n = 5)
@@ -17,7 +18,7 @@ class Tweeter < ApplicationRecord
     fave_threshold = threshold[:favorite_count]
     rt_threshold = threshold[:retweet_count]
 
-    Tweet.wrap do
+    Tweet.wrap(self) do
       tweets.select { |t| t.favorite_count > fave_threshold && t.retweet_count > rt_threshold }
     end
   end

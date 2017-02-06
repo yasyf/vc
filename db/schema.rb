@@ -106,17 +106,22 @@ ActiveRecord::Schema.define(version: 20170205191411) do
   end
 
   create_table "tweeters", force: :cascade do |t|
-    t.string   "username"
+    t.string   "username",   null: false
+    t.integer  "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_tweeters_on_company_id", using: :btree
     t.index ["username"], name: "index_tweeters_on_username", unique: true, using: :btree
   end
 
   create_table "tweets", force: :cascade do |t|
     t.bigint   "twitter_id"
+    t.integer  "tweeter_id",                 null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.boolean  "shared",     default: false, null: false
+    t.index ["tweeter_id"], name: "index_tweets_on_tweeter_id", using: :btree
+    t.index ["twitter_id"], name: "index_tweets_on_twitter_id", unique: true, using: :btree
   end
 
   create_table "users", force: :cascade do |t|

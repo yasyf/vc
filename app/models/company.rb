@@ -4,6 +4,7 @@ class Company < ActiveRecord::Base
 
   DEFAULT_DEADLINE = (2.5).days
 
+  has_one :tweeter
   has_many :votes
   belongs_to :list
   belongs_to :team
@@ -237,7 +238,7 @@ class Company < ActiveRecord::Base
   end
 
   def tweeter
-    Tweeter.where(username: twitter_username).first_or_create! if twitter_username.present?
+    super || (create_tweeter! twitter_username if twitter_username.present?)
   end
 
   private
