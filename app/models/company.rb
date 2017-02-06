@@ -238,7 +238,7 @@ class Company < ActiveRecord::Base
   end
 
   def tweeter
-    super || (create_tweeter! twitter_username if twitter_username.present?)
+    super || (create_tweeter!(username: twitter_username) if twitter_username.present?)
   end
 
   private
