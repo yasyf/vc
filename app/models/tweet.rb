@@ -1,4 +1,5 @@
 class Tweet < ApplicationRecord
+  include Concerns::Cacheable
   include Concerns::Slackable
   include Concerns::Twitterable
 
@@ -21,6 +22,6 @@ class Tweet < ApplicationRecord
   private
 
   def raw_tweet
-    @raw_tweet ||= twitter_client.with_client { |c| c.status(twitter_id) }
+    @raw_tweet ||= cached { twitter_client.with_client { |c| c.status(twitter_id) } }
   end
 end
