@@ -2,6 +2,8 @@
 
 one:
   twitter_id: 1
+  tweeter_id: 1
 
 two:
   twitter_id: 2
+  tweeter_id: 2
