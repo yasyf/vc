@@ -3,7 +3,7 @@ class TwitterApi::Client
     with_retries(max_retries: 3, rescue: Twitter::Error::TooManyRequests) do
       yield client
     end
-  rescue Twitter::Error::NotFound, Twitter::Error::TooManyRequests
+  rescue Twitter::Error::NotFound, Twitter::Error::TooManyRequests, Twitter::Error::Unauthorized
     nil
   end
 
