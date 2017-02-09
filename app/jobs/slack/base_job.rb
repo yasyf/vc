@@ -6,6 +6,6 @@ class Slack::BaseJob < ApplicationJob
   end
 
   def client
-    @client ||= Slack::Web::Client.new
+    @client ||= Slack::Web::Client.new(token: ENV['SLACK_ADMIN_TOKEN'])
   end
 end
