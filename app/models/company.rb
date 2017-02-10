@@ -72,7 +72,7 @@ class Company < ActiveRecord::Base
   end
 
   def decide!(override: nil)
-    company.update! decision_at: Time.current, cached_funded: override || company.funded?
+    update! decision_at: Time.current, cached_funded: override || funded?
   end
 
   def vote_for_user(user)
