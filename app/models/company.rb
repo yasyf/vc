@@ -45,6 +45,10 @@ class Company < ActiveRecord::Base
     super || pitch_on + DEFAULT_DEADLINE if pitch_on.present?
   end
 
+  def undecided?
+    decision_at.nil?
+  end
+
   def pitched?
     pitch_on.present? && pitch_on < team.time_now
   end
@@ -64,7 +68,11 @@ class Company < ActiveRecord::Base
   end
 
   def funded?
-    cached_funded || list.in?(team.funded_lists) || (quorum? && yes_votes > no_votes)
+    cached_funded || list.in?(team.funded_lists) || (!passed? && (quorum? && yes_votes > no_votes))
+  end
+
+  def decide!(override: nil)
+    company.update! decision_at: Time.current, cached_funded: override || company.funded?
   end
 
   def vote_for_user(user)

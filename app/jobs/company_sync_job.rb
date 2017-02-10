@@ -39,6 +39,8 @@ class CompanySyncJob < ApplicationJob
       log_events! company unless quiet
 
       try_save! company
+
+      company.decide!(override: false) if company.undecided? && company.passed?
     end
   end
 
