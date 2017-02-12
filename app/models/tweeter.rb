@@ -1,7 +1,7 @@
 class Tweeter < ApplicationRecord
   include Concerns::Twitterable
 
-  NEWSWORTHY_THRESHOLD = 4
+  NEWSWORTHY_THRESHOLD = 3
   NEWSWORTHY_MIN = 10
 
   belongs_to :company
