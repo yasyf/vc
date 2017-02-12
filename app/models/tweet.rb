@@ -22,6 +22,7 @@ class Tweet < ApplicationRecord
   def share!
     update! shared: true
     slack_send! ENV['NEWS_CHANNEL'], "#{tweeter.company.name} has a newsworthy tweet!\n#{url}"
+    twitter_client.with_client { |c| c.retweet! raw_tweet }
   end
 
   private
