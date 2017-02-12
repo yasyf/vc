@@ -17,6 +17,7 @@ class Company < ActiveRecord::Base
   validates :trello_id, presence: true, uniqueness: true
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+  validates :snapshot_link, uniqueness: { allow_nil: true }
   validates :cached_funded, inclusion: [true, false]
   validates :capital_raised, presence: true, numericality: { only_integer: true }
 
