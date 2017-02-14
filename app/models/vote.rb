@@ -54,6 +54,16 @@ class Vote < ActiveRecord::Base
     }.with_indifferent_access
   end
 
+  def as_json(options = {})
+    options.reverse_merge!(
+      only: [:created_at, :fit, :team, :product, :market, :overall, :reason, :final]
+    )
+    super(options).merge(
+      user: user.name,
+      company: company.name,
+    )
+  end
+
   private
 
   def skip_eligibility?

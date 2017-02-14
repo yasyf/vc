@@ -30,9 +30,10 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :api, constraints: { format: :json } do
+  namespace :api, defaults: { format: :json } do
     namespace :v1 do
       scope "(:team)", constraints: TeamConstraint.new do
+        resources :votes, only: [:index, :show]
         resources :companies, only: [:index, :show] do
           member do
             get 'voting_status'
