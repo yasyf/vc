@@ -11,8 +11,10 @@ module GoogleApi
     end
 
     def events(cal_id = nil, since = DateTime.now, max_results = 1)
+      cal_id ||= calendars.first.id
+      return [] unless cal_id.present?
       @calendar.list_events(
-        cal_id || calendars.first.id,
+        cal_id,
         time_min: since.to_s,
         single_events: true,
         order_by: 'startTime',
@@ -22,6 +24,8 @@ module GoogleApi
 
     def calendars
       @calendars ||= @calendar.list_calendar_lists.items
+    rescue Signet::AuthorizationError
+      []
     end
   end
 end
