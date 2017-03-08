@@ -32,7 +32,7 @@ class Team < ApplicationRecord
 
   def lists
     @lists ||= begin
-      all_lists = List.where(trello_board_id: trello_board_id).map { |l| [l.name, l] }.to_h
+      all_lists = List.where(trello_board_id: trello_board_ids).map { |l| [l.name, l] }.to_h
       lists = DEFAULT['lists'].map { |name| all_lists[config['lists'][name]] }
       Lists.new *lists
     end
@@ -40,7 +40,7 @@ class Team < ApplicationRecord
 
   def funded_lists
     @funded_lists ||= config['lists']['funded'].map do |name|
-      List.where(trello_board_id: trello_board_id, name: name).first!
+      List.where(trello_board_id: trello_board_ids, name: name).first!
     end
   end
 
@@ -56,8 +56,8 @@ class Team < ApplicationRecord
     DateTime.current.in_time_zone(time_zone).to_datetime
   end
 
-  def trello_board_id
-    config['board']
+  def trello_board_ids
+    config['boards']
   end
 
   def email_list

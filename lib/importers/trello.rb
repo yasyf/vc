@@ -7,15 +7,17 @@ module Importers
     end
 
     def sync!(deep: false)
-      board = ::Trello::Board.find(@team.trello_board_id, { fields: 'dateLastActivity' })
-      return unless @team.updated_at < board.last_activity_date || (deep && @team.companies.pitch.undecided.present?)
-      @team.touch
-      board.cards.each do |card|
-        parsed = parse(card)
-        yield parsed if parsed.present?
-      end
-      board.cards(filter: :closed).each do |card|
-        yield ({ trello_id: card.id, closed: card.closed })
+      @team.trello_board_ids.each do |trello_board_id|
+        board = ::Trello::Board.find(trello_board_id, { fields: 'dateLastActivity' })
+        next unless @team.updated_at < board.last_activity_date || (deep && @team.companies.pitch.undecided.present?)
+        @team.touch
+        board.cards.each do |card|
+          parsed = parse(card)
+          yield parsed if parsed.present?
+        end
+        board.cards(filter: :closed).each do |card|
+          yield ({ trello_id: card.id, closed: card.closed })
+        end
       end
     rescue ::Trello::Error => e
       Rails.logger.error e
