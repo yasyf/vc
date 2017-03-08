@@ -10,7 +10,7 @@ module GoogleApi
       @calendar.authorization = authorization
     end
 
-    def events(cal_id = nil, since = DateTime.now, max_results = 1)
+    def events(cal_id: nil, since: DateTime.now, max_results: 1)
       cal_id ||= calendars.first&.id
       return [] unless cal_id.present?
       @calendar.list_events(
