@@ -39,7 +39,7 @@ class Company < ActiveRecord::Base
   end
 
   def pitch_on
-    super&.in_time_zone('UTC')&.in_time_zone(team.time_zone)
+    super&.in_time_zone(team.time_zone)
   end
 
   def deadline
@@ -256,11 +256,14 @@ class Company < ActiveRecord::Base
     cached { crunchbase_org.twitter }
   end
 
+  def google_drive
+    @google_drive ||= GoogleApi::Drive.new(users.first || team.users.first)
+  end
+
   def find_or_create_prevote_doc!
     file_name = "[#{id}] #{name} Prevote Discussion"
-    drive = GoogleApi::Drive.new
     begin
-      drive.find(file_name, in_folders: team.prevote_discussions_folder_id, cache: false) || drive.create(
+      google_drive.find(file_name, in_folders: team.prevote_discussions_folder_id, cache: false) || google_drive.create(
         file_name,
         'application/vnd.google-apps.document',
         StringIO.new(User.active(team).shuffle.map { |user| "<div><h2>#{user.name}</h2></div>" }.join("\n")),
@@ -278,8 +281,8 @@ class Company < ActiveRecord::Base
   def set_snapshot_link!
     self.snapshot_link = begin
       if team.snapshot_folder_ids.present?
-        GoogleApi::Drive.new.find(name.gsub(/['"]/, ''), in_folders: team.snapshot_folder_ids)
-      end || GoogleApi::Drive.new.find("#{name.gsub(/['"]/, '')} Snapshot", excludes: team.exclude_folder_ids)
+        google_drive.find(name.gsub(/['"]/, ''), in_folders: team.snapshot_folder_ids)
+      end || google_drive.find("#{name.gsub(/['"]/, '')} Snapshot", excludes: team.exclude_folder_ids)
     end&.web_view_link
   end
 

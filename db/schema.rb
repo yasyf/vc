@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205191411) do
+ActiveRecord::Schema.define(version: 20170308093754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "calendar_events", id: :string, force: :cascade do |t|
+    t.integer  "user_id",        null: false
+    t.integer  "company_id"
+    t.string   "notes_doc_link"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["company_id"], name: "index_calendar_events_on_company_id", using: :btree
+    t.index ["user_id"], name: "index_calendar_events_on_user_id", using: :btree
+  end
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",                             null: false
@@ -134,6 +144,8 @@ ActiveRecord::Schema.define(version: 20170205191411) do
     t.string   "trello_id"
     t.string   "slack_id"
     t.integer  "team_id"
+    t.string   "access_token"
+    t.string   "refresh_token"
     t.index ["cached_name"], name: "index_users_on_cached_name", unique: true, using: :btree
     t.index ["slack_id"], name: "index_users_on_slack_id", unique: true, using: :btree
     t.index ["team_id"], name: "index_users_on_team_id", using: :btree
@@ -158,6 +170,8 @@ ActiveRecord::Schema.define(version: 20170205191411) do
     t.index ["user_id"], name: "index_votes_on_user_id", using: :btree
   end
 
+  add_foreign_key "calendar_events", "companies"
+  add_foreign_key "calendar_events", "users"
   add_foreign_key "companies", "lists"
   add_foreign_key "companies", "teams"
   add_foreign_key "knowledges", "teams"

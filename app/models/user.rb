@@ -101,7 +101,9 @@ class User < ActiveRecord::Base
   end
 
   def self.from_omniauth(auth)
-    from_email auth.info['email']
+    from_email(auth.info.email)&.tap do |user|
+      user.update! access_token: auth.credentials.token, refresh_token: auth.credentials.refresh_token
+    end
   end
 
   def self.from_slack(slack_id)

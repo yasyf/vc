@@ -20,7 +20,7 @@ module Importers::Folders
 
     def initialize(folder_id)
       @folder_id = folder_id
-      @drive = GoogleApi::Drive.new
+      @drive = GoogleApi::Drive.new(nil)
     end
 
     def sync!

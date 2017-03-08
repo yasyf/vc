@@ -24,6 +24,7 @@ boston: &boston
   excludes:
     - '0BzqJUvAXolWLVndIbG4ySFNYR0U'
   prevote_discussions: '0B5YV7AKNT7yoU1lDUWI5ajRON1U'
+  coffee_chats: '0B5YV7AKNT7yoRW4yS19EWFhtYXc'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
@@ -49,6 +50,7 @@ nyc:
     - '0BxwhX9OPjSH_M0ozSGZKRzVMV1k'
     - '0BxwhX9OPjSH_blpueVNpVlIzZHc'
   prevote_discussions: '0B5YV7AKNT7yocjBRa3NrdmtQWk0'
+  coffee_chats: '0B5YV7AKNT7yoZW9MUC1nTktyeEU'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
@@ -70,6 +72,7 @@ sf:
   snapshots:
     - '0B5YV7AKNT7yoT1QycnluOHJFd0k'
   prevote_discussions: '0B5YV7AKNT7yoVmoxT1VsaHdiLUk'
+  coffee_chats: '0B5YV7AKNT7yoVFRjdDlvNXdZTnM'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'
@@ -97,6 +100,7 @@ phl:
     - '0B5YV7AKNT7yoVlNER3dscVZPdk0'
     - '0B8PQ_6u1wbLudXVOaERXcXN0cFE'
   prevote_discussions: '0B5YV7AKNT7yoUGNhYXlfa182MUU'
+  coffee_chats: '0B5YV7AKNT7yoMWtQMkVzZ3Vvb2s'
   lists:
     application: 'Applied at Website'
     allocated: 'Allocated Point Partner'

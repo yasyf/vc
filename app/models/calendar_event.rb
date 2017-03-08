@@ -1,0 +1,30 @@
+class CalendarEvent < ApplicationRecord
+  belongs_to :user
+  belongs_to :company
+
+  def add_notes!(notes)
+    google_drive.append notes_doc.id, 'text/html', "<br><div>#{notes}</div>"
+  end
+
+  def notes_doc
+    self.update! notes_doc_link: find_or_create_notes_doc!.web_view_link if notes_doc_link.blank?
+    find_or_create_notes_doc!
+  end
+
+  private
+
+  def google_drive
+    @google_drive ||= GoogleApi::Drive.new(user)
+  end
+
+  def find_or_create_notes_doc!
+    file_name = "#{company.name} Coffee Chat"
+    google_drive.find(file_name, in_folders: team.coffee_chats_folder_id, cache: false) || google_drive.create(
+      file_name,
+      'application/vnd.google-apps.document',
+      StringIO.new("<div><h1>#{company.name} Coffee Chat</h1></div><div>#{user.name}</div>"),
+      team.coffee_chats_folder_id,
+      'text/html',
+    )
+  end
+end

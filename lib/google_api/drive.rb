@@ -6,7 +6,8 @@ module GoogleApi
 
     SCOPES = ['https://www.googleapis.com/auth/drive']
 
-    def initialize
+    def initialize(user)
+      @user = user
       @drive = Google::Apis::DriveV3::DriveService.new
       @drive.authorization = authorization
     end
@@ -31,6 +32,11 @@ module GoogleApi
 
     def export(file_id, mime_type)
       @drive.export_file file_id, mime_type, download_dest: StringIO.new
+    end
+
+    def append(file_id, mime_type, data)
+      contents = export(file_id, mime_type).string + data
+      @drive.update_file file_id, upload_source: StringIO.new(contents)
     end
 
     private

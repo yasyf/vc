@@ -80,6 +80,10 @@ class Team < ApplicationRecord
     config['prevote_discussions']
   end
 
+  def coffee_chats_folder_id
+    config['coffee_chats']
+  end
+
   def notify!(message, all: true)
     return if config['ignore']
     slack_send! slack_channel, message, notify: all
