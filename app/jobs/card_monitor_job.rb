@@ -8,14 +8,11 @@ class CardMonitorJob < ActiveJob::Base
         if move_event && move_event.updated_at < 1.week.ago
           last_date = (move_event.data.last['date'] || move_event.updated_at).to_date
           move_event.touch
-          users = company.users.map { |user| "<@#{user.slack_id}>" }.join(', ')
-          "#{users}: <#{company.trello_url}|#{company.name}> (#{company.list.name}, #{last_date.to_s(:long)})"
+          message = "<#{company.trello_url}|#{company.name}> has been stuck in #{company.list.name} since #{last_date.to_s(:long)}!"
+          company.users.each do |user|
+            user.send! message
+          end
         end
-      end.compact.join("\n")
-
-      if companies.present?
-        message = "The following companies have been stuck in the same stage of the pipeline for over a week!\n#{companies}"
-        team.notify! message, all: false
       end
     end
   end
