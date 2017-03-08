@@ -17,5 +17,5 @@ module Clockwork
   every(1.minute, 'monitor.vote') { VoteMonitorJob.perform_later }
   every(1.hour, 'monitor.news') { CompanyNewsJob.perform_later }
 
-  every(12.hours, 'user.calendar') { UserCalendarJob.perform_later }
+  every(1.hours, 'user.calendar') { UserCalendarJob.perform_later }
 end
