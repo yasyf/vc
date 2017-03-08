@@ -32,6 +32,8 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
+      resources :events, only: [:show, :update]
+
       scope "(:team)", constraints: TeamConstraint.new do
         resources :votes, only: [:index, :show]
         resources :companies, only: [:index, :show] do

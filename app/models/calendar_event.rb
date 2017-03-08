@@ -3,7 +3,7 @@ class CalendarEvent < ApplicationRecord
   belongs_to :company
 
   def add_notes!(notes)
-    google_drive.append notes_doc.id, 'text/html', "<br><div>#{notes}</div>"
+    google_drive.append notes_doc.id, 'text/html', "<br><hr><br><div>#{notes.gsub('\n', '<br>')}</div>"
   end
 
   def notes_doc
@@ -19,11 +19,11 @@ class CalendarEvent < ApplicationRecord
 
   def find_or_create_notes_doc!
     file_name = "#{company.name} Coffee Chat"
-    google_drive.find(file_name, in_folders: team.coffee_chats_folder_id, cache: false) || google_drive.create(
+    google_drive.find(file_name, in_folders: user.team.coffee_chats_folder_id, cache: false) || google_drive.create(
       file_name,
       'application/vnd.google-apps.document',
       StringIO.new("<div><h1>#{company.name} Coffee Chat</h1></div><div>#{user.name}</div>"),
-      team.coffee_chats_folder_id,
+      user.team.coffee_chats_folder_id,
       'text/html',
     )
   end
