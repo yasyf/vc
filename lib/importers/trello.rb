@@ -1,6 +1,7 @@
 module Importers
   class Trello
     SEPARATOR = ' - '
+    IGNORES = %w(INSTRUCTIONS)
 
     def initialize(team)
       @team = team
@@ -12,6 +13,7 @@ module Importers
         next unless @team.updated_at < board.last_activity_date || (deep && @team.companies.pitch.undecided.present?)
         @team.touch
         board.cards.each do |card|
+          next if IGNORES.include?(card.name)
           parsed = parse(card)
           yield parsed if parsed.present?
         end
