@@ -13,8 +13,7 @@ class UserCalendarJob < ActiveJob::Base
         ce.company = company
       end
       LoggedEvent.do_once(calevent, :request_notes) do
-        response = slack_client.mpim_open users: [ENV['DRFBOT_USER'], user.slack_id].join(',')
-        slack_send! response.group.id, "<@#{ENV['DRFBOT_USER']}>: event #{calevent.id}"
+        slack_send! ENV['DRFBOT_USER'], "calendar_event #{user.slack_id} #{calevent.id}"
       end
     end
   end
