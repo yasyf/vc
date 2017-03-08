@@ -23,12 +23,16 @@ class UserCalendarJob < ActiveJob::Base
   private
 
   def find_company(event)
-    words = event.summary
+    search_string = "#{event.summary || ''} #{event.description || ''}".downcase
+    summary_words = (event.summary || '')
       .split(/[^\w]/)
-      .select { |w| w.size > 0 && w.first.upcase == w.first && !IGNORES.include?(w.downcase) }
-    words.each do |word|
+      .select { |w| w.size > 3 && !IGNORES.include?(w.downcase) }
+    description_words = (event.description || '')
+      .split(/[^\w]/)
+      .select { |w| w.size > 4 && w.first.upcase == w.first && !IGNORES.include?(w.downcase) }
+    (summary_words + description_words).uniq.each do |word|
       company = Company.search(word).first
-      return company if company.present?
+      return company if company.present? && search_string.include?(company.name.downcase)
     end
     nil
   end
