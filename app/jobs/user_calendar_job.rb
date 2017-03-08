@@ -31,8 +31,9 @@ class UserCalendarJob < ActiveJob::Base
       .split(/[^\w]/)
       .select { |w| w.size > 4 && w.first.upcase == w.first && !IGNORES.include?(w.downcase) }
     (summary_words + description_words).uniq.each do |word|
-      company = Company.search(word).first
-      return company if company.present? && search_string.include?(company.name.downcase)
+      Company.search(word).each do |company|
+        return company if company.present? && search_string.include?(company.name.downcase)
+      end
     end
     nil
   end
