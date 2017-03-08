@@ -9,7 +9,7 @@ module Api
 
       def update
         event.add_notes! params[:notes]
-        head :ok
+        render json: { link: event.notes_doc_link }
       end
 
       private
