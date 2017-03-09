@@ -4,7 +4,7 @@ class CalendarEvent < ApplicationRecord
 
   def add_notes!(notes)
     google_drive.append notes_doc.id, 'text/html',
-      "<br><h3>#{DateTime.now.to_s(:long)}</h3><br><div>#{notes.gsub('\n', '<br>')}</div>"
+      "<br><h3>#{DateTime.now.to_s(:long)}</h3><br><h3>#{user.name}</h3><br><div>#{notes.gsub('\n', '<br>')}</div>"
   end
 
   def notes_doc
@@ -23,7 +23,7 @@ class CalendarEvent < ApplicationRecord
     google_drive.find(file_name, in_folders: user.team.coffee_chats_folder_id, cache: false) || google_drive.create(
       file_name,
       'application/vnd.google-apps.document',
-      StringIO.new("<div><h1>#{company.name} Coffee Chat</h1></div><div><h2>#{user.name}</h2></div>"),
+      StringIO.new("<div><h1>#{company.name} Coffee Chats</h1></div>"),
       user.team.coffee_chats_folder_id,
       'text/html',
     )
