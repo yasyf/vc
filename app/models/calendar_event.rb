@@ -4,7 +4,7 @@ class CalendarEvent < ApplicationRecord
 
   def add_notes!(notes)
     google_drive.append notes_doc.id, 'text/html',
-      "<br><h3>#{DateTime.now.to_s(:long)}</h3><br><h3>#{user.name}</h3><br><div>#{notes.gsub('\n', '<br>')}</div>"
+      "<h3>#{user.name}</h3><h4>#{DateTime.now.to_s(:long)}</h4><div>#{notes.gsub("\n", '<br>')}</div>"
   end
 
   def notes_doc
