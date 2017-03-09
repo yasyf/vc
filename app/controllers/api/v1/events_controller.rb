@@ -12,6 +12,11 @@ module Api
         render json: { link: event.notes_doc_link }
       end
 
+      def invalidate
+        event.update! invalid: true
+        head :ok
+      end
+
       private
 
       def event
