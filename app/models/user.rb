@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   belongs_to :team
   has_many :votes
+  has_many :calendar_events
   has_and_belongs_to_many :companies
 
   validates :username, presence: true, uniqueness: true

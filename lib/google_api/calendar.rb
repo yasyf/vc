@@ -10,12 +10,13 @@ module GoogleApi
       @calendar.authorization = authorization
     end
 
-    def events(cal_id: nil, since: DateTime.now, max_results: 1)
+    def events(cal_id: nil, after: nil, before: nil, max_results: 1)
       cal_id ||= calendars.first&.id
       return [] unless cal_id.present?
       @calendar.list_events(
         cal_id,
-        time_min: since.to_s,
+        time_min: after&.to_s,
+        time_max: before&.to_s,
         single_events: true,
         order_by: 'startTime',
         max_results: max_results

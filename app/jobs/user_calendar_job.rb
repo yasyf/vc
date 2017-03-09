@@ -7,9 +7,11 @@ class UserCalendarJob < ActiveJob::Base
 
   def perform
     User.all.each do |user|
-      event = GoogleApi::Calendar.new(user).events.first
-      next unless event.present? && event.start.date_time < 6.hours.from_now && event.recurring_event_id.blank?
+      event = GoogleApi::Calendar.new(user).events(after: 6.hours.ago, before: Time.now).first
+      next unless event.present? && event.recurring_event_id.blank?
       next unless (company = find_company(event))
+      last_event = user.calendar_events.order(created_at: :desc).first
+      next if last_event.created_at > 1.hour.ago && last_event.updated_at == last_event.created_at
       calevent = CalendarEvent.where(id: event.id).first_or_create! do |ce|
         ce.user = user
         ce.company = company

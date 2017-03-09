@@ -6,6 +6,7 @@ class Company < ActiveRecord::Base
 
   has_one :tweeter
   has_many :votes
+  has_many :calendar_events
   belongs_to :list
   belongs_to :team
   has_and_belongs_to_many :users
