@@ -1,7 +1,7 @@
 class UserCalendarJob < ActiveJob::Base
   include Concerns::Slackable
 
-  IGNORES = %w(dorm room fund)
+  IGNORES = %w(dorm room fund meeting chat coffee lunch dinner)
 
   queue_as :default
 

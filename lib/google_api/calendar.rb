@@ -15,8 +15,8 @@ module GoogleApi
       return [] unless cal_id.present?
       @calendar.list_events(
         cal_id,
-        time_min: after&.to_s,
-        time_max: before&.to_s,
+        time_min: after&.to_datetime&.to_s,
+        time_max: before&.to_datetime&.to_s,
         single_events: true,
         order_by: 'startTime',
         max_results: max_results
