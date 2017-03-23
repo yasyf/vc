@@ -10,17 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308093754) do
+ActiveRecord::Schema.define(version: 20170323194208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "calendar_events", id: :string, force: :cascade do |t|
-    t.integer  "user_id",        null: false
+    t.integer  "user_id",                        null: false
     t.integer  "company_id"
     t.string   "notes_doc_link"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.boolean  "invalid",        default: false, null: false
     t.index ["company_id"], name: "index_calendar_events_on_company_id", using: :btree
     t.index ["user_id"], name: "index_calendar_events_on_user_id", using: :btree
   end
@@ -135,17 +136,18 @@ ActiveRecord::Schema.define(version: 20170308093754) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "username",             null: false
+    t.string   "username",                                             null: false
     t.datetime "inactive_since"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                                           null: false
+    t.datetime "updated_at",                                           null: false
     t.string   "authentication_token"
-    t.string   "cached_name",          null: false
+    t.string   "cached_name",                                          null: false
     t.string   "trello_id"
     t.string   "slack_id"
     t.integer  "team_id"
     t.string   "access_token"
     t.string   "refresh_token"
+    t.datetime "logged_in_at",         default: '2017-03-02 19:43:42', null: false
     t.index ["cached_name"], name: "index_users_on_cached_name", unique: true, using: :btree
     t.index ["slack_id"], name: "index_users_on_slack_id", unique: true, using: :btree
     t.index ["team_id"], name: "index_users_on_team_id", using: :btree

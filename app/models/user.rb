@@ -47,8 +47,8 @@ class User < ActiveRecord::Base
     (inactive_since.blank? || inactive_since >= Time.now) && created_at <= Time.now
   end
 
-  def toggle_active!
-    update!(inactive_since: active? ? Time.now : nil)
+  def toggle_active!(time = Time.now)
+    update!(inactive_since: active? ? time : nil)
   end
 
   def stats
