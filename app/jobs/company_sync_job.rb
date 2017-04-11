@@ -1,8 +1,14 @@
 class CompanySyncJob < ApplicationJob
   queue_as :default
 
+  IGNORED_COMPANY_PREFIX = 'jobs/company_sync/ignored/trello_id'
+
   def perform(team, quiet: true, importing: false, deep: false)
     Importers::Trello.new(team).sync!(deep: deep) do |card_data|
+      if ignored? card_data[:trello_id]
+        next
+      end
+
       if card_data.delete(:closed)
         Company.where(trello_id: card_data[:trello_id]).destroy_all
         next
@@ -48,12 +54,21 @@ class CompanySyncJob < ApplicationJob
 
   private
 
+  def ignored?(trello_id)
+    Rails.cache.exist?("#{IGNORED_COMPANY_PREFIX}/#{trello_id}")
+  end
+
+  def ignore!(trello_id)
+    Rails.cache.write("#{IGNORED_COMPANY_PREFIX}/#{trello_id}", true, expires_in: 1.month)
+  end
+
   def try_save!(company)
     if company.changed?
       begin
         company.save!
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
         Rails.logger.error "[Company Sync] Invalid Company Data (#{e.message})\n#{company.serializable_hash}"
+        ignore! company.trello_id if company.trello_id.present?
       end
     end
   end
