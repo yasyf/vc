@@ -11,7 +11,7 @@ class UserCalendarJob < ActiveJob::Base
       next unless event.present? && event.recurring_event_id.blank?
       next unless (company = find_company(event))
       last_event = user.calendar_events.order(created_at: :desc).first
-      next if last_event.created_at > 1.hour.ago && last_event.updated_at == last_event.created_at
+      next if last_event.present? && last_event.created_at > 1.hour.ago && last_event.updated_at == last_event.created_at
       calevent = CalendarEvent.where(id: event.id).first_or_create! do |ce|
         ce.user = user
         ce.company = company
