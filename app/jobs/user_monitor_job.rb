@@ -1,6 +1,6 @@
 class UserMonitorJob < ActiveJob::Base
-  INACTIVE_THRESHOLD = 1.month
-  VOTE_THRESHOLD = 2.weeks
+  INACTIVE_THRESHOLD = 2.weeks
+  VOTE_THRESHOLD = 3.weeks
 
   queue_as :default
 
