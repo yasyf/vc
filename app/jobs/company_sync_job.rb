@@ -33,14 +33,16 @@ class CompanySyncJob < ApplicationJob
 
       company.send(:add_to_wit!) unless company.name == company.name_was
 
+      company.decide!(override: false) if company.undecided? && company.passed?
+
+      next unless deep
+
       company.set_extra_attributes!
       next unless company.changed? && company.valid?
 
       log_events! company unless quiet
 
       try_save! company
-
-      company.decide!(override: false) if company.undecided? && company.passed?
     end
   end
 
