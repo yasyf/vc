@@ -4,8 +4,6 @@ module Concerns
 
     private
 
-    NullObject = Struct.new(nil)
-
     %w(hour day week month year).each do |period|
       define_method("cache_for_a_#{period}") do |options = {}, &block|
         cached(options.merge({ expires_in: jitter(1, period) }), &block)
@@ -22,11 +20,7 @@ module Concerns
     end
 
     def cache_fetch(key, options, &block)
-      result = Rails.cache.fetch(key, options.reverse_merge(cache_options)) {
-        result = block.call
-        result.nil? ? NullObject.new : result
-      }
-      result.is_a?(NullObject) ? nil : result
+      Rails.cache.fetch(key, options.reverse_merge(cache_options), &block)
     end
 
     def cache_options
