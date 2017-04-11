@@ -191,7 +191,10 @@ class User < ActiveRecord::Base
   end
 
   def set_cached_name
-    self.cached_name ||= name || username
+    unless @set_cached_name
+      self.cached_name ||= name || username
+      @set_cached_name = true
+    end
   end
 
   def set_slack_id
