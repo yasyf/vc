@@ -6,7 +6,7 @@ module Concerns
 
     def slack_send!(channel, message, notify: false)
       message = "<!channel> #{message}" if notify
-      slack_client.chat_postMessage(channel: channel, text: message, as_user: true)
+      slack_client.chat_postMessage(channel: channel, text: message, as_user: true, link_names: true)
     rescue Slack::Web::Api::Error => e
       Util.log_exception e
     end
