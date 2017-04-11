@@ -162,7 +162,7 @@ class User < ActiveRecord::Base
       next unless query.present?
       user = begin
         Trello::Member.find(query)
-      rescue Trello::Error
+      rescue Trello::Error, SystemStackError
         nil
       end
       return user if user.present?
@@ -191,10 +191,7 @@ class User < ActiveRecord::Base
   end
 
   def set_cached_name
-    unless @set_cached_name
-      self.cached_name ||= name || username
-      @set_cached_name = true
-    end
+    self.cached_name ||= name || username
   end
 
   def set_slack_id
