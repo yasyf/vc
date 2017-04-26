@@ -29,7 +29,7 @@ boston: &boston
   coffee_chats: '0B5YV7AKNT7yoRW4yS19EWFhtYXc'
   lists:
     application: 'Applied at Website'
-    allocated: 'Stage One: Top of Funnel'
+    allocated: 'Stage 1: Top of Funnel'
     ice_box: 'Not Seeking Funding Right Now'
     scheduled: 'Scheduled to Pitch'
     pre_funded: 'Invested'
@@ -37,7 +37,7 @@ boston: &boston
       - 'Invested'
       - 'Administered Note'
       - 'Funded'
-    passed: 'Post-pitch (Stage Five)'
+    passed: 'Post-pitch (Stage 4)'
     rejected: 'Passed - No Pitch'
   time_zone: 'Eastern Time (US & Canada)'
 
