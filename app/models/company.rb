@@ -280,10 +280,11 @@ class Company < ActiveRecord::Base
   end
 
   def set_snapshot_link!
+    escaped_name = name.gsub(/['"]/, '')
     self.snapshot_link = begin
       if team.snapshot_folder_ids.present?
-        google_drive.find(name.gsub(/['"]/, ''), in_folders: team.snapshot_folder_ids)
-      end || google_drive.find("#{name.gsub(/['"]/, '')} Snapshot", excludes: team.exclude_folder_ids)
+        google_drive.find(escaped_name, in_folders: team.snapshot_folder_ids)
+      end || google_drive.find("#{escaped_name} Snapshot", excludes: team.exclude_folder_ids)
     end&.web_view_link
   end
 
