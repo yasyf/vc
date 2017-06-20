@@ -103,6 +103,7 @@ class Company < ActiveRecord::Base
   def prepare_team!
     return unless list == team.lists.scheduled
     return unless pitch_on.present?
+    set_snapshot_link! unless snapshot_link.present?
     return unless snapshot_link.present? || (pitch_on.to_datetime - team.datetime_now) < DEFAULT_DEADLINE
     LoggedEvent.do_once(self, :prepare_team) do
       VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self, cc_all: true)
