@@ -102,6 +102,7 @@ class User < ActiveRecord::Base
   end
 
   def self.from_omniauth(auth)
+    return nil unless auth.present?
     from_email(auth.info.email)&.tap do |user|
       user.update! access_token: auth.credentials.token, refresh_token: auth.credentials.refresh_token
     end
