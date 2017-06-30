@@ -65,13 +65,16 @@ group :production do
   gem 'connection_pool'
 end
 
-group :development do
+group :development, :staging do
   gem 'letter_opener_web'
   gem 'listen'
+end
+
+group :development do
   gem 'web-console'
 end
 
-group :development, :test do
+group :development, :staging, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
