@@ -6,6 +6,6 @@ one:
   company: one
 
 two:
-  trello_id: MyString
+  trello_id: MyString2
   list: two
   company: two
