@@ -1,4 +1,4 @@
-class CreateLists < ActiveRecord::Migration
+class CreateLists < ActiveRecord::Migration[5.0]
   def change
     create_table :lists do |t|
       t.string :trello_id, null: false, blank: false, unique: true, index: true

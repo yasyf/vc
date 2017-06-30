@@ -1,4 +1,4 @@
-class CreateKnowledges < ActiveRecord::Migration
+class CreateKnowledges < ActiveRecord::Migration[5.0]
   def change
     create_table :knowledges do |t|
       t.text :body, null: false, blank: false
