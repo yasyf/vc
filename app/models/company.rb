@@ -5,17 +5,16 @@ class Company < ActiveRecord::Base
   DEFAULT_DEADLINE = (2.5).days
 
   has_one :tweeter
+  has_many :cards
   has_many :votes
   has_many :calendar_events
-  belongs_to :list
   belongs_to :team
   has_and_belongs_to_many :users
   has_and_belongs_to_many :competitors
 
   validates :name, presence: true
   validates :team, presence: true
-  validates :list, presence: true
-  validates :trello_id, presence: true, uniqueness: true
+
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
   validates :snapshot_link, uniqueness: { allow_nil: true }
