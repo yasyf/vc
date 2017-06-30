@@ -2,12 +2,10 @@
 
 one:
   name: MyString
-  card_id: 1
   team_id: 1
-  pitch_on: 2016-05-22 14:59:43
+  pitch_id: 1
 
 two:
   name: MyString
-  card_id: 2
   team_id: 2
-  pitch_on: 2016-05-22 14:59:43
+  pitch_id: 2

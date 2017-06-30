@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170630223241) do
+ActiveRecord::Schema.define(version: 20170630231716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,8 +39,6 @@ ActiveRecord::Schema.define(version: 20170630223241) do
 
   create_table "companies", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.date "pitch_on"
-    t.datetime "decision_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "deadline"
@@ -51,7 +49,6 @@ ActiveRecord::Schema.define(version: 20170630223241) do
     t.integer "team_id", null: false
     t.integer "capital_raised", default: 0, null: false
     t.text "description"
-    t.boolean "cached_funded", default: false, null: false
     t.string "prevote_doc_link"
     t.index ["crunchbase_id"], name: "index_companies_on_crunchbase_id", unique: true
     t.index ["domain"], name: "index_companies_on_domain", unique: true
@@ -114,6 +111,16 @@ ActiveRecord::Schema.define(version: 20170630223241) do
     t.datetime "updated_at", null: false
     t.json "data", default: [], null: false
     t.index ["reason", "record_id"], name: "index_logged_events_on_reason_and_record_id", unique: true
+  end
+
+  create_table "pitches", force: :cascade do |t|
+    t.datetime "when", null: false
+    t.datetime "decision"
+    t.boolean "cached_funded"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_pitches_on_company_id"
   end
 
   create_table "teams", id: :serial, force: :cascade do |t|
@@ -186,6 +193,7 @@ ActiveRecord::Schema.define(version: 20170630223241) do
   add_foreign_key "companies", "teams"
   add_foreign_key "knowledges", "teams"
   add_foreign_key "knowledges", "users"
+  add_foreign_key "pitches", "companies"
   add_foreign_key "users", "teams"
   add_foreign_key "votes", "users"
 end
