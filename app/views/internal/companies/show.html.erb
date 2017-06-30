@@ -1,0 +1,84 @@
+<% title @company.name %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
+  </div>
+  <div class="panel-body">
+    <% if @company.snapshot_link.present? %>
+      <a class="btn btn-default" href="<%= @company.snapshot_link %>" role="button" target="_blank">
+        <h4>View Snapshot</h4>
+      </a>
+    <% end %>
+    <% if @vote.present? %>
+      <% if @vote.final? %>
+        <a class="btn btn-default" href="<%= internal_company_vote_path(@company, @vote) %>" role="button">
+          <h4>View Your Vote</h4>
+        </a>
+      <% else %>
+        <a class="btn btn-default" href="<%= @company.prevote_comments_doc %>" target="_blank" role="button">
+          <h4>Prevote Discussion Doc</h4>
+        </a>
+        <a class="btn btn-default" href="<%= new_internal_company_vote_path(@company) %>" role="button">
+          <h4>Submit Final Vote</h4>
+        </a>
+      <% end %>
+    <% elsif @company.pitched? %>
+      <a class="btn btn-default" href="<%= new_internal_company_vote_path(@company) %>" role="button">
+        <h4>Submit Pre-Vote</h4>
+      </a>
+    <% else %>
+      <h4>
+        <% if @company.past_deadline? %>
+          You did not vote for this pitch
+        <% elsif @company.passed? %>
+          We passed on this company without seeing a pitch
+        <% else %>
+         This company is in the pipeline
+        <% end %>
+      </h4>
+    <% end %>
+  </div>
+  <div class="list-group">
+    <a class="list-group-item companies--item" href="#">
+      <div class="row">
+        <div class="col-sm-6">
+          <%= render partial: 'internal/shared/stat', locals: {
+            name: 'Competitors',
+            value: Competitor.to_param(@company),
+          } %>
+        </div>
+        <div class="col-sm-6">
+          <%= render partial: 'internal/shared/stat',
+            locals: {name: 'Raised', value: @company.capital_raised(format: true)} %>
+        </div>
+      </div>
+    </a>
+    <% if @company.past_deadline? %>
+      <a class="list-group-item companies--item" href="#">
+        <%= render partial: 'internal/shared/stats', locals: {vote: @vote, stats: @company.stats} %>
+      </a>
+      <% @company.votes.final.each do |vote| %>
+        <a class="list-group-item companies--item" href="<%= internal_company_vote_path(@company, vote) %>">
+          <p class='companies--name-heading'>
+            <%= vote.user.name %>
+          </p>
+          <p class="companies--larger">
+            <%= vote.reason %>
+          </p>
+        </a>
+      <% end %>
+    <% else %>
+      <% @company.votes.where(final: false).each do |vote| %>
+        <a class="list-group-item companies--item" href="<%= internal_company_vote_path(@company, vote) %>">
+          <p class='companies--name-heading'>
+            <%= vote.user.name %>
+            <br>
+            Prevote
+          </p>
+          <%= render partial: 'internal/shared/averages', locals: {stats: vote.stats, force_int: true} %>
+        </a>
+      <% end %>
+    <% end %>
+  </div>
+</div>

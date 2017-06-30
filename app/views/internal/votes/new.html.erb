@@ -1,0 +1,52 @@
+<% title 'Submit Vote' %>
+<% if @vote.persisted? %>
+  <% header "#{@vote.final? ? 'Final Vote' : 'Submit Final Vote'} For #{@company.name}" %>
+<% else %>
+  <% header "Submit Pre-Vote For #{@company.name}" %>
+<% end %>
+
+<% if current_internal_user.active? %>
+  <%= form_for [@company, Vote.new], html: { class: 'form-horizontal' } do |f| %>
+    <% Vote::METRICS.each do |metric| %>
+      <div class="form-group">
+        <%= f.label metric, class: 'col-sm-offset-4 col-sm-2 control-label' %>
+        <div class="col-sm-1">
+          <%= f.number_field metric, value: @vote.send(metric), class: 'form-control',
+              min: 1, max: 5, autocomplete: 'off', step: 1, required: true, readonly: @vote.final? && @vote.persisted? %>
+        </div>
+      </div>
+    <% end %>
+    <% if @vote.persisted? %>
+      <%= f.hidden_field :final, value: true %>
+      <div class="form-group">
+        <%= f.label :overall, class: 'col-sm-offset-4 col-sm-2 control-label' %>
+        <div class="col-sm-1">
+          <%= f.number_field :overall, class: 'form-control', min: 1, max: 5, value: @vote.overall,
+              step: 1, autocomplete: 'off', required: true, readonly: @vote.final? && @vote.persisted? %>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.label :reason, class: 'col-sm-offset-4 col-sm-2 control-label' %>
+        <div class="col-sm-5">
+          <%= f.text_area :reason, class: 'form-control', value: @vote.reason, readonly: @vote.final? && @vote.persisted?, rows: 5 %>
+        </div>
+      </div>
+    <% end %>
+    <% unless @vote.final? && @vote.persisted? %>
+      <div class="form-group">
+        <div class="col-sm-offset-5 col-sm-2">
+          <%= f.submit 'Submit', class: 'btn btn-default', id: 'vote-submit', disabled: @company.decision_at.present? %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+<% else %>
+  <div class="cannot-vote">
+    <h4>You are not currently active, and cannot submit votes.</h4>
+  </div>
+  <div>
+    <a class="btn btn-default btn-sm" href="<%= internal_company_path(@company) %>" role="button" target="_blank">
+      <h4>View Results</h4>
+    </a>
+  </div>
+<% end %>

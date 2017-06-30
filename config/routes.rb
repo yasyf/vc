@@ -11,51 +11,63 @@ class TeamConstraint
 end
 
 Rails.application.routes.draw do
-  get 'stats/show'
-
-  root 'welcome#index'
-
-  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
-
-  get 'team', to: 'welcome#select_team'
-  get 'feedback', to: 'welcome#send_slack_feedback'
-
-  scope "(:team)", constraints: TeamConstraint.new do
-    resources :knowledges, only: [:index]
-    resources :stats, only: [:index]
-    get 'all', to: 'companies#all'
-    get 'voting', to: 'companies#voting'
-    resources :companies, only: [:index, :show] do
-      resources :votes, only: [:show, :create, :new]
-    end
+  namespace :external do
+    get 'welcome/index'
   end
 
-  namespace :api, defaults: { format: :json } do
-    namespace :v1 do
-      resources :events, only: [:show, :update] do
-        member do
-          post 'invalidate'
-        end
-      end
+  root 'external/welcome#index'
 
-      scope "(:team)", constraints: TeamConstraint.new do
-        resources :votes, only: [:index, :show]
-        resources :companies, only: [:index, :show] do
+  namespace :external do
+    root 'welcome#index'
+
+  end
+
+  namespace :internal do
+    root 'welcome#index'
+
+    devise_for :users, controllers: {omniauth_callbacks: "internal/users/omniauth_callbacks" }
+
+    get 'team', to: 'welcome#select_team'
+    get 'feedback', to: 'welcome#send_slack_feedback'
+    get 'stats/show'
+
+    scope "(:team)", constraints: TeamConstraint.new do
+      resources :knowledges, only: [:index]
+      resources :stats, only: [:index]
+      get 'all', to: 'companies#all'
+      get 'voting', to: 'companies#voting'
+      resources :companies, only: [:index, :show] do
+        resources :votes, only: [:show, :create, :new]
+      end
+    end
+
+    namespace :api, defaults: { format: :json } do
+      namespace :v1 do
+        resources :events, only: [:show, :update] do
           member do
-            get 'voting_status'
-            post 'allocate'
-            post 'reject'
-            post 'invalidate_crunchbase'
-          end
-          collection do
-            get 'search'
+            post 'invalidate'
           end
         end
-      end
-      resource :user, only: :show do
-        get 'token'
-        post 'toggle_active'
-        post 'set_team'
+
+        scope "(:team)", constraints: TeamConstraint.new do
+          resources :votes, only: [:index, :show]
+          resources :companies, only: [:index, :show] do
+            member do
+              get 'voting_status'
+              post 'allocate'
+              post 'reject'
+              post 'invalidate_crunchbase'
+            end
+            collection do
+              get 'search'
+            end
+          end
+        end
+        resource :user, only: :show do
+          get 'token'
+          post 'toggle_active'
+          post 'set_team'
+        end
       end
     end
   end

@@ -61,6 +61,9 @@ gem 'sidekiq'
 gem 'clockwork'
 gem 'retries'
 
+# temp fix
+gem 'rb-fsevent', '0.9.8'
+
 group :production do
   gem 'rails_12factor'
   gem 'puma'

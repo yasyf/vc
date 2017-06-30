@@ -1,0 +1,19 @@
+<% title 'All Companies' %>
+
+<% @lists.each do |list, companies| %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1><%= list.name %></h1>
+    </div>
+    <div class="panel-body">
+      <%= render partial: 'filter' %>
+    </div>
+    <div class="list-group">
+      <% companies.each do |company| %>
+        <a class="list-group-item companies--item" href="<%= internal_company_path(company) %>">
+          <%= render partial: 'summary', locals: {company: company} %>
+        </a>
+      <% end %>
+    </div>
+  </div>
+<% end %>

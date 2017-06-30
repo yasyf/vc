@@ -1,0 +1,7 @@
+<div class="row companies--smaller">
+  <% stats[:averages].each do |name, value| %>
+    <div class="col-sm-3">
+      <%= render partial: 'internal/shared/stat', locals: {name: name, value: value, force_int: local_assigns[:force_int]} %>
+    </div>
+  <% end %>
+</div>
