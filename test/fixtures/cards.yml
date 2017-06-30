@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  trello_id: MyString
+  list: one
+  company: one
+
+two:
+  trello_id: MyString
+  list: two
+  company: two

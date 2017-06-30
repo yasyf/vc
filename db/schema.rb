@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411084205) do
+ActiveRecord::Schema.define(version: 20170630223241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,15 +26,24 @@ ActiveRecord::Schema.define(version: 20170411084205) do
     t.index ["user_id"], name: "index_calendar_events_on_user_id"
   end
 
+  create_table "cards", force: :cascade do |t|
+    t.string "trello_id", null: false
+    t.bigint "list_id", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_cards_on_company_id"
+    t.index ["list_id"], name: "index_cards_on_list_id"
+    t.index ["trello_id"], name: "index_cards_on_trello_id", unique: true
+  end
+
   create_table "companies", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.string "trello_id", null: false
     t.date "pitch_on"
     t.datetime "decision_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "deadline"
-    t.integer "list_id"
     t.boolean "override_quorum", default: false, null: false
     t.string "snapshot_link"
     t.string "domain"
@@ -46,11 +55,9 @@ ActiveRecord::Schema.define(version: 20170411084205) do
     t.string "prevote_doc_link"
     t.index ["crunchbase_id"], name: "index_companies_on_crunchbase_id", unique: true
     t.index ["domain"], name: "index_companies_on_domain", unique: true
-    t.index ["list_id"], name: "index_companies_on_list_id"
     t.index ["name"], name: "index_companies_on_name"
     t.index ["snapshot_link"], name: "index_companies_on_snapshot_link", unique: true
     t.index ["team_id"], name: "index_companies_on_team_id"
-    t.index ["trello_id"], name: "index_companies_on_trello_id", unique: true
   end
 
   create_table "companies_competitors", id: false, force: :cascade do |t|
@@ -141,13 +148,13 @@ ActiveRecord::Schema.define(version: 20170411084205) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "authentication_token"
-    t.string "cached_name", null: false
     t.string "trello_id"
     t.string "slack_id"
+    t.string "cached_name", null: false
     t.integer "team_id"
     t.string "access_token"
     t.string "refresh_token"
-    t.datetime "logged_in_at", default: "2017-03-02 19:43:42", null: false
+    t.datetime "logged_in_at", default: "2017-03-02 19:56:21", null: false
     t.index ["cached_name"], name: "index_users_on_cached_name", unique: true
     t.index ["slack_id"], name: "index_users_on_slack_id", unique: true
     t.index ["team_id"], name: "index_users_on_team_id"
@@ -174,7 +181,8 @@ ActiveRecord::Schema.define(version: 20170411084205) do
 
   add_foreign_key "calendar_events", "companies"
   add_foreign_key "calendar_events", "users"
-  add_foreign_key "companies", "lists"
+  add_foreign_key "cards", "companies"
+  add_foreign_key "cards", "lists"
   add_foreign_key "companies", "teams"
   add_foreign_key "knowledges", "teams"
   add_foreign_key "knowledges", "users"
