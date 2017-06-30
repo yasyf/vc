@@ -123,6 +123,6 @@ phl:
 
 test:
   <<: *boston
-  ignore: <%= !Rails.env.development? %>
+  ignore: <%= Rails.env.production? %>
   channel: 'bot_tests'
   listserv: 'ym'
