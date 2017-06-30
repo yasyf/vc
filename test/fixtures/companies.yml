@@ -2,12 +2,12 @@
 
 one:
   name: MyString
-  trello_id: 1
+  card_id: 1
   team_id: 1
   pitch_on: 2016-05-22 14:59:43
 
 two:
   name: MyString
-  trello_id: 2
+  card_id: 2
   team_id: 2
   pitch_on: 2016-05-22 14:59:43
