@@ -1,6 +1,6 @@
 class RemovePitchFromCompany < ActiveRecord::Migration[5.1]
   def up
-    Company.where.not(decision_at: nil).each do |company|
+    Company.where('decision_at IS NOT NULL OR pitch_on IS NOT NULL').each do |company|
       Pitch.create!(
           company: company,
           when: company[:pitch_on] || company[:decision_at],
