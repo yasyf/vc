@@ -27,7 +27,7 @@
   <% if @stats[:yes_votes] > 0 %>
     <h1>Yes Votes</h1>
     <div>
-      <% @company.votes.yes.each do |vote| %>
+      <% @votes.yes.each do |vote| %>
         <h4><%= vote.user.name %></h4>
         <p class="reason"><%= vote.reason %></p>
       <% end %>
@@ -37,7 +37,7 @@
   <% if @stats[:no_votes] > 0 %>
     <h1>No Votes</h1>
     <div>
-      <% @company.votes.no.each do |vote| %>
+      <% @votes.no.each do |vote| %>
         <h4><%= vote.user.name %></h4>
         <p class="reason"><%= vote.reason %></p>
       <% end %>

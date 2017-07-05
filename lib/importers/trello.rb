@@ -10,7 +10,7 @@ module Importers
     def sync!(deep: false)
       @team.trello_board_ids.each do |trello_board_id|
         board = ::Trello::Board.find(trello_board_id, { fields: 'dateLastActivity' })
-        next unless @team.updated_at < board.last_activity_date || (deep && @team.companies.pitch.undecided.present?)
+        next unless @team.updated_at < board.last_activity_date || (deep && @team.companies.pitched.undecided.present?)
         @team.touch
         board.cards.each do |card|
           next if IGNORES.include?(card.name)

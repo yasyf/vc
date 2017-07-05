@@ -6,7 +6,7 @@ class Internal::VotesController < Internal::ApplicationController
   end
 
   def new
-    @vote = company.user_votes(current_internal_user).first_or_initialize
+    @vote = company.pitch.user_votes(current_internal_user).first_or_initialize
   end
 
   def create

@@ -4,7 +4,7 @@
   </p>
   <% if company.pitched? %>
     <p class='companies--sub-heading'>
-      <%= company.pitch_on.to_s(:long) %>
+      <%= company.pitch.when.to_s(:long) %>
     </p>
   <% end %>
   <p class='companies--sub-heading'>

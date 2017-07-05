@@ -49,7 +49,7 @@ module GoogleApi
 
     def raw_find(query, fields)
       @drive.list_files(q: query, order_by: 'createdTime desc', fields: fields).files.first
-    rescue Google::Apis::ClientError
+    rescue Google::Apis::ClientError, Google::Apis::ServerError
       nil
     end
 

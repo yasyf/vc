@@ -6,7 +6,7 @@ module Internal::CompaniesHelper
       'danger'
     elsif company.pitched?
       'warning'
-    elsif !company.pitch_on.blank?
+    elsif !company.pitch.blank?
       'info'
     else
       'muted'

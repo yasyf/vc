@@ -15,7 +15,7 @@
       <a
         class="list-group-item companies--item"
         href="<%=
-          company.user_votes(current_internal_user).present? || company.past_deadline? \
+          company.pitch.user_votes(current_internal_user).present? || company.pitch.past_deadline? \
           ? internal_company_path(company) \
           : new_internal_internal_company_vote_path(company)
         %>"

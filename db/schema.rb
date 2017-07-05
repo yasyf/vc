@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170630231716) do
+ActiveRecord::Schema.define(version: 20170704234730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,18 +42,14 @@ ActiveRecord::Schema.define(version: 20170630231716) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "deadline"
-    t.boolean "override_quorum", default: false, null: false
-    t.string "snapshot_link"
     t.string "domain"
     t.string "crunchbase_id"
     t.integer "team_id", null: false
     t.integer "capital_raised", default: 0, null: false
     t.text "description"
-    t.string "prevote_doc_link"
     t.index ["crunchbase_id"], name: "index_companies_on_crunchbase_id", unique: true
     t.index ["domain"], name: "index_companies_on_domain", unique: true
     t.index ["name"], name: "index_companies_on_name"
-    t.index ["snapshot_link"], name: "index_companies_on_snapshot_link", unique: true
     t.index ["team_id"], name: "index_companies_on_team_id"
   end
 
@@ -116,11 +112,15 @@ ActiveRecord::Schema.define(version: 20170630231716) do
   create_table "pitches", force: :cascade do |t|
     t.datetime "when", null: false
     t.datetime "decision"
-    t.boolean "cached_funded"
+    t.boolean "funded", default: false, null: false
     t.bigint "company_id", null: false
+    t.string "snapshot"
+    t.string "prevote_doc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_pitches_on_company_id"
+    t.index ["prevote_doc"], name: "index_pitches_on_prevote_doc", unique: true
+    t.index ["snapshot"], name: "index_pitches_on_snapshot", unique: true
   end
 
   create_table "teams", id: :serial, force: :cascade do |t|
@@ -178,11 +178,10 @@ ActiveRecord::Schema.define(version: 20170630231716) do
     t.text "reason"
     t.boolean "final", default: false, null: false
     t.integer "user_id"
-    t.integer "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id", "user_id", "final"], name: "index_votes_on_company_id_and_user_id_and_final", unique: true
-    t.index ["company_id"], name: "index_votes_on_company_id"
+    t.bigint "pitch_id"
+    t.index ["pitch_id"], name: "index_votes_on_pitch_id"
     t.index ["user_id"], name: "index_votes_on_user_id"
   end
 
@@ -195,5 +194,6 @@ ActiveRecord::Schema.define(version: 20170630231716) do
   add_foreign_key "knowledges", "users"
   add_foreign_key "pitches", "companies"
   add_foreign_key "users", "teams"
+  add_foreign_key "votes", "pitches"
   add_foreign_key "votes", "users"
 end

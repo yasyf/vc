@@ -1,7 +1,7 @@
 class EligibleValidator < ActiveModel::Validator
   def validate(record)
-    record.errors[:user] << 'must be active' if !record.user.active?
-    record.errors[:company] << 'voting deadline has passed' if record.company.decision_at.present?
+    record.errors[:user] << 'must be active' unless record.user.active?
+    record.errors[:company] << 'voting deadline has passed' unless record.pitch.undecided?
   end
 end
 
@@ -9,9 +9,10 @@ class Vote < ActiveRecord::Base
   METRICS = %w(fit team product market)
 
   belongs_to :user
-  belongs_to :company, touch: true
+  belongs_to :pitch, touch: true
+  has_one :company, through: :pitch
 
-  validates :company, presence: true, uniqueness: { scope: [:user, :final] }
+  validates :pitch, presence: true, uniqueness: { scope: [:user, :final] }
   validates :final, inclusion: [true, false]
   validates :overall, inclusion: { in: (1..5).to_a - [3], message: 'cannot be 3' }, if: :final?
   validates :reason, presence: true, if: :final?

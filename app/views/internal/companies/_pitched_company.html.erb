@@ -1,9 +1,9 @@
 <%= render partial: 'summary', locals: {company: company} %>
 <div class="list-group-item-text">
-  <% if company.decision_at.present? %>
-    <%= render partial: 'internal/shared/stats', locals: {vote: company.vote_for_user(current_internal_user), stats: company.stats} %>
+  <% if company.pitch.decision.present? %>
+    <%= render partial: 'internal/shared/stats', locals: {vote: company.pitch.vote_for_user(current_internal_user), stats: company.pitch.stats} %>
   <% elsif company.pitched? %>
-    <% vote = company.user_votes(current_internal_user).first %>
+    <% vote = company.pitch.user_votes(current_internal_user).first %>
     <p class='companies--heading'>
       <% if vote.blank? %>
         You have not yet voted.

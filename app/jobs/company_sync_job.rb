@@ -10,30 +10,40 @@ class CompanySyncJob < ApplicationJob
       end
 
       if card_data.delete(:closed)
-        Company.where(trello_id: card_data[:trello_id]).destroy_all
+        Card.where(trello_id: card_data[:trello_id]).update(archived: true)
         next
       end
+
+      card_data[:pitch_on] = team.time_now if importing && card_data[:pitch_on].blank?
 
       Rails.logger.info "[Company Sync] Processing #{card_data[:name]} (#{card_data[:trello_list_id]})"
 
       users = users_from_card_data team, card_data
       list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
 
-      company = Company.where(trello_id: card_data[:trello_id]).first_or_initialize
-      company.assign_attributes card_data
-      company.decision_at ||= team.time_now if importing && company.pitch_on == nil
+      card = Card.where(trello_id: card_data[:trello_id]).first_or_initialize
+      card.company ||= Company.where(name: card_data[:name]).first_or_initialize
 
-      if company.list.present? && company.list != list
-        LoggedEvent.log! :company_list_changed, company,
-          notify: 0, data: { from: company.list.trello_id, to: list.trello_id, date: Date.today }
+      company = card.company
+      pitch = company.pitch
+
+      if (pitch.blank? || pitch.decided?) && card_data[:pitch_on].present?
+        pitch = Pitch.new(company: company)
+      end
+
+      if pitch.present?
+        pitch.when = card_data[:pitch_on]
+        pitch.decision ||= team.time_now if importing
+      end
+
+      if card.list.present? && card.list != list
+        LoggedEvent.log! :card_list_changed, card,
+          notify: 0, data: { from: card.list.trello_id, to: list.trello_id, date: Date.today }
       end
 
       company.team = team
-      company.list = list
+      card.list = list
       company.users = users
-
-      company.cached_funded = true if company.funded?
-      company.cached_funded = false if company.passed?
 
       try_save! company
 
@@ -48,7 +58,7 @@ class CompanySyncJob < ApplicationJob
 
       try_save! company
 
-      company.decide!(override: false) if company.undecided? && company.passed?
+      pitch.decide!(override: false) if pitch.present? && pitch.undecided? && company.passed?
     end
   end
 
@@ -63,12 +73,14 @@ class CompanySyncJob < ApplicationJob
   end
 
   def try_save!(company)
+    company.card.save! if company.card.changed?
+    company.pitch.save! if company.pitch.changed?
     if company.changed?
       begin
         company.save!
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
         Rails.logger.error "[Company Sync] Invalid Company Data (#{e.message})\n#{company.serializable_hash}"
-        ignore! company.trello_id if company.trello_id.present?
+        ignore! company.card.trello_id if company.card.trello_id.present?
       end
     end
   end

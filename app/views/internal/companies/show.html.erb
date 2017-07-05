@@ -5,8 +5,8 @@
     <h1 class="text-<%= company_class(@company) %>"><%= @company.name %></h1>
   </div>
   <div class="panel-body">
-    <% if @company.snapshot_link.present? %>
-      <a class="btn btn-default" href="<%= @company.snapshot_link %>" role="button" target="_blank">
+    <% if @company.pitch.snapshot.present? %>
+      <a class="btn btn-default" href="<%= @company.pitch.snapshot %>" role="button" target="_blank">
         <h4>View Snapshot</h4>
       </a>
     <% end %>
@@ -16,7 +16,7 @@
           <h4>View Your Vote</h4>
         </a>
       <% else %>
-        <a class="btn btn-default" href="<%= @company.prevote_comments_doc %>" target="_blank" role="button">
+        <a class="btn btn-default" href="<%= @company.pitch.prevote_doc(create: true) %>" target="_blank" role="button">
           <h4>Prevote Discussion Doc</h4>
         </a>
         <a class="btn btn-default" href="<%= new_internal_company_vote_path(@company) %>" role="button">
@@ -29,7 +29,7 @@
       </a>
     <% else %>
       <h4>
-        <% if @company.past_deadline? %>
+        <% if @company.pitch.past_deadline? %>
           You did not vote for this pitch
         <% elsif @company.passed? %>
           We passed on this company without seeing a pitch
@@ -54,11 +54,11 @@
         </div>
       </div>
     </a>
-    <% if @company.past_deadline? %>
+    <% if @company.pitch.past_deadline? %>
       <a class="list-group-item companies--item" href="#">
-        <%= render partial: 'internal/shared/stats', locals: {vote: @vote, stats: @company.stats} %>
+        <%= render partial: 'internal/shared/stats', locals: {vote: @vote, stats: @company.pitch.stats} %>
       </a>
-      <% @company.votes.final.each do |vote| %>
+      <% @company.pitch.votes.final.each do |vote| %>
         <a class="list-group-item companies--item" href="<%= internal_company_vote_path(@company, vote) %>">
           <p class='companies--name-heading'>
             <%= vote.user.name %>
@@ -69,7 +69,7 @@
         </a>
       <% end %>
     <% else %>
-      <% @company.votes.where(final: false).each do |vote| %>
+      <% @company.pitch.votes.where(final: false).each do |vote| %>
         <a class="list-group-item companies--item" href="<%= internal_company_vote_path(@company, vote) %>">
           <p class='companies--name-heading'>
             <%= vote.user.name %>
