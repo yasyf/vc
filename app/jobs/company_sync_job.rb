@@ -10,7 +10,7 @@ class CompanySyncJob < ApplicationJob
       end
 
       if card_data.delete(:closed)
-        Card.where(trello_id: card_data[:trello_id]).update(archived: true)
+        Card.where(trello_id: card_data[:trello_id]).update_all(archived: true)
         next
       end
 
