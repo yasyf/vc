@@ -4,10 +4,8 @@ one:
   company_id: 1
   when: 2017-06-30 16:15:39
   decision: 2017-06-30 16:15:39
-  cached_funded:
 
 two:
   company_id: 2
   when: 2017-06-30 16:15:39
   decision: 2017-06-30 16:15:39
-  cached_funded:
