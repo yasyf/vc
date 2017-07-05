@@ -4,14 +4,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :check_team!
+  before_action :set_raven_context
 
   private
 
-  def append_info_to_payload(payload)
-    super
-    payload[:host] = request.host
-    payload[:source_ip] = request.remote_ip
-    payload[:user_id] = current_user.try(:id)
+  def set_raven_context
+    Raven.user_context(id: current_user.try(:id))
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 
   def check_team!
