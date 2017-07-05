@@ -48,6 +48,7 @@ module GoogleApi
     end
 
     def raw_find(query, fields)
+      Rails.logger.debug "GoogleApi::Drive list_files #{query} #{fields}"
       @drive.list_files(q: query, order_by: 'createdTime desc', fields: fields).files.first
     rescue Google::Apis::ClientError, Google::Apis::ServerError
       nil
