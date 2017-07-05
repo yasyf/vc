@@ -3,9 +3,7 @@
 one:
   name: MyString
   team_id: 1
-  pitch_id: 1
 
 two:
   name: MyString
   team_id: 2
-  pitch_id: 2
