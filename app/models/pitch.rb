@@ -31,7 +31,7 @@ class Pitch < ApplicationRecord
   end
 
   def deadline
-    super || self.when + DEFAULT_DEADLINE if self.when.present?
+    super || self.when + DEFAULT_DEADLINE
   end
 
   def undecided?

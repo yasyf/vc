@@ -3,6 +3,7 @@ class CreatePitches < ActiveRecord::Migration[5.1]
     create_table :pitches do |t|
       t.datetime :when, null: false
       t.datetime :decision
+      t.datetime :deadline
       t.boolean :funded, null: false, default: false
       t.belongs_to :company, foreign_key: true, index: true, null: false
       t.string :snapshot

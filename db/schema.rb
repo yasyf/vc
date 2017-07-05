@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(version: 20170704234730) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "deadline"
     t.string "domain"
     t.string "crunchbase_id"
     t.integer "team_id", null: false
@@ -112,6 +111,7 @@ ActiveRecord::Schema.define(version: 20170704234730) do
   create_table "pitches", force: :cascade do |t|
     t.datetime "when", null: false
     t.datetime "decision"
+    t.datetime "deadline"
     t.boolean "funded", default: false, null: false
     t.bigint "company_id", null: false
     t.string "snapshot"
