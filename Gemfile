@@ -12,7 +12,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 gem 'webpacker'
 gem 'webpacker-react', '~> 0.3.1'
@@ -42,7 +42,7 @@ gem 'picky'
 gem 'slack-ruby-client'
 gem 'devise'
 gem 'omniauth'
-gem "omniauth-google-oauth2"
+gem 'omniauth-google-oauth2'
 gem 'twitter-bootstrap-rails'
 gem 'workers'
 gem 'nokogiri'
@@ -60,6 +60,7 @@ gem 'redis-namespace'
 gem 'sidekiq'
 gem 'clockwork'
 gem 'retries'
+gem 'foundation-rails'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'

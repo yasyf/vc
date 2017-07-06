@@ -4,8 +4,18 @@
 
 import React from 'react'
 
-const VCFinder = props => (
-  <div>Hello {props.name}!</div>
-);
+class VCFinder extends React.Component {
+  render() {
+    return (
+      <div className="top-bar">
+        <div class="top-bar-left">
+          <ul class="menu">
+            <li><input type="search" placeholder="Search"></li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default VCFinder
