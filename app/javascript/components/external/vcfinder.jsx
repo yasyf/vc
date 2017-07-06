@@ -8,9 +8,9 @@ class VCFinder extends React.Component {
   render() {
     return (
       <div className="top-bar">
-        <div class="top-bar-left">
-          <ul class="menu">
-            <li><input type="search" placeholder="Search"></li>
+        <div className="top-bar-left">
+          <ul className="menu">
+            <li><input type="search" placeholder="Search" /></li>
           </ul>
         </div>
       </div>

@@ -60,7 +60,6 @@ gem 'redis-namespace'
 gem 'sidekiq'
 gem 'clockwork'
 gem 'retries'
-gem 'foundation-rails'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'
