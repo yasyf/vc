@@ -26,7 +26,7 @@ class Company < ActiveRecord::Base
 
   before_create :set_extra_attributes!
   after_create :add_to_wit!
-  after_create :start_founders_job
+  after_create :start_relationships_job
 
   def pitch
     @pitch ||= pitches.order(when: :desc).first
@@ -153,8 +153,8 @@ class Company < ActiveRecord::Base
 
   private
 
-  def start_founders_job
-    CompanyFoundersJob.perform_later(id)
+  def start_relationships_job
+    CompanyRelationshipsJob.perform_later(id)
   end
 
   def twitter_username

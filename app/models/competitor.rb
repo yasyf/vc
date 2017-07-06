@@ -9,8 +9,8 @@ class Competitor < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
 
-  validates :name, presence: true
-  validates :crunchbase_id, presence: true
+  validates :name, presence: true, uniqueness: true
+  validates :crunchbase_id, presence: true, uniqueness: true
 
   def self.create_from_name!(name)
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
@@ -19,7 +19,7 @@ class Competitor < ApplicationRecord
 
   def self.for_company(company)
     org = company.crunchbase_org(5)
-    all.select do |competitor|
+    where(name: COMPETITORS.keys).select do |competitor|
         org.has_investor?(competitor.crunchbase_id) ||
         COMPETITORS[competitor.name]&.new&.invested?(company.name)
     end
