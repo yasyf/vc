@@ -1,23 +1,13 @@
 module Http::Crunchbase
-  class Organization
-    extend Concerns::Cacheable
-
+  class Organization < Base
     INVALID_KEY = '_invalid_magic_cb_org_key'
     SIGNAL_INVESTORS = ['Dorm Room Fund', 'Rough Draft Ventures']
 
-    include HTTParty
     base_uri 'https://api.crunchbase.com/v/3/organizations'
-    format :json
-    headers 'Content-Type': 'application/json'
-    default_params user_key: ENV['CB_API_KEY']
 
     def initialize(company, timeout = nil)
       @company = company
-      @timeout = timeout
-    end
-
-    def permalink
-      get_in 'properties', 'permalink'
+      super timeout
     end
 
     def description
@@ -28,19 +18,12 @@ module Http::Crunchbase
       get_in 'properties', 'homepage_url'
     end
 
-    def crunchbase_url
-      path = get_in 'properties', 'web_path'
-      "https://www.crunchbase.com/#{path}"
-    end
-
     def investors
       get_in 'relationships', 'investors', multi: true
     end
 
-    def twitter
-      twitter = websites&.find { |site| site['properties']['website_type'] == 'twitter' }
-      url = twitter['properties']['url'].split('/') if twitter.present?
-      url.last.downcase if url.present? && url.length > 3
+    def founders
+      get_in 'relationships', 'founders', multi: true
     end
 
     def has_investor?(name)
@@ -58,55 +41,11 @@ module Http::Crunchbase
 
     private
 
-    def websites
-      get_in 'relationships', 'websites', multi: true
-    end
-
-    def self.api_get(raw_path, query = {}, multi = true)
-      path = URI.encode raw_path
-      data = key_cached(query.merge(path: path)) do
-        response = get(path, query: query)
-        case response.code
-        when 200
-          response.parsed_response['data']
-        when 404
-          nil
-        when 401
-          Rails.logger.warn "Crunchbase 401: #{path}/#{query}"
-          nil
-        else
-          raise "Crunchbase #{response.code}: #{path}/#{query}"
-        end
-      end
-      multi ? (data && data['items']) || [] : data
-    end
-
     def self.base_cache_key
       "http/crunchbase/organizations"
     end
 
-    def get_in_raw(path, multi)
-      return nil unless found?
-      current = search
-      current = current[path.shift] while path.present?
-      multi ? current['items'] : current
-    end
-
-    def get_in(*path, multi: false)
-      if @timeout.present?
-        Timeout::timeout(@timeout) { get_in_raw(path, multi) }
-      else
-        get_in_raw(path, multi)
-      end
-    rescue Timeout::Error, JSON::ParserError # when we hit rate limiting
-      multi ? [] : nil
-    end
-
-    def found?
-      search.present?
-    end
-
-    def search
+    def search_for_data
       @search ||= begin
         data = fetch_data
         if company_id.present? && id_valid?
@@ -148,7 +87,7 @@ module Http::Crunchbase
     end
 
     def company_id
-      @company_id ||= @company.crunchbase_id unless !id_valid?
+      @company_id ||= @company.crunchbase_id if id_valid?
     end
 
     def fetch_data

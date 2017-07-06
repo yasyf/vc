@@ -6,7 +6,8 @@ class Competitor < ApplicationRecord
     'TechStars': nil,
   }
 
-  has_and_belongs_to_many :companies
+  has_and_belongs_to_many :companies, -> { distinct }
+  has_many :investors
 
   validates :name, presence: true
   validates :crunchbase_id, presence: true

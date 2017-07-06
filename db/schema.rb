@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170704234730) do
+ActiveRecord::Schema.define(version: 20170706161925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,13 @@ ActiveRecord::Schema.define(version: 20170704234730) do
     t.index ["competitor_id", "company_id"], name: "index_companies_competitors_on_competitor_id_and_company_id", unique: true
   end
 
+  create_table "companies_founders", id: false, force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "founder_id", null: false
+    t.index ["company_id", "founder_id"], name: "index_companies_founders_on_company_id_and_founder_id", unique: true
+    t.index ["founder_id", "company_id"], name: "index_companies_founders_on_founder_id_and_company_id", unique: true
+  end
+
   create_table "companies_users", id: false, force: :cascade do |t|
     t.integer "company_id", null: false
     t.integer "user_id", null: false
@@ -73,6 +80,34 @@ ActiveRecord::Schema.define(version: 20170704234730) do
     t.datetime "updated_at", null: false
     t.index ["crunchbase_id"], name: "index_competitors_on_crunchbase_id", unique: true
     t.index ["name"], name: "index_competitors_on_name", unique: true
+  end
+
+  create_table "founders", force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "email"
+    t.string "facebook"
+    t.string "twitter"
+    t.string "linkedin"
+    t.string "homepage"
+    t.string "crunchbase_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crunchbase_id"], name: "index_founders_on_crunchbase_id", unique: true
+    t.index ["email"], name: "index_founders_on_email", unique: true
+    t.index ["facebook"], name: "index_founders_on_facebook", unique: true
+    t.index ["homepage"], name: "index_founders_on_homepage", unique: true
+    t.index ["linkedin"], name: "index_founders_on_linkedin", unique: true
+    t.index ["twitter"], name: "index_founders_on_twitter", unique: true
+  end
+
+  create_table "investors", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.bigint "competitor_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["competitor_id"], name: "index_investors_on_competitor_id"
   end
 
   create_table "knowledges", id: :serial, force: :cascade do |t|
@@ -190,6 +225,7 @@ ActiveRecord::Schema.define(version: 20170704234730) do
   add_foreign_key "cards", "companies"
   add_foreign_key "cards", "lists"
   add_foreign_key "companies", "teams"
+  add_foreign_key "investors", "competitors"
   add_foreign_key "knowledges", "teams"
   add_foreign_key "knowledges", "users"
   add_foreign_key "pitches", "companies"

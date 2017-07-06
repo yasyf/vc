@@ -55,5 +55,5 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
-  config.x.webpacker[:dev_server_host] = 'http://localhost:8080/'
+  config.x.webpacker[:dev_server_host] = 'http://0.0.0.0:8080/'
 end

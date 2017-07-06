@@ -7,13 +7,13 @@ import React from 'react'
 class VCFinder extends React.Component {
   render() {
     return (
-      <div className="top-bar">
-        <div className="top-bar-left">
-          <ul className="menu">
-            <li><input type="search" placeholder="Search" /></li>
-          </ul>
-        </div>
-      </div>
+      <nav className="top-bar">
+        <ul className="menu">
+          <li>
+            <input type="search" placeholder="Search" id="top-search-bar" />
+          </li>
+        </ul>
+      </nav>
     );
   }
 }

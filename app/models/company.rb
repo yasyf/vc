@@ -7,8 +7,9 @@ class Company < ActiveRecord::Base
   has_many :cards
   has_many :calendar_events
   belongs_to :team
-  has_and_belongs_to_many :users
-  has_and_belongs_to_many :competitors
+  has_and_belongs_to_many :users, -> { distinct }
+  has_and_belongs_to_many :competitors, -> { distinct }
+  has_and_belongs_to_many :founders, -> { distinct }
 
   validates :name, presence: true
   validates :team, presence: true
@@ -25,6 +26,7 @@ class Company < ActiveRecord::Base
 
   before_create :set_extra_attributes!
   after_create :add_to_wit!
+  after_create :start_founders_job
 
   def pitch
     @pitch ||= pitches.order(when: :desc).first
@@ -150,6 +152,10 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def start_founders_job
+    CompanyFoundersJob.perform_later(id)
+  end
 
   def twitter_username
     cached { crunchbase_org.twitter }
