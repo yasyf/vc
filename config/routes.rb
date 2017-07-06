@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   namespace :external do
     root 'welcome#index'
-
+    get 'vcfinder', to: 'vc_finder#index'
   end
 
   namespace :internal do

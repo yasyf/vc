@@ -203,3 +203,4 @@ modules.xml
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/rubymine,rails,ruby,osx
+!/app/views/layouts/internal.html.erb

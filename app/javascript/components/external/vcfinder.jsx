@@ -4,8 +4,8 @@
 
 import React from 'react'
 
-const Hello = props => (
+const VCFinder = props => (
   <div>Hello {props.name}!</div>
 );
 
-export default Hello
+export default VCFinder

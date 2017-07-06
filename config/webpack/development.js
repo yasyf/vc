@@ -2,9 +2,10 @@
 
 const merge = require('webpack-merge')
 const sharedConfig = require('./shared.js')
+const configureHotModuleReplacement = require('webpacker-react/configure-hot-module-replacement')
 const { settings, output } = require('./configuration.js')
 
-module.exports = merge(sharedConfig, {
+module.exports = merge(configureHotModuleReplacement(sharedConfig), {
   devtool: 'cheap-eval-source-map',
 
   stats: {

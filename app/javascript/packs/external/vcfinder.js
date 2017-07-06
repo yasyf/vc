@@ -7,7 +7,10 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-import Hello from 'components/hello'
+import VCFinder from 'components/external/vcfinder'
 import WebpackerReact from 'webpacker-react'
 
-WebpackerReact.setup({Hello})
+WebpackerReact.setup({VCFinder});
+if (module.hot) {
+  module.hot.accept('components/external/vcfinder', () => WebpackerReact.renderOnHMR(VCFinder))
+}
