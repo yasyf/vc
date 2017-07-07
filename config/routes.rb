@@ -13,6 +13,16 @@ end
 Rails.application.routes.draw do
   namespace :external do
     get 'welcome/index'
+
+    namespace :api, defaults: { format: :json } do
+      namespace :v1 do
+        resources :investors, only: [:index] do
+          collection do
+            get 'search'
+          end
+        end
+      end
+    end
   end
 
   root 'external/welcome#index'

@@ -1,0 +1,39 @@
+import React from 'react'
+<% helpers = Rails.application.routes.url_helpers %>
+
+export default class Search extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.engine = new Bloodhound({
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name', 'firm'),
+      identify: (o) => o.id,
+      remote: {
+        url: '<%= helpers.search_external_api_v1_investors_path(q: "QUERY") %>',
+        wildcard: 'QUERY',
+      }
+    });
+  }
+
+  componentDidMount() {
+    $('.typeahead').typeahead({
+      minLength: 3,
+      highlight: true,
+    }, {
+      source: this.engine,
+    });
+  }
+
+  render() {
+    return (
+        <nav className="top-bar">
+          <ul className="menu">
+            <li>
+              <input type="search" placeholder="Search" className="typeahead top-search-bar" />
+            </li>
+          </ul>
+        </nav>
+    );
+  }
+}

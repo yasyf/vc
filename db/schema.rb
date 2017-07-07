@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170706161925) do
+ActiveRecord::Schema.define(version: 20170706235543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "calendar_events", id: :string, force: :cascade do |t|
     t.integer "user_id", null: false
@@ -46,6 +47,7 @@ ActiveRecord::Schema.define(version: 20170706161925) do
     t.integer "team_id", null: false
     t.integer "capital_raised", default: 0, null: false
     t.text "description"
+    t.index "to_tsvector('english'::regconfig, (name)::text)", name: "companies_to_tsvector_idx", using: :gin
     t.index ["crunchbase_id"], name: "index_companies_on_crunchbase_id", unique: true
     t.index ["domain"], name: "index_companies_on_domain", unique: true
     t.index ["name"], name: "index_companies_on_name"
@@ -102,12 +104,19 @@ ActiveRecord::Schema.define(version: 20170706161925) do
   end
 
   create_table "investors", force: :cascade do |t|
-    t.string "name"
+    t.string "first_name", null: false
+    t.string "last_name", null: false
     t.string "email"
-    t.bigint "competitor_id"
+    t.string "crunchbase_id"
+    t.string "role"
+    t.bigint "competitor_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index "first_name gist_trgm_ops", name: "trgm_first_name_indx", using: :gist
+    t.index "last_name gist_trgm_ops", name: "trgm_last_name_indx", using: :gist
     t.index ["competitor_id"], name: "index_investors_on_competitor_id"
+    t.index ["crunchbase_id"], name: "index_investors_on_crunchbase_id", unique: true
+    t.index ["email"], name: "index_investors_on_email", unique: true
   end
 
   create_table "knowledges", id: :serial, force: :cascade do |t|

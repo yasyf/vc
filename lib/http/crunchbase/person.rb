@@ -15,6 +15,21 @@ module Http::Crunchbase
       get_in 'properties', 'last_name'
     end
 
+    def affiliation
+      @affiliation ||= begin
+        aff = get_in 'relationships', 'primary_affiliation'
+        OpenStruct.new({
+          role: aff['item']['properties']['title'],
+          name: aff['item']['relationships']['organization']['properties']['name'],
+          permalink: aff['item']['relationships']['organization']['properties']['permalink'],
+        })
+      end
+    end
+
+    def self.find_investor_id(name)
+      find_id(name: name)
+    end
+
     private
 
     def self.base_cache_key

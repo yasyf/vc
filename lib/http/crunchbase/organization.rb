@@ -35,8 +35,7 @@ module Http::Crunchbase
     end
 
     def self.find_investor_id(name)
-      result = api_get("/", name: name, organization_types: 'investor').first
-      result && result['properties']['permalink']
+      find_id(name: name, organization_types: 'investor')
     end
 
     private

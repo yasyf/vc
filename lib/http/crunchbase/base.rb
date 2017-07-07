@@ -38,6 +38,11 @@ module Http::Crunchbase
       site['properties']['url'] if site.present?
     end
 
+    def self.find_id(query)
+      result = api_get('/', query).first
+      result && result['properties']['permalink']
+    end
+
     private
 
     def extract_website_id(name, index)

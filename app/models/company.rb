@@ -21,7 +21,6 @@ class Company < ActiveRecord::Base
   scope :pitched, -> { joins(:pitches) }
   scope :decided, -> { pitched.where('pitches.decision IS NOT NULL') }
   scope :undecided, -> { pitched.where('pitches.decision IS NULL') }
-  scope :search, Proc.new { |term| where('name ILIKE ?', "%#{term}%") if term.present? }
   scope :portfolio, -> { pitched.where('pitches.funded': true) }
 
   before_create :set_extra_attributes!
@@ -149,6 +148,10 @@ class Company < ActiveRecord::Base
 
   def tweeter
     super || (create_tweeter!(username: twitter_username) if twitter_username.present?)
+  end
+
+  def self.searchable_columns
+    [:name]
   end
 
   private
