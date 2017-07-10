@@ -7,6 +7,8 @@ class CreateTargetInvestors < ActiveRecord::Migration[5.1]
       t.integer :tier, null: false, default: 1
       t.datetime :last_response
 
+      t.index [:investor_id, :founder_id], unique: true
+
       t.timestamps
     end
   end

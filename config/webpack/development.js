@@ -6,7 +6,7 @@ const configureHotModuleReplacement = require('webpacker-react/configure-hot-mod
 const { settings, output } = require('./configuration.js')
 
 module.exports = merge(configureHotModuleReplacement(sharedConfig), {
-  devtool: 'cheap-eval-source-map',
+  devtool: 'eval',
 
   stats: {
     errorDetails: true

@@ -1,0 +1,14 @@
+import React from 'react'
+
+export default class Investor extends React.Component {
+  render() {
+    let investor = this.props.target.investor;
+    return (
+      <div>
+        <b>{investor.first_name} {investor.last_name}</b>
+        <br/>
+        <i>{investor.competitor.name}</i>
+      </div>
+    );
+  }
+}

@@ -25,4 +25,8 @@ class Investor < ApplicationRecord
   def self.searchable_columns
     [:first_name, :last_name]
   end
+
+  def as_json(options = {})
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:competitor])
+  end
 end

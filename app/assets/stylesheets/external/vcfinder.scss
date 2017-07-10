@@ -1,5 +1,11 @@
-input.top-search-bar {
+$light-gray: #e6e6e6;
+
+input.top-search-bar, .tt-menu {
   max-width: 100%;
   width: 95vw;
   margin: 0 2vw;
+}
+
+.tt-menu {
+  background-color: $light-gray;
 }

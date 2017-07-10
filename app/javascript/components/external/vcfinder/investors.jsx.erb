@@ -1,0 +1,10 @@
+import React from 'react'
+import Investor from './investor.jsx.erb'
+
+export default class Investors extends React.Component {
+  render() {
+    console.log(this.props.targets);
+    let investors = this.props.targets.map(target => <Investor key={target.id} target={target} />);
+    return <div>{investors}</div>;
+  }
+}

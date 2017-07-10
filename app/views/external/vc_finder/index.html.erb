@@ -1,3 +1,15 @@
 <%= content_for :pack, 'vcfinder' %>
 
 <%= react_component('VCFinder', name: 'React') %>
+
+<script id="result-template" type="text/x-handlebars-template">
+  <div class="row">
+    <div class="large-12 columns">
+      <p>
+        <strong>{{first_name}} {{last_name}}</strong>
+        <br>
+        <em>{{competitor.name}}</em>
+      </p>
+    </div>
+  </div>
+</script>

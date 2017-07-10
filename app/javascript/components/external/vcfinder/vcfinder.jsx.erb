@@ -1,0 +1,37 @@
+<% helpers = Rails.application.routes.url_helpers %>
+
+import React from 'react'
+import Search from './search.jsx.erb'
+import Investors from './investors.jsx.erb'
+import { ffetch } from './utils'
+
+export default class VCFinder extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      targets: [],
+    };
+  }
+
+  componentDidMount() {
+    ffetch('<%= helpers.external_api_v1_target_investors_path %>')
+    .then(resp => resp.json())
+    .then(targets => this.setState({targets}));
+  }
+
+  onInvestorSelect = (investor) => {
+    ffetch('<%= helpers.external_api_v1_target_investors_path %>', 'POST', {investor: {id: investor.id}})
+    .then(resp => resp.json())
+    .then(target => this.setState({targets: this.state.targets.concat([target])}));
+  };
+
+  render() {
+    return (
+      <div>
+        <Search onSelect={this.onInvestorSelect} />
+        <Investors targets={this.state.targets} />
+      </div>
+    );
+  }
+}
