@@ -3,5 +3,5 @@
 
 <p>Please sign in to your DRF Google account to access the voting site.</p>
 <p>
-  <%= button_to "Sign in with Google", internal_user_google_oauth2_omniauth_authorize_path, class: 'btn btn-large btn-primary' %>
+  <%= button_to "Sign in with Google", omniauth_path('google_internal'), class: 'btn btn-large btn-primary' %>
 </p>

@@ -11,8 +11,17 @@ class TeamConstraint
 end
 
 Rails.application.routes.draw do
+  root 'welcome#index'
+
   namespace :external do
-    get 'welcome/index'
+    root 'welcome#index'
+
+    devise_for :founders, skip: :all
+    devise_scope :external_founder do
+      get 'auth/callback', to: 'auth#create'
+    end
+
+    get 'vcfinder', to: 'vc_finder#index'
 
     namespace :api, defaults: { format: :json } do
       namespace :v1 do
@@ -25,17 +34,13 @@ Rails.application.routes.draw do
     end
   end
 
-  root 'external/welcome#index'
-
-  namespace :external do
-    root 'welcome#index'
-    get 'vcfinder', to: 'vc_finder#index'
-  end
-
   namespace :internal do
     root 'welcome#index'
 
-    devise_for :users, controllers: {omniauth_callbacks: "internal/users/omniauth_callbacks" }
+    devise_for :users, skip: :all
+    devise_scope :internal_user do
+      get 'auth/callback', to: 'auth#create'
+    end
 
     get 'team', to: 'welcome#select_team'
     get 'feedback', to: 'welcome#send_slack_feedback'

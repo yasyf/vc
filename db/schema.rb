@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170706235543) do
+ActiveRecord::Schema.define(version: 20170710172847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20170706235543) do
     t.string "crunchbase_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "logged_in_at"
     t.index ["crunchbase_id"], name: "index_founders_on_crunchbase_id", unique: true
     t.index ["email"], name: "index_founders_on_email", unique: true
     t.index ["facebook"], name: "index_founders_on_facebook", unique: true
@@ -165,6 +166,18 @@ ActiveRecord::Schema.define(version: 20170706235543) do
     t.index ["company_id"], name: "index_pitches_on_company_id"
     t.index ["prevote_doc"], name: "index_pitches_on_prevote_doc", unique: true
     t.index ["snapshot"], name: "index_pitches_on_snapshot", unique: true
+  end
+
+  create_table "target_investors", force: :cascade do |t|
+    t.bigint "investor_id", null: false
+    t.bigint "founder_id", null: false
+    t.integer "stage", default: 0, null: false
+    t.integer "tier", default: 1, null: false
+    t.datetime "last_response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["founder_id"], name: "index_target_investors_on_founder_id"
+    t.index ["investor_id"], name: "index_target_investors_on_investor_id"
   end
 
   create_table "teams", id: :serial, force: :cascade do |t|
@@ -238,6 +251,8 @@ ActiveRecord::Schema.define(version: 20170706235543) do
   add_foreign_key "knowledges", "teams"
   add_foreign_key "knowledges", "users"
   add_foreign_key "pitches", "companies"
+  add_foreign_key "target_investors", "founders"
+  add_foreign_key "target_investors", "investors"
   add_foreign_key "users", "teams"
   add_foreign_key "votes", "pitches"
   add_foreign_key "votes", "users"

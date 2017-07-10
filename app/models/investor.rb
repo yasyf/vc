@@ -1,5 +1,6 @@
 class Investor < ApplicationRecord
   belongs_to :competitor
+  has_many :target_investors
 
   validates :competitor, presence: true
   validates :first_name, presence: true

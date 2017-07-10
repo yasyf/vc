@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  investor: one
+  founder: one
+  stage: 
+  tier: 
+  last_response: 2017-07-07 14:28:15
+
+two:
+  investor: two
+  founder: two
+  stage: 
+  tier: 
+  last_response: 2017-07-07 14:28:15

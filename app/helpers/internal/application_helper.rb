@@ -1,7 +1,5 @@
 module Internal::ApplicationHelper
-  def title(title)
-    content_for :title, title
-  end
+  include ::ApplicationHelper
 
   def header(header)
     content_for :header, header

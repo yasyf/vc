@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   before_validation :set_cached_name, on: :create
   after_create :add_to_wit
 
-  devise :omniauthable, omniauth_providers: [:google_oauth2]
+  devise
 
   def self.inactive(team, since = Time.now)
     where(team: team)
