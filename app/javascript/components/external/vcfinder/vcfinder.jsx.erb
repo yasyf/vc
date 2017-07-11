@@ -4,6 +4,7 @@ import React from 'react'
 import Search from './search.jsx.erb'
 import Investors from './investors.jsx.erb'
 import { ffetch } from './utils'
+import update from 'immutability-helper'
 
 export default class VCFinder extends React.Component {
   constructor(props) {
@@ -26,11 +27,20 @@ export default class VCFinder extends React.Component {
     .then(target => this.setState({targets: this.state.targets.concat([target])}));
   };
 
+  onStageChange = (id, stage) => {
+    ffetch(`<%= helpers.external_api_v1_target_investors_path %>/${id}`, 'PATCH', {target_investor: {stage}})
+    .then(() => {
+      let index = _.findIndex(this.state.targets, {id});
+      let targets = update(this.state.targets, {[index]: {stage: {$set: stage}}});
+      this.setState({targets});
+    })
+  };
+
   render() {
     return (
       <div>
         <Search onSelect={this.onInvestorSelect} />
-        <Investors targets={this.state.targets} />
+        <Investors targets={this.state.targets} onStageChange={this.onStageChange} />
       </div>
     );
   }

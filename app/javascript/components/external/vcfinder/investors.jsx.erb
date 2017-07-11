@@ -1,10 +1,20 @@
 import React from 'react'
 import Investor from './investor.jsx.erb'
 
+const stages = <%= TargetInvestor::STAGES.to_json %>;
+
 export default class Investors extends React.Component {
   render() {
-    console.log(this.props.targets);
-    let investors = this.props.targets.map(target => <Investor key={target.id} target={target} />);
-    return <div>{investors}</div>;
+    let targets = _.groupBy(this.props.targets, 'stage');
+    let components = [];
+    Object.entries(stages).forEach(([key, title]) => {
+      let group = targets[key];
+      if (!group) {
+        return;
+      }
+      components.push(<h3 key={key}>{title}</h3>);
+      group.forEach(target => components.push(<Investor key={target.id} target={target} onStageChange={this.props.onStageChange} />));
+    });
+    return <div className="investors">{components}</div>;
   }
 }

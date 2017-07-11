@@ -10,6 +10,13 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     render json: target
   end
 
+  def update
+    return head :bad_request unless target_investor_params.has_key?(:stage)
+    target = TargetInvestor.find(params[:id])
+    target.change_stage!(target_investor_params[:stage])
+    head :ok
+  end
+
   private
 
   def investor_params
