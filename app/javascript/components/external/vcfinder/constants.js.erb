@@ -1,0 +1,8 @@
+<% include Rails.application.routes.url_helpers %>
+<% include External::ApplicationHelper %>
+
+export const TargetInvestorStages = Object.freeze(<%= TargetInvestor::STAGES.to_json %>);
+export const CompetitorFundingSizes = Object.freeze(<%= hash_to_options(Competitor::FUNDING_SIZES).to_json %>);
+export const CompetitorIndustries = Object.freeze(<%= hash_to_options(Competitor::INDUSTRIES).to_json %>);
+export const SearchPath = '<%= search_external_api_v1_investors_path(q: "QUERY") %>';
+export const TargetInvestorsPath = '<%= external_api_v1_target_investors_path %>';

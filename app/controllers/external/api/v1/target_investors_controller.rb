@@ -11,10 +11,12 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def update
-    return head :bad_request unless target_investor_params.has_key?(:stage)
     target = TargetInvestor.find(params[:id])
-    target.change_stage!(target_investor_params[:stage])
-    head :ok
+    if target_investor_stage_params.has_key?(:stage)
+      target.change_stage!(target_investor_stage_params[:stage])
+    end
+    target.update! target_investor_params
+    render json: target
   end
 
   private
@@ -24,6 +26,10 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def target_investor_params
-    params.require(:target_investor).permit(:id, :stage, :tier, :last_response)
+    params.require(:target_investor).permit(:tier, :funding_size)
+  end
+
+  def target_investor_stage_params
+    params.require(:target_investor).permit(:stage)
   end
 end

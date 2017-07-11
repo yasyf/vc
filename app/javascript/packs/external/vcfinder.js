@@ -7,7 +7,7 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-import VCFinder from 'components/external/vcfinder/vcfinder.jsx.erb'
+import VCFinder from 'components/external/vcfinder/vcfinder.jsx'
 import WebpackerReact from 'webpacker-react'
 
 WebpackerReact.setup({VCFinder});

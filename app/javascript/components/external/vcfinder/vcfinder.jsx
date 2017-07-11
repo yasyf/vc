@@ -1,10 +1,9 @@
-<% helpers = Rails.application.routes.url_helpers %>
-
-import React from 'react'
-import Search from './search.jsx.erb'
-import Investors from './investors.jsx.erb'
-import { ffetch } from './utils'
-import update from 'immutability-helper'
+import React from 'react';
+import Search from './search.jsx';
+import Investors from './investors.jsx';
+import { ffetch } from './utils';
+import update from 'immutability-helper';
+import { TargetInvestorsPath } from './constants.js.erb';
 
 export default class VCFinder extends React.Component {
   constructor(props) {
@@ -17,22 +16,23 @@ export default class VCFinder extends React.Component {
   }
 
   componentDidMount() {
-    ffetch('<%= helpers.external_api_v1_target_investors_path %>')
+    ffetch(TargetInvestorsPath)
     .then(resp => resp.json())
     .then(targets => this.setState({targets}));
   }
 
   onInvestorSelect = (investor) => {
-    ffetch('<%= helpers.external_api_v1_target_investors_path %>', 'POST', {investor: {id: investor.id, tier: this.state.tier}})
+    ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id, tier: this.state.tier}})
     .then(resp => resp.json())
     .then(target => this.setState({targets: this.state.targets.concat([target])}));
   };
 
-  onStageChange = (id, stage) => {
-    ffetch(`<%= helpers.external_api_v1_target_investors_path %>/${id}`, 'PATCH', {target_investor: {stage}})
-    .then(() => {
+  onTargetChange = (id, change) => {
+    ffetch(`${TargetInvestorsPath}/${id}`, 'PATCH', {target_investor: change})
+    .then(resp => resp.json())
+    .then(target => {
       let index = _.findIndex(this.state.targets, {id});
-      let targets = update(this.state.targets, {[index]: {stage: {$set: stage}}});
+      let targets = update(this.state.targets, {[index]: {$set: target}});
       this.setState({targets});
     })
   };
@@ -48,7 +48,7 @@ export default class VCFinder extends React.Component {
         <Investors
           targets={this.state.targets}
           tier={this.state.tier}
-          onStageChange={this.onStageChange}
+          onTargetChange={this.onTargetChange}
           onTierChange={this.onTierChange}
         />
       </div>

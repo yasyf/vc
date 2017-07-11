@@ -6,6 +6,32 @@ class Competitor < ApplicationRecord
     'TechStars': nil,
   }
 
+  FUNDING_SIZES = {
+    '0': '10k to 100k',
+    '1': '100k to 250k',
+    '2': '250k to 500k',
+    '3': 'above 500k',
+  }.freeze
+
+  INDUSTRIES = {
+    consumer: 'Consumer',
+    enterprise: 'Enterprise',
+    healthcare: 'Healthcare',
+    media: 'Media',
+    finance: 'Finance',
+    education: 'Education',
+    lifesci: 'Life Sciences',
+    retail: 'Retail',
+    realestate: 'Real Estate',
+    travel: 'Travel',
+    automotive: 'Automotive',
+    sports: 'Sports',
+    cleantech: 'Clean Technology',
+    iot: 'Internet of Things',
+  }.freeze
+
+  enum funding_size: FUNDING_SIZES.keys
+
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
 
@@ -39,7 +65,7 @@ class Competitor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:name, :description], methods: [:acronym])
+    super options.reverse_merge(only: [:industry, :name, :description, :funding_size], methods: [:acronym])
   end
 
   def acronym

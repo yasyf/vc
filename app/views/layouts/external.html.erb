@@ -14,6 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js" integrity="sha256-0JaDbGZRXlzkFbV8Xi8ZhH/zZ6QQM0Y3dCkYZ7JYq34=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
   <%= javascript_include_tag 'external/application', 'data-turbolinks-track' => true %>
+  <link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}" %>
   <% end %>

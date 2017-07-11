@@ -12,6 +12,7 @@ class TargetInvestor < ApplicationRecord
   }.freeze
 
   enum stage: STAGES.keys
+  enum funding_size: Competitor::FUNDING_SIZES.keys
 
   validates :investor, presence: true, uniqueness: { scope: [:founder] }
   validates :founder, presence: true
@@ -28,6 +29,6 @@ class TargetInvestor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:stage, :tier, :id], methods: [:investor])
+    super options.reverse_merge(only: [:industry, :funding_size, :stage, :tier, :id], methods: [:investor])
   end
 end

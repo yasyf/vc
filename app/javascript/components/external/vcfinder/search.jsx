@@ -1,6 +1,5 @@
-<% helpers = Rails.application.routes.url_helpers %>
-
-import React from 'react'
+import React from 'react';
+import { SearchPath } from './constants.js.erb';
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -11,7 +10,7 @@ export default class Search extends React.Component {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name', 'firm'),
       identify: (o) => o.id,
       remote: {
-        url: '<%= helpers.search_external_api_v1_investors_path(q: "QUERY") %>',
+        url: SearchPath,
         wildcard: 'QUERY',
       }
     });
