@@ -4,8 +4,31 @@ import Investor from './investor.jsx.erb'
 const stages = <%= TargetInvestor::STAGES.to_json %>;
 
 export default class Investors extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tier: 1,
+    };
+  }
+
+  renderTierButtons() {
+    let tiers = _.uniq(_.map(this.props.targets, 'tier'));
+    if (tiers.length < 2) {
+      return null;
+    }
+    let buttons = tiers.map(tier =>
+      <button type="button" className="button tier-button" key={tier} onClick={() => this.setState({tier})}>Tier {tier}</button>
+    );
+    return (
+      <div className="tier-buttons float-center text-center">
+        {buttons}
+      </div>
+    );
+  }
+
   render() {
-    let targets = _.groupBy(this.props.targets, 'stage');
+    let targets = _.groupBy(_.filter(this.props.targets, {tier: this.state.tier}), 'stage');
     let components = [];
     Object.entries(stages).forEach(([key, title]) => {
       let group = targets[key];
@@ -15,6 +38,12 @@ export default class Investors extends React.Component {
       components.push(<h3 key={key}>{title}</h3>);
       group.forEach(target => components.push(<Investor key={target.id} target={target} onStageChange={this.props.onStageChange} />));
     });
-    return <div className="investors">{components}</div>;
+
+    return (
+      <div className="investors">
+        {this.renderTierButtons()}
+        {components}
+      </div>
+    );
   }
 }
