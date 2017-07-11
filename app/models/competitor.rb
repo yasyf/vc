@@ -12,6 +12,8 @@ class Competitor < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, presence: true, uniqueness: true
 
+  after_create :start_crunchbase_job
+
   def self.create_from_name!(name)
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
     from_crunchbase crunchbase_id, name if crunchbase_id.present?
@@ -37,10 +39,20 @@ class Competitor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:name], methods: [:acronym])
+    super options.reverse_merge(only: [:name, :description], methods: [:acronym])
   end
 
   def acronym
     name.split('').select { |l| /[[:upper:]]/.match l }.join
+  end
+
+  def crunchbase_fund
+    @crunchbase_fund ||= Http::Crunchbase::Fund.new(crunchbase_id)
+  end
+
+  private
+
+  def start_crunchbase_job
+    CompetitorCrunchbaseJob.perform_later(id)
   end
 end

@@ -74,7 +74,14 @@ export default class Investor extends React.Component {
           <em>({investor.role}{investor.role ? ', ' : ''}{investor.competitor.name})</em>
         </div>
         <div className="card-section">
-          {this.renderButtons()}
+          <p className="faded">
+            {investor.competitor.description}
+            {' '}
+            {investor.description}
+          </p>
+          <div className="float-center text-center">
+            {this.renderButtons()}
+          </div>
         </div>
       </div>
     );

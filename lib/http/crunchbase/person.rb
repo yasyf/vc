@@ -15,6 +15,10 @@ module Http::Crunchbase
       get_in 'properties', 'last_name'
     end
 
+    def short_bio
+      get_in('properties', 'bio').split('.').first + '.'
+    end
+
     def affiliation
       @affiliation ||= begin
         aff = get_in 'relationships', 'primary_affiliation'
@@ -22,7 +26,7 @@ module Http::Crunchbase
           role: aff['item']['properties']['title'],
           name: aff['item']['relationships']['organization']['properties']['name'],
           permalink: aff['item']['relationships']['organization']['properties']['permalink'],
-        })
+        }) if aff.present?
       end
     end
 

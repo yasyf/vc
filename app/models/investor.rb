@@ -9,12 +9,14 @@ class Investor < ApplicationRecord
   validates :crunchbase_id, uniqueness: { allow_nil: true }
 
   def self.from_crunchbase(cb_id)
+    return nil unless cb_id.present?
     where(crunchbase_id: cb_id).first_or_create! do |investor|
       person = Http::Crunchbase::Person.new(cb_id)
       investor.first_name = person.first_name
       investor.last_name = person.last_name
       investor.role = person.affiliation.role
       investor.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
+      investor.description = person.short_bio
     end
   end
 
@@ -27,6 +29,10 @@ class Investor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :role, :first_name, :last_name], methods: [:competitor])
+    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description], methods: [:competitor])
+  end
+
+  def crunchbase_person
+    @crunchbase_person ||= Http::Crunchbase::Person.new(crunchbase_id) if crunchbase_id.present?
   end
 end

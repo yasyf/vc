@@ -6,7 +6,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def create
-    target = TargetInvestor.create! investor_id: investor_params[:id], founder: current_external_founder
+    target = TargetInvestor.create! investor_id: investor_params[:id], founder: current_external_founder, tier: investor_params[:tier]
     render json: target
   end
 
@@ -20,7 +20,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   private
 
   def investor_params
-    params.require(:investor).permit(:id)
+    params.require(:investor).permit(:id, :tier)
   end
 
   def target_investor_params

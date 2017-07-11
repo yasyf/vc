@@ -10,6 +10,10 @@ input.top-search-bar, .tt-menu {
   background-color: $light-gray;
 }
 
+.faded {
+  color: gray;
+}
+
 .investors {
   padding: 1em;
 }
@@ -28,8 +32,4 @@ input.top-search-bar, .tt-menu {
 
 .tier-button {
   margin-right: 2em;
-}
-
-.text-center {
-  text-align: center;
 }

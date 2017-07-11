@@ -83,7 +83,10 @@ module Http::Crunchbase
     def get_in_raw(path, multi)
       return nil unless found?
       current = search_for_data
-      current = current[path.shift] while path.present?
+      while path.present?
+        current = current[path.shift]
+        return nil if current.nil?
+      end
       multi ? current['items'] : current
     end
 

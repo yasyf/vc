@@ -12,6 +12,7 @@ export default class VCFinder extends React.Component {
 
     this.state = {
       targets: [],
+      tier: 1,
     };
   }
 
@@ -22,7 +23,7 @@ export default class VCFinder extends React.Component {
   }
 
   onInvestorSelect = (investor) => {
-    ffetch('<%= helpers.external_api_v1_target_investors_path %>', 'POST', {investor: {id: investor.id}})
+    ffetch('<%= helpers.external_api_v1_target_investors_path %>', 'POST', {investor: {id: investor.id, tier: this.state.tier}})
     .then(resp => resp.json())
     .then(target => this.setState({targets: this.state.targets.concat([target])}));
   };
@@ -36,11 +37,20 @@ export default class VCFinder extends React.Component {
     })
   };
 
+  onTierChange = (tier) => {
+    this.setState({tier});
+  };
+
   render() {
     return (
       <div>
         <Search onSelect={this.onInvestorSelect} />
-        <Investors targets={this.state.targets} onStageChange={this.onStageChange} />
+        <Investors
+          targets={this.state.targets}
+          tier={this.state.tier}
+          onStageChange={this.onStageChange}
+          onTierChange={this.onTierChange}
+        />
       </div>
     );
   }

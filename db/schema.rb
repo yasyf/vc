@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170710172847) do
+ActiveRecord::Schema.define(version: 20170711005418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20170710172847) do
     t.string "crunchbase_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index ["crunchbase_id"], name: "index_competitors_on_crunchbase_id", unique: true
     t.index ["name"], name: "index_competitors_on_name", unique: true
   end
@@ -113,6 +114,7 @@ ActiveRecord::Schema.define(version: 20170710172847) do
     t.bigint "competitor_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
     t.index "first_name gist_trgm_ops", name: "trgm_first_name_indx", using: :gist
     t.index "last_name gist_trgm_ops", name: "trgm_last_name_indx", using: :gist
     t.index ["competitor_id"], name: "index_investors_on_competitor_id"
