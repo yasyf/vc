@@ -3,18 +3,22 @@ module External::Concerns
     extend ActiveSupport::Concern
 
     included do
-      @@filtered_paths = []
+      @filtered_paths = []
     end
 
     class_methods do
       def filter(path)
-        @@filtered_paths += Array.wrap(path)
+        @filtered_paths += Array.wrap(path)
+      end
+
+      def filtered_paths
+        @filtered_paths
       end
     end
 
     def render_censored(models)
       filtered = Array.wrap(models).map do |model|
-        filter_unless_portfolio(@@filtered_paths, model)
+        filter_unless_portfolio(self.class.filtered_paths, model)
       end
       render json: models.is_a?(ApplicationRecord) ? filtered.first : filtered
     end

@@ -1,4 +1,6 @@
 class TargetInvestor < ApplicationRecord
+  include Concerns::AttributeSortable
+
   belongs_to :investor
   belongs_to :founder
 
@@ -18,6 +20,8 @@ class TargetInvestor < ApplicationRecord
   validates :founder, presence: true
   validates :stage, presence: true
   validates :tier, presence: true, numericality: { greater_than: 0, only_integer: true }
+
+  sort :industry
 
   def change_stage!(new_stage)
     return if stage == new_stage

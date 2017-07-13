@@ -1,4 +1,6 @@
 class Investor < ApplicationRecord
+  include Concerns::AttributeSortable
+
   belongs_to :competitor
   has_many :target_investors
 
@@ -7,6 +9,8 @@ class Investor < ApplicationRecord
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+
+  sort :industry
 
   def self.from_crunchbase(cb_id)
     return nil unless cb_id.present?

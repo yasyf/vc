@@ -2,6 +2,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   include External::Concerns::Censorable
 
   before_action :authenticate_api_user!
+
   filter %w(investor.comments investor.competitor.comments)
 
   def index

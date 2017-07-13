@@ -1,17 +1,19 @@
 class Competitor < ApplicationRecord
+  include Concerns::AttributeSortable
+
   COMPETITORS = {
     'Rough Draft Ventures': Http::Rdv,
     'Y Combinator': nil,
     'First Round Capital': nil,
     'TechStars': nil,
-  }
+  }.with_indifferent_access.freeze
 
   FUNDING_SIZES = {
     '0': '10k to 100k',
     '1': '100k to 250k',
     '2': '250k to 500k',
     '3': 'above 500k',
-  }.freeze
+  }.with_indifferent_access.freeze
 
   INDUSTRIES = {
     consumer: 'Consumer',
@@ -28,7 +30,7 @@ class Competitor < ApplicationRecord
     sports: 'Sports',
     cleantech: 'Clean Technology',
     iot: 'Internet of Things',
-  }.freeze
+  }.with_indifferent_access.freeze
 
   enum funding_size: FUNDING_SIZES.keys
 
@@ -39,6 +41,8 @@ class Competitor < ApplicationRecord
   validates :crunchbase_id, presence: true, uniqueness: true
 
   after_create :start_crunchbase_job
+
+  sort :industry
 
   def self.create_from_name!(name)
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
