@@ -156,6 +156,11 @@ class Company < ActiveRecord::Base
 
   private
 
+  def cache_unless_voting(options = {})
+    options[:force] = true if pitches.where(decision: nil).present?
+    options
+  end
+
   def start_relationships_job
     CompanyRelationshipsJob.perform_later(id)
   end

@@ -4,19 +4,24 @@ import SavedText from './saved_text';
 
 export default class SavedChoice extends SavedText {
   onChange = (option) => {
+    let value;
     if (Array.isArray(option)) {
-      this.props.onChange({[this.props.name]: _.map(option, 'value').join(',')});
+      value = _.map(option, 'value').join(',');
     } else {
-      this.props.onChange({[this.props.name]: option.value});
+      value = option.value;
     }
+
+    this.setState({value});
+    this.props.onChange({[this.props.name]: value});
+  };
+
+  onBlur = (option) => {
+    // noop
   };
 
   renderInput() {
     return (
-      <Select
-        {...this.props}
-        onChange={this.onChange}
-      />
+      <Select {...this.inputProps()} />
     );
   }
 }

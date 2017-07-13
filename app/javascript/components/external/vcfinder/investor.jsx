@@ -1,8 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 import SavedText from './saved_text';
+import SavedTextArea from './saved_text_area';
 import SavedChoice from './saved_choice';
-import { CompetitorFundingSizes } from './constants.js.erb';
+import { CompetitorFundingSizes, CompetitorIndustries } from './constants.js.erb';
+import { isDRF } from './utils'
 
 export default class Investor extends React.Component {
   changeStage(stage) {
@@ -33,6 +35,15 @@ export default class Investor extends React.Component {
       value={value || this.props.target[name]}
       label={label}
       onChange={this.onChange}
+    />
+  }
+
+  renderSavedTextArea(label, name, value, transform) {
+    return <SavedTextArea
+      name={name}
+      value={value}
+      label={label}
+      onChange={_.flow([transform, this.onChange])}
     />
   }
 
@@ -94,37 +105,67 @@ export default class Investor extends React.Component {
     }
   }
 
+  renderSavedFields() {
+    let { investor } = this.props.target;
+    let { competitor } = investor;
+    return (
+      <div>
+        <div className="grid-x grid-margin-x investor-row">
+          <div className="large-6 cell">
+            {this.renderSavedChoice('Industry', 'industry', CompetitorIndustries, true, investor.industry || competitor.industry)}
+          </div>
+          <div className="large-6 cell">
+            {this.renderSavedChoice('Check Size', 'funding_size', CompetitorFundingSizes, competitor.funding_size)}
+          </div>
+        </div>
+        <div className="grid-x grid-margin-x investor-row">
+          <div className="large-6 cell">
+            {this.renderSavedText('Tier', 'tier')}
+          </div>
+          <div className="large-6 cell">
+            {this.renderSavedText('Note', 'note')}
+          </div>
+        </div>
+        {isDRF() ? this.renderDRFComments() : ''}
+      </div>
+    );
+  }
+
+  renderDRFComments() {
+    let { investor } = this.props.target;
+    let { competitor } = investor;
+    return (
+      <div>
+        <h4>Private DRF Comments</h4>
+        <div className="grid-x grid-margin-x investor-row">
+          <div className="large-6 cell">
+            {this.renderSavedTextArea('Investor', 'comments', investor.comments, u => ({investor: u}))}
+          </div>
+          <div className="large-6 cell">
+            {this.renderSavedTextArea('Fund', 'comments', competitor.comments, u => ({investor: { competitor: u}}))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    let investor = this.props.target.investor;
+    let { investor } = this.props.target;
+    let { competitor } = investor;
     return (
       <div className="card float-center investor">
         <div className="card-divider">
           <strong>{investor.first_name} {investor.last_name}</strong>
           &nbsp;
-          <em>({investor.role}{investor.role ? ', ' : ''}{investor.competitor.name})</em>
+          <em>({investor.role}{investor.role ? ', ' : ''}{competitor.name})</em>
         </div>
         <div className="card-section">
           <p className="faded">
-            {investor.competitor.description}
+            {competitor.description}
             {' '}
             {investor.description}
           </p>
-          <div className="grid-x grid-margin-x investor-row">
-            <div className="large-6 cell">
-              {this.renderSavedChoice('Industry', 'industry', CompetitorIndustries, true, investor.industry || investor.competitor.industry)}
-            </div>
-            <div className="large-6 cell">
-              {this.renderSavedChoice('Check Size', 'funding_size', CompetitorFundingSizes, investor.competitor.funding_size)}
-            </div>
-          </div>
-          <div className="grid-x grid-margin-x investor-row">
-            <div className="large-6 cell">
-              {this.renderSavedText('Tier', 'tier')}
-            </div>
-            <div className="large-6 cell">
-              {this.renderSavedText('Note', 'note')}
-            </div>
-          </div>
+          {this.renderSavedFields()}
           <div className="float-center text-center">
             {this.renderButtons()}
           </div>

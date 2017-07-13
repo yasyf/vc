@@ -61,6 +61,7 @@ gem 'sidekiq'
 gem 'clockwork'
 gem 'retries'
 gem 'textacular'
+gem 'gon'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'

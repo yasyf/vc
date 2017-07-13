@@ -5,30 +5,44 @@ export default class SavedText extends React.Component {
     super(props);
 
     this.state = {
-      value: this.props.value,
+      value: this.props.value || '',
+      dirty: false,
     };
+  }
+
+  inputProps() {
+    return {
+      ...this.props,
+      onChange: this.onChange,
+      onBlur: this.onBlur,
+      value: this.state.value,
+    }
   }
 
   renderInput() {
     return (
       <input
         type="text"
-        placeholder={this.props.placeholder}
-        value={this.state.value}
-        onChange={this.onChange}
-        onBlur={this.onBlur}
+        {...this.inputProps()}
       />
     );
   }
 
+  submit = _.debounce(() => {
+    if (this.state.dirty && this.state.value) {
+      this.props.onChange({[this.props.name]: this.state.value});
+      this.setState({dirty: false});
+    }
+  }, 250, {maxWait: 5000});
+
   onChange = (event) => {
     let value = event.target.value;
-    this.setState({value});
+    this.setState({value, dirty: true});
+    this.submit();
   };
 
   onBlur = () => {
-    if (this.state.value)
-      this.props.onChange({[this.props.name]: this.state.value});
+    this.submit.flush();
   };
 
   render() {

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= yield(:title) %> - Dorm Room Fund</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/css/foundation.min.css" integrity="sha256-xJjW34HgDxLaH5ZwGCFEpJNUID0G/X3V7CTjxoiItzs=" crossorigin="anonymous" />
+  <%= include_gon(camel_case: true, init: true) %>
   <%= stylesheet_link_tag    'external/application', media: 'all', 'data-turbolinks-track' => true %>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js" integrity="sha256-ssuvZ7clQBE8C6fdKygrQfRqIx5bFb/F/Abeqq1dr/w=" crossorigin="anonymous"></script>

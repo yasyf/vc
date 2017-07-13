@@ -11,3 +11,7 @@ export let ffetch = function(path, method = 'GET', data = null) {
     opts['body'] = JSON.stringify(data);
   return fetch(path, opts);
 };
+
+export let isDRF = function() {
+  return gon.founder['drf?'];
+}

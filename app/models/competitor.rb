@@ -65,7 +65,7 @@ class Competitor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:industry, :name, :description, :funding_size], methods: [:acronym])
+    super options.reverse_merge(only: [:industry, :name, :description, :funding_size, :comments], methods: [:acronym])
   end
 
   def acronym
