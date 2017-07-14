@@ -10,6 +10,7 @@ class Investor < ApplicationRecord
   validates :email, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
 
+  enum funding_size: Competitor::FUNDING_SIZES.keys
   sort :industry
 
   def self.from_crunchbase(cb_id)
@@ -33,7 +34,7 @@ class Investor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :comments], methods: [:competitor])
+    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :comments, :funding_size], methods: [:competitor])
   end
 
   def crunchbase_person

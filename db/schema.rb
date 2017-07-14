@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711151109) do
+ActiveRecord::Schema.define(version: 20170713220452) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 20170711151109) do
     t.text "description"
     t.string "industry"
     t.text "comments"
+    t.integer "funding_size"
     t.index "first_name gist_trgm_ops", name: "trgm_first_name_indx", using: :gist
     t.index "last_name gist_trgm_ops", name: "trgm_last_name_indx", using: :gist
     t.index ["competitor_id"], name: "index_investors_on_competitor_id"

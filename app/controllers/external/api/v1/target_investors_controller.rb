@@ -16,18 +16,30 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
 
   def update
     target = TargetInvestor.find(params[:id])
-    if target_investor_stage_params.has_key?(:stage)
-      target.change_stage!(target_investor_stage_params[:stage])
+
+    if ti_stage_params.present?
+      target.change_stage!(ti_stage_params[:stage])
     end
 
-    params = target_investor_params.to_h
-    if params[:investor].present?
-      if params[:investor][:competitor].present?
-        target.investor.competitor.update! params[:investor].delete(:competitor)
-      end
-      target.investor.update! params.delete(:investor)
+    if ti_investor_params.present?
+      target.investor.update! ti_investor_params[:investor]
     end
-    target.update! params
+
+    if ti_competitor_params.present? && ti_competitor_params[:investor].present?
+      target.investor.competitor.update! ti_competitor_params[:investor][:competitor]
+    end
+
+    if ti_params.present?
+      target.update! ti_params
+    end
+
+    if ti_investor_override_params.present?
+      target.update! ti_investor_override_params[:investor]
+    end
+
+    if ti_competitor_override_params.present? && ti_competitor_override_params[:investor].present?
+      target.update! ti_competitor_override_params[:investor][:competitor]
+    end
 
     render_censored target
   end
@@ -38,11 +50,27 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     params.require(:investor).permit(:id, :tier)
   end
 
-  def target_investor_params
-    params.require(:target_investor).permit(:tier, :funding_size, :industry, :note, investor: [:comments, {competitor: :comments}])
+  def ti_params
+    params.require(:target_investor).permit(:tier, :funding_size, :industry, :note)
   end
 
-  def target_investor_stage_params
+  def ti_stage_params
     params.require(:target_investor).permit(:stage)
+  end
+
+  def ti_investor_override_params
+    params.require(:target_investor).permit(investor: [:industry, :funding_size])
+  end
+
+  def ti_competitor_override_params
+    params.require(:target_investor).permit(investor: {competitor: [:industry, :funding_size]})
+  end
+
+  def ti_investor_params
+    params.require(:target_investor).permit(investor: :comments)
+  end
+  
+  def ti_competitor_params
+    params.require(:target_investor).permit(investor: {competitor: :comments})
   end
 end

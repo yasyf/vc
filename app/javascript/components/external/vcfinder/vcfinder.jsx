@@ -1,8 +1,7 @@
 import React from 'react';
 import Search from './search.jsx';
-import Investors from './investors.jsx';
-import { ffetch } from './utils';
-import update from 'immutability-helper';
+import TargetInvestors from './target_investors';
+import {emplace, ffetch} from './utils';
 import { TargetInvestorsPath } from './constants.js.erb';
 
 export default class VCFinder extends React.Component {
@@ -17,22 +16,18 @@ export default class VCFinder extends React.Component {
 
   componentDidMount() {
     ffetch(TargetInvestorsPath)
-    .then(resp => resp.json())
     .then(targets => this.setState({targets}));
   }
 
   onInvestorSelect = (investor) => {
     ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id, tier: this.state.tier}})
-    .then(resp => resp.json())
     .then(target => this.setState({targets: this.state.targets.concat([target])}));
   };
 
   onTargetChange = (id, change) => {
     ffetch(`${TargetInvestorsPath}/${id}`, 'PATCH', {target_investor: change})
-    .then(resp => resp.json())
     .then(target => {
-      let index = _.findIndex(this.state.targets, {id});
-      let targets = update(this.state.targets, {[index]: {$set: target}});
+      let targets = emplace(this.state.targets, target);
       this.setState({targets});
     })
   };
@@ -45,7 +40,7 @@ export default class VCFinder extends React.Component {
     return (
       <div>
         <Search onSelect={this.onInvestorSelect} />
-        <Investors
+        <TargetInvestors
           targets={this.state.targets}
           tier={this.state.tier}
           onTargetChange={this.onTargetChange}

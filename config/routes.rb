@@ -21,7 +21,10 @@ Rails.application.routes.draw do
       get 'auth/callback', to: 'auth#create'
     end
 
-    get 'vcfinder', to: 'vc_finder#index'
+    scope :vcfinder, controller: 'vc_finder', as: :vcfinder do
+      root action: 'index'
+      get 'admin'
+    end
 
     namespace :api, defaults: { format: :json } do
       namespace :v1 do

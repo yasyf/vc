@@ -1,3 +1,5 @@
+import update from 'immutability-helper';
+
 export let ffetch = function(path, method = 'GET', data = null) {
   let opts = {
     credentials: 'same-origin',
@@ -9,9 +11,27 @@ export let ffetch = function(path, method = 'GET', data = null) {
   };
   if (data)
     opts['body'] = JSON.stringify(data);
-  return fetch(path, opts);
+  return fetch(path, opts).then(resp => resp.json());
 };
 
 export let isDRF = function() {
   return gon.founder['drf?'];
-}
+};
+
+let _extend = function(dest, src, overwrite = true) {
+  let ret = Object.assign({}, dest);
+  Object.entries(src).forEach(([k, v]) => {
+    if (ret.hasOwnProperty(k) && v !== undefined && (overwrite || ret[k] === null)) {
+      ret[k] = v;
+    }
+  });
+  return ret;
+};
+
+export let extend = (dest, src) => _extend(dest, src, true);
+export let merge = (dest, src) => _extend(dest, src, false);
+
+export let emplace = function(items, item) {
+  let index = _.findIndex(items, {id: item.id});
+  return update(items, {[index]: {$set: item}});
+};

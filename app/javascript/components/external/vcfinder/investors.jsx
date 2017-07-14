@@ -1,46 +1,65 @@
 import React from 'react';
-import Investor from './investor.jsx';
-import { TargetInvestorStages } from './constants.js.erb';
+import Investor from './investor';
 
 export default class Investors extends React.Component {
-  renderTierButtons() {
-    let tiers = _.sortBy(_.uniq(_.map(this.props.targets, 'tier')));
-    if (tiers.length === 0 || (tiers.length === 1 && tiers[0] === this.props.tier)) {
-      return null;
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      offset: 0,
+    };
+  }
+
+  componentDidMount() {
+    $(document.body).on('keyup.investors', this.onKeyUp);
+  }
+
+  componentWillUnmount() {
+    $(document.body).off('keyup.investors', this.onKeyUp);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.investors !== nextProps.investors) {
+      this.setState({offset: 0});
     }
-    let buttons = tiers.map(tier =>
-      <button
-        type="button"
-        className="button tier-button"
-        key={tier}
-        onClick={() => this.props.onTierChange(tier)}
-      >
-        Tier {tier}
-      </button>
-    );
-    return (
-      <div className="tier-buttons float-center text-center">
-        {buttons}
-      </div>
-    );
+  }
+
+  onKeyUp = (event) => {
+    switch (event.key) {
+      case "n":
+        this.onClick();
+        break;
+    }
+  };
+
+  onClick = () => {
+    let offset = this.state.offset + 1;
+    this.setState({offset});
+    if (offset >= this.props.investors.length) {
+      this.props.requestNextPage();
+    }
+  };
+
+  currentInvestor() {
+    return this.props.investors[this.state.offset];
   }
 
   render() {
-    let targets = _.groupBy(_.filter(this.props.targets, {tier: this.props.tier}), 'stage');
-    let components = [];
-    Object.entries(TargetInvestorStages).forEach(([key, title]) => {
-      let group = targets[key];
-      if (!group) {
-        return;
-      }
-      components.push(<h3 key={key}>{title}</h3>);
-      group.forEach(target => components.push(<Investor key={target.id} target={target} onTargetChange={this.props.onTargetChange} />));
-    });
+    let investor = this.currentInvestor();
+
+    if (!investor)
+      return <p className="text-center">Loading...</p>;
 
     return (
-      <div className="investors">
-        {this.renderTierButtons()}
-        {components}
+      <div>
+        <div className="investors">
+          <Investor key={investor.id} {...investor} onChange={this.props.onChange} />
+        </div>
+        <div className="category-buttons float-center text-center">
+          <button type="button" className="button" onClick={this.onClick}>
+            Next
+          </button>
+        </div>
       </div>
     );
   }

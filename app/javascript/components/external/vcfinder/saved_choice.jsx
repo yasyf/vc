@@ -21,7 +21,7 @@ export default class SavedChoice extends SavedText {
 
   renderInput() {
     return (
-      <Select {...this.inputProps()} />
+      <Select joinValues={true} clearable={false} {...this.inputProps()} />
     );
   }
 }

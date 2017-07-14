@@ -33,7 +33,7 @@ export default class SavedText extends React.Component {
       this.props.onChange({[this.props.name]: this.state.value});
       this.setState({dirty: false});
     }
-  }, 250, {maxWait: 5000});
+  }, 500, {maxWait: 5000});
 
   onChange = (event) => {
     let value = event.target.value;

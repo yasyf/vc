@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchPath } from './constants.js.erb';
+import { InvestorsSearchPath } from './constants.js.erb';
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -10,7 +10,7 @@ export default class Search extends React.Component {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name', 'firm'),
       identify: (o) => o.id,
       remote: {
-        url: SearchPath,
+        url: InvestorsSearchPath,
         wildcard: 'QUERY',
       }
     });

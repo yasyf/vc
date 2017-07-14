@@ -9,7 +9,7 @@ class TargetInvestor < ApplicationRecord
     intro: 'Waiting For Intro',
     waiting: 'Waiting For Response',
     respond: 'Need To Respond',
-    interested: 'Interesed',
+    interested: 'Interested',
     pass: 'Not Interested',
   }.freeze
 
@@ -28,11 +28,11 @@ class TargetInvestor < ApplicationRecord
     LoggedEvent.log! :target_stage_changed, self,
                      notify: 0, data: { from: stage, to: new_stage }
     self.stage = new_stage
-    self.last_response = DateTime.now if new_stage == :respond
+    self.last_response = DateTime.now if new_stage.to_sym == :respond
     save!
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:note, :industry, :funding_size, :stage, :tier, :id], methods: [:investor])
+    super options.reverse_merge(only: [:note, :industry, :funding_size, :stage, :tier, :id, :last_response], methods: [:investor])
   end
 end
