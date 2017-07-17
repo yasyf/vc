@@ -71,6 +71,7 @@ group :production do
   gem 'puma'
   gem 'dalli'
   gem 'connection_pool'
+  gem 'scout_apm'
 end
 
 group :development, :staging do
