@@ -36,17 +36,18 @@ class Competitor < ApplicationRecord
 
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
+  has_many :notes, as: :subject
 
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, presence: true, uniqueness: true
 
-  after_create :start_crunchbase_job
+  after_commit :start_crunchbase_job, on: :create
 
   sort :industry
 
   def self.create_from_name!(name)
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
-    from_crunchbase crunchbase_id, name if crunchbase_id.present?
+    from_crunchbase! crunchbase_id, name if crunchbase_id.present?
   end
 
   def self.from_crunchbase!(crunchbase_id, name)
@@ -69,7 +70,7 @@ class Competitor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:industry, :name, :description, :funding_size, :comments], methods: [:acronym])
+    super options.reverse_merge(only: [:industry, :name, :description, :funding_size], methods: [:acronym, :notes])
   end
 
   def acronym

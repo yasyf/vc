@@ -1,4 +1,4 @@
-module Importers
+module Importers::Internal
   class Trello
     SEPARATOR = ' - '
     IGNORES = %w(INSTRUCTIONS)

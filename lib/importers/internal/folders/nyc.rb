@@ -1,7 +1,7 @@
 require 'csv'
 require 'open-uri'
 
-module Importers::Folders
+module Importers::Internal::Folders
   class Nyc < BaseFolder
     FILENAME_REGEX = /(?:\d{1,2}\/\d{1,2} )?(.+)/
 

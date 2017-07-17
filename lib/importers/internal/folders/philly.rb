@@ -1,7 +1,7 @@
 require 'csv'
 require 'open-uri'
 
-module Importers::Folders
+module Importers::Internal::Folders
   class Philly < BaseFolder
     FILENAME_REGEX = [/(?:(.*) Voting)/, /(?:\d{1,2}\/\d{1,2} )?(.+)/]
 

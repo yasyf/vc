@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  founder: one
+  body: MyText
+  subject: one
+  subject_type: Subject
+
+two:
+  founder: two
+  body: MyText
+  subject: two
+  subject_type: Subject

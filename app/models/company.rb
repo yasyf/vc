@@ -25,7 +25,7 @@ class Company < ActiveRecord::Base
 
   before_create :set_extra_attributes!
   after_create :add_to_wit!
-  after_create :start_relationships_job
+  after_commit :start_relationships_job, on: :create
 
   def pitch
     @pitch ||= pitches.order(when: :desc).first

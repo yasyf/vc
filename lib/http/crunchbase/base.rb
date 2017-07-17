@@ -43,6 +43,10 @@ module Http::Crunchbase
       result && result['properties']['permalink']
     end
 
+    def found?
+      search_for_data.present?
+    end
+
     private
 
     def extract_website_id(name, index)
@@ -98,10 +102,6 @@ module Http::Crunchbase
       end
     rescue Timeout::Error, JSON::ParserError # when we hit rate limiting
       multi ? [] : nil
-    end
-
-    def found?
-      search_for_data.present?
     end
 
     def search_for_data

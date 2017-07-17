@@ -11,6 +11,9 @@ module Http::Crunchbase
       get_in 'properties', 'short_description'
     end
 
+    def team
+      get_in 'relationships', 'featured_team', multi: true
+    end
 
     private
 

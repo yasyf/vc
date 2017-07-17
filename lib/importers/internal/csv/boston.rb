@@ -1,7 +1,7 @@
 require 'csv'
 require 'open-uri'
 
-module Importers::Csv
+module Importers::Internal::Csv
   class Boston < BaseCsv
     HEADERS = {
       date: 'Date',

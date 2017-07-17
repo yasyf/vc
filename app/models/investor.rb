@@ -3,6 +3,7 @@ class Investor < ApplicationRecord
 
   belongs_to :competitor
   has_many :target_investors
+  has_many :notes, as: :subject
 
   validates :competitor, presence: true
   validates :first_name, presence: true
@@ -13,15 +14,31 @@ class Investor < ApplicationRecord
   enum funding_size: Competitor::FUNDING_SIZES.keys
   sort :industry
 
+  after_commit :start_crunchbase_job, on: :create
+
+  def name
+    "#{first_name} #{last_name}"
+  end
+
+  def populate_from_cb!
+    @skip_job = true
+
+    person = Http::Crunchbase::Person.new(crunchbase_id)
+    return unless person.found?
+
+    self.first_name ||= person.first_name
+    self.last_name ||= person.last_name
+    if person.affiliation.present?
+      self.role ||= person.affiliation.role
+      self.competitor ||= Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
+    end
+    self.description ||= person.short_bio
+  end
+
   def self.from_crunchbase(cb_id)
     return nil unless cb_id.present?
     where(crunchbase_id: cb_id).first_or_create! do |investor|
-      person = Http::Crunchbase::Person.new(cb_id)
-      investor.first_name = person.first_name
-      investor.last_name = person.last_name
-      investor.role = person.affiliation.role
-      investor.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
-      investor.description = person.short_bio
+      investor.populate_from_cb!
     end
   end
 
@@ -34,10 +51,16 @@ class Investor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :comments, :funding_size], methods: [:competitor])
+    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :funding_size], methods: [:competitor, :notes])
   end
 
   def crunchbase_person
     @crunchbase_person ||= Http::Crunchbase::Person.new(crunchbase_id) if crunchbase_id.present?
+  end
+
+  private
+
+  def start_crunchbase_job
+    InvestorCrunchbaseJob.perform_later(id) unless @skip_job
   end
 end

@@ -16,7 +16,8 @@ module Http::Crunchbase
     end
 
     def short_bio
-      get_in('properties', 'bio').split('.').first + '.'
+      bio = get_in('properties', 'bio')
+      bio.split('.').first + '.' if bio.present?
     end
 
     def affiliation
