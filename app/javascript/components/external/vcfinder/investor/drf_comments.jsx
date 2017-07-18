@@ -42,6 +42,7 @@ export default class InvestorDRFComments extends React.Component {
     let { notes, competitor } = this.props;
     return (
       <div>
+        <hr />
         <div className="grid-x grid-margin-x investor-row">
           <div className="large-6 cell">
             {this.renderNotes('DRF Investor Comments', notes)}
@@ -50,7 +51,6 @@ export default class InvestorDRFComments extends React.Component {
             {this.renderNotes('DRF Fund Comments', competitor.notes, u => ({competitor: u}))}
           </div>
         </div>
-        <hr />
       </div>
     );
   }
