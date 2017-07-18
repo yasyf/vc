@@ -28,12 +28,13 @@ class CompanySyncJob < ApplicationJob
       pitch = company.pitch
 
       if (pitch.blank? || pitch.decided?) && card_data[:pitch_on].present?
-        pitch = Pitch.new(company: company)
+        pitch = Pitch.create!(company: company, when: card_data[:pitch_on])
       end
 
       if pitch.present?
         pitch.when = card_data[:pitch_on]
         pitch.decision ||= team.time_now if importing
+        pitch.save! if pitch.changed?
       end
 
       if card.list.present? && card.list != list
