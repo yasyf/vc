@@ -103,7 +103,7 @@ class Company < ActiveRecord::Base
         pitch_on: pitch_on,
         funded: funded?,
         passed: passed?,
-        past_deadline: past_deadline?,
+        past_deadline: pitch&.past_deadline?,
         pitched: pitched?,
         partners: users.map { |user| { name: user.name, slack_id: user.slack_id }  },
         trello_url: card&.trello_url,
