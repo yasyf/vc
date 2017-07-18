@@ -35,7 +35,7 @@ module.exports = merge(sharedConfig, {
       },
       exclude: [/\.min\.js$/gi]
     }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new CompressionPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
