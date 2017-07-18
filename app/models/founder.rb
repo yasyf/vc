@@ -35,8 +35,13 @@ class Founder < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def domain
+    return nil unless email.present?
+    email.split('@').last
+  end
+
   def drf?
-    companies.any?(&:funded?)
+    companies.any?(&:funded?) || domain == ENV['DOMAIN']
   end
 
   def as_json(options = {})
