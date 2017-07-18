@@ -19,7 +19,9 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (investments = fund.investments).present?
       investments.each do |investment|
-        company = investment['relationships']['funding_round']['relationships']['funded_organization']
+        funding_round = investment['relationships']['funding_round']
+        next unless funding_round.present?
+        company = funding_round['relationships']['funded_organization']
         ignore_unique do
           Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
             c.name = company['properties']['name']
