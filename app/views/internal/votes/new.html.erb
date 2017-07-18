@@ -6,7 +6,7 @@
 <% end %>
 
 <% if current_internal_user.active? %>
-  <%= form_for [@company, Vote.new], html: { class: 'form-horizontal' } do |f| %>
+  <%= form_for [:internal, @company, Vote.new], html: { class: 'form-horizontal' } do |f| %>
     <% Vote::METRICS.each do |metric| %>
       <div class="form-group">
         <%= f.label metric, class: 'col-sm-offset-4 col-sm-2 control-label' %>
