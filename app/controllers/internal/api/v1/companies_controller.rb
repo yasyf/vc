@@ -1,5 +1,5 @@
 class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controller
-  INCLUDES = %w(team list users competitors)
+  INCLUDES = %w(team users competitors)
 
   before_action :authenticate_api_user!
 
