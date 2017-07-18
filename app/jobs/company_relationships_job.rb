@@ -24,7 +24,8 @@ class CompanyRelationshipsJob < ApplicationJob
   private
 
   def add_founders
-    @org.founders.each do |founder|
+    return unless (founders = @org.founders).present?
+    founders.each do |founder|
       person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
       social = SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
       founder = Founder.find_or_create_from_social!(person.first_name, person.last_name, social, context: @company)
@@ -36,7 +37,8 @@ class CompanyRelationshipsJob < ApplicationJob
   end
 
   def add_investors
-    @org.investors.each do |competitor|
+    return unless (investors = @org.investors).present?
+    investors.each do |competitor|
       Competitor.where(crunchbase_id: competitor['properties']['permalink']).first_or_create! do |c|
         c.name = competitor['properties']['name']
       end
