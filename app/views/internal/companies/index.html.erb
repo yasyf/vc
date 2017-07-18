@@ -17,7 +17,7 @@
         href="<%=
           company.pitch.user_votes(current_internal_user).present? || company.pitch.past_deadline? \
           ? internal_company_path(company) \
-          : new_internal_internal_company_vote_path(company)
+          : new_internal_company_vote_path(company)
         %>"
       >
         <%= render partial: 'pitched_company', locals: {company: company} %>
