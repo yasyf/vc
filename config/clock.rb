@@ -8,7 +8,7 @@ module Clockwork
   every(6.hour, 'sync.company.deep') { Company.sync!(quiet: false, deep: true) }
   every(1.hour, 'sync.evergreen') { Slack::CollectEvergreensJob.perform_later }
 
-  every(1.hour, 'cache.warm') { CacheWarmJob.perform_later }
+  every(2.weeks, 'cache.warm', at: 'Monday 08:00') { CacheWarmJob.perform_later }
 
   every(10.minutes, 'pitch.notify') { CompanyPrepareJob.perform_later }
 
