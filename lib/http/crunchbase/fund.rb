@@ -15,6 +15,10 @@ module Http::Crunchbase
       get_in 'relationships', 'featured_team', multi: true
     end
 
+    def investments
+      get_in 'relationships', 'investments', multi: true
+    end
+
     private
 
     def self.base_cache_key

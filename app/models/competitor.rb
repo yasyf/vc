@@ -18,6 +18,11 @@ class Competitor < ApplicationRecord
   INDUSTRIES = {
     consumer: 'Consumer',
     enterprise: 'Enterprise',
+    saas: 'SaaS',
+    ai: 'Artificial Intelligence',
+    robotics: 'Robotics',
+    food: 'Food and Beverage',
+    mobile: 'Mobile',
     healthcare: 'Healthcare',
     media: 'Media',
     finance: 'Finance',
@@ -30,7 +35,23 @@ class Competitor < ApplicationRecord
     sports: 'Sports',
     cleantech: 'Clean Technology',
     iot: 'Internet of Things',
+    social: 'Social Media',
+    energy: 'Energy',
   }.with_indifferent_access.freeze
+
+  RELATED_INDUSTRIES = {
+    mobile: ['Mobile Devices', 'Telecommunications'],
+    food: ['Food Delivery', 'Nutrition', 'Food'],
+    social: ['Social', 'Messaging'],
+    ai: ['Machine Learning'],
+    enterprise: ['Enterprise Software'],
+    healthcare: ['Health Care', 'Medical'],
+    media: ['Entertainment'],
+    finance: ['FinTech'],
+    energy: ['Electric Vehicle', 'Energy Management'],
+  }.freeze
+
+  CLOSEST_INDUSTRY_THRESHOLD = 0.4
 
   enum funding_size: FUNDING_SIZES.keys
 
@@ -44,6 +65,19 @@ class Competitor < ApplicationRecord
   after_commit :start_crunchbase_job, on: :create
 
   sort :industry
+
+  def self.closest_industry(industry)
+    distances = INDUSTRIES.flat_map do |k, friendly|
+      ([friendly] + (RELATED_INDUSTRIES[k] || [])).map do |s|
+        [Levenshtein.distance(s, industry) / [k.length, industry.length].max.to_f, k]
+      end
+    end
+    if (best = distances.sort.first).first < CLOSEST_INDUSTRY_THRESHOLD
+      best.last
+    else
+      nil
+    end
+  end
 
   def self.create_from_name!(name)
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)

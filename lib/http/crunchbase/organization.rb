@@ -26,6 +26,10 @@ module Http::Crunchbase
       get_in 'relationships', 'founders', multi: true
     end
 
+    def categories
+      get_in 'relationships', 'categories', multi: true
+    end
+
     def has_investor?(name)
       investors&.find { |inv| inv['properties']['name'] == name || inv['properties']['permalink'] == name }.present?
     end

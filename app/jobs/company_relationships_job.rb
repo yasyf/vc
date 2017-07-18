@@ -7,6 +7,16 @@ class CompanyRelationshipsJob < ApplicationJob
   def perform(company_id)
     @company = Company.find(company_id)
     @org = @company.crunchbase_org(TIMEOUT)
+
+    @company.set_extra_attributes!
+
+    @company.industry = @org
+                          .categories
+                          .map { |c| Competitor.closest_industry(c['properties']['name']) }
+                          .compact
+                          .uniq
+    @company.save! if @company.changed?
+
     add_founders
     add_investors
   end

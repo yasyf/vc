@@ -12,7 +12,6 @@ class Company < ActiveRecord::Base
   has_and_belongs_to_many :founders, -> { distinct }
 
   validates :name, presence: true
-  validates :team, presence: true
 
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
@@ -23,7 +22,7 @@ class Company < ActiveRecord::Base
   scope :undecided, -> { pitched.where('pitches.decision IS NULL') }
   scope :portfolio, -> { pitched.where('pitches.funded': true) }
 
-  before_create :set_extra_attributes!
+  before_save :uniq_competitors
   after_create :add_to_wit!
   after_commit :start_relationships_job, on: :create
 
@@ -48,11 +47,11 @@ class Company < ActiveRecord::Base
   end
 
   def passed?
-    in_list?([team.lists.rejected, team.lists.passed])
+    team.present? && in_list?([team.lists.rejected, team.lists.passed])
   end
 
   def funded?
-    pitch&.funded? || in_list?(team.funded_lists)
+    pitch&.funded? || (team.present? && in_list?(team.funded_lists))
   end
 
   def pitched?
@@ -80,6 +79,7 @@ class Company < ActiveRecord::Base
   end
 
   def add_comment!(comment, notify: false)
+    return unless team.present?
     card.add_comment! comment
     team.notify!(comment, all: false) if notify
   end
@@ -178,7 +178,11 @@ class Company < ActiveRecord::Base
   end
 
   def set_competitors!
-    self.competitors = Competitor.for_company(self)
+    self.competitors += Competitor.for_company(self)
+  end
+
+  def uniq_competitors
+    self.competitors.uniq!
   end
 
   def set_capital_raised!

@@ -12,5 +12,13 @@ class CompetitorCrunchbaseJob < ApplicationJob
     fund.team.each do |job|
       Investor.from_crunchbase( job['relationships']['person']['properties']['permalink'])
     end
+
+    fund.investments.each do |investment|
+      company = investment['relationships']['funding_round']['relationships']['funded_organization']
+      Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
+        c.name = company['properties']['name']
+        c.competitors << competitor
+      end
+    end
   end
 end
