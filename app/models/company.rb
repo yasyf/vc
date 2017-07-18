@@ -97,9 +97,10 @@ class Company < ActiveRecord::Base
       options.slice(:methods, :only, :except, :root, :include),
       cache_unless_voting(expires_in: jitter(1, :day)),
     ) do
+      pitch_on = pitch.when.to_time.to_i if pitch.present?
       super(options).merge(
         capital_raised: capital_raised(format: true),
-        pitch_on: pitch&.when.to_time.to_i,
+        pitch_on: pitch_on,
         funded: funded?,
         passed: passed?,
         past_deadline: past_deadline?,
