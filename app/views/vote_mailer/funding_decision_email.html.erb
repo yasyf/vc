@@ -3,7 +3,7 @@
     <h1 class="<%= @company.funded? ? 'success' : 'failure' %>"><%= @company.name %></h1>
 
     <p>
-      <%= @company.team.name.titleize %> ​<b>will<%= @company.funded? ? '' : ' not' %></b> be funding ​<a href="<%= company_url(id: @company.id) %>"><%= @company.name %></a>!
+      <%= @company.team.name.titleize %> ​<b>will<%= @company.funded? ? '' : ' not' %></b> be funding ​<a href="<%= internal_company_url(id: @company.id) %>"><%= @company.name %></a>!
       <br>
       <%= (@yes_percent * 100).round(0) %>% voted to fund, with <%= @stats[:yes_votes] %> in favor and <%= @stats[:no_votes] %> against.
     </p>
