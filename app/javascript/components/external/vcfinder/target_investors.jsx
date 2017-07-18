@@ -1,36 +1,33 @@
 import React from 'react';
 import TargetInvestor from './target_investor';
 import Buttons from './buttons';
-import { TargetInvestorStages } from './constants.js.erb';
+import {TargetInvestorStages, TargetInvestorStageKeys} from './constants.js.erb';
+import {pluckSort} from './utils';
 
 export default class TargetInvestors extends React.Component {
-  renderTierButtons() {
-    let tiers = _.sortBy(_.uniq(_.map(this.props.targets, 'tier')));
-    let labeled = _.zip(tiers, _.times(tiers.length, _.constant('Tier')));
+  renderStageButtons() {
+    let stages = pluckSort(this.props.targets, 'stage', TargetInvestorStageKeys);
+    let labeled = _.zip(stages, _.map(stages, s => TargetInvestorStages[s]));
     return (
       <Buttons
         categories={labeled}
-        current={this.props.tier}
-        onChange={this.props.onTierChange}
+        current={this.props.stage}
+        onChange={this.props.onStageChange}
       />
     );
   }
 
   render() {
-    let targets = _.groupBy(_.filter(this.props.targets, {tier: this.props.tier}), 'stage');
+    let targets = _.sortBy(Object.entries(_.groupBy(_.filter(this.props.targets, {stage: this.props.stage}), 'tier')), '1');
     let components = [];
-    Object.entries(TargetInvestorStages).forEach(([key, title]) => {
-      let group = targets[key];
-      if (!group) {
-        return;
-      }
-      components.push(<h3 key={key}>{title}</h3>);
+    targets.forEach(([tier, group]) => {
+      components.push(<h3 key={tier}>Tier {tier}</h3>);
       group.forEach(target => components.push(<TargetInvestor key={target.id} {...target} onTargetChange={this.props.onTargetChange} />));
     });
 
     return (
       <div className="investors">
-        {this.renderTierButtons()}
+        {this.renderStageButtons()}
         {components}
       </div>
     );

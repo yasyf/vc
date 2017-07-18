@@ -1,8 +1,8 @@
 import React from 'react';
 import Search from './search.jsx';
 import TargetInvestors from './target_investors';
-import {emplace, ffetch} from './utils';
-import { TargetInvestorsPath } from './constants.js.erb';
+import {emplace, ffetch, pluckSort} from './utils';
+import {TargetInvestorsPath, TargetInvestorStageKeys} from './constants.js.erb';
 
 export default class VCFinder extends React.Component {
   constructor(props) {
@@ -10,17 +10,22 @@ export default class VCFinder extends React.Component {
 
     this.state = {
       targets: [],
-      tier: 1,
+      stage: TargetInvestorStageKeys[0],
     };
   }
 
   componentDidMount() {
     ffetch(TargetInvestorsPath)
-    .then(targets => this.setState({targets}));
+    .then(targets => this.setState({targets, stage: this.defaultStage(targets)}));
   }
 
+  defaultStage(targets) {
+    let stages = pluckSort(targets, 'stage', TargetInvestorStageKeys);
+    return stages[0] || TargetInvestorStageKeys[0];
+  }
+  
   onInvestorSelect = (investor) => {
-    ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id, tier: this.state.tier}})
+    ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
     .then(target => this.setState({targets: this.state.targets.concat([target])}));
   };
 
@@ -32,8 +37,8 @@ export default class VCFinder extends React.Component {
     })
   };
 
-  onTierChange = (tier) => {
-    this.setState({tier});
+  onStageChange = (stage) => {
+    this.setState({stage});
   };
 
   render() {
@@ -42,9 +47,9 @@ export default class VCFinder extends React.Component {
         <Search onSelect={this.onInvestorSelect} />
         <TargetInvestors
           targets={this.state.targets}
-          tier={this.state.tier}
+          stage={this.state.stage}
           onTargetChange={this.onTargetChange}
-          onTierChange={this.onTierChange}
+          onStageChange={this.onStageChange}
         />
       </div>
     );

@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export default class Buttons extends React.Component {
   render() {
@@ -12,11 +13,11 @@ export default class Buttons extends React.Component {
     let buttons = categories.map(([category, name]) =>
       <button
         type="button"
-        className="button category-button"
+        className={classNames('button', 'category-button', {'hollow': category !== current})}
         key={category}
         onClick={() => onChange(category)}
       >
-        {name} {category}
+        {name}
       </button>
     );
     return (

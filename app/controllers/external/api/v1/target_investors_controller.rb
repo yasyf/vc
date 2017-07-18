@@ -10,7 +10,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def create
-    target = TargetInvestor.create! investor_id: investor_params[:id], founder: current_external_founder, tier: investor_params[:tier]
+    target = TargetInvestor.create! investor_id: investor_params[:id], founder: current_external_founder, tier: 1
     render_censored target
   end
 
