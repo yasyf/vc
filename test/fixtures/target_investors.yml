@@ -3,13 +3,13 @@
 one:
   investor: one
   founder: one
-  stage: 
-  tier: 
+  stage: added
+  tier: 1
   last_response: 2017-07-07 14:28:15
 
 two:
   investor: two
   founder: two
-  stage: 
-  tier: 
+  stage: added
+  tier: 1
   last_response: 2017-07-07 14:28:15
