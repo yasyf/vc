@@ -28,7 +28,7 @@ module External::Concerns
       return base if current_external_founder.drf?
 
       paths.each do |path|
-        components = path.split('.')
+        components = path.to_s.split('.')
         current = base
         current = current[components.shift] while components.length > 1
         current.delete(components.last)
