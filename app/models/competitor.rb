@@ -123,6 +123,14 @@ class Competitor < ApplicationRecord
     @crunchbase_fund ||= Http::Crunchbase::Fund.new(crunchbase_id)
   end
 
+  def industry=(new_industry)
+    if new_industry.is_a?(String)
+      super new_industry.split(',')
+    else
+      super
+    end
+  end
+
   private
 
   def start_crunchbase_job

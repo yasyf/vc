@@ -5,12 +5,12 @@ module Concerns
     included do
       @sorted_attributes = []
 
-      before_save :split_and_sort
+      before_save :sort_sortables
     end
 
     class_methods do
-      def sort(name, split: ',')
-        @sorted_attributes << {name: name, split: split}
+      def sort(name)
+        @sorted_attributes << name
       end
 
       def sorted_attributes
@@ -18,10 +18,10 @@ module Concerns
       end
     end
 
-    def split_and_sort
-      self.class.sorted_attributes.each do |sa|
-        next unless (attr = self[sa[:name]]).present?
-        self[sa[:name]] = attr.split(sa[:split]).sort.join(sa[:split])
+    def sort_sortables
+      self.class.sorted_attributes.each do |attr|
+        next unless self[attr].present?
+        self[attr] = self[attr].sort
       end
     end
   end
