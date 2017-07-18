@@ -39,8 +39,12 @@ class CompanyRelationshipsJob < ApplicationJob
   def add_investors
     return unless (investors = @org.investors).present?
     investors.each do |competitor|
-      Competitor.where(crunchbase_id: competitor['properties']['permalink']).first_or_create! do |c|
-        c.name = competitor['properties']['name']
+      begin
+        Competitor.where(crunchbase_id: competitor['properties']['permalink']).first_or_create! do |c|
+          c.name = competitor['properties']['name']
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.info e
       end
     end
   end
