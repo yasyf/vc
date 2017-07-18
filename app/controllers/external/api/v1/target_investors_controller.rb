@@ -21,12 +21,16 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
       target.change_stage!(ti_stage_params[:stage])
     end
 
-    if ti_investor_params.present?
-      target.investor.update! ti_investor_params[:investor]
+    if ti_investor_params.present? && ti_investor_params[:investor].present?
+      note = target.investor.notes.first_or_initialize(founder: current_external_founder)
+      note.body = ti_investor_params[:investor][:note]
+      note.save!
     end
 
-    if ti_competitor_params.present? && ti_competitor_params[:investor].present?
-      target.investor.competitor.update! ti_competitor_params[:investor][:competitor]
+    if ti_competitor_params.present? && ti_competitor_params[:investor].present? && ti_competitor_params[:investor][:competitor].present?
+      note = target.investor.competitor.notes.first_or_initialize(founder: current_external_founder)
+      note.body = ti_competitor_params[:investor][:competitor][:note]
+      note.save!
     end
 
     if ti_params.present?
@@ -67,10 +71,10 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def ti_investor_params
-    params.require(:target_investor).permit(investor: :comments)
+    params.require(:target_investor).permit(investor: :note)
   end
   
   def ti_competitor_params
-    params.require(:target_investor).permit(investor: {competitor: :comments})
+    params.require(:target_investor).permit(investor: {competitor: :note})
   end
 end

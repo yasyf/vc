@@ -18,6 +18,14 @@ export let isDRF = function() {
   return gon.founder['drf?'];
 };
 
+export let isMe = function(founder) {
+  return gon.founder.id === founder.id;
+};
+
+export let fullName = function(founder) {
+  return `${founder.first_name} ${founder.last_name}`;
+};
+
 let _extend = function(dest, src, overwrite = true) {
   let ret = Object.assign({}, dest);
   Object.entries(src).forEach(([k, v]) => {

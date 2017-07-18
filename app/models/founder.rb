@@ -31,11 +31,15 @@ class Founder < ApplicationRecord
     end
   end
 
+  def name
+    "#{first_name} #{last_name}"
+  end
+
   def drf?
     companies.any?(&:funded?)
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:first_name, :last_name], methods: [:drf?])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?])
   end
 end
