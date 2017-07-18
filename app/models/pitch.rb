@@ -51,7 +51,7 @@ class Pitch < ApplicationRecord
   end
 
   def funded?
-    yes_votes > no_votes
+    cached(cache_unless_voting) { yes_votes > no_votes }
   end
 
   def yes_votes
