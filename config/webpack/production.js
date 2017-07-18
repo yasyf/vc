@@ -13,19 +13,29 @@ module.exports = merge(sharedConfig, {
   stats: 'normal',
 
   plugins: [
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       minimize: true,
-      sourceMap: true,
-
+      sourceMap: false,
       compress: {
-        warnings: false
+        warnings: false,
+        unused: true,
+        dead_code: true,
+        drop_debugger: true,
+        drop_console: true,
+        conditionals: true,
+        comparisons: true,
+        sequences: true,
+        booleans: true
       },
-
       output: {
         comments: false
-      }
+      },
+      exclude: [/\.min\.js$/gi]
     }),
-
+    new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
     new CompressionPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
