@@ -1,11 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  first_name: MyString
+  last_name: MyString
   email: MyString
   competitor: one
 
 two:
-  name: MyString
-  email: MyString
+  first_name: MyString
+  last_name: MyString
+  email: MyString2
   competitor: two
