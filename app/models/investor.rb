@@ -14,6 +14,7 @@ class Investor < ApplicationRecord
   enum funding_size: Competitor::FUNDING_SIZES.keys
   sort :industry
 
+  before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
 
   def name
@@ -59,6 +60,10 @@ class Investor < ApplicationRecord
   end
 
   private
+
+  def titleize_role
+    self.role = self.role.try(:titleize)
+  end
 
   def start_crunchbase_job
     InvestorCrunchbaseJob.perform_later(id) unless @skip_job
