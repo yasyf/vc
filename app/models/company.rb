@@ -22,7 +22,6 @@ class Company < ActiveRecord::Base
   scope :undecided, -> { pitched.where('pitches.decision IS NULL') }
   scope :portfolio, -> { pitched.where('pitches.funded': true) }
 
-  before_save :uniq_competitors
   after_create :add_to_wit!
   after_commit :start_relationships_job, on: :create
 
@@ -179,10 +178,6 @@ class Company < ActiveRecord::Base
 
   def set_competitors!
     self.competitors += Competitor.for_company(self)
-  end
-
-  def uniq_competitors
-    self.competitors.uniq!
   end
 
   def set_capital_raised!
