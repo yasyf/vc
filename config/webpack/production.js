@@ -18,7 +18,7 @@ module.exports = merge(sharedConfig, {
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       minimize: true,
-      sourceMap: false,
+      sourceMap: true,
       compress: {
         warnings: false,
         unused: true,

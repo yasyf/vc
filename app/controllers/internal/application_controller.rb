@@ -1,8 +1,13 @@
 class Internal::ApplicationController < ::ApplicationController
-  before_action :check_team!
   layout 'internal'
+  before_action :populate_gon
+  before_action :check_team!
 
   private
+
+  def populate_gon
+    gon.user = current_internal_user
+  end
 
   def check_team!
     if current_internal_user.present? && !view_context.current_page?(internal_team_path)

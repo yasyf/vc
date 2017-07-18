@@ -13,11 +13,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js" integrity="sha256-RWiU4omUU7tQ2M3wmRQNW9UL50MB4CucbRPCbsQv+X0=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js" integrity="sha256-aB35laj7IZhLTx58xw/Gm1EKOoJJKZt6RY+bH1ReHxs=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js" integrity="sha256-0JaDbGZRXlzkFbV8Xi8ZhH/zZ6QQM0Y3dCkYZ7JYq34=" crossorigin="anonymous"></script>
-  <%= javascript_include_tag 'external/application', 'data-turbolinks-track' => true %>
   <link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}" %>
   <% end %>
+  <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
+  <%= javascript_include_tag 'external/application', 'data-turbolinks-track' => true %>
   <% if content_for?(:styles) %>
     <%= stylesheet_link_tag "external/#{yield(:styles)}", media: 'all', 'data-turbolinks-track' => true %>
   <% end %>
