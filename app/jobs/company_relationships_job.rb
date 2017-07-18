@@ -1,4 +1,6 @@
 class CompanyRelationshipsJob < ApplicationJob
+  include Concerns::Ignorable
+
   queue_as :default
 
   TIMEOUT = 5
@@ -15,7 +17,7 @@ class CompanyRelationshipsJob < ApplicationJob
                           .map { |c| Competitor.closest_industry(c['properties']['name']) }
                           .compact
                           .uniq if categories.present?
-    @company.save! if @company.changed?
+    ignore_invalid { @company.save! } if @company.changed?
 
     add_founders
     add_investors
@@ -39,12 +41,10 @@ class CompanyRelationshipsJob < ApplicationJob
   def add_investors
     return unless (investors = @org.investors).present?
     investors.each do |competitor|
-      begin
+      ignore_invalid do
         Competitor.where(crunchbase_id: competitor['properties']['permalink']).first_or_create! do |c|
           c.name = competitor['properties']['name']
         end
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.info e
       end
     end
   end
