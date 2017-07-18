@@ -41,6 +41,8 @@ class Investor < ApplicationRecord
     where(crunchbase_id: cb_id).first_or_create! do |investor|
       investor.populate_from_cb!
     end
+  rescue ActiveRecord::RecordInvalid
+    nil
   end
 
   def self.from_name(name)
