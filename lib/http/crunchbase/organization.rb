@@ -42,6 +42,10 @@ module Http::Crunchbase
       find_id(name: name, organization_types: 'investor')
     end
 
+    def self.find_domain_id(domain)
+      find_id(domain_name: domain, organization_types: 'investor')
+    end
+
     private
 
     def self.base_cache_key

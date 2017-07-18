@@ -25,7 +25,11 @@ module Importers::External
       end
       row[:email] = row[:email].try(:downcase)
       row[:role] = row[:role].try(:titleize)
-      row[:competitor] = Competitor.create_from_name!(row.delete(:fund))
+
+      fund = row.delete(:fund)
+      row[:competitor] = if row[:email].present?
+        Competitor.create_from_domain!(row[:email].split('@').last)
+      end || Competitor.create_from_name!(fund)
     end
 
     def import!(row)
