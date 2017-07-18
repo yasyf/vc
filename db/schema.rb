@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170718000911) do
+ActiveRecord::Schema.define(version: 20170718195620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20170718000911) do
     t.string "domain"
     t.string "crunchbase_id"
     t.integer "team_id"
-    t.integer "capital_raised", default: 0, null: false
+    t.bigint "capital_raised", default: 0, null: false
     t.text "description"
     t.string "industry", array: true
     t.index "to_tsvector('english'::regconfig, (name)::text)", name: "companies_to_tsvector_idx", using: :gin
