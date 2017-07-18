@@ -11,16 +11,20 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor.description = description if description.present?
     competitor.save! if competitor.changed?
 
-    fund.team.each do |job|
-      Investor.from_crunchbase( job['relationships']['person']['properties']['permalink'])
+    if (team = fund.team).present?
+      team.each do |job|
+        Investor.from_crunchbase( job['relationships']['person']['properties']['permalink'])
+      end
     end
 
-    fund.investments.each do |investment|
-      company = investment['relationships']['funding_round']['relationships']['funded_organization']
-      ignore_unique do
-        Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
-          c.name = company['properties']['name']
-          c.competitors << competitor
+    if (investments = fund.investments).present?
+      investments.each do |investment|
+        company = investment['relationships']['funding_round']['relationships']['funded_organization']
+        ignore_unique do
+          Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
+            c.name = company['properties']['name']
+            c.competitors << competitor
+          end
         end
       end
     end
