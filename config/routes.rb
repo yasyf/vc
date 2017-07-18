@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
 
-  subdomain_or_prefix('awesome', :external) do
+  subdomain_or_prefix(ENV['EXTERNAL_SUBDOMAIN'], :external) do
     root 'welcome#index'
 
     devise_for :founders, skip: :all
@@ -46,7 +46,7 @@ Rails.application.routes.draw do
     end
   end
 
-  subdomain_or_prefix('vote', :internal) do
+  subdomain_or_prefix(ENV['INTERNAL_SUBDOMAIN'], :internal) do
     root 'welcome#index'
 
     devise_for :users, skip: :all
