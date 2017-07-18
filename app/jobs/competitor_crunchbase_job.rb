@@ -1,4 +1,6 @@
 class CompetitorCrunchbaseJob < ApplicationJob
+  include Concerns::Ignorable
+
   queue_as :default
 
   def perform(competitor_id)
@@ -15,9 +17,11 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     fund.investments.each do |investment|
       company = investment['relationships']['funding_round']['relationships']['funded_organization']
-      Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
-        c.name = company['properties']['name']
-        c.competitors << competitor
+      ignore_unique do
+        Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
+          c.name = company['properties']['name']
+          c.competitors << competitor
+        end
       end
     end
   end

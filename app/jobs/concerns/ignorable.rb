@@ -4,9 +4,17 @@ module Concerns
 
     private
 
-    def ignore_invalid
+    def ignore_unique(&block)
+      ignore([ActiveRecord::RecordNotUnique, PG::UniqueViolation], &block)
+    end
+
+    def ignore_invalid(&block)
+      ignore(ActiveRecord::RecordInvalid, &block)
+    end
+
+    def ignore(types)
       yield
-    rescue ActiveRecord::RecordInvalid => e
+    rescue *Array.wrap(types) => e
       Rails.logger.info e
     end
   end
