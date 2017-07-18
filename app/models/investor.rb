@@ -62,7 +62,8 @@ class Investor < ApplicationRecord
   private
 
   def titleize_role
-    self.role = self.role.try(:titleize)
+    return unless self.role.present?
+    self.role = self.role.titleize unless self.role.upcase == self.role
   end
 
   def start_crunchbase_job
