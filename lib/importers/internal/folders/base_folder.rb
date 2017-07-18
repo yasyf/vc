@@ -2,7 +2,7 @@ require 'csv'
 require 'open-uri'
 
 module Importers::Internal::Folders
-  class BaseFolder < Importers::VotingBase
+  class BaseFolder < Importers::Internal::VotingBase
     MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     COLUMNS = [:date, :email, :name, :team, :market, :product, :fit, :overall, :reason]
     HEADERS = {

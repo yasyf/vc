@@ -2,7 +2,7 @@ require 'csv'
 require 'open-uri'
 
 module Importers::Internal::Csv
-  class BaseCsv < Importers::VotingBase
+  class BaseCsv < Importers::Internal::VotingBase
     def initialize(filename, emails_filename = nil)
       @filename = url?(filename) ? save(filename) : filename
       @emails_filename = emails_filename && url?(emails_filename) ? save(emails_filename) : emails_filename
