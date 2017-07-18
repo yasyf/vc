@@ -32,7 +32,7 @@ class CompanySyncJob < ApplicationJob
       end
 
       if pitch.present?
-        pitch.when = card_data[:pitch_on]
+        pitch.when = card_data[:pitch_on] if card_data[:pitch_on].present?
         pitch.decision ||= team.time_now if importing
         pitch.save! if pitch.changed?
       end
