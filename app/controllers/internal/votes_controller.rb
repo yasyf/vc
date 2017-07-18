@@ -10,7 +10,7 @@ class Internal::VotesController < Internal::ApplicationController
   end
 
   def create
-    vote = company.votes.create vote_params.merge(user: current_internal_user)
+    vote = company.pitch.votes.create vote_params.merge(user: current_internal_user)
     if vote.valid?
       flash[:success] = "Vote submitted!"
       redirect_to internal_company_path(company)
