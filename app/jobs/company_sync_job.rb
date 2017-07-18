@@ -4,7 +4,7 @@ class CompanySyncJob < ApplicationJob
   IGNORED_COMPANY_PREFIX = 'jobs/company_sync/ignored/trello_id'
 
   def perform(team, quiet: true, importing: false, deep: false)
-    Importers::Trello.new(team).sync!(deep: deep) do |card_data|
+    Importers::Internal::Trello.new(team).sync!(deep: deep) do |card_data|
       if ignored? card_data[:trello_id]
         next
       end
