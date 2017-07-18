@@ -80,6 +80,9 @@ class Competitor < ApplicationRecord
   end
 
   def self.create_from_name!(name)
+    existing = where(name: name)
+    return existing.first if existing.count > 0
+
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
     from_crunchbase! crunchbase_id, name if crunchbase_id.present?
   end
