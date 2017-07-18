@@ -5,7 +5,7 @@ class VoteMonitorJob < ActiveJob::Base
 
   def perform
     Team.for_each do |team|
-      pending = Company.undecided.where('pitches.when <= ?', Date.today.in_time_zone(team.time_zone))
+      pending = team.companies.undecided.where('pitches.when <= ?', Date.today.in_time_zone(team.time_zone))
       pending.each do |company|
         next unless company.pitch.votes.present?
         time_remaining = team.datetime_now - company.pitch.deadline.to_datetime

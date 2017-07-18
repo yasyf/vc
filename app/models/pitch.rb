@@ -114,7 +114,7 @@ class Pitch < ApplicationRecord
   end
 
   def decide!(override: nil)
-    update! decision_at: Time.current, funded: override || funded?
+    update! decision: Time.current, funded: override || funded?
   end
 
   private
