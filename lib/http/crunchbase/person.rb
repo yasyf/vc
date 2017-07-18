@@ -21,12 +21,14 @@ module Http::Crunchbase
     end
 
     def affiliation
+      return nil unless found?
       @affiliation ||= begin
         aff = get_in 'relationships', 'primary_affiliation'
+        aff = aff['item'] if aff.present?
         OpenStruct.new({
-          role: aff['item']['properties']['title'],
-          name: aff['item']['relationships']['organization']['properties']['name'],
-          permalink: aff['item']['relationships']['organization']['properties']['permalink'],
+          role: aff['properties']['title'],
+          name: aff['relationships']['organization']['properties']['name'],
+          permalink: aff['relationships']['organization']['properties']['permalink'],
         }) if aff.present?
       end
     end
