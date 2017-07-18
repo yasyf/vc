@@ -65,6 +65,9 @@ gem 'gon'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'
+group :test do
+  gem 'minitest', '~> 5.10', '!= 5.10.2'
+end
 
 group :production do
   gem 'rails_12factor'
