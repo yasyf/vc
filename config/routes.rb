@@ -11,9 +11,16 @@ class TeamConstraint
 end
 
 Rails.application.routes.draw do
+  def subdomain_or_prefix(subdomain, prefix, &block)
+    namespace(prefix, &block)
+    constraints subdomain: subdomain do
+      scope(module: prefix, as: "#{subdomain}_#{prefix}", &block)
+    end
+  end
+
   root 'welcome#index'
 
-  namespace :external do
+  subdomain_or_prefix('awesome', :external) do
     root 'welcome#index'
 
     devise_for :founders, skip: :all
@@ -39,7 +46,7 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :internal do
+  subdomain_or_prefix('vote', :internal) do
     root 'welcome#index'
 
     devise_for :users, skip: :all
