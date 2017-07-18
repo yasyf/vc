@@ -103,7 +103,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: '/emails'
   end
 
-  authenticate :user, lambda { |u| u.admin? } do
+  authenticate :internal_user, lambda { |u| u.admin? } do
     mount Sidekiq::Web, at: '/sidekiq'
   end
 end
