@@ -7,8 +7,9 @@ export default class InvestorBody extends React.Component {
   render() {
     return (
       <div className="card-section card-section-multi">
-        <InvestorFields {...this.props} />
         <InvestorDRFComments {...this.props} />
+        <hr />
+        <InvestorFields {...this.props} />
       </div>
     );
   }

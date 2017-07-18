@@ -93,7 +93,7 @@ export default class TargetInvestor extends React.Component {
       <div className="card-section card-section-multi">
         <div className="grid-x grid-margin-x investor-row">
           <div className="large-6 cell">
-            {this.renderSavedText('Tier', 'tier')}
+            {this.renderSavedText('Priority', 'tier')}
           </div>
           <div className="large-6 cell">
             {this.renderSavedText('Note', 'note')}
@@ -112,8 +112,8 @@ export default class TargetInvestor extends React.Component {
     return (
       <div className="card float-center investor">
         <InvestorHead {...merged} badge={ago} onChange={this.onInvestorChange} />
-        {this.renderSavedFields()}
         <InvestorBody {...merged} onChange={this.onInvestorChange} />
+        {this.renderSavedFields()}
         <div className="card-section card-section-multi">
           {this.renderButtons()}
         </div>

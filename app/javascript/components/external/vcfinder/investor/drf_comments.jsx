@@ -17,7 +17,7 @@ export default class InvestorDRFComments extends React.Component {
   }
 
   renderNotes(label, notes, transform = null) {
-    var foundMe = false;
+    let foundMe = false;
     let noteNodes = notes.map(note => {
       let me = isMe(note.founder);
       if (me) {
@@ -32,7 +32,7 @@ export default class InvestorDRFComments extends React.Component {
 
     return (
       <label>
-        <h4>{label}</h4>
+        <h6>{label}</h6>
         {noteNodes}
       </label>
     );
