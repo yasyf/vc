@@ -10,11 +10,11 @@ class CompanyRelationshipsJob < ApplicationJob
 
     @company.set_extra_attributes!
 
-    @company.industry = @org
-                          .categories
+    categories = @org.categories
+    @company.industry = categories
                           .map { |c| Competitor.closest_industry(c['properties']['name']) }
                           .compact
-                          .uniq
+                          .uniq if categories.present?
     @company.save! if @company.changed?
 
     add_founders
