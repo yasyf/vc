@@ -50,6 +50,7 @@ export default class InvestorDRFComments extends React.Component {
             {this.renderNotes('DRF Fund Comments', competitor.notes, u => ({competitor: u}))}
           </div>
         </div>
+        <hr />
       </div>
     );
   }
