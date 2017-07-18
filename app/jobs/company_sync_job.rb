@@ -74,7 +74,7 @@ class CompanySyncJob < ApplicationJob
   end
 
   def try_save!(company)
-    company.card.save! if company.card.changed?
+    company.card.save! if company.card&.changed?
     company.pitch.save! if company.pitch&.changed?
     if company.changed?
       begin
