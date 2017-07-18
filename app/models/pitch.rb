@@ -104,7 +104,7 @@ class Pitch < ApplicationRecord
 
   def warn_team!(missing_users, time_remaining)
     LoggedEvent.do_once(self, :warn_team) do
-      VoteMailer.email_and_slack!(:vote_warning_team_email, team, missing_users, self, time_remaining.to_i)
+      VoteMailer.email_and_slack!(:vote_warning_team_email, team, missing_users, self.company, time_remaining.to_i)
     end
   end
 
