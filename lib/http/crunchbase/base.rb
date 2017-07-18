@@ -53,7 +53,7 @@ module Http::Crunchbase
       site = websites&.find { |site| site['properties']['website_type'] == name }
       return nil unless site.present?
       url = site['properties']['url']&.split('/')
-      return nil unless url.present? && url.length > 3
+      return nil unless url.present? && url.length > [3, index].max
       url[index].downcase.split(/[?#]/).first
     end
 
