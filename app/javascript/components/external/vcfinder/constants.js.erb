@@ -1,13 +1,47 @@
 <% include Rails.application.routes.url_helpers %>
 <% include External::ApplicationHelper %>
 
+class IDPath {
+  constructor(path) {
+    this.path = path;
+  }
+
+  withID(id) {
+    return this.path.replace('ID', id);
+  }
+
+  toString() {
+    return this.withID('');
+  }
+
+  id(id) {
+    return this.withID(id);
+  }
+}
+
+let idPath = function(path){
+  return new IDPath(path);
+};
+
+// Stages
+
 export const TargetInvestorStages = Object.freeze(<%= TargetInvestor::STAGES.to_json %>);
 export const TargetInvestorStageKeys = Object.freeze(<%= TargetInvestor::STAGES.keys.to_json %>);
+export const LoginStages = Object.freeze(<%= login_stages.to_json %>);
+
+// Options
+
 export const CompetitorFundingSizes = Object.freeze(<%= hash_to_options(Competitor::FUNDING_SIZES).to_json %>);
 export const CompetitorIndustries = Object.freeze(<%= hash_to_options(Competitor::INDUSTRIES).to_json %>);
-export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path(q: "QUERY") %>';
+
+// Paths
+
+export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path(q: 'QUERY') %>';
 export const InvestorsPath = '<%= external_api_v1_investors_path %>';
-export const TargetInvestorsPath = '<%= external_api_v1_target_investors_path %>';
+export const TargetInvestorsPath = idPath('<%= external_api_v1_target_investors_path %>');
+export const LoginPath = '<%= omniauth_path('google_external') %>';
+export const FounderPath = '<%= external_api_v1_founder_path %>';
+export const VCFinderPath = '<%= external_vcfinder_root_path %>';
 
 // Admin
 

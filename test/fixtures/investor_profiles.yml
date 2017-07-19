@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  founder: one
+  city: MyString
+  industry: MyString
+  funding_size: 1
+
+two:
+  founder: two
+  city: MyString
+  industry: MyString
+  funding_size: 1

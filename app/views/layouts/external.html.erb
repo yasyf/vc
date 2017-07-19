@@ -30,6 +30,14 @@
   <%= favicon_link_tag %>
 </head>
 <body>
+  <% foundation_flashes.each do |(type, message)| %>
+    <div class="callout <%= type %>" data-closable>
+      <h5><%= message %></h5>
+      <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% end %>
   <%= yield %>
 </body>
 </html>

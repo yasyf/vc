@@ -11,6 +11,14 @@ module Concerns
     class_methods do
       def sort(name)
         @sorted_attributes << name
+
+        define_method "#{name}=" do |new_attr|
+          if new_attr.is_a?(String)
+            super new_attr.split(',')
+          else
+            super
+          end
+        end
       end
 
       def sorted_attributes

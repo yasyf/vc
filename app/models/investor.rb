@@ -21,14 +21,6 @@ class Investor < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  def industry=(new_industry)
-    if new_industry.is_a?(String)
-      super new_industry.split(',')
-    else
-      super
-    end
-  end
-
   def populate_from_cb!
     @skip_job = true
 

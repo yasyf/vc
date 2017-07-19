@@ -10,6 +10,10 @@ module Http::Crunchbase
       super timeout
     end
 
+    def name
+      get_in 'properties', 'name'
+    end
+
     def description
       get_in 'properties', 'short_description'
     end
@@ -42,8 +46,8 @@ module Http::Crunchbase
       find_id(name: name, organization_types: 'investor')
     end
 
-    def self.find_domain_id(domain)
-      find_id(domain_name: domain, organization_types: 'investor')
+    def self.find_domain_id(domain, types: 'investor')
+      find_id(domain_name: domain, organization_types: types)
     end
 
     private

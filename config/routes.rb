@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
     scope :vcfinder, controller: 'vc_finder', as: :vcfinder do
       root action: 'index'
+      get 'login'
       get 'admin'
     end
 
@@ -42,6 +43,7 @@ Rails.application.routes.draw do
         end
 
         resources :target_investors
+        resource :founder
       end
     end
   end

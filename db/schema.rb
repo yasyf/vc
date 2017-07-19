@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170719001734) do
+ActiveRecord::Schema.define(version: 20170719205903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20170719001734) do
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "archived", default: false, null: false
     t.index ["company_id"], name: "index_cards_on_company_id"
     t.index ["list_id"], name: "index_cards_on_list_id"
     t.index ["trello_id"], name: "index_cards_on_trello_id", unique: true
@@ -48,6 +49,7 @@ ActiveRecord::Schema.define(version: 20170719001734) do
     t.bigint "capital_raised", default: 0, null: false
     t.text "description"
     t.string "industry", array: true
+    t.boolean "verified", default: false, null: false
     t.index "to_tsvector('english'::regconfig, (name)::text)", name: "companies_to_tsvector_idx", using: :gin
     t.index ["crunchbase_id"], name: "index_companies_on_crunchbase_id", unique: true
     t.index ["domain"], name: "index_companies_on_domain", unique: true
@@ -109,6 +111,16 @@ ActiveRecord::Schema.define(version: 20170719001734) do
     t.index ["homepage"], name: "index_founders_on_homepage", unique: true
     t.index ["linkedin"], name: "index_founders_on_linkedin", unique: true
     t.index ["twitter"], name: "index_founders_on_twitter", unique: true
+  end
+
+  create_table "investor_profiles", force: :cascade do |t|
+    t.bigint "founder_id"
+    t.string "city"
+    t.string "industry", array: true
+    t.integer "funding_size"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["founder_id"], name: "index_investor_profiles_on_founder_id"
   end
 
   create_table "investors", force: :cascade do |t|
@@ -274,6 +286,7 @@ ActiveRecord::Schema.define(version: 20170719001734) do
   add_foreign_key "cards", "companies"
   add_foreign_key "cards", "lists"
   add_foreign_key "companies", "teams"
+  add_foreign_key "investor_profiles", "founders"
   add_foreign_key "investors", "competitors"
   add_foreign_key "knowledges", "teams"
   add_foreign_key "knowledges", "users"

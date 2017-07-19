@@ -30,7 +30,7 @@ export default class VCFinder extends React.Component {
   };
 
   onTargetChange = (id, change) => {
-    ffetch(`${TargetInvestorsPath}/${id}`, 'PATCH', {target_investor: change})
+    ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: change})
     .then(target => {
       let targets = emplace(this.state.targets, target);
       this.setState({targets});

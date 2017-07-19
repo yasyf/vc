@@ -1,6 +1,7 @@
 class Company < ActiveRecord::Base
   include Concerns::Cacheable
   include ActionView::Helpers::NumberHelper
+  include Concerns::AttributeSortable
 
   has_one :tweeter
   has_many :pitches
@@ -16,6 +17,8 @@ class Company < ActiveRecord::Base
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
   validates :capital_raised, presence: true, numericality: { only_integer: true }
+
+  sort :industry
 
   scope :pitched, -> { joins(:pitches) }
   scope :decided, -> { pitched.where('pitches.decision IS NOT NULL') }
@@ -84,6 +87,10 @@ class Company < ActiveRecord::Base
   end
 
   def as_json(options = {})
+    super options.reverse_merge(only: [:name, :description, :industry], methods: [:complete?])
+  end
+
+  def as_json_api(options = {})
     options.reverse_merge!(
       methods: [:competitors],
       only: [
@@ -138,7 +145,7 @@ class Company < ActiveRecord::Base
     Team.send(cached_team.name)
   end
 
-  def crunchbase_org(timeout = 1)
+  def crunchbase_org(timeout = 2)
     @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
   end
 
@@ -154,6 +161,28 @@ class Company < ActiveRecord::Base
     [:name]
   end
 
+  def self.from_founder(founder)
+    id = Http::Crunchbase::Organization.find_domain_id(founder.domain, types: 'company')
+    company = Company.new(crunchbase_id: id, domain: founder.domain, name: "#{founder.name} NewCo")
+    if (org = company.crunchbase_org).found?
+      company.name = org.name
+      company.description = org.description
+    else
+      company.skip_job!
+    end
+    company.save!
+    company
+  end
+
+  def skip_job!
+    @skip_job = true
+  end
+
+
+  def complete?
+    name.present? && description.present? && industry.present?
+  end
+
   private
 
   def cache_unless_voting(options = {})
@@ -162,15 +191,15 @@ class Company < ActiveRecord::Base
   end
 
   def start_relationships_job
-    CompanyRelationshipsJob.perform_later(id)
+    CompanyRelationshipsJob.perform_later(id) unless @skip_job
   end
 
   def twitter_username
     cached { crunchbase_org.twitter }
   end
 
-  def set_crunchbase_attributes!
-    org = crunchbase_org(5)
+  def set_crunchbase_attributes!(timeout: 5)
+    org = crunchbase_org(timeout)
     return unless org.permalink
     self.crunchbase_id = org.permalink
     self.domain = org.url

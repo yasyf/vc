@@ -1,6 +1,8 @@
 class Founder < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
+  has_many :notes
   has_many :target_investors
+  has_one :investor_profile
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -31,6 +33,13 @@ class Founder < ApplicationRecord
     end
   end
 
+  def create_company!
+    Company.from_founder(self).tap do |company|
+      self.companies << company
+      save!
+    end
+  end
+
   def name
     "#{first_name} #{last_name}"
   end
@@ -48,7 +57,11 @@ class Founder < ApplicationRecord
     companies.any?(&:funded?) || admin?
   end
 
+  def company
+    companies.last
+  end
+
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company, :investor_profile])
   end
 end
