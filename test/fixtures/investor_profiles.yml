@@ -3,11 +3,11 @@
 one:
   founder: one
   city: MyString
-  industry: MyString
+  industry: '{MyString}'
   funding_size: 1
 
 two:
   founder: two
   city: MyString
-  industry: MyString
+  industry: '{MyString}'
   funding_size: 1
