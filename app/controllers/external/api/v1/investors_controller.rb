@@ -11,7 +11,13 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def search
     existing = current_external_founder.target_investors.select('investor_id')
-    render_censored Investor.includes(:competitor).fuzzy_search(params[:q]).where.not(id: existing)
+    results = Investor
+                .includes(:competitor)
+                .references(:competitors)
+                .fuzzy_search({ first_name: params[:q], last_name: params[:q], competitors: { name: params[:q] } }, false)
+                .where.not(id: existing)
+                .order('featured')
+    render_censored results
   end
 
 

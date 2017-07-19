@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170718195620) do
+ActiveRecord::Schema.define(version: 20170719001734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20170718195620) do
     t.text "description"
     t.integer "funding_size"
     t.string "industry", array: true
+    t.string "city"
     t.index ["crunchbase_id"], name: "index_competitors_on_crunchbase_id", unique: true
     t.index ["industry"], name: "index_competitors_on_industry", using: :gin
     t.index ["name"], name: "index_competitors_on_name", unique: true
@@ -122,11 +123,13 @@ ActiveRecord::Schema.define(version: 20170718195620) do
     t.text "description"
     t.string "industry", array: true
     t.integer "funding_size"
+    t.boolean "featured", default: false, null: false
     t.index "first_name gist_trgm_ops", name: "trgm_first_name_indx", using: :gist
     t.index "last_name gist_trgm_ops", name: "trgm_last_name_indx", using: :gist
     t.index ["competitor_id"], name: "index_investors_on_competitor_id"
     t.index ["crunchbase_id"], name: "index_investors_on_crunchbase_id", unique: true
     t.index ["email"], name: "index_investors_on_email", unique: true
+    t.index ["first_name", "last_name", "competitor_id"], name: "index_investors_on_first_name_and_last_name_and_competitor_id", unique: true
     t.index ["industry"], name: "index_investors_on_industry", using: :gin
   end
 

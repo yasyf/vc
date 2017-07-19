@@ -37,6 +37,7 @@ class Competitor < ApplicationRecord
     iot: 'Internet of Things',
     social: 'Social Media',
     energy: 'Energy',
+    hardware: 'Hardware',
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {

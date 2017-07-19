@@ -6,7 +6,7 @@ class Investor < ApplicationRecord
   has_many :notes, as: :subject
 
   validates :competitor, presence: true
-  validates :first_name, presence: true
+  validates :first_name, presence: true, uniqueness: { scope: [:last_name, :competitor_id] }
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
