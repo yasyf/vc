@@ -5,5 +5,6 @@ class External::VcFinderController < External::ApplicationController
   end
 
   def admin
+    render status: :not_found unless current_external_founder.admin?
   end
 end

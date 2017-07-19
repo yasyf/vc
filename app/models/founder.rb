@@ -40,8 +40,12 @@ class Founder < ApplicationRecord
     email.split('@').last
   end
 
+  def admin?
+    domain == ENV['DOMAIN']
+  end
+
   def drf?
-    companies.any?(&:funded?) || domain == ENV['DOMAIN']
+    companies.any?(&:funded?) || admin?
   end
 
   def as_json(options = {})
