@@ -16,7 +16,7 @@ module Concerns
           if new_attr.is_a?(String)
             super new_attr.split(',')
           else
-            super
+            super new_attr
           end
         end
       end
