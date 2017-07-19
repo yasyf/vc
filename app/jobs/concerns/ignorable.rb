@@ -12,7 +12,7 @@ module Concerns
       [ActiveRecord::RecordInvalid]
     end
 
-    def ignore_record_errors
+    def ignore_record_errors(&block)
       ignore(unique_errors + invalid_errors, &block)
     end
 
