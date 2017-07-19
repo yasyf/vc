@@ -2,17 +2,13 @@ class CacheWarmJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    Company.includes(:team, :users, :competitors).all.each do |company|
+    Company.includes(:team, :users, :competitors).find_each do |company|
       company.send(:crunchbase_org, 5)
-      begin
-        %w(stats).each do |method|
-          company.pitch&.public_send(method)
-        end
-        %w(funded? partner_names as_json).each do |method|
-          company.public_send(method)
-        end
-      rescue Trello::Error => e
-        company.destroy! if e.message =~ /not found/
+      %w(stats).each do |method|
+        company.pitch&.public_send(method)
+      end
+      %w(funded? partner_names as_json).each do |method|
+        company.public_send(method)
       end
     end
     Team.for_each do |team|

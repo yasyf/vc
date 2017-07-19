@@ -30,7 +30,7 @@ class Company < ActiveRecord::Base
   end
 
   def card
-    @card ||= cards.order(updated_at: :desc).first
+    @card ||= cards.where(archived: false).order(updated_at: :desc).first
   end
 
   def domain=(domain)
@@ -61,9 +61,9 @@ class Company < ActiveRecord::Base
     cached { users.map(&:name) }
   end
 
-  def self.sync!(quiet: true, importing: false, deep: false)
+  def self.sync!(quiet: true, deep: false)
     Team.for_each do |team|
-      CompanySyncJob.perform_later(team, quiet: quiet, importing: importing, deep: deep)
+      TeamCompanySyncJob.perform_later(team, deep: deep, quiet: quiet)
     end
   end
 

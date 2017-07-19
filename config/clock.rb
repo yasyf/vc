@@ -5,7 +5,7 @@ require_relative './environment'
 module Clockwork
   every(1.hour, 'sync.list') { List.sync! }
   every(1.hour, 'sync.company.shallow') { Company.sync!(quiet: false, deep: false) }
-  every(6.hour, 'sync.company.deep') { Company.sync!(quiet: false, deep: true) }
+  every(1.day, 'sync.company.deep', at: '00:00') { Company.sync!(quiet: false, deep: true) }
   every(1.hour, 'sync.evergreen') { Slack::CollectEvergreensJob.perform_later }
 
   every(2.weeks, 'cache.warm', at: 'Monday 08:00') { CacheWarmJob.perform_later }

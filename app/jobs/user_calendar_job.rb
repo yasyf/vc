@@ -6,7 +6,7 @@ class UserCalendarJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    User.all.each do |user|
+    User.find_each do |user|
       event = GoogleApi::Calendar.new(user).events(after: 6.hours.ago, before: Time.now).first
       next unless event.present? && event.recurring_event_id.blank?
       next unless (company = find_company(event))
