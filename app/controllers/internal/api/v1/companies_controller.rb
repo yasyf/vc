@@ -1,11 +1,12 @@
 class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controller
   INCLUDES = %w(team users competitors)
+  PER_PAGE = 100
 
   before_action :authenticate_api_user!
 
   def index
     companies = params[:team].present? ? Company.where(team: team) : Company.all
-    render json: { companies: companies.includes(*INCLUDES) }
+    render json: { companies: companies.includes(*INCLUDES).limit(PER_PAGE).offset(page * PER_PAGE) }
   end
 
   def show
@@ -60,5 +61,11 @@ class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controlle
     company.move_to_rejected_list!
 
     head :ok
+  end
+
+  private
+
+  def page
+    (params[:page] || 0).to_i
   end
 end
