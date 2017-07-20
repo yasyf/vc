@@ -3,9 +3,7 @@ class CardSyncJob < ApplicationJob
 
   queue_as :low
 
-  def perform(team, card_data_raw, deep: false, quiet: true)
-    card_data = Marshal.load(card_data_raw)
-
+  def perform(team, card_data, deep: false, quiet: true)
     users = users_from_card_data team, card_data
     list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
 
@@ -78,10 +76,11 @@ class CardSyncJob < ApplicationJob
 
   def users_from_card_data(team, card_data)
     card_data.delete(:members).map do |member|
-      User.from_trello(member.id).tap do |user|
+      User.from_trello(member[:id]).tap do |user|
         if user.present?
           user.team = team
-          user.trello_id = member.id
+          user.trello_id = member[:id]
+          user.cached_name ||= member[:full_name]
           user.save! if user.changed?
         end
       end

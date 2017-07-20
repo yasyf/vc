@@ -12,7 +12,7 @@ class TeamCompanySyncJob < ApplicationJob
         next
       end
 
-      CardSyncJob.perform_later(team, Marshal.dump(card_data), deep: deep, quiet: quiet)
+      CardSyncJob.perform_later(team, card_data.as_json, deep: deep, quiet: quiet)
     end
   end
 end
