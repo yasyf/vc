@@ -25,7 +25,7 @@ module Http::Crunchbase
       @affiliation ||= begin
         aff = get_in 'relationships', 'primary_affiliation'
         aff = aff['item'] if aff.present?
-        org =  aff['relationships']['organization']
+        org =  aff['relationships']['organization'] if aff.present?
         OpenStruct.new({
           role: aff['properties']['title'],
           name: org['properties']['name'],
