@@ -4,7 +4,7 @@ class Internal::CompaniesController < Internal::ApplicationController
   before_action :authenticate_internal_user!
 
   def all
-    companies = apply_filters Company.includes(cards: :list).order(:name)
+    companies = apply_filters Company.includes().order(:name)
     @lists = companies.group_by { |c| c.card.list } .sort_by { |l, _| l.pos }
   end
 
@@ -32,6 +32,7 @@ class Internal::CompaniesController < Internal::ApplicationController
 
   def apply_filters(companies)
     companies = companies
+                  .includes(:users, :team, pitches: :votes, cards: :list)
                   .joins(:cards)
                   .where(team: team)
                   .limit(PER_PAGE)
