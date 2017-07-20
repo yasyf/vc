@@ -1,5 +1,5 @@
 class List < ActiveRecord::Base
-  has_many :companies
+  has_many :cards
 
   validates :trello_board_id, presence: true
   validates :trello_id, presence: true, uniqueness:true

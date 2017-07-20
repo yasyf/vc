@@ -3,7 +3,7 @@ class ApplicationMonitorJob < ActiveJob::Base
 
   def perform
     Team.for_each do |team|
-      companies = team.lists.application.companies
+      companies = Company.find team.lists.application.cards.pluck(:company_id)
       next if companies.blank?
       companies.each do |company|
         next unless company.users.present?
