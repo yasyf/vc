@@ -75,11 +75,11 @@ CREATE TABLE calendar_events (
 CREATE TABLE cards (
     id bigint NOT NULL,
     trello_id character varying NOT NULL,
+    archived boolean DEFAULT false NOT NULL,
     list_id bigint NOT NULL,
     company_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    archived boolean DEFAULT false NOT NULL
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -1299,6 +1299,13 @@ CREATE INDEX index_target_investors_on_founder_id ON target_investors USING btre
 --
 
 CREATE INDEX index_target_investors_on_investor_id ON target_investors USING btree (investor_id);
+
+
+--
+-- Name: index_target_investors_on_investor_id_and_founder_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_target_investors_on_investor_id_and_founder_id ON target_investors USING btree (investor_id, founder_id);
 
 
 --
