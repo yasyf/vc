@@ -14,7 +14,7 @@ class ApplicationMonitorJob < ActiveJob::Base
           user.send! message
         end
       end
-      links = companies.map { |company| "<#{company.trello_url}|#{company.name}>" }
+      links = companies.map { |company| "<#{company.card.trello_url}|#{company.name}>" }
       message = "The following companies applied and are waiting to hear back from us!" +
         " If you're already talking with one, please move it to the 'Allocated Point Partner' column." +
         "\n#{links.join(', ')}"
