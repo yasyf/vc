@@ -4,6 +4,8 @@ class CardSyncJob < ApplicationJob
   queue_as :low
 
   def perform(team, card_data, deep: false, quiet: true)
+    card_data = card_data.with_indifferent_access
+
     users = users_from_card_data team, card_data
     list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
 
