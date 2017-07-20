@@ -1,8 +1,6 @@
 class Pitch < ApplicationRecord
   include Concerns::Cacheable
 
-  DEFAULT_DEADLINE = (2.5).days
-
   belongs_to :company
   has_one :team, through: :company
   has_many :votes
@@ -31,7 +29,7 @@ class Pitch < ApplicationRecord
   end
 
   def deadline
-    super || self.when + DEFAULT_DEADLINE
+    super || self.when + team.voting_period
   end
 
   def undecided?

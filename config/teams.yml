@@ -40,6 +40,7 @@ boston: &boston
     passed: 'Post-pitch (Stage 4)'
     rejected: 'Passed - No Pitch'
   time_zone: 'Eastern Time (US & Canada)'
+  voting_period: 2
 
 nyc:
   ignore: <%= !Rails.env.production? %>
@@ -66,6 +67,7 @@ nyc:
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
   time_zone: 'Eastern Time (US & Canada)'
+  voting_period: 1
 
 sf:
   ignore: <%= !Rails.env.production? %>
@@ -92,6 +94,7 @@ sf:
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
   time_zone: 'Pacific Time (US & Canada)'
+  voting_period: 1
 
 phl:
   ignore: <%= !Rails.env.production? %>
@@ -120,6 +123,7 @@ phl:
     passed: 'Passed - Pitched'
     rejected: 'Passed - No Pitch'
   time_zone: 'Eastern Time (US & Canada)'
+  voting_period: 1
 
 test:
   <<: *boston

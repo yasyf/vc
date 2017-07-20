@@ -84,6 +84,10 @@ class Team < ApplicationRecord
     config['coffee_chats']
   end
 
+  def voting_period
+    config['voting_period'].days
+  end
+
   def notify!(message, all: true)
     return if config['ignore']
     slack_send! slack_channel, message, notify: all
