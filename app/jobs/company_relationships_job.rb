@@ -30,7 +30,7 @@ class CompanyRelationshipsJob < ApplicationJob
     founders.each do |founder|
       person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
       social = SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
-      founder = Founder.find_or_create_from_social!(person.first_name, person.last_name, social, context: company)
+      founder = Founder.find_or_create_from_social!(person.first_name, person.last_name, social, context: @company)
       ignore_record_errors do
         founder.tap { |f| f.companies << @company }.save! if founder.present?
       end
