@@ -26,7 +26,8 @@ module Http::Crunchbase
     end
 
     def linkedin
-      extract_website_id 'linkedin', 4
+      username = extract_website_id 'linkedin', 4
+      username unless username.in?(%w(view))
     end
 
     def facebook
@@ -35,7 +36,7 @@ module Http::Crunchbase
 
     def homepage
       site = websites&.find { |site| site['properties']['website_type'] == 'homepage' }
-      site['properties']['url'] if site.present?
+      site['properties']['url'] if site.present? && !site.include?('google.com')
     end
 
     def self.find_id(query)
