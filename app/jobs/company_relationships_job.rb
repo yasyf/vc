@@ -29,6 +29,7 @@ class CompanyRelationshipsJob < ApplicationJob
     return unless (founders = @org.founders).present?
     founders.each do |founder|
       person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
+      next unless person.found?
       social = SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
       founder = Founder.find_or_create_from_social!(person.first_name, person.last_name, social, context: @company)
       ignore_record_errors do
