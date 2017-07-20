@@ -62,6 +62,7 @@ gem 'clockwork'
 gem 'retries'
 gem 'textacular'
 gem 'gon'
+gem 'retriable', '~> 3.0'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'

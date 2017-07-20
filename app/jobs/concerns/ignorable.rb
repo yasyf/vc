@@ -2,6 +2,8 @@ module Concerns
   module Ignorable
     extend ActiveSupport::Concern
 
+    TRIES = 2
+
     private
 
     def unique_errors
@@ -10,6 +12,10 @@ module Concerns
 
     def invalid_errors
       [ActiveRecord::RecordInvalid]
+    end
+
+    def retry_record_errors(&block)
+      retry_(unique_errors + invalid_errors, &block)
     end
 
     def ignore_record_errors(&block)
@@ -27,6 +33,14 @@ module Concerns
     def ignore(types)
       yield
     rescue *Array.wrap(types) => e
+      Rails.logger.info e
+    end
+
+    def retry_(types)
+      remaining ||= TRIES
+      yield
+    rescue *Array.wrap(types) => e
+      retry unless (remaining -= 1).zero?
       Rails.logger.info e
     end
   end

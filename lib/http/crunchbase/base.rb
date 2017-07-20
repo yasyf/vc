@@ -65,20 +65,24 @@ module Http::Crunchbase
     def self.api_get(raw_path, query = {}, multi = true)
       path = URI.encode raw_path
       data = key_cached(query.merge(path: path)) do
-        response = get(path, query: query)
-        case response.code
-          when 200
-            response.parsed_response['data']
-          when 404
-            nil
-          when 401
-            Rails.logger.warn "Crunchbase 401: #{path}/#{query}"
-            nil
-          else
-            raise "Crunchbase #{response.code}: #{path}/#{query}"
-        end
+        Retriable.retriable { _api_get(path, query) }
       end
       multi ? (data && data['items']) || [] : data
+    end
+
+    def self._api_get(path, query)
+      response = get(path, query: query)
+      case response.code
+        when 200
+          response.parsed_response['data']
+        when 404
+          nil
+        when 401
+          Rails.logger.warn "Crunchbase 401: #{path}/#{query}"
+          nil
+        else
+          raise "Crunchbase #{response.code}: #{path}/#{query}"
+      end
     end
 
     def self.base_cache_key

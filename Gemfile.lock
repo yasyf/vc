@@ -426,6 +426,7 @@ DEPENDENCIES
   rb-fsevent (= 0.9.8)
   redis
   redis-namespace
+  retriable (~> 3.0)
   retries
   roo
   ruby-trello
