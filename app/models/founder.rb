@@ -65,7 +65,7 @@ class Founder < ApplicationRecord
     super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company, :investor_profile])
   end
 
-  def recommended_investors
+  def recommended_investors(limit: 5)
     query = <<-SQL
       SELECT i.*, i_ind.cnt, overlap
       FROM
@@ -78,7 +78,8 @@ class Founder < ApplicationRecord
            WHERE  i_ind_t = ANY('{#{company.industry.join(',')}}')
         ) i_ind
       WHERE i_ind.cnt > 0
-      ORDER BY i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC;
+      ORDER BY i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC
+      LIMIT #{limit};
     SQL
     Investor.find_by_sql query
   end
