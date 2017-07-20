@@ -1,6 +1,8 @@
 class Pitch < ApplicationRecord
   include Concerns::Cacheable
 
+  SNAPSHOT_DEADLINE = 2.days
+
   belongs_to :company
   has_one :team, through: :company
   has_many :votes
@@ -90,7 +92,7 @@ class Pitch < ApplicationRecord
   def prepare_team!
     return unless company.in_list?(team.lists.scheduled)
     set_snapshot! unless snapshot.present?
-    return unless snapshot.present? || (self.when - team.datetime_now) < DEFAULT_DEADLINE
+    return unless snapshot.present? || (self.when - team.datetime_now) < SNAPSHOT_DEADLINE
     LoggedEvent.do_once(self, :prepare_team) do
       VoteMailer.email_and_slack!(:upcoming_pitch_email, team, self.company, cc_all: true)
     end
