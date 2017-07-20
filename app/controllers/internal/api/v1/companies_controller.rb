@@ -1,5 +1,5 @@
 class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controller
-  INCLUDES = %w(team users competitors)
+  INCLUDES = %w(team users competitors cards)
   PER_PAGE = 100
 
   before_action :authenticate_api_user!

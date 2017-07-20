@@ -1,4 +1,6 @@
 class Internal::CompaniesController < Internal::ApplicationController
+  PER_PAGE = 100
+
   before_action :authenticate_internal_user!
 
   def all
@@ -24,8 +26,16 @@ class Internal::CompaniesController < Internal::ApplicationController
 
   private
 
+  def page
+    (params[:page] || 0).to_i
+  end
+
   def apply_filters(companies)
-    companies = companies.where(team: team)
+    companies = companies
+                  .joins(:cards)
+                  .where(team: team)
+                  .limit(PER_PAGE)
+                  .offset(page * PER_PAGE)
     return companies unless params[:filter].present?
     filtered = companies.search(params[:filter])
     if filtered.count > 0
