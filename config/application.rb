@@ -14,6 +14,7 @@ module Drfvote
 
     config.eager_load_paths << Rails.root.join('lib')
     config.active_job.queue_adapter = :sidekiq
+    config.active_record.schema_format = :sql
 
     %w(teams overrides).each do |name|
       result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)

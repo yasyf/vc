@@ -55,6 +55,7 @@ class Competitor < ApplicationRecord
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
 
   enum funding_size: FUNDING_SIZES.keys
+  sort :industry
 
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
@@ -64,8 +65,6 @@ class Competitor < ApplicationRecord
   validates :crunchbase_id, presence: true, uniqueness: true
 
   after_commit :start_crunchbase_job, on: :create
-
-  sort :industry
 
   def self.closest_industry(industry)
     distances = INDUSTRIES.flat_map do |k, friendly|

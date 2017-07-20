@@ -1,7 +1,7 @@
 class TargetInvestor < ApplicationRecord
   include Concerns::AttributeSortable
 
-  belongs_to :investor
+  belongs_to :investor, counter_cache: true
   belongs_to :founder
 
   STAGES = {

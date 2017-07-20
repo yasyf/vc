@@ -64,4 +64,22 @@ class Founder < ApplicationRecord
   def as_json(options = {})
     super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company, :investor_profile])
   end
+
+  def recommended_investors
+    query = <<-SQL
+      SELECT i.*, i_ind.cnt, overlap
+      FROM
+        investors i,
+        LATERAL (
+           SELECT
+            count(*) AS cnt,
+            array_agg(i_ind_t) AS overlap
+           FROM   unnest(i.industry) i_ind_t
+           WHERE  i_ind_t = ANY('{#{company.industry.join(',')}}')
+        ) i_ind
+      WHERE i_ind.cnt > 0
+      ORDER BY i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC;
+    SQL
+    Investor.find_by_sql query
+  end
 end
