@@ -4,7 +4,7 @@ class Internal::CompaniesController < Internal::ApplicationController
   before_action :authenticate_internal_user!
 
   def all
-    companies = apply_filters Company.includes().order(:name)
+    companies = apply_filters Company.order(:name)
     @lists = companies.group_by { |c| c.card.list } .sort_by { |l, _| l.pos }
   end
 
