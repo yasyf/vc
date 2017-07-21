@@ -112,8 +112,8 @@ export default class TargetInvestor extends React.Component {
     return (
       <div className="card float-center investor">
         <InvestorHead {...merged} badge={ago} onChange={this.onInvestorChange} />
-        <InvestorBody {...merged} onChange={this.onInvestorChange} />
         {this.renderSavedFields()}
+        <InvestorBody {...merged} onChange={this.onInvestorChange} />
         <div className="card-section card-section-multi">
           {this.renderButtons()}
         </div>

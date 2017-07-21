@@ -39,6 +39,7 @@ Rails.application.routes.draw do
         resources :investors do
           collection do
             get 'search'
+            get 'recommendations'
           end
         end
 

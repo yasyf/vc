@@ -9,6 +9,11 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored Investor.order(updated_at: :asc).limit(25).offset(page * 25)
   end
 
+  def recommendations
+    recommendations_shown!
+    render_censored current_external_founder.recommended_investors
+  end
+
   def search
     existing = current_external_founder.target_investors.select('investor_id')
     results = Investor
@@ -48,6 +53,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   private
+
+  def recommendations_shown!
+    session[:recommendations_shown] = true
+  end
 
   def page
     (params[:page] || 0).to_i

@@ -24,6 +24,7 @@ export default class InvestorFields extends React.Component {
       options={options}
       multi={multi}
       onChange={this.props.onChange}
+      readonly={this.props.readonly}
     />
   }
 

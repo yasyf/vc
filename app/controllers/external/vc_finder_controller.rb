@@ -16,8 +16,10 @@ class External::VcFinderController < External::ApplicationController
   private
 
   def stage
-    if investor_profile&.complete?
+    if target_investors&.present? || recommendations_shown?
       :done
+    elsif investor_profile&.complete?
+      :suggest
     elsif company&.complete? && company&.verified?
       :profile
     elsif current_external_founder.present?
@@ -25,6 +27,14 @@ class External::VcFinderController < External::ApplicationController
     else
       :start
     end
+  end
+
+  def recommendations_shown?
+    session[:recommendations_shown]
+  end
+
+  def target_investors
+    current_external_founder&.target_investors
   end
 
   def investor_profile

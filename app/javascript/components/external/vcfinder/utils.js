@@ -44,6 +44,11 @@ export let emplace = function(items, item) {
   return update(items, {[index]: {$set: item}});
 };
 
+export let extract = function(items, item) {
+  let index = _.findIndex(items, {id: item.id});
+  return update(items, {$unset: [index]});
+};
+
 export let pluckSort = function(objects, prop, keys) {
   return _.sortBy(_.uniq(_.map(objects, prop)), s => keys.indexOf(s));
 };

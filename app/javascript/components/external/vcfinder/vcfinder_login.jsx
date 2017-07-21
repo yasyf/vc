@@ -2,8 +2,8 @@ import React from 'react';
 import VCFinderLoginStage0 from './login/stage_0';
 import VCFinderLoginStage1 from './login/stage_1';
 import VCFinderLoginStage2 from './login/stage_2';
+import VCFinderLoginStage3 from './login/stage_3';
 import {VCFinderPath, LoginStages} from './constants.js.erb';
-
 
 export default class VCFinderLogin extends React.Component {
   constructor(props) {
@@ -33,6 +33,10 @@ export default class VCFinderLogin extends React.Component {
         return <VCFinderLoginStage2 onNextStage={this.onNextStage} />;
         break;
       case 3:
+      case 'suggest':
+        return <VCFinderLoginStage3 onNextStage={this.onNextStage} />;
+        break;
+      case 4:
       case 'done':
       default:
         window.location = VCFinderPath;

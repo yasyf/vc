@@ -67,7 +67,8 @@ class Founder < ApplicationRecord
 
   def recommended_investors(limit: 5)
     query = <<-SQL
-      SELECT i.*, i_ind.cnt, overlap
+      SELECT DISTINCT ON (i.competitor_id)
+        i.*, i_ind.cnt, overlap
       FROM
         investors i,
         LATERAL (
@@ -78,7 +79,7 @@ class Founder < ApplicationRecord
            WHERE  i_ind_t = ANY('{#{company.industry.join(',')}}')
         ) i_ind
       WHERE i_ind.cnt > 0
-      ORDER BY i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC
+      ORDER BY i.competitor_id, i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC
       LIMIT #{limit};
     SQL
     Investor.find_by_sql query

@@ -21,7 +21,7 @@ export default class InvestorDRFComments extends React.Component {
     let noteNodes = notes.map(note => {
       let me = isMe(note.founder);
       if (me) {
-        foundMe = true;ignorable.rb
+        foundMe = true;
       }
       return this.renderSavedText(fullName(note.founder), 'note', note.id, note.body, transform, !me);
     });

@@ -6,7 +6,7 @@ module External::ApplicationHelper
   end
 
   def login_stages
-    %w(start company profile done).each_with_index.flat_map do |s, i|
+    %w(start company profile suggest done).each_with_index.flat_map do |s, i|
       [[s, i], [i, i]]
     end.to_h
   end

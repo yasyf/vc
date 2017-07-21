@@ -37,6 +37,7 @@ export const CompetitorIndustries = Object.freeze(<%= hash_to_options(Competitor
 // Paths
 
 export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path(q: 'QUERY') %>';
+export const InvestorsRecommendationsPath = '<%= recommendations_external_api_v1_investors_path %>';
 export const InvestorsPath = '<%= external_api_v1_investors_path %>';
 export const TargetInvestorsPath = idPath('<%= external_api_v1_target_investors_path %>');
 export const LoginPath = '<%= omniauth_path('google_external') %>';

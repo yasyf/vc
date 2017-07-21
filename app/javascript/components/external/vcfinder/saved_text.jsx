@@ -28,6 +28,10 @@ export default class SavedText extends React.Component {
     );
   }
 
+  renderReadonly() {
+    return this.props.value;
+  }
+
   submit = _.debounce(() => {
     if (this.state.dirty && this.state.value) {
       this.props.onChange({[this.props.name]: this.state.value});
@@ -50,7 +54,8 @@ export default class SavedText extends React.Component {
       <form>
         <label>
           {this.props.label}:
-          {this.renderInput()}
+          {' '}
+          {this.props.readonly ? this.renderReadonly() : this.renderInput()}
         </label>
       </form>
     );

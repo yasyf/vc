@@ -19,6 +19,14 @@ export default class SavedChoice extends SavedText {
     // noop
   };
 
+  renderReadonly() {
+    let values = this.props.value;
+    if (!values) {
+      return 'Unknown';
+    }
+    return values.map(value => _.find(this.props.options, {value}).label).join(', ');
+  }
+
   renderInput() {
     return (
       <Select joinValues={true} clearable={false} {...this.inputProps()} />
