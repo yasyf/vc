@@ -21,14 +21,17 @@ export default class SavedChoice extends SavedText {
   };
 
   renderReadonly() {
-    let values = this.props.value;
-    if (!values) {
+    let {value, highlight} = this.props;
+    highlight = highlight || [];
+
+    if (!value) {
       return 'Unknown';
+    } else if (!Array.isArray(value)) {
+      value = [value];
     }
-    console.log(values);
-    return values.map(value => {
+    return value.map(value => {
       let label = _.find(this.props.options, {value}).label;
-      let found = this.props.highlight.indexOf(value) !== -1;
+      let found = highlight.indexOf(value) !== -1;
       return <span className={classNames('badge', {'success': found})} key={value}>{label}</span>;
     });
   }
