@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import SavedText from './saved_text';
+import classNames from 'classnames';
 
 export default class SavedChoice extends SavedText {
   onChange = (option) => {
@@ -24,7 +25,12 @@ export default class SavedChoice extends SavedText {
     if (!values) {
       return 'Unknown';
     }
-    return values.map(value => _.find(this.props.options, {value}).label).join(', ');
+    return values
+    .map(value => {
+      let label = _.find(this.props.options, {value}).label;
+      let found = this.props.highlight.indexOf(value) !== -1;
+      return <span className={classNames('badge', {'success': found})} key={value}>{label}</span>;
+    });
   }
 
   renderInput() {

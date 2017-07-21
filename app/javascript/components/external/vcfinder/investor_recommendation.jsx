@@ -21,7 +21,7 @@ export default class InvestorRecommendation extends React.Component {
     return (
       <div className="card float-center investor">
         <InvestorHead {...this.props} />
-        <InvestorBody {...this.props}  readonly={true} />
+        <InvestorBody {...this.props} readonly={true} />
         <div className="card-section card-section-multi">
           {this.renderButton()}
         </div>

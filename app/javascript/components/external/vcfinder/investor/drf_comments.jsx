@@ -5,7 +5,7 @@ import { isDRF, isMe, fullName } from '../utils'
 
 export default class InvestorDRFComments extends React.Component {
   renderSavedText(label, name, id, value, transform = null, disable = false) {
-    let onChange = transform ? _.flow([transform, this.props.onChange]) : this.props.onChange;
+    let onChange = (transform && this.props.onChange) ? _.flow([transform, this.props.onChange]) : this.props.onChange;
     return <SavedText
       key={`${name}-${id}`}
       name={name}
@@ -26,8 +26,12 @@ export default class InvestorDRFComments extends React.Component {
       return this.renderSavedText(fullName(note.founder), 'note', note.id, note.body, transform, !me);
     });
 
-    if (!foundMe) {
+    if (!foundMe && !this.props.readonly) {
       noteNodes.push(this.renderSavedText(fullName(gon.founder), 'note', -1, '', transform));
+    }
+
+    if (!noteNodes.length) {
+      return null;
     }
 
     return (
@@ -40,15 +44,20 @@ export default class InvestorDRFComments extends React.Component {
 
   renderDRFComments() {
     let { notes, competitor } = this.props;
+    let investorNotes = this.renderNotes('Investor Comments', notes);
+    let fundNotes = this.renderNotes('Fund Comments', competitor.notes, u => ({competitor: u}));
+    if (!investorNotes && !fundNotes) {
+      return null;
+    }
     return (
       <div>
         <hr />
         <div className="grid-x grid-margin-x investor-row">
           <div className="large-6 cell">
-            {this.renderNotes('Investor Comments', notes)}
+            {investorNotes}
           </div>
           <div className="large-6 cell">
-            {this.renderNotes('Fund Comments', competitor.notes, u => ({competitor: u}))}
+            {fundNotes}
           </div>
         </div>
       </div>

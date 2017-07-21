@@ -54,7 +54,7 @@ class Investor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :funding_size], methods: [:competitor, :notes])
+    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :funding_size, :industry_highlight], methods: [:competitor, :notes])
   end
 
   def crunchbase_person

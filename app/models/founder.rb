@@ -68,13 +68,13 @@ class Founder < ApplicationRecord
   def recommended_investors(limit: 5, offset: 0)
     query = <<-SQL
       SELECT DISTINCT ON (i.competitor_id)
-        i.*, i_ind.cnt, overlap
+        i.*, i_ind.cnt, industry_highlight
       FROM
         investors i,
         LATERAL (
            SELECT
             count(*) AS cnt,
-            array_agg(i_ind_t) AS overlap
+            array_agg(i_ind_t) AS industry_highlight
            FROM   unnest(i.industry) i_ind_t
            WHERE  i_ind_t = ANY('{#{company.industry.join(',')}}')
         ) i_ind

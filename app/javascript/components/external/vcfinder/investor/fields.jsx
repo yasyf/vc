@@ -20,6 +20,7 @@ export default class InvestorFields extends React.Component {
     return <SavedChoice
       name={name}
       value={this.state.merged[name]}
+      highlight={this.state.merged[`${name}_highlight`]}
       label={label}
       options={options}
       multi={multi}
@@ -33,7 +34,7 @@ export default class InvestorFields extends React.Component {
       <div>
         <div className="grid-x grid-margin-x investor-row">
           <div className="large-6 cell">
-            {this.renderSavedChoice('Industry', 'industry', CompetitorIndustries, true)}
+            {this.renderSavedChoice('Industries', 'industry', CompetitorIndustries, true)}
           </div>
           <div className="large-6 cell">
             {this.renderSavedChoice('Check Size', 'funding_size', CompetitorFundingSizes)}
