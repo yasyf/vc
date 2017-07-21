@@ -25,8 +25,8 @@ export default class SavedChoice extends SavedText {
     if (!values) {
       return 'Unknown';
     }
-    return values
-    .map(value => {
+    console.log(values);
+    return values.map(value => {
       let label = _.find(this.props.options, {value}).label;
       let found = this.props.highlight.indexOf(value) !== -1;
       return <span className={classNames('badge', {'success': found})} key={value}>{label}</span>;
