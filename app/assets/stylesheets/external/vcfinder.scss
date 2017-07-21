@@ -77,4 +77,11 @@ footer {
 
 .badge {
   border-radius: 10%;
+  margin-right: 0.5em;
+  padding: 0.4em;
+  margin-bottom: 0.6em;
+}
+
+.badge.success {
+  color: white;
 }
