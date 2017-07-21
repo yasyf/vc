@@ -37,11 +37,13 @@ class Company < ActiveRecord::Base
   end
 
   def domain=(domain)
-    super begin
+    parsed = begin
       URI.parse(domain).host
     rescue URI::InvalidURIError
       domain
     end
+    parsed = parsed[4..-1] if parsed.starts_with?('www.')
+    super parsed
   end
 
   def in_list?(list)
@@ -161,13 +163,23 @@ class Company < ActiveRecord::Base
     [:name]
   end
 
+  def self.from_domain(domain)
+    existing = Company.where(domain: domain)
+    return existing.first if existing.present?
+
+    id = Http::Crunchbase::Organization.find_domain_id(domain, types: 'company')
+    Company.where(crunchbase_id: id).first_or_initialize.tap do |company|
+      company.domain = domain
+    end
+  end
+
   def self.from_founder(founder)
-    id = Http::Crunchbase::Organization.find_domain_id(founder.domain, types: 'company')
-    company = Company.new(crunchbase_id: id, domain: founder.domain, name: "#{founder.name} NewCo")
+    company = from_domain founder.domain
     if (org = company.crunchbase_org).found?
       company.name = org.name
       company.description = org.description
     else
+      company.name = "#{founder.name} NewCo"
       company.skip_job!
     end
     company.save!
