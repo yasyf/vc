@@ -46,6 +46,7 @@ export default class VCFinderLoginStage3 extends React.Component {
   renderBody() {
     return (
       <div>
+        <p>We've got a few recommendations to check out! Feel free to add any of them to your list, or use the button at the bottom to move on.</p>
         {this.renderRecommendations()}
         {this.renderButton()}
       </div>

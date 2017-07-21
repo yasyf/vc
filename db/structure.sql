@@ -253,7 +253,6 @@ CREATE TABLE investor_profiles (
     id bigint NOT NULL,
     founder_id bigint,
     city character varying,
-    industry character varying[],
     funding_size integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -1622,6 +1621,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170719001734'),
 ('20170719191548'),
 ('20170719205903'),
-('20170720015921');
+('20170720015921'),
+('20170721125920');
 
 

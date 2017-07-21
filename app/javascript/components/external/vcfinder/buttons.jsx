@@ -6,7 +6,7 @@ export default class Buttons extends React.Component {
     let { categories, current, onChange, alwaysShow } = this.props;
     if (
       !alwaysShow &&
-      categories.length === 0 || (categories.length === 1 && categories[0][0] === current)
+      (categories.length === 0 || (categories.length === 1 && categories[0][0] === current))
     ) {
       return null;
     }

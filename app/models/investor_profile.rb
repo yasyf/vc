@@ -7,7 +7,7 @@ class InvestorProfile < ApplicationRecord
   sort :industry
 
   def complete?
-    industry.present? && !funding_size.nil? && city.present?
+    !funding_size.nil? && city.present?
   end
 
   def as_json(options = {})

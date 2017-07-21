@@ -25,4 +25,20 @@ class ApplicationController < ActionController::Base
       messages.each { |message| flash[:alert] << "#{attribute.to_s.titleize} #{message}" }
     end
   end
+
+  def internal_path(prefix)
+    internal? ? eval("subdomain_internal_#{prefix}_path") : eval("internal_#{prefix}_path")
+  end
+
+  def external_path(prefix)
+    external? ? eval("subdomain_external_#{prefix}_path") : eval("external_#{prefix}_path")
+  end
+
+  def internal?
+    request.subdomain == ENV['INTERNAL_SUBDOMAIN']
+  end
+
+  def external?
+    request.subdomain == ENV['EXTERNAL_SUBDOMAIN']
+  end
 end

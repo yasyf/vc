@@ -45,10 +45,10 @@ export default class InvestorDRFComments extends React.Component {
         <hr />
         <div className="grid-x grid-margin-x investor-row">
           <div className="large-6 cell">
-            {this.renderNotes('DRF Investor Comments', notes)}
+            {this.renderNotes('Investor Comments', notes)}
           </div>
           <div className="large-6 cell">
-            {this.renderNotes('DRF Fund Comments', competitor.notes, u => ({competitor: u}))}
+            {this.renderNotes('Fund Comments', competitor.notes, u => ({competitor: u}))}
           </div>
         </div>
       </div>

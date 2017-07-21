@@ -13,6 +13,7 @@ export default class TargetInvestors extends React.Component {
         categories={labeled}
         current={this.props.stage}
         onChange={this.props.onStageChange}
+        alwaysShow={true}
       />
     );
   }
@@ -21,7 +22,7 @@ export default class TargetInvestors extends React.Component {
     let targets = _.sortBy(Object.entries(_.groupBy(_.filter(this.props.targets, {stage: this.props.stage}), 'tier')), '1');
     let components = [];
     targets.forEach(([tier, group]) => {
-      components.push(<h3 key={`tier-${tier}`}>Tier {tier}</h3>);
+      components.push(<h3 key={`tier-${tier}`}>Priority {tier}</h3>);
       group.forEach(target => components.push(<TargetInvestor key={target.id} {...target} onTargetChange={this.props.onTargetChange} />));
     });
     return (

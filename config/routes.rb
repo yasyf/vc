@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   def subdomain_or_prefix(subdomain, prefix, &block)
     namespace(prefix, &block)
     constraints subdomain: subdomain do
-      scope(module: prefix, as: "#{subdomain}_#{prefix}", &block)
+      scope(module: prefix, as: "subdomain_#{prefix}", &block)
     end
   end
 

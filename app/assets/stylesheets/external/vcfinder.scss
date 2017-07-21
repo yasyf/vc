@@ -58,8 +58,19 @@ h3 {
   padding-top: 2em;
 }
 
+.vcwiz-info {
+  padding: 2em 1em 0;
+}
+
 .search-item {
   padding: 0.5em;
   border: 2px solid #ccd6dd;
   border-radius: 5px;
+}
+
+footer {
+  position: static;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
 }

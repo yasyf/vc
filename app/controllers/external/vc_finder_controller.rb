@@ -16,16 +16,16 @@ class External::VcFinderController < External::ApplicationController
   private
 
   def stage
-    if target_investors&.present? || recommendations_shown?
-      :done
-    elsif investor_profile&.complete?
-      :suggest
-    elsif company&.complete? && company&.verified?
-      :profile
-    elsif current_external_founder.present?
-      :company
-    else
+    if !current_external_founder.present?
       :start
+    elsif !company&.complete? || !company&.verified?
+      :company
+    elsif !investor_profile&.present?
+      :profile
+    elsif !target_investors&.present? && !recommendations_shown?
+      :suggest
+    else
+      :done
     end
   end
 

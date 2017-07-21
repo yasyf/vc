@@ -1,9 +1,9 @@
 class WelcomeController < ApplicationController
   def index
-    if internal_user_signed_in? || request.subdomain == ENV['INTERNAL_SUBDOMAIN']
-      redirect_to internal_root_path
+    if internal_user_signed_in?
+      redirect_to internal_path('root')
     else
-      redirect_to external_root_path
+      redirect_to external_path('root')
     end
   end
 end

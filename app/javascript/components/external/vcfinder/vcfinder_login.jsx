@@ -44,11 +44,27 @@ export default class VCFinderLogin extends React.Component {
     }
   }
 
+  renderWelcome() {
+    switch (this.state.stage) {
+      case 0:
+      case 'start':
+        return 'Welcome to VCWiz!';
+        break;
+      case 1:
+      case 'company':
+        return `Welcome to VCWiz, ${gon.founder.first_name}!`;
+        break;
+      default:
+        return 'VCWiz';
+        break;
+    }
+  }
+
   render() {
     return (
       <div className="text-center">
         <div>
-          <h3>Welcome to VCWiz!</h3>
+          <h3>{this.renderWelcome()}</h3>
         </div>
         {this.renderStage()}
       </div>

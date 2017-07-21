@@ -15,6 +15,7 @@ export default class VCFinderLoginStage1 extends VCFinderLoginStage {
     let {company} = this.state.founder;
     return (
       <div className="float-center investor">
+        <p>Tell us a bit about what you're working on! This helps us recommend investors for you.</p>
         {this.renderSavedText("What's your company called?", 'company', 'name')}
         {this.renderSavedTextArea(`What is ${company.name} working on?`, 'company', 'description')}
         {this.renderSavedChoice(`What areas does ${company.name} focus on?`, 'company', 'industry', CompetitorIndustries)}

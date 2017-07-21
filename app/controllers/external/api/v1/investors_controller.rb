@@ -11,7 +11,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def recommendations
     recommendations_shown!
-    render_censored current_external_founder.recommended_investors
+    render_censored current_external_founder.recommended_investors(limit: 5, offset: 5 * page)
   end
 
   def search

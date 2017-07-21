@@ -7,9 +7,11 @@ export default class InvestorHead extends React.Component {
     return (
       <div className="card-section">
         <p className="faded">
-          {competitor.description}
-          {' '}
-          {description}
+          <small>
+            {competitor.description}
+            {' '}
+            {description}
+          </small>
         </p>
       </div>
     );
