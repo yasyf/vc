@@ -6,6 +6,7 @@ import { CompetitorFundingSizes, CompetitorIndustries } from './constants.js.erb
 import {  extend } from './utils'
 import InvestorHead from './investor/head';
 import InvestorBody from './investor/body';
+import Collapsible from 'react-collapsible';
 
 export default class TargetInvestor extends React.Component {
   changeStage(stage) {
@@ -109,14 +110,17 @@ export default class TargetInvestor extends React.Component {
     let { last_response } = this.props;
     let ago = last_response ? moment(last_response).fromNow() : undefined;
 
+    let head = <InvestorHead {...merged} badge={ago} onChange={this.onInvestorChange} />;
+
     return (
       <div className="card float-center investor">
-        <InvestorHead {...merged} badge={ago} onChange={this.onInvestorChange} />
-        {this.renderSavedFields()}
-        <InvestorBody {...merged} onChange={this.onInvestorChange} />
-        <div className="card-section card-section-multi">
-          {this.renderButtons()}
-        </div>
+        <Collapsible trigger={head} open={this.props.open}>
+          {this.renderSavedFields()}
+          <InvestorBody {...merged} onChange={this.onInvestorChange} />
+          <div className="card-section card-section-multi">
+            {this.renderButtons()}
+          </div>
+        </Collapsible>
       </div>
     );
   }

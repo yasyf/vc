@@ -11,6 +11,7 @@ export default class VCFinder extends React.Component {
     this.state = {
       targets: [],
       stage: TargetInvestorStageKeys[0],
+      lastAdded: null,
     };
   }
 
@@ -30,7 +31,11 @@ export default class VCFinder extends React.Component {
   
   onInvestorSelect = (investor) => {
     ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
-    .then(target => this.setState({stage: TargetInvestorStageKeys[0], targets: this.state.targets.concat([target])}));
+    .then(target => this.setState({
+      stage: TargetInvestorStageKeys[0],
+      lastAdded: target.id,
+      targets: this.state.targets.concat([target])
+    }));
   };
 
   onTargetChange = (id, change) => {
@@ -67,7 +72,9 @@ export default class VCFinder extends React.Component {
           {this.renderDRFWelcome()}
         </p>
         <p>
-          Use the search bar above to add all your target investors. We split your investors up by priority tiers, and give you simple actions to track your outreach with each one.
+          Use the search bar above to add all your target investors.
+          We split your investors up by priority tiers, and give you simple actions to track your outreach with each one.
+          Click on an investor's name to view or change their status.
         </p>
       </div>
     );
@@ -81,6 +88,7 @@ export default class VCFinder extends React.Component {
         <TargetInvestors
           targets={this.state.targets}
           stage={this.state.stage}
+          open={this.state.lastAdded}
           onTargetChange={this.onTargetChange}
           onStageChange={this.onStageChange}
         />

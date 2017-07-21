@@ -23,7 +23,14 @@ export default class TargetInvestors extends React.Component {
     let components = [];
     targets.forEach(([tier, group]) => {
       components.push(<h3 key={`tier-${tier}`}>Priority {tier}</h3>);
-      group.forEach(target => components.push(<TargetInvestor key={target.id} {...target} onTargetChange={this.props.onTargetChange} />));
+      group.forEach(target => components.push(
+        <TargetInvestor
+          key={target.id}
+          open={target.id === this.props.open}
+          {...target}
+          onTargetChange={this.props.onTargetChange}
+        />
+      ));
     });
     return (
       <div className="investors">
