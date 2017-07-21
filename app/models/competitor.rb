@@ -38,6 +38,9 @@ class Competitor < ApplicationRecord
     social: 'Social Media',
     energy: 'Energy',
     hardware: 'Hardware',
+    gaming: 'Gaming',
+    space: 'Space',
+    data: 'Data',
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
@@ -45,11 +48,12 @@ class Competitor < ApplicationRecord
     food: ['Food Delivery', 'Nutrition', 'Food'],
     social: ['Social', 'Messaging'],
     ai: ['Machine Learning'],
-    enterprise: ['Enterprise Software'],
+    enterprise: ['Enterprise Software', 'B2B'],
     healthcare: ['Health Care', 'Medical'],
     media: ['Entertainment'],
     finance: ['FinTech'],
     energy: ['Electric Vehicle', 'Energy Management'],
+    data: ['Analytics'],
   }.freeze
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
