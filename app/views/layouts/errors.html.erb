@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= yield(:title) %> - Dorm Room Fund</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/css/foundation.min.css" integrity="sha256-xJjW34HgDxLaH5ZwGCFEpJNUID0G/X3V7CTjxoiItzs=" crossorigin="anonymous" />
+  <%= include_gon(camel_case: true, init: true) %>
+  <%= stylesheet_link_tag    'external/application', media: 'all' %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js" integrity="sha256-ssuvZ7clQBE8C6fdKygrQfRqIx5bFb/F/Abeqq1dr/w=" crossorigin="anonymous"></script>
+  <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
+  <%= javascript_include_tag 'raven' %>
+  <% if @sentry_event_id.present? %>
+    <script>Raven.showReportDialog({eventId: '<%= @sentry_event_id %>'});</script>
+  <% end %>
+  <%= favicon_link_tag %>
+</head>
+<body>
+
+<div class="text-center float-center">
+  <%= yield %>
+</div>

@@ -11,6 +11,8 @@ class TeamConstraint
 end
 
 Rails.application.routes.draw do
+  match '/500', to: 'errors#internal_server_error', via: :all
+
   def subdomain_or_prefix(subdomain, prefix, &block)
     namespace(prefix, &block)
     constraints subdomain: subdomain do
