@@ -42,7 +42,7 @@ class Company < ActiveRecord::Base
     rescue URI::InvalidURIError
       domain
     end
-    parsed = parsed[4..-1] if parsed.starts_with?('www.')
+    parsed = parsed[4..-1] if parsed&.starts_with?('www.')
     super parsed
   end
 
