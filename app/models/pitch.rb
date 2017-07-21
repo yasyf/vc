@@ -4,6 +4,7 @@ class Pitch < ApplicationRecord
   SNAPSHOT_DEADLINE = 2.days
 
   belongs_to :company
+  belongs_to :card
   has_one :team, through: :company
   has_many :votes
 

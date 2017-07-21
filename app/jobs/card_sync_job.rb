@@ -15,17 +15,12 @@ class CardSyncJob < ApplicationJob
     company = card.company
     pitch = company.pitch
 
-    if (pitch.blank? || pitch.decided?) && card_data[:pitch_on].present?
-      pitch = Pitch.create!(company: company, when: card_data[:pitch_on])
+    if (pitch&.card != card) && card_data[:pitch_on].present?
+      pitch = Pitch.new(company: company, card: card, when: card_data[:pitch_on])
     end
 
     if pitch.present?
       pitch.when = card_data[:pitch_on] if card_data[:pitch_on].present?
-    end
-
-    if card.list.present? && card.list != list
-      LoggedEvent.log! :card_list_changed, card,
-        notify: 0, data: { from: card.list.trello_id, to: list.trello_id, date: Date.today }
     end
 
     company.team = team
@@ -35,6 +30,11 @@ class CardSyncJob < ApplicationJob
     card.save! if card&.changed?
     pitch.save! if pitch&.changed?
     try_save! company
+
+    if card.list.present? && card.list != list
+      LoggedEvent.log! :card_list_changed, card,
+                       notify: 0, data: { from: card.list.trello_id, to: list.trello_id, date: Date.today }
+    end
 
     company.send(:add_to_wit!) unless company.name == company.name_was
 

@@ -469,7 +469,8 @@ CREATE TABLE pitches (
     snapshot character varying,
     prevote_doc character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    card_id bigint
 );
 
 
@@ -1266,6 +1267,13 @@ CREATE INDEX index_notes_on_subject_type_and_subject_id ON notes USING btree (su
 
 
 --
+-- Name: index_pitches_on_card_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_pitches_on_card_id ON pitches USING btree (card_id);
+
+
+--
 -- Name: index_pitches_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1410,6 +1418,14 @@ CREATE INDEX trgm_last_name_indx ON investors USING gist (last_name gist_trgm_op
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+
+
+--
+-- Name: pitches fk_rails_115ef0c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY pitches
+    ADD CONSTRAINT fk_rails_115ef0c2b5 FOREIGN KEY (card_id) REFERENCES cards(id);
 
 
 --
@@ -1622,6 +1638,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170719191548'),
 ('20170719205903'),
 ('20170720015921'),
-('20170721125920');
+('20170721125920'),
+('20170721205154');
 
 
