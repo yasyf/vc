@@ -29,7 +29,7 @@ module Concerns
     def sort_sortables
       self.class.sorted_attributes.each do |attr|
         next unless self[attr].present?
-        self[attr] = self[attr].sort
+        self[attr] = self[attr].sort.uniq
       end
     end
   end
