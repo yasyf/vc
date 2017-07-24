@@ -39,9 +39,9 @@ class Company < ActiveRecord::Base
   def domain=(domain)
     parsed = begin
       URI.parse(domain).host
-    rescue URI::InvalidURIError
-      domain
-    end
+    rescue URI::InvalidURIError => _
+    end || domain
+
     parsed = parsed[4..-1] if parsed&.starts_with?('www.')
     super parsed
   end
