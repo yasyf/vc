@@ -11,13 +11,17 @@ export default class VCFinder extends React.Component {
     this.state = {
       targets: [],
       stage: TargetInvestorStageKeys[0],
-      lastAdded: null,
+      open: null,
     };
   }
 
   componentDidMount() {
     ffetch(TargetInvestorsPath)
-    .then(targets => this.setState({targets, stage: this.defaultStage(targets)}));
+    .then(targets => this.setState({
+      targets,
+      stage: this.defaultStage(targets),
+      open: _.get(targets, ['0', 'id']),
+    }));
   }
 
   allStages(targets) {
@@ -33,7 +37,7 @@ export default class VCFinder extends React.Component {
     ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
     .then(target => this.setState({
       stage: TargetInvestorStageKeys[0],
-      lastAdded: target.id,
+      open: target.id,
       targets: this.state.targets.concat([target])
     }));
   };
@@ -88,7 +92,7 @@ export default class VCFinder extends React.Component {
         <TargetInvestors
           targets={this.state.targets}
           stage={this.state.stage}
-          open={this.state.lastAdded}
+          open={this.state.open}
           onTargetChange={this.onTargetChange}
           onStageChange={this.onStageChange}
         />
