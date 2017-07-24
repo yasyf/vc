@@ -1,4 +1,5 @@
 import Raven from 'raven-js';
+import UserContext from './user_context';
 
 let ravenOptions = {
   ignoreErrors: [
@@ -42,11 +43,5 @@ let ravenOptions = {
   ]
 };
 
-let ravenUserContext = {
-  id: (gon.founder && gon.founder.id) || (gon.user && gon.user.id),
-  name: (gon.founder && `${gon.founder.first_name} ${gon.founder.last_name}`) || (gon.user && gon.user.name),
-  email: (gon.founder && gon.founder.email) || (gon.user && gon.user.email)
-};
-
 Raven.config('<%= ENV['SENTRY_SAFE_DSN'] %>', ravenOptions).install();
-Raven.setUserContext(ravenUserContext);
+Raven.setUserContext(UserContext);
