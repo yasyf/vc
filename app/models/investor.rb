@@ -46,6 +46,9 @@ class Investor < ApplicationRecord
   end
 
   def self.from_name(name)
+    first_name, *rest_name = name.split(' ')
+    existing = where(fist_name: first_name, last_name: rest_name.join(' '))
+    return existing.first if existing.present?
     from_crunchbase(Http::Crunchbase::Person.find_investor_id(name))
   end
 
