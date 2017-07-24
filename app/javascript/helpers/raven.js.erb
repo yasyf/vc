@@ -1,6 +1,6 @@
 import Raven from 'raven-js';
 
-var ravenOptions = {
+let ravenOptions = {
   ignoreErrors: [
     // Random plugins/extensions
     'top.GLOBALS',
@@ -42,13 +42,11 @@ var ravenOptions = {
   ]
 };
 
+let ravenUserContext = {
+  id: (gon.founder && gon.founder.id) || (gon.user && gon.user.id),
+  name: (gon.founder && `${gon.founder.first_name} ${gon.founder.last_name}`) || (gon.user && gon.user.name),
+  email: (gon.founder && gon.founder.email) || (gon.user && gon.user.email)
+};
+
 Raven.config('<%= ENV['SENTRY_SAFE_DSN'] %>', ravenOptions).install();
-
-Raven.setUserContext({
-  id: (gon.founder && gon.founder.id) || (gon.user && gon.user.id)
-});
-
-Raven.setDataCallback(data => {
-  data.extra.sessionURL = LogRocket.sessionURL;
-  return data;
-});
+Raven.setUserContext(ravenUserContext);

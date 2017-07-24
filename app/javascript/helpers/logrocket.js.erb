@@ -4,3 +4,10 @@ require('logrocket-react')(LogRocket);
 <% if ENV['LOGROCKET_KEY'].present? %>
   LogRocket.init('<%= ENV['LOGROCKET_KEY'] %>');
 <% end %>
+
+Raven.setDataCallback(data => {
+  data.extra.sessionURL = LogRocket.sessionURL;
+  return data;
+});
+
+LogRocket.identify(ravenUserContext.id, ravenUserContext);
