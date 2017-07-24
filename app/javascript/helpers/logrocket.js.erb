@@ -1,6 +1,4 @@
 import Raven from 'raven-js';
-import UserContext from './user_context';
-
 import LogRocket from 'logrocket';
 require('logrocket-react')(LogRocket);
 
@@ -13,4 +11,4 @@ Raven.setDataCallback(data => {
   return data;
 });
 
-LogRocket.identify(UserContext.id, UserContext);
+LogRocket.identify(gon.context.id, gon.context);

@@ -1,5 +1,4 @@
 import Raven from 'raven-js';
-import UserContext from './user_context';
 
 let ravenOptions = {
   ignoreErrors: [
@@ -44,4 +43,4 @@ let ravenOptions = {
 };
 
 Raven.config('<%= ENV['SENTRY_SAFE_DSN'] %>', ravenOptions).install();
-Raven.setUserContext(UserContext);
+Raven.setUserContext(gon.context);
