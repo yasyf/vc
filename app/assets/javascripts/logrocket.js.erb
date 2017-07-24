@@ -1,0 +1,5 @@
+import LogRocket from 'logrocket';
+
+<% if ENV['LOGROCKET_KEY'].present? %>
+  LogRocket.init('<%= ENV['LOGROCKET_KEY'] %>');
+<% end %>
