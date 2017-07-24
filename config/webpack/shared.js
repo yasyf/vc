@@ -49,7 +49,10 @@ module.exports = {
     modules: [
       resolve(settings.source_path),
       'node_modules'
-    ]
+    ],
+    alias: {
+      'handlebars' : 'handlebars/dist/handlebars.js'
+    }
   },
 
   resolveLoader: {

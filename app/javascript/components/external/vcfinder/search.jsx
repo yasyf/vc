@@ -1,3 +1,4 @@
+import Handlebars from 'handlebars';
 import React from 'react';
 import { InvestorsSearchPath } from './constants.js.erb';
 

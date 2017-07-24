@@ -1,3 +1,4 @@
+import 'whatwg-fetch';
 import update from 'immutability-helper';
 
 export let ffetch = function(path, method = 'GET', data = null) {

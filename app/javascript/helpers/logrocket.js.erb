@@ -1,4 +1,5 @@
-import LogRocket from 'logrocket-react';
+import LogRocket from 'logrocket';
+require('logrocket-react')(LogRocket);
 
 <% if ENV['LOGROCKET_KEY'].present? %>
   LogRocket.init('<%= ENV['LOGROCKET_KEY'] %>');

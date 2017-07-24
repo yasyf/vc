@@ -20,6 +20,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js" integrity="sha256-ssuvZ7clQBE8C6fdKygrQfRqIx5bFb/F/Abeqq1dr/w=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js" integrity="sha256-RWiU4omUU7tQ2M3wmRQNW9UL50MB4CucbRPCbsQv+X0=" crossorigin="anonymous"></script>
 
+  <%= javascript_pack_tag 'shared' %>
+
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}" %>
   <% end %>
