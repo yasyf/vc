@@ -179,7 +179,7 @@ class Company < ActiveRecord::Base
       company.name = org.name
       company.description = org.description
     else
-      company.name = "#{founder.name} NewCo"
+      company.name ||= "#{founder.name} NewCo"
       company.skip_job!
     end
     company.save!
