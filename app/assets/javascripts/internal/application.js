@@ -16,6 +16,5 @@
 //= require twitter/bootstrap
 //= require turbolinks
 //= require_tree .
-//= require ../../../javascript/helpers/raven.js.erb
 
 $.turbo.use('turbolinks:load', 'turbolinks:request-start');
