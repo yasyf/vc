@@ -46,8 +46,8 @@ class Investor < ApplicationRecord
   end
 
   def self.from_name(name)
-    existing = fuzzy_search(first_name: name, last_name: name)
-    return existing.first if existing.count('*') > 0
+    existing = fuzzy_search(first_name: name, last_name: name).first
+    return existing if existing.present?
     from_crunchbase(Http::Crunchbase::Person.find_investor_id(name))
   end
 
