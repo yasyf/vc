@@ -28,7 +28,7 @@ class Card < ApplicationRecord
     list = pitch.funded? ? team.lists.pre_funded : team.lists.passed
     move_to_list! list
 
-    trello_card.name = name
+    trello_card.name = company.name
     trello_card.save
   end
 
