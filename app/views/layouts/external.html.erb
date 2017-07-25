@@ -16,7 +16,7 @@
 
   <%= include_gon(camel_case: true, init: true) %>
 
-  <% if content_for?(:logrocket) %>
+  <% if Rails.env.production? && content_for?(:logrocket) %>
     <%= logrocket_key(yield(:logrocket)) %>
   <% end %>
 
