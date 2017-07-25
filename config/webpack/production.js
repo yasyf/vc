@@ -2,16 +2,19 @@
 
 /* eslint global-require: 0 */
 
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const CompressionPlugin = require('compression-webpack-plugin')
-const sharedConfig = require('./shared.js')
+const webpack = require('webpack');
+const merge = require('webpack-merge');
+const CompressionPlugin = require('compression-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const sharedConfig = require('./shared.js');
 
 module.exports = merge(sharedConfig, {
   output: { filename: '[name]-[chunkhash].js' },
   devtool: 'source-map',
   stats: 'normal',
-
+  entry: {
+    'service-worker': output.path + '/service-worker.js'
+  },
   plugins: [
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
@@ -40,6 +43,11 @@ module.exports = merge(sharedConfig, {
       asset: '[path].gz[query]',
       algorithm: 'gzip',
       test: /\.(js|css|html|json|ico|svg|eot|otf|ttf)$/
-    })
+    }),
+    new SWPrecacheWebpackPlugin({
+      minify: true,
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      mergeStaticsConfig: true,
+    }),
   ]
 })

@@ -45,6 +45,7 @@
     "sass-loader": "^6.0.6",
     "script-loader": "^0.7.0",
     "style-loader": "^0.18.2",
+    "sw-precache-webpack-plugin": "^0.11.4",
     "typeahead.js": "^0.11.1",
     "webpack": "^3.3.0",
     "webpack-manifest-plugin": "^1.1.2",
