@@ -2,6 +2,7 @@ class Card < ApplicationRecord
   belongs_to :list
   belongs_to :company
   has_one :pitch
+  has_one :team, through: :company
 
   validates :company, presence: true
   validates :list, presence: true
