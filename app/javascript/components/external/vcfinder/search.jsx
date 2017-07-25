@@ -25,7 +25,9 @@ export default class Search extends React.Component {
   }
 
   componentDidMount() {
-    let typeahead = $('.typeahead');
+    this.typeahead = $('.typeahead');
+    let typeahead = this.typeahead;
+
     typeahead.bind('typeahead:beforeselect', (event, investor) => {
       this.props.onSelect(investor);
       typeahead.typeahead('val', '');
@@ -34,7 +36,7 @@ export default class Search extends React.Component {
     });
 
     typeahead.bind('vcwiz:createinvestor', (event, query) => {
-      this.setState({modalOpen: true, query: query});
+      this.onOpen(query);
     });
 
     typeahead.typeahead({
@@ -49,8 +51,18 @@ export default class Search extends React.Component {
     });
   }
 
-  onClose = (investor) => {
-    this.props.onSelect(investor);
+  onOpen = (query) => {
+    this.setState({modalOpen: true, query: query});
+  };
+
+  onClick = () => {
+    this.onOpen(this.typeahead.typeahead('val'));
+  };
+
+  onClose = (success, investor) => {
+    if (success) {
+      this.props.onSelect(investor);
+    }
     this.setState({modalOpen: false});
   };
 
@@ -71,6 +83,9 @@ export default class Search extends React.Component {
         <ul className="menu">
           <li>
             <input type="search" placeholder="Find an investor..." className="typeahead top-search-bar" />
+            <button type="button" className="button tiny search-button" onClick={this.onClick}>
+              Add Investor
+            </button>
           </li>
         </ul>
       </nav>

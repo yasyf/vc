@@ -12,13 +12,31 @@ export default class SearchCreate extends React.Component {
   }
 
   componentDidMount() {
+    $(document.body).on('keyup.searchcreate', this.onKeyUp);
+
     ffetch(InvestorsPath, 'POST', {investor: {query: this.props.query}})
     .then(investor => this.setState({investor, fetched: true}));
   }
 
+  componentWillUnmount() {
+    $(document.body).off('keyup.searchcreate', this.onKeyUp);
+  }
+
+  onKeyUp = (event) => {
+    switch (event.key) {
+      case "Escape":
+        this.onCancel();
+        break;
+    }
+  };
+
   onSubmit = (ev) => {
     ffetch(InvestorsPath, 'POST', {investor: this.state.investor})
-    .then(this.props.onClose);
+    .then(investor => this.props.onClose(true, investor));
+  };
+
+  onCancel = () => {
+    this.props.onClose(false);
   };
 
   renderTextArea(label, name) {
@@ -41,9 +59,14 @@ export default class SearchCreate extends React.Component {
     let {first_name, last_name, competitor} = this.state.investor;
     let complete = first_name && last_name && competitor && competitor.name;
     return (
-      <button type="button" className="button" onClick={this.onSubmit} disabled={!complete}>
-        Create
-      </button>
+      <div>
+        <button type="button" className="button category-button" onClick={this.onSubmit} disabled={!complete}>
+          Create
+        </button>
+        <button type="button" className="button alert hollow category-button" onClick={this.onCancel}>
+          Cancel
+        </button>
+      </div>
     )
   }
 
