@@ -19,12 +19,12 @@ class Card < ApplicationRecord
   end
 
   def move_to_rejected_list!
-    list = pitched? ? team.lists.passed : team.lists.rejected
+    list = pitch.pitched? ? team.lists.passed : team.lists.rejected
     move_to_list! list
   end
 
   def move_to_post_pitch_list!
-    list = funded? ? team.lists.pre_funded : team.lists.passed
+    list = pitch.funded? ? team.lists.pre_funded : team.lists.passed
     move_to_list! list
 
     trello_card.name = name
