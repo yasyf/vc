@@ -12,9 +12,6 @@ module.exports = merge(sharedConfig, {
   output: { filename: '[name]-[chunkhash].js' },
   devtool: 'source-map',
   stats: 'normal',
-  entry: {
-    'service-worker': sharedConfig.output.path + '/service-worker.js'
-  },
   plugins: [
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),

@@ -22,7 +22,9 @@ module.exports = {
       const namespace = relative(join(entryPath), dirname(entry))
       localMap[join(namespace, basename(entry, extname(entry)))] = resolve(entry)
       return localMap
-    }, {}
+    }, env.NODE_ENV !== 'production' ? {} : {
+      'service-worker.js': join(output.path, 'service-worker.js')
+    }
   ),
 
   output: {
