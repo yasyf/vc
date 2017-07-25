@@ -13,7 +13,7 @@ module.exports = merge(sharedConfig, {
   devtool: 'source-map',
   stats: 'normal',
   entry: {
-    'service-worker': output.path + '/service-worker.js'
+    'service-worker': sharedConfig.output.path + '/service-worker.js'
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
@@ -46,7 +46,7 @@ module.exports = merge(sharedConfig, {
     }),
     new SWPrecacheWebpackPlugin({
       minify: true,
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      staticFileGlobsIgnorePatterns: [/\.map$/, /manifest\.json$/],
       mergeStaticsConfig: true,
     }),
   ]
