@@ -2,9 +2,9 @@ import Raven from 'raven-js';
 import LogRocket from 'logrocket';
 require('logrocket-react')(LogRocket);
 
-<% if ENV['LOGROCKET_KEY'].present? %>
-  LogRocket.init('<%= ENV['LOGROCKET_KEY'] %>');
-<% end %>
+if (window.LogRocketKey) {
+  LogRocket.init(window.LogRocketKey);
+}
 
 Raven.setDataCallback(data => {
   data.extra.sessionURL = LogRocket.sessionURL;

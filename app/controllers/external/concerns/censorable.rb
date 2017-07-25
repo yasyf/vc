@@ -20,7 +20,7 @@ module External::Concerns
       filtered = Array.wrap(models).map do |model|
         filter_unless_portfolio(self.class.filtered_paths, model)
       end
-      render json: models.is_a?(ApplicationRecord) ? filtered.first : filtered
+      render json: (models.is_a?(ApplicationRecord) || models.is_a?(Hash)) ? filtered.first : filtered
     end
 
     def filter_unless_portfolio(paths, object)

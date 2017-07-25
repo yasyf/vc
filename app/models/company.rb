@@ -165,7 +165,7 @@ class Company < ActiveRecord::Base
 
   def self.from_domain(domain)
     existing = Company.where(domain: domain)
-    return existing.first if existing.present?
+    return existing.first if existing.count('*') > 0
 
     id = Http::Crunchbase::Organization.find_domain_id(domain, types: 'company')
     Company.where(crunchbase_id: id).first_or_initialize.tap do |company|

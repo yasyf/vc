@@ -37,6 +37,7 @@
     "react-collapsible": "^1.4.0",
     "react-dom": "^15.6.1",
     "react-hot-loader": "next",
+    "react-modal": "^2.2.2",
     "react-select": "^1.0.0-rc.5",
     "resolve-url-loader": "^2.1.0",
     "sass-loader": "^6.0.6",

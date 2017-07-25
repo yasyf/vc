@@ -53,3 +53,6 @@ export let extract = function(items, item) {
 export let pluckSort = function(objects, prop, keys) {
   return _.sortBy(_.uniq(_.map(objects, prop)), s => keys.indexOf(s));
 };
+
+export let onChangeSet = (item, path, cb) =>
+  (ev) => cb(update(item, _.set({}, path, {$set: ev.target.value})));

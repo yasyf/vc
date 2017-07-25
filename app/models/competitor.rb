@@ -66,7 +66,7 @@ class Competitor < ApplicationRecord
   has_many :notes, as: :subject
 
   validates :name, presence: true, uniqueness: true
-  validates :crunchbase_id, presence: true, uniqueness: true
+  validates :crunchbase_id, uniqueness: { allow_nil: true }
 
   after_commit :start_crunchbase_job, on: :create
 
@@ -84,11 +84,15 @@ class Competitor < ApplicationRecord
   end
 
   def self.create_from_name!(name)
-    existing = where(name: name)
-    return existing.first if existing.count > 0
+    existing = fuzzy_search(name: name)
+    return existing.first if existing.count('*') > 0
 
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
-    from_crunchbase! crunchbase_id, name if crunchbase_id.present?
+    if crunchbase_id.present?
+      from_crunchbase! crunchbase_id, name
+    else
+      create! name: name
+    end
   end
 
   def self.create_from_domain!(domain)

@@ -52,6 +52,22 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored investor
   end
 
+  def create
+    if investor_create_query_params.present?
+      query = investor_create_query_params[:query]
+      investor = Investor.from_name(query)
+      render_censored investor || begin
+       first_name, last_name = split_name(query)
+       {first_name: first_name, last_name: last_name, competitor: {}}
+      end
+    else
+      investor = Investor.new investor_create_params
+      investor.competitor =  Competitor.create_from_name!(competitor_create_params[:competitor][:name])
+      investor.save!
+      render_censored investor
+    end
+  end
+
   private
 
   def recommendations_shown!
@@ -60,6 +76,18 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def page
     (params[:page] || 0).to_i
+  end
+
+  def investor_create_query_params
+    params.require(:investor).permit(:query)
+  end
+
+  def investor_create_params
+    params.require(:investor).permit(:first_name, :last_name, :email)
+  end
+
+  def competitor_create_params
+    params.require(:investor).permit(competitor: :name)
   end
 
   def investor_params

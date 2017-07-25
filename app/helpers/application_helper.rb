@@ -6,4 +6,13 @@ module ApplicationHelper
   def omniauth_path(provider)
     "/auth/#{provider}"
   end
+
+  def logrocket_key(key)
+    "<script>window.LogRocketKey = '#{key}';</script>"
+  end
+
+  def split_name(name)
+    first, *rest = name.split(' ')
+    [first, rest.join(' ')]
+  end
 end

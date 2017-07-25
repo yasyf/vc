@@ -1,5 +1,6 @@
 :concurrency: 3
 :queues:
+  - now
   - default
   - mailers
   - low

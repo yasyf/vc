@@ -1,7 +1,14 @@
 <%= title 'VCWiz' %>
 <%= content_for :pack, 'vcfinder' %>
+<%= content_for :logrocket, 'r4gq3r/vcwiz-prod' if Rails.env.production? %>
 
 <%= react_component('VCFinder') %>
+
+<script>
+  function triggerCreateInvestor(query) {
+    $('.typeahead').trigger('vcwiz:createinvestor', query);
+  }
+</script>
 
 <script id="result-template" type="text/x-handlebars-template">
   <div class="row">
@@ -11,6 +18,18 @@
         <br>
         <em>{{competitor.name}}</em>
       </p>
+    </div>
+  </div>
+</script>
+
+<script id="no-result-template" type="text/x-handlebars-template">
+  <div onclick="triggerCreateInvestor('{{query}}')" class="tt-suggestion">
+    <div class="row">
+      <div class="large-12 columns search-item">
+        <p>
+          Add {{query}}...
+        </p>
+      </div>
     </div>
   </div>
 </script>
