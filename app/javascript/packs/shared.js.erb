@@ -5,6 +5,6 @@ import 'helpers/logrocket';
 <% if Rails.env.production? %>
   <% include Webpacker::Helper %>
   if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('<%= asset_pack_path 'service-worker' %>');
+    navigator.serviceWorker.register('/packs/service-worker.js');
   }
 <% end %>
