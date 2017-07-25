@@ -8,7 +8,7 @@ module ApplicationHelper
   end
 
   def logrocket_key(key)
-    "<script>window.LogRocketKey = '#{key}';</script>"
+    "<script>window.LogRocketKey = '#{key}';</script>".html_safe
   end
 
   def split_name(name)
