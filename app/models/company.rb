@@ -164,10 +164,13 @@ class Company < ActiveRecord::Base
   end
 
   def self.from_domain(domain)
+    return nil unless domain.present?
+
     existing = Company.where(domain: domain).first
     return existing if existing.present?
 
     id = Http::Crunchbase::Organization.find_domain_id(domain, types: 'company')
+    return nil unless id.present?
     Company.where(crunchbase_id: id).first_or_initialize.tap do |company|
       company.domain = domain
     end
@@ -175,11 +178,12 @@ class Company < ActiveRecord::Base
 
   def self.from_founder(founder)
     company = from_domain founder.domain
+    company = Company.new(name: "#{founder.name} NewCo", domain: founder.domain) unless company.present?
+
     if (org = company.crunchbase_org).found?
       company.name = org.name
       company.description = org.description
     else
-      company.name ||= "#{founder.name} NewCo"
       company.skip_job!
     end
     company.save!
