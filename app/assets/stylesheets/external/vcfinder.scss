@@ -108,3 +108,13 @@ footer {
   top: -0.1em;
   color: $primary;
 }
+
+div.toastify-content {
+  min-height: 0;
+  padding: 1em 1em 0.5em 1em;
+}
+
+div.toastify {
+  text-align: center;
+  width: initial;
+}

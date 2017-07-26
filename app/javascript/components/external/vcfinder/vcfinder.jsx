@@ -1,8 +1,9 @@
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Search from './search.jsx';
 import TargetInvestors from './target_investors';
-import {emplace, ffetch, isDRF, pluckSort} from './utils';
-import {TargetInvestorsPath, TargetInvestorStageKeys} from './constants.js.erb';
+import {emplace, ffetch, isDRF, pluckSort, flash, fullName} from './utils';
+import {TargetInvestorsPath, TargetInvestorStageKeys, TargetInvestorStages} from './constants.js.erb';
 
 export default class VCFinder extends React.Component {
   constructor(props) {
@@ -35,20 +36,28 @@ export default class VCFinder extends React.Component {
   
   onInvestorSelect = (investor) => {
     ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
-    .then(target => this.setState({
-      stage: TargetInvestorStageKeys[0],
-      open: target.id,
-      targets: this.state.targets.concat([target])
-    }));
+    .then(target => {
+      flash(`Now tracking ${fullName(target.investor)}!`);
+      this.setState({
+        stage: TargetInvestorStageKeys[0],
+        open: target.id,
+        targets: this.state.targets.concat([target])
+      })
+    });
   };
 
   onTargetChange = (id, change) => {
     ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: change})
     .then(target => {
       let targets = emplace(this.state.targets, target);
-      let stages = this.allStages(targets);
-      if (stages.length === 1) {
-        this.setState({targets, stage: stages[0]});
+      if (change.stage) {
+        flash(`${fullName(target.investor)} moved to ${TargetInvestorStages[change.stage]}`);
+        let stages = this.allStages(targets);
+        if (stages.length === 1) {
+          this.setState({targets, stage: stages[0]});
+        } else {
+          this.setState({targets});
+        }
       } else {
         this.setState({targets});
       }
@@ -96,6 +105,7 @@ export default class VCFinder extends React.Component {
           onTargetChange={this.onTargetChange}
           onStageChange={this.onStageChange}
         />
+        <ToastContainer position={toast.POSITION.BOTTOM_LEFT} autoClose={4000} />
       </div>
     );
   }

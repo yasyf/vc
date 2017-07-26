@@ -1,5 +1,7 @@
+import React from 'react';
 import 'whatwg-fetch';
 import update from 'immutability-helper';
+import { toast } from 'react-toastify';
 
 export let ffetch = function(path, method = 'GET', data = null) {
   let opts = {
@@ -56,3 +58,5 @@ export let pluckSort = function(objects, prop, keys) {
 
 export let onChangeSet = (item, path, cb) =>
   (ev) => cb(update(item, _.set({}, path, {$set: ev.target.value})));
+
+export let flash = (text) => toast(<h4>{text}</h4>);

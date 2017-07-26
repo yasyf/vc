@@ -26,6 +26,7 @@
 
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}" %>
+    <%= stylesheet_pack_tag "external/#{yield(:pack)}" %>
   <% end %>
 
   <%= javascript_include_tag 'external/application', 'data-turbolinks-track' => true %>
