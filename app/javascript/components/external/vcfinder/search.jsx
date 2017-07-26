@@ -82,9 +82,9 @@ export default class Search extends React.Component {
       <nav className="top-bar">
         <ul className="menu">
           <li>
-            <input type="search" placeholder="Find an investor..." className="typeahead top-search-bar" />
+            <input type="search" placeholder="Search our investor database..." className="typeahead top-search-bar" />
             <button type="button" className="button tiny search-button" onClick={this.onClick}>
-              Add Investor
+              Add New Investor
             </button>
           </li>
         </ul>

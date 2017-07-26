@@ -11,7 +11,7 @@ export default class InvestorRecommendation extends React.Component {
     return (
       <div className="float-center text-center">
         <button type="button" className="hollow button" onClick={this.onSelect}>
-          I Want To Chat!
+          Add To List
         </button>
       </div>
     );
