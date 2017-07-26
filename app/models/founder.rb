@@ -1,8 +1,8 @@
 class Founder < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :notes
-  has_many :target_investors
-  has_one :investor_profile
+  has_many :target_investors, dependent: :destroy
+  has_one :investor_profile, dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name, presence: true
