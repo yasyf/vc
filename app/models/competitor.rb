@@ -84,7 +84,7 @@ class Competitor < ApplicationRecord
   end
 
   def self.create_from_name!(name)
-    existing = fuzzy_search(name: name).first
+    existing = search(name: name).first
     return existing if existing.present?
 
     crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
