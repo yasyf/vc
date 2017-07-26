@@ -1,4 +1,5 @@
 $light-gray: #e6e6e6;
+$primary: #1779ba;
 
 input.top-search-bar, .tt-menu {
   max-width: 100%;
@@ -36,6 +37,10 @@ input.top-search-bar, .tt-menu {
 
 .category-button {
   margin-right: 2em;
+}
+
+.category-button-sep {
+  margin-right: 1em;
 }
 
 .investor-row {
@@ -95,4 +100,11 @@ footer {
   right: 4em;
   padding: .4rem 1rem;
   top: 0.8em;
+}
+
+.between-button-sep {
+  font-size: x-large;
+  position: relative;
+  top: -0.1em;
+  color: $primary;
 }

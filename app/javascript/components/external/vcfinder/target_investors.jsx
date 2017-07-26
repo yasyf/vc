@@ -13,6 +13,8 @@ export default class TargetInvestors extends React.Component {
         categories={labeled}
         current={this.props.stage}
         onChange={this.props.onStageChange}
+        alwaysShow={true}
+        icon="arrow-right"
       />
     );
   }
