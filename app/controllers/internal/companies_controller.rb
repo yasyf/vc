@@ -35,15 +35,16 @@ class Internal::CompaniesController < Internal::ApplicationController
                   .includes(:users, :team, pitches: :votes, cards: :list)
                   .joins(:cards)
                   .where(team: team)
-                  .limit(PER_PAGE)
-                  .offset(page * PER_PAGE)
     return companies unless params[:filter].present?
+
     filtered = companies.search(params[:filter])
-    if filtered.count > 0
+    results = if filtered.count('*') > 0
       filtered
     else
       flash_warning "No matches found for '#{params[:filter]}'!"
       companies
     end
+
+    results.limit(PER_PAGE).offset(page * PER_PAGE)
   end
 end
