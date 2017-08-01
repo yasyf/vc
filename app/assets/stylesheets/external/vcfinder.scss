@@ -1,6 +1,36 @@
 $light-gray: #e6e6e6;
 $primary: #1779ba;
 
+$added: #a8e4ff;
+$waiting: #eef093;
+$respond: #f1cbff;
+$interested: #e1f7d5;
+$pass: #e1f7d5;
+
+.handsontable td.stage-added {
+  background-color: $added;
+}
+
+.handsontable td.stage-intro {
+  background-color: $waiting;
+}
+
+.handsontable td.stage-waiting {
+  background-color: $waiting;
+}
+
+.handsontable td.stage-respond {
+  background-color: $respond;
+}
+
+.handsontable td.stage-interested {
+  background-color: $interested;
+}
+
+.handsontable td.stage-pass {
+  background-color: $pass;
+}
+
 input.top-search-bar, .tt-menu {
   max-width: 100%;
   width: 95vw;
@@ -117,4 +147,9 @@ div.toastify-content {
 div.toastify {
   text-align: center;
   width: initial;
+}
+
+.spreadsheet {
+  width: 90vw;
+  margin: auto;
 }

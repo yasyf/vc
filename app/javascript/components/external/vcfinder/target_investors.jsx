@@ -1,12 +1,21 @@
 import React from 'react';
+import HotTable from 'react-handsontable';
 import TargetInvestor from './target_investor';
 import Buttons from './buttons';
-import {TargetInvestorStages, TargetInvestorStageKeys} from './constants.js.erb';
+import {
+  TargetInvestorStages,
+  TargetInvestorStagesInverse,
+  CompetitorIndustries,
+  CompetitorIndustriesInverse,
+  CompetitorFundingSizes,
+  CompetitorFundingSizesInverse,
+} from './constants.js.erb';
 import {pluckSort} from './utils';
+import {autocomplete, autocompleteDeep, simple} from './handsontable'
 
 export default class TargetInvestors extends React.Component {
   renderStageButtons() {
-    let stages = pluckSort(this.props.targets, 'stage', TargetInvestorStageKeys);
+    let stages = pluckSort(this.props.targets, 'stage', Object.keys(TargetInvestorStages));
     let labeled = _.zip(stages, _.map(stages, s => TargetInvestorStages[s]));
     return (
       <Buttons
@@ -20,23 +29,33 @@ export default class TargetInvestors extends React.Component {
   }
 
   render() {
-    let targets = _.sortBy(Object.entries(_.groupBy(_.filter(this.props.targets, {stage: this.props.stage}), 'tier')), '1');
-    let components = [];
-    targets.forEach(([tier, group]) => {
-      components.push(<h3 key={`tier-${tier}`}>Priority {tier}</h3>);
-      group.forEach(target => components.push(
-        <TargetInvestor
-          key={target.id}
-          open={target.id === this.props.open}
-          {...target}
-          onTargetChange={this.props.onTargetChange}
-        />
-      ));
-    });
+    let columns = {
+      'First Name': simple('investor.first_name'),
+      'Last Name': simple('investor.last_name'),
+      'Role': simple('investor.role'),
+      'Firm': simple('investor.competitor.name'),
+      'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
+      'Industry 1': autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[0]'),
+      'Industry 2': autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[1]'),
+      'Industry 3': autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[2]'),
+      'Check Size': autocompleteDeep(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
+      'Note': simple('note'),
+    };
+
     return (
-      <div className="investors">
-        {this.renderStageButtons()}
-        {components}
+      <div className="spreadsheet">
+        <HotTable
+          data={this.props.targets}
+          colHeaders={Object.keys(columns)}
+          columns={Object.values(columns)}
+          stretchH="all"
+          preventOverflow='horizontal'
+          minSpareRows={1}
+          bindRowsWithHeaders={true}
+          columnSorting={{
+            column: Object.keys(columns).indexOf('Status')
+          }}
+        />
       </div>
     );
   }

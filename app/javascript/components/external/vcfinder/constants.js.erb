@@ -23,16 +23,27 @@ let idPath = function(path){
   return new IDPath(path);
 };
 
-// Stages
+// Misc
+
+export const LoginStages = Object.freeze(<%= login_stages.to_json %>);
+
+// Hashes
 
 export const TargetInvestorStages = Object.freeze(<%= TargetInvestor::STAGES.to_json %>);
+export const TargetInvestorStagesInverse = Object.freeze(<%= TargetInvestor::STAGES.invert.to_json %>);
 export const TargetInvestorStageKeys = Object.freeze(<%= TargetInvestor::STAGES.keys.to_json %>);
-export const LoginStages = Object.freeze(<%= login_stages.to_json %>);
+
+export const CompetitorIndustries = Object.freeze(<%= Competitor::INDUSTRIES.to_json %>);
+export const CompetitorIndustriesInverse = Object.freeze(<%= Competitor::INDUSTRIES.invert.to_json %>);
+
+export const CompetitorFundingSizes = Object.freeze(<%= Competitor::FUNDING_SIZES.to_json %>);
+export const CompetitorFundingSizesInverse = Object.freeze(<%= Competitor::FUNDING_SIZES.invert.to_json %>);
+
 
 // Options
 
-export const CompetitorFundingSizes = Object.freeze(<%= hash_to_options(Competitor::FUNDING_SIZES).to_json %>);
-export const CompetitorIndustries = Object.freeze(<%= hash_to_options(Competitor::INDUSTRIES).to_json %>);
+export const CompetitorFundingSizesOptions = Object.freeze(<%= hash_to_options(Competitor::FUNDING_SIZES).to_json %>);
+export const CompetitorIndustriesOptions = Object.freeze(<%= hash_to_options(Competitor::INDUSTRIES).to_json %>);
 
 // Paths
 

@@ -11,7 +11,7 @@ class TargetInvestor < ApplicationRecord
     respond: 'Need To Respond',
     interested: 'Interested',
     pass: 'Not Interested',
-  }.freeze
+  }.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h.freeze
 
   enum stage: STAGES.keys
   enum funding_size: Competitor::FUNDING_SIZES.keys

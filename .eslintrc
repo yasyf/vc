@@ -5,6 +5,13 @@ env:
   jquery: true
   node: true
 
+parserOptions:
+  sourceType: "module"
+  ecmaFeatures:
+    spread: true
+    modules: true
+    experimentalObjectRestSpread: true
+
 # http://eslint.org/docs/rules/
 rules:
   # Possible Errors
@@ -136,7 +143,7 @@ rules:
   func-style: 0
   id-length: 0
   id-match: 0
-  indent: 2
+  indent: ["error", 2]
   jsx-quotes: 0
   key-spacing: 0
   linebreak-style: 0
