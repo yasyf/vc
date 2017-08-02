@@ -6,7 +6,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   filter %w(investor.comments investor.competitor.comments)
 
   def index
-    render_censored  current_external_founder.target_investors.includes(investor: :competitor)
+    render_censored  current_external_founder.target_investors.includes(investor: :competitor).order(:stage)
   end
 
   def create

@@ -1,7 +1,9 @@
 import Handsontable from 'handsontable-pro';
+import 'handsontable-pro/dist/handsontable.full.css';
 
 let setColourClassName = function(instance, td, row) {
-  let stage = (instance.getDataAtCell(row, 4) || '').substring(2);
+  let i = instance.getColHeader().indexOf('Status');
+  let stage = (instance.getDataAtCell(row, i) || '').substring(2);
   td.className = `stage-${stage}`;
 };
 
@@ -28,35 +30,61 @@ let makeColourAutocomplete = function(translate) {
   return {renderer, editor};
 };
 
-let makeAutocompleteOptions = function(translate) {
+let makeAutocompleteOptions = function(translate, inverse) {
   return {
     type: 'autocomplete',
     strict: true,
     allowInvalid: false,
+    source: Object.keys(inverse).concat([""]),
     ...makeColourAutocomplete(translate)
   };
 };
 
 export let autocompleteDeep = function(translate, inverse, path) {
+  let data = (row, val) => {
+    if (typeof val !== 'undefined') {
+      _.set(row, `investor.${path}`, inverse[val]);
+    } else {
+      let raw = _.get(row, `investor.${path}`) || _.get(row, `investor.competitor.${path}`);
+      return translate[raw] || "";
+    }
+  };
+  data.path = path;
+  data.inverse = inverse;
   return {
-    data: (row, val) => {
-      if (val) {
-        _.set(row, `investor.${path}`, inverse[val]);
-      } else {
-        return translate[_.get(row, `investor.${path}`) || _.get(row, `investor.competitor.${path}`)];
-      }
-    },
-    source: Object.keys(inverse),
-    ...makeAutocompleteOptions(translate),
+    data,
+    ...makeAutocompleteOptions(translate, inverse),
   };
 };
 
 export let autocomplete = function(translate, inverse, path) {
+  let data = (row, val) => val ? _.set(row, path, inverse[val]) : _.get(row, path, "");
+  data.path = path;
+  data.inverse = inverse;
   return {
-    data: (row, val) => val ? _.set(row, path, inverse[val]) : _.get(row, path),
-    source: Object.keys(inverse),
-    ...makeAutocompleteOptions(translate),
+    data,
+    ...makeAutocompleteOptions(translate, inverse),
   };
 };
 
 export let simple = path => ({data: path, renderer: ColourTextRenderer});
+
+export let nestedHeaders = (columns) =>
+  Object.entries(columns).map(([header, col]) => {
+    if (Array.isArray(col)) {
+      return {label: header, colspan: col.length};
+    } else {
+      return header;
+    }
+  });
+
+export let flattenedHeaders = (columns) =>
+  _.flatMap(Object.entries(columns), ([header, col]) => {
+    if (Array.isArray(col)) {
+      return (new Array(col.length)).fill(header);
+    } else {
+      return [header];
+    }
+  });
+
+export let flattenedColumns = (columns) => _.flatMap(Object.values(columns), _.castArray);

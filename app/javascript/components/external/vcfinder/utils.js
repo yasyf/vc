@@ -59,4 +59,4 @@ export let pluckSort = function(objects, prop, keys) {
 export let onChangeSet = (item, path, cb) =>
   (ev) => cb(update(item, _.set({}, path, {$set: ev.target.value})));
 
-export let flash = (text) => toast(<h4>{text}</h4>);
+export let flash = (text) => toast(text);

@@ -5,7 +5,7 @@ $added: #a8e4ff;
 $waiting: #eef093;
 $respond: #f1cbff;
 $interested: #e1f7d5;
-$pass: #e1f7d5;
+$pass: #ffbdbd;
 
 .handsontable td.stage-added {
   background-color: $added;
@@ -137,16 +137,6 @@ footer {
   position: relative;
   top: -0.1em;
   color: $primary;
-}
-
-div.toastify-content {
-  min-height: 0;
-  padding: 1em 1em 0.5em 1em;
-}
-
-div.toastify {
-  text-align: center;
-  width: initial;
 }
 
 .spreadsheet {

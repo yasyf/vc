@@ -43,7 +43,7 @@
     "react-hot-loader": "next",
     "react-modal": "^2.2.2",
     "react-select": "^1.0.0-rc.5",
-    "react-toastify": "^1.7.0",
+    "react-toastify": "^2.0.0-rc.2",
     "resolve-url-loader": "^2.1.0",
     "sass-loader": "^6.0.6",
     "script-loader": "^0.7.0",
