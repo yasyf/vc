@@ -63,7 +63,7 @@ export let lazyAutocomplete = function(path, fields, field, remoteField = null) 
   remoteField = remoteField || field;
   let source = (q, process) => {
     let selected = this.hot.getSelected();
-    let row = this.hot.getSourceDataAtRow(selected[0]);
+    let row = this.getRow(selected[0]);
     _.set(row, field, q);
     let query = buildQuery(fields, row);
     if (!query.length) {

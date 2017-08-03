@@ -44,7 +44,7 @@ export let merge = (dest, src) => _extend(dest, src, false);
 
 export let emplace = function(items, item) {
   let index = _.findIndex(items, {id: item.id});
-  return update(items, {[index]: {$set: item}});
+  return [update(items, {[index]: {$set: item}}), index];
 };
 
 export let extract = function(items, item) {
@@ -64,7 +64,7 @@ export let flash = (text) => toast(text);
 export let buildQuery = (fields, row) =>
   _.compact(_.map(fields, k => {
     let val = _.get(row, k);
-    return !val ? null : `${k}=${val}`;
+    return (nullOrUndef(val) || val === "") ? null : `${k}=${val}`;
   }));
 
 export let nullOrUndef = (val) => val === undefined || val === null;

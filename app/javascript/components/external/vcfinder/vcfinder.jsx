@@ -12,7 +12,7 @@ export default class VCFinder extends React.Component {
     this.state = {
       targets: [],
       stage: TargetInvestorStageKeys[0],
-      open: null,
+      selected: null,
     };
   }
 
@@ -36,8 +36,10 @@ export default class VCFinder extends React.Component {
 
   onNewTarget = (update) => {
     ffetch(TargetInvestorsPath, 'POST', update).then(target => {
+      let targets = this.state.targets.concat([target]);
       this.setState({
-        targets: this.state.targets.concat([target])
+        selected: targets.length - 1,
+        targets,
       });
     });
   };
@@ -45,11 +47,12 @@ export default class VCFinder extends React.Component {
   onInvestorSelect = (investor) => {
     ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
     .then(target => {
-      flash(`Now tracking ${fullName(target.investor)}!`);
+      flash(`Now tracking ${fullName(target)}!`);
+      let targets = this.state.targets.concat([target]);
       this.setState({
         stage: TargetInvestorStageKeys[0],
-        open: target.id,
-        targets: this.state.targets.concat([target])
+        selected: targets.length - 1,
+        targets,
       })
     });
   };
@@ -57,18 +60,11 @@ export default class VCFinder extends React.Component {
   onTargetChange = (id, change) => {
     ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: change})
     .then(target => {
-      let targets = emplace(this.state.targets, target);
+      let [targets, i] = emplace(this.state.targets, target);
       if (change.stage) {
-        flash(`${fullName(target.investor)} moved to ${TargetInvestorStages[change.stage]}`);
-        let stages = this.allStages(targets);
-        if (stages.length === 1) {
-          this.setState({targets, stage: stages[0]});
-        } else {
-          this.setState({targets});
-        }
-      } else {
-        this.setState({targets});
+        flash(`${fullName(target)} moved to ${TargetInvestorStages[change.stage]}`);
       }
+      this.setState({targets, selected: i});
     })
   };
 
@@ -109,7 +105,7 @@ export default class VCFinder extends React.Component {
         <TargetInvestors
           targets={this.state.targets}
           stage={this.state.stage}
-          open={this.state.open}
+          selected={this.state.selected}
           onTargetChange={this.onTargetChange}
           onNewTarget={this.onNewTarget}
           onStageChange={this.onStageChange}

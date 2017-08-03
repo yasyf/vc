@@ -31,10 +31,18 @@ export default class TargetInvestors extends React.Component {
 
     this.hot = {};
     this.columns = this.genColumns();
+    this.selectedCol = null;
   }
 
   componentDidMount() {
     this.hot.sort(this.hot.getColHeader().indexOf('Status'), true);
+  }
+
+  componentDidUpdate() {
+    if (!nullOrUndef(this.props.selected)) {
+      let i = this.hot.getPlugin('columnSorting').translateRow(this.props.selected);
+      this.hot.selectCell(i, this.selectedCol);
+    }
   }
 
   getRow(i) {
@@ -119,11 +127,18 @@ export default class TargetInvestors extends React.Component {
           if (row.id) {
             this.props.onTargetChange(row.id, update);
           } else {
-            this.props.onNewTarget(update);
+            let len = _.keys(_.omitBy(update, v => nullOrUndef(v) || v === "")).length;
+            if (len) {
+              this.props.onNewTarget(update);
+            }
           }
         });
         break;
     }
+  };
+
+  onSelection = (r, c) => {
+    this.selectedCol = c;
   };
 
   genColumns() {
@@ -174,6 +189,7 @@ export default class TargetInvestors extends React.Component {
           onBeforeChange={this.onBeforeChange}
           onAfterChange={this.onChange}
           onAfterRemoveRow={this.onRemoveRow}
+          onAfterSelection={this.onSelection}
           ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}
         />
       </div>
