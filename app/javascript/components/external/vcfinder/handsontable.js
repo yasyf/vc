@@ -1,6 +1,6 @@
 import Handsontable from 'handsontable-pro';
 import 'handsontable-pro/dist/handsontable.full.css';
-import {ffetch} from './utils';
+import {buildQuery, ffetch} from './utils';
 
 let setColourClassName = function(instance, td, row) {
   let i = instance.getColHeader().indexOf('Status');
@@ -41,25 +41,15 @@ let makeAutocompleteOptions = function(translate, inverse) {
   };
 };
 
-export let autocompleteDeep = function(translate, inverse, path) {
+export let autocomplete = function(translate, inverse, path) {
   let data = (row, val) => {
     if (typeof val !== 'undefined') {
-      _.set(row, `investor.${path}`, inverse[val]);
+      _.set(row, path, inverse[val]);
     } else {
-      let raw = _.get(row, `investor.${path}`) || _.get(row, `investor.competitor.${path}`);
-      return translate[raw] || "";
+      let raw = _.get(row, path) || _.get(row, `investor.${path}`) || _.get(row, `investor.competitor.${path}`);
+      return raw || "";
     }
   };
-  data.path = path;
-  data.inverse = inverse;
-  return {
-    data,
-    ...makeAutocompleteOptions(translate, inverse),
-  };
-};
-
-export let autocomplete = function(translate, inverse, path) {
-  let data = (row, val) => val ? _.set(row, path, inverse[val]) : _.get(row, path, "");
   data.path = path;
   data.inverse = inverse;
   return {
@@ -75,15 +65,7 @@ export let lazyAutocomplete = function(path, fields, field) {
     let selected = this.hot.getSelected();
     let row = this.hot.getSourceDataAtRow(selected[0]);
     _.set(row, field, q);
-    let query = _.compact(_.map(Object.entries(fields), ([k, v]) => {
-      let val = _.get(row, v);
-      if (val) {
-        return `${k}=${_.get(row, v)}`;
-      } else {
-        return null;
-      }
-    }));
-    console.log(query);
+    let query = buildQuery(fields, row);
     if (!query.length) {
       return;
     }
@@ -94,6 +76,13 @@ export let lazyAutocomplete = function(path, fields, field) {
     source,
     ...simple(field)
   };
+};
+
+export let nested = (fn, path, count) => {
+  let paths = _.map(_.range(count), i => `${path}[${i}]`);
+  let arr = _.map(paths, fn);
+  arr.paths = paths;
+  return arr;
 };
 
 export let nestedHeaders = (columns) =>
@@ -115,3 +104,13 @@ export let flattenedHeaders = (columns) =>
   });
 
 export let flattenedColumns = (columns) => _.flatMap(Object.values(columns), _.castArray);
+
+export let propToPath = (prop) => {
+  if (Array.isArray(prop)) {
+    return prop.paths;
+  } else if (typeof prop.data === 'function') {
+    return prop.data.path;
+  } else {
+    return prop.data;
+  }
+};

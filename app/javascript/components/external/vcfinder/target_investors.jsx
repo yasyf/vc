@@ -10,22 +10,30 @@ import {
   CompetitorFundingSizesInverse,
   InvestorsSearchPath,
 } from './constants.js.erb';
-import {pluckSort} from './utils';
+import {buildQuery, ffetch, pluckSort} from './utils';
 import {
   autocomplete,
-  autocompleteDeep,
   lazyAutocomplete,
   simple,
   nestedHeaders,
   flattenedColumns,
   flattenedHeaders,
+  propToPath,
+  nested,
 } from './handsontable';
+
+const autofillPaths = {
+  first_name: 'investor.first_name',
+  last_name: 'investor.last_name',
+  competitor: 'investor.competitor.name',
+};
 
 export default class TargetInvestors extends React.Component {
   constructor(props) {
     super(props);
 
     this.hot = {};
+    this.columns = this.genColumns();
   }
 
   componentDidMount() {
@@ -47,6 +55,65 @@ export default class TargetInvestors extends React.Component {
     );
   }
 
+  getRow(i) {
+    if (this.hot.sortingEnabled) {
+      let ii = this.hot.sortIndex[i][0];
+      return this.props.targets[ii];
+    } else {
+      return this.props.targets[i];
+    }
+  }
+
+  onCreateRow = (index, num, source) => {
+    console.log('add', index, num, source);
+    // create new records
+  };
+
+  onRemoveRow = (index, num) => {
+    console.log('remove', index, num);
+    // destroy records
+  };
+
+  onBeforeChange = (changes, source) => {
+    if (source !== 'edit' || changes.length !== 1) {
+      return;
+    }
+    let [i, prop, oldVal, newVal] = changes[0];
+    let paths = Object.values(autofillPaths);
+    if (!paths.includes(prop)) {
+      return;
+    }
+
+    let row = this.getRow(i);
+
+    for (let path of paths) {
+      if (_.get(row, path) === undefined) {
+        return;
+      }
+    }
+
+    let query = buildQuery(autofillPaths, row);
+    ffetch(`${InvestorsSearchPath}?${query.join('&')}`).then(res => {
+      let result = {
+        investor: res[0],
+        ...res[0],
+      };
+      let changes = _.compact(_.flatMap(Object.values(this.columns), prop => {
+        let paths = _.castArray(propToPath(prop));
+        return _.map(paths, path => {
+          if (!_.get(row, path)) {
+            let val = _.get(result, path);
+            if (val !== null && val !== undefined) {
+              return [i, path, val];
+            }
+          }
+          return null;
+        });
+      }));
+      this.hot.setDataAtRowProp(changes);
+    });
+  };
+
   onChange = (changes, source) => {
     switch (source) {
       case 'loadData':
@@ -55,18 +122,12 @@ export default class TargetInvestors extends React.Component {
         }
         break;
       case 'edit':
+        let updates = {};
         changes.forEach(([i, prop, oldVal, newVal]) => {
           if (oldVal === newVal) {
             return;
           }
-          let row;
-          if (this.hot.sortingEnabled) {
-            let ii = this.hot.sortIndex[i][0];
-            row = this.props.targets[ii];
-          } else {
-            row = this.props.targets[i];
-          }
-          let id = row.id;
+          let row = this.getRow(i);
 
           let path, value;
           if (typeof prop === 'function') {
@@ -77,19 +138,19 @@ export default class TargetInvestors extends React.Component {
             value = newVal;
           }
 
-          let update = _.set({}, path, value);
+          let change = updates[row.id] || {};
+          let update = _.set(change, path, value);
+          updates[row.id] = update;
+        });
+        Object.entries(updates).forEach(([id, update]) => {
           this.props.onTargetChange(id, update);
         });
         break;
     }
   };
 
-  columns() {
-    let remote = _.bind(lazyAutocomplete, this, InvestorsSearchPath, {
-      first_name: 'investor.first_name',
-      last_name: 'investor.last_name',
-      competitor: 'investor.competitor.name',
-    });
+  genColumns() {
+    let remote = _.bind(lazyAutocomplete, this, InvestorsSearchPath, autofillPaths);
 
     return {
       'Firm': remote('investor.competitor.name'),
@@ -97,25 +158,20 @@ export default class TargetInvestors extends React.Component {
       'Last Name': remote('investor.last_name'),
       'Role': simple('investor.role'),
       'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
-      'Industry': [
-        autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[0]'),
-        autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[1]'),
-        autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[2]'),
-      ],
-      'Check Size': autocompleteDeep(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
+      'Industry': nested(_.partial(autocomplete, CompetitorIndustries, CompetitorIndustriesInverse), 'industry', 3),
+      'Check Size': autocomplete(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
       'Note': simple('note'),
     };
   };
 
   render() {
-    let columns = this.columns();
     return (
       <div className="spreadsheet">
         <HotTable
           data={this.props.targets}
-          colHeaders={flattenedHeaders(columns)}
-          nestedHeaders={[nestedHeaders(columns)]}
-          columns={flattenedColumns(columns)}
+          colHeaders={flattenedHeaders(this.columns)}
+          nestedHeaders={[nestedHeaders(this.columns)]}
+          columns={flattenedColumns(this.columns)}
           stretchH="all"
           preventOverflow='horizontal'
           autoColumnSize={{
@@ -134,7 +190,10 @@ export default class TargetInvestors extends React.Component {
             sortEmptyCells: true,
           }}
           sortIndicator={true}
+          onBeforeChange={this.onBeforeChange}
           onAfterChange={this.onChange}
+          onAfterCreateRow={this.onCreateRow}
+          onAfterRemoveRow={this.onRemoveRow}
           ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}
         />
       </div>

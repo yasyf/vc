@@ -8,6 +8,7 @@ env:
 parserOptions:
   sourceType: "module"
   ecmaFeatures:
+    jsx: true
     spread: true
     modules: true
     experimentalObjectRestSpread: true

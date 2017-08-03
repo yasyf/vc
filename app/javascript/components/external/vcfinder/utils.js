@@ -60,3 +60,13 @@ export let onChangeSet = (item, path, cb) =>
   (ev) => cb(update(item, _.set({}, path, {$set: ev.target.value})));
 
 export let flash = (text) => toast(text);
+
+export let buildQuery = (fields, row) =>
+  _.compact(_.map(Object.entries(fields), ([k, v]) => {
+    let val = _.get(row, v);
+    if (val) {
+      return `${k}=${_.get(row, v)}`;
+    } else {
+      return null;
+    }
+  }));
