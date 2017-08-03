@@ -4,12 +4,10 @@ one:
   investor: one
   founder: one
   stage: added
-  tier: 1
   last_response: 2017-07-07 14:28:15
 
 two:
   investor: two
   founder: two
   stage: added
-  tier: 1
   last_response: 2017-07-07 14:28:15
