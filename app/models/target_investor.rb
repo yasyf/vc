@@ -4,6 +4,18 @@ class TargetInvestor < ApplicationRecord
   belongs_to :investor, counter_cache: true
   belongs_to :founder
 
+  DUMMY_ATTRS = {
+    firm_name: 'Demo Capital',
+    first_name: 'Jane',
+    last_name: 'Risk',
+    role: 'Managing Partner',
+    stage: 0,
+    industry: [:saas, :ai, :food],
+    funding_size: 1,
+    note: 'met through Jon Doe',
+    last_response: 1.day.ago,
+  }
+
   STAGES = {
     added: 'Need To Reach Out',
     intro: 'Waiting For Intro',
@@ -16,23 +28,31 @@ class TargetInvestor < ApplicationRecord
   enum stage: STAGES.keys
   enum funding_size: Competitor::FUNDING_SIZES.keys
 
-  validates :investor, presence: true, uniqueness: { scope: [:founder] }
+  validates :investor, uniqueness: { scope: [:founder], allow_nil: true }
   validates :founder, presence: true
   validates :stage, presence: true
-  validates :tier, presence: true, numericality: { greater_than: 0, only_integer: true }
+
+  before_save :check_stage_change, :check_investor
 
   sort :industry
 
-  def change_stage!(new_stage)
-    return if stage == new_stage
-    LoggedEvent.log! :target_stage_changed, self,
-                     notify: 0, data: { from: stage, to: new_stage }
-    self.stage = new_stage
-    self.last_response = DateTime.now if new_stage.to_sym == :respond
-    save!
+  private
+
+  def check_investor
+    return unless %w(firm_name first_name last_name).all? { |a| send(a).present? }
+    investors = Investor
+      .includes(:competitor)
+      .references(:competitors)
+      .search(first_name: first_name, last_name: last_name, competitors: { name: firm_name })
+      .where.not(id: founder.existing_target_investor_ids)
+      .limit(1)
+    self.investor = investors.first
   end
 
-  def as_json(options = {})
-    super options.reverse_merge(only: [:note, :industry, :funding_size, :stage, :tier, :id, :last_response], methods: [:investor])
+  def check_stage_change
+    return if stage == stage_was
+    LoggedEvent.log! :target_stage_changed, self,
+                     notify: 0, data: { from: stage_was, to: stage }
+    self.last_response = DateTime.now if stage.to_sym == :respond
   end
 end

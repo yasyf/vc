@@ -62,11 +62,9 @@ export let onChangeSet = (item, path, cb) =>
 export let flash = (text) => toast(text);
 
 export let buildQuery = (fields, row) =>
-  _.compact(_.map(Object.entries(fields), ([k, v]) => {
-    let val = _.get(row, v);
-    if (val) {
-      return `${k}=${_.get(row, v)}`;
-    } else {
-      return null;
-    }
+  _.compact(_.map(fields, k => {
+    let val = _.get(row, k);
+    return !val ? null : `${k}=${val}`;
   }));
+
+export let nullOrUndef = (val) => val === undefined || val === null;

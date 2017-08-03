@@ -46,8 +46,7 @@ export let autocomplete = function(translate, inverse, path) {
     if (typeof val !== 'undefined') {
       _.set(row, path, inverse[val]);
     } else {
-      let raw = _.get(row, path) || _.get(row, `investor.${path}`) || _.get(row, `investor.competitor.${path}`);
-      return raw || "";
+      return _.get(row, path, "");
     }
   };
   data.path = path;
@@ -60,7 +59,8 @@ export let autocomplete = function(translate, inverse, path) {
 
 export let simple = path => ({data: path, renderer: ColourTextRenderer});
 
-export let lazyAutocomplete = function(path, fields, field) {
+export let lazyAutocomplete = function(path, fields, field, remoteField = null) {
+  remoteField = remoteField || field;
   let source = (q, process) => {
     let selected = this.hot.getSelected();
     let row = this.hot.getSourceDataAtRow(selected[0]);
@@ -69,7 +69,7 @@ export let lazyAutocomplete = function(path, fields, field) {
     if (!query.length) {
       return;
     }
-    ffetch(`${path}?${query.join('&')}&pluck=${field}`).then(process);
+    ffetch(`${path}?${query.join('&')}&pluck=${remoteField}`).then(process);
   };
   return {
     type: 'autocomplete',
@@ -80,6 +80,7 @@ export let lazyAutocomplete = function(path, fields, field) {
 
 export let nested = (fn, path, count) => {
   let paths = _.map(_.range(count), i => `${path}[${i}]`);
+  paths.path = path;
   let arr = _.map(paths, fn);
   arr.paths = paths;
   return arr;
@@ -102,6 +103,16 @@ export let flattenedHeaders = (columns) =>
       return [header];
     }
   });
+
+export let extractSchema = (columns) =>
+  _.fromPairs(_.map(columns, prop => {
+    let path = propToPath(prop);
+    if (Array.isArray(path)) {
+      return [path.path, _.times(path.length, _.constant(null))];
+    } else {
+      return [path, null];
+    }
+  }));
 
 export let flattenedColumns = (columns) => _.flatMap(Object.values(columns), _.castArray);
 

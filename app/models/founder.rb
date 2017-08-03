@@ -65,6 +65,10 @@ class Founder < ApplicationRecord
     super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company, :investor_profile])
   end
 
+  def existing_target_investor_ids
+    target_investors.where.not(investor_id: nil).select('investor_id')
+  end
+
   def recommended_investors(limit: 5, offset: 0)
     query = <<-SQL
       SELECT DISTINCT ON (i.competitor_id)

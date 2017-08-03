@@ -508,16 +508,19 @@ CREATE TABLE schema_migrations (
 
 CREATE TABLE target_investors (
     id bigint NOT NULL,
-    investor_id bigint NOT NULL,
+    investor_id bigint,
     founder_id bigint NOT NULL,
     stage integer DEFAULT 0 NOT NULL,
-    tier integer DEFAULT 1 NOT NULL,
     last_response timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     funding_size integer,
-    industry character varying,
-    note text
+    note text,
+    firm_name character varying,
+    first_name character varying,
+    last_name character varying,
+    role character varying,
+    industry character varying[]
 );
 
 
@@ -1302,6 +1305,13 @@ CREATE INDEX index_target_investors_on_founder_id ON target_investors USING btre
 
 
 --
+-- Name: index_target_investors_on_industry; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_target_investors_on_industry ON target_investors USING gin (industry);
+
+
+--
 -- Name: index_target_investors_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1640,6 +1650,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170720015921'),
 ('20170721125920'),
 ('20170721205154'),
-('20170724232031');
+('20170724232031'),
+('20170803085715');
 
 

@@ -33,6 +33,14 @@ export default class VCFinder extends React.Component {
     let stages = this.allStages(targets);
     return stages[0] || TargetInvestorStageKeys[0];
   }
+
+  onNewTarget = (update) => {
+    ffetch(TargetInvestorsPath, 'POST', update).then(target => {
+      this.setState({
+        targets: this.state.targets.concat([target])
+      });
+    });
+  };
   
   onInvestorSelect = (investor) => {
     ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
@@ -103,6 +111,7 @@ export default class VCFinder extends React.Component {
           stage={this.state.stage}
           open={this.state.open}
           onTargetChange={this.onTargetChange}
+          onNewTarget={this.onNewTarget}
           onStageChange={this.onStageChange}
         />
         <ToastContainer position={toast.POSITION.BOTTOM_LEFT} autoClose={4000} />

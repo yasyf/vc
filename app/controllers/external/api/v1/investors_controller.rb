@@ -15,22 +15,15 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def search
-    query = {
-      competitors: { name: params[:competitor] }
-    }.deep_compact
-    fuzzy_query = {
-      first_name: params[:first_name],
-      last_name: params[:last_name],
-    }.compact
-
-    puts(query.to_s, fuzzy_query.to_s)
+    return render json: [] if search_params.blank? && fuzzy_search_params.blank?
     results = Investor.includes(:competitor).references(:competitors)
-    results = results.search(query) if query.present?
-    results = results.fuzzy_search(fuzzy_query) if fuzzy_query.present?
-    results = results.where.not(id: existing_target_investor_ids).order('featured')
+    results = results.search(search_params) if search_params.present?
+    results = results.fuzzy_search(fuzzy_search_params) if fuzzy_search_params.present?
+    results = results.where.not(id: existing_target_investor_ids) if existing_target_investor_ids.count > 0
+    results = results.order('featured')
     if params[:pluck].present?
       extract = lambda do |m|
-        components = params[:pluck].split('.').drop(1).reverse
+        components = params[:pluck].split('.').reverse
         m = m.send(components.pop) while components.present?
         m
       end
@@ -95,8 +88,16 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   private
 
+  def search_params
+    { competitors: { name: params[:firm_name] } }.deep_compact
+  end
+
+  def fuzzy_search_params
+    params.permit(:first_name, :last_name).to_h.compact
+  end
+
   def existing_target_investor_ids
-    current_external_founder.target_investors.select('investor_id')
+    current_external_founder.existing_target_investor_ids
   end
 
   def recommendations_shown!

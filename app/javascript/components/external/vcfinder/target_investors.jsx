@@ -10,7 +10,7 @@ import {
   CompetitorFundingSizesInverse,
   InvestorsSearchPath,
 } from './constants.js.erb';
-import {buildQuery, ffetch, pluckSort} from './utils';
+import {buildQuery, ffetch, nullOrUndef, pluckSort} from './utils';
 import {
   autocomplete,
   lazyAutocomplete,
@@ -20,13 +20,10 @@ import {
   flattenedHeaders,
   propToPath,
   nested,
+  extractSchema,
 } from './handsontable';
 
-const autofillPaths = {
-  first_name: 'investor.first_name',
-  last_name: 'investor.last_name',
-  competitor: 'investor.competitor.name',
-};
+const autofillPaths = ['first_name', 'last_name', 'firm_name'];
 
 export default class TargetInvestors extends React.Component {
   constructor(props) {
@@ -38,36 +35,16 @@ export default class TargetInvestors extends React.Component {
 
   componentDidMount() {
     this.hot.sort(this.hot.getColHeader().indexOf('Status'), true);
-    setTimeout(() => this.hot.getPlugin('collapsibleColumns').collapseAll(), 1000);
-  }
-
-  renderStageButtons() {
-    let stages = pluckSort(this.props.targets, 'stage', Object.keys(TargetInvestorStages));
-    let labeled = _.zip(stages, _.map(stages, s => TargetInvestorStages[s]));
-    return (
-      <Buttons
-        categories={labeled}
-        current={this.props.stage}
-        onChange={this.props.onStageChange}
-        alwaysShow={true}
-        icon="arrow-right"
-      />
-    );
   }
 
   getRow(i) {
     if (this.hot.sortingEnabled) {
       let ii = this.hot.sortIndex[i][0];
-      return this.props.targets[ii];
+      return this.hot.getSourceDataAtRow(ii);
     } else {
-      return this.props.targets[i];
+      return this.hot.getSourceDataAtRow(i);
     }
   }
-
-  onCreateRow = (index, num, source) => {
-    console.log('add', index, num, source);
-    // create new records
-  };
 
   onRemoveRow = (index, num) => {
     console.log('remove', index, num);
@@ -79,39 +56,42 @@ export default class TargetInvestors extends React.Component {
       return;
     }
     let [i, prop, oldVal, newVal] = changes[0];
-    let paths = Object.values(autofillPaths);
-    if (!paths.includes(prop)) {
+    if (!autofillPaths.includes(prop)) {
       return;
     }
 
     let row = this.getRow(i);
 
-    for (let path of paths) {
-      if (_.get(row, path) === undefined) {
+    for (let path of autofillPaths) {
+      if (nullOrUndef(_.get(row, path))) {
         return;
       }
     }
 
     let query = buildQuery(autofillPaths, row);
+    let newChanges = [[i, prop, newVal]];
     ffetch(`${InvestorsSearchPath}?${query.join('&')}`).then(res => {
+      if (!res.length) {
+        return;
+      }
       let result = {
         investor: res[0],
         ...res[0],
       };
-      let changes = _.compact(_.flatMap(Object.values(this.columns), prop => {
-        let paths = _.castArray(propToPath(prop));
-        return _.map(paths, path => {
-          if (!_.get(row, path)) {
+      Object.values(this.columns).forEach(prop => {
+        _.castArray(propToPath(prop)).forEach(path => {
+          if (nullOrUndef(_.get(row, path))) {
             let val = _.get(result, path);
-            if (val !== null && val !== undefined) {
-              return [i, path, val];
+            if (!nullOrUndef(val)) {
+              newChanges.push([i, path, val]);
             }
           }
-          return null;
         });
-      }));
-      this.hot.setDataAtRowProp(changes);
+      });
+      this.hot.setDataAtRowProp(newChanges);
     });
+
+    return false;
   };
 
   onChange = (changes, source) => {
@@ -124,11 +104,6 @@ export default class TargetInvestors extends React.Component {
       case 'edit':
         let updates = {};
         changes.forEach(([i, prop, oldVal, newVal]) => {
-          if (oldVal === newVal) {
-            return;
-          }
-          let row = this.getRow(i);
-
           let path, value;
           if (typeof prop === 'function') {
             path = prop.path;
@@ -137,13 +112,15 @@ export default class TargetInvestors extends React.Component {
             path = prop;
             value = newVal;
           }
-
-          let change = updates[row.id] || {};
-          let update = _.set(change, path, value);
-          updates[row.id] = update;
+          updates[i] = _.set(updates[i] || {}, path, value);
         });
-        Object.entries(updates).forEach(([id, update]) => {
-          this.props.onTargetChange(id, update);
+        Object.entries(updates).forEach(([i, update]) => {
+          let row = this.getRow(i);
+          if (row.id) {
+            this.props.onTargetChange(row.id, update);
+          } else {
+            this.props.onNewTarget(update);
+          }
         });
         break;
     }
@@ -153,22 +130,25 @@ export default class TargetInvestors extends React.Component {
     let remote = _.bind(lazyAutocomplete, this, InvestorsSearchPath, autofillPaths);
 
     return {
-      'Firm': remote('investor.competitor.name'),
-      'First Name': remote('investor.first_name'),
-      'Last Name': remote('investor.last_name'),
-      'Role': simple('investor.role'),
+      'Firm': remote('firm_name', 'competitor.name'),
+      'First <br/> Name': remote('first_name'),
+      'Last <br/> Name': remote('last_name'),
+      'Role': simple('role'),
       'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
       'Industry': nested(_.partial(autocomplete, CompetitorIndustries, CompetitorIndustriesInverse), 'industry', 3),
-      'Check Size': autocomplete(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
+      'Check <br/> Size': autocomplete(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
       'Note': simple('note'),
+      'Last <br/> Response': simple('last_response'),
     };
   };
+
 
   render() {
     return (
       <div className="spreadsheet">
         <HotTable
-          data={this.props.targets}
+          data={JSON.parse(JSON.stringify(this.props.targets))}
+          dataSchema={extractSchema(this.columns)}
           colHeaders={flattenedHeaders(this.columns)}
           nestedHeaders={[nestedHeaders(this.columns)]}
           columns={flattenedColumns(this.columns)}
@@ -184,15 +164,15 @@ export default class TargetInvestors extends React.Component {
             indicators: true,
           }}
           contextMenu={['hidden_columns_hide', 'hidden_columns_show']}
+          minRows={10}
           minSpareRows={1}
           bindRowsWithHeaders={true}
           columnSorting={{
-            sortEmptyCells: true,
+            sortEmptyCells: false,
           }}
           sortIndicator={true}
           onBeforeChange={this.onBeforeChange}
           onAfterChange={this.onChange}
-          onAfterCreateRow={this.onCreateRow}
           onAfterRemoveRow={this.onRemoveRow}
           ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}
         />
