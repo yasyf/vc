@@ -1,5 +1,6 @@
 import Handsontable from 'handsontable-pro';
 import 'handsontable-pro/dist/handsontable.full.css';
+import {ffetch} from './utils';
 
 let setColourClassName = function(instance, td, row) {
   let i = instance.getColHeader().indexOf('Status');
@@ -68,6 +69,32 @@ export let autocomplete = function(translate, inverse, path) {
 };
 
 export let simple = path => ({data: path, renderer: ColourTextRenderer});
+
+export let lazyAutocomplete = function(path, fields, field) {
+  let source = (q, process) => {
+    let selected = this.hot.getSelected();
+    let row = this.hot.getSourceDataAtRow(selected[0]);
+    _.set(row, field, q);
+    let query = _.compact(_.map(Object.entries(fields), ([k, v]) => {
+      let val = _.get(row, v);
+      if (val) {
+        return `${k}=${_.get(row, v)}`;
+      } else {
+        return null;
+      }
+    }));
+    console.log(query);
+    if (!query.length) {
+      return;
+    }
+    ffetch(`${path}?${query.join('&')}&pluck=${field}`).then(process);
+  };
+  return {
+    type: 'autocomplete',
+    source,
+    ...simple(field)
+  };
+};
 
 export let nestedHeaders = (columns) =>
   Object.entries(columns).map(([header, col]) => {

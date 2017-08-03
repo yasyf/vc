@@ -8,27 +8,18 @@ import {
   CompetitorIndustriesInverse,
   CompetitorFundingSizes,
   CompetitorFundingSizesInverse,
+  InvestorsSearchPath,
 } from './constants.js.erb';
 import {pluckSort} from './utils';
 import {
-  autocomplete, autocompleteDeep, simple, nestedHeaders, flattenedColumns,
+  autocomplete,
+  autocompleteDeep,
+  lazyAutocomplete,
+  simple,
+  nestedHeaders,
+  flattenedColumns,
   flattenedHeaders,
 } from './handsontable';
-
-let columns = {
-  'First Name': simple('investor.first_name'),
-  'Last Name': simple('investor.last_name'),
-  'Role': simple('investor.role'),
-  'Firm': simple('investor.competitor.name'),
-  'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
-  'Industry': [
-    autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[0]'),
-    autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[1]'),
-    autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[2]'),
-  ],
-  'Check Size': autocompleteDeep(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
-  'Note': simple('note'),
-};
 
 export default class TargetInvestors extends React.Component {
   constructor(props) {
@@ -93,7 +84,31 @@ export default class TargetInvestors extends React.Component {
     }
   };
 
+  columns() {
+    let remote = _.bind(lazyAutocomplete, this, InvestorsSearchPath, {
+      first_name: 'investor.first_name',
+      last_name: 'investor.last_name',
+      competitor: 'investor.competitor.name',
+    });
+
+    return {
+      'Firm': remote('investor.competitor.name'),
+      'First Name': remote('investor.first_name'),
+      'Last Name': remote('investor.last_name'),
+      'Role': simple('investor.role'),
+      'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
+      'Industry': [
+        autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[0]'),
+        autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[1]'),
+        autocompleteDeep(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[2]'),
+      ],
+      'Check Size': autocompleteDeep(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
+      'Note': simple('note'),
+    };
+  };
+
   render() {
+    let columns = this.columns();
     return (
       <div className="spreadsheet">
         <HotTable

@@ -15,16 +15,41 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def search
-    existing = current_external_founder.target_investors.select('investor_id')
+    query = {
+      competitors: { name: params[:competitor] }
+    }.deep_compact
+    fuzzy_query = {
+      first_name: params[:first_name],
+      last_name: params[:last_name],
+    }.compact
+
+    puts(query.to_s, fuzzy_query.to_s)
+    results = Investor.includes(:competitor).references(:competitors)
+    results = results.search(query) if query.present?
+    results = results.fuzzy_search(fuzzy_query) if fuzzy_query.present?
+    results = results.where.not(id: existing_target_investor_ids).order('featured')
+    if params[:pluck].present?
+      extract = lambda do |m|
+        components = params[:pluck].split('.').drop(1).reverse
+        m = m.send(components.pop) while components.present?
+        m
+      end
+      render json: results.map(&extract).uniq
+    else
+      render_censored results
+    end
+  end
+
+  def fuzzy_search
+    query = { first_name: params[:q], last_name: params[:q], competitors: { name: params[:q] } }
     results = Investor
-                .includes(:competitor)
+                .includes(:notes, competitor: :notes)
                 .references(:competitors)
-                .fuzzy_search({ first_name: params[:q], last_name: params[:q], competitors: { name: params[:q] } }, false)
-                .where.not(id: existing)
+                .fuzzy_search(query, false)
+                .where.not(id: existing_target_investor_ids)
                 .order('featured')
     render_censored results
   end
-
 
   def update
     investor = Investor.find(params[:id])
@@ -69,6 +94,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   private
+
+  def existing_target_investor_ids
+    current_external_founder.target_investors.select('investor_id')
+  end
 
   def recommendations_shown!
     session[:recommendations_shown] = true

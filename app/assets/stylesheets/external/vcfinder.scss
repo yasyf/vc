@@ -108,7 +108,7 @@ h3 {
 }
 
 footer {
-  position: static;
+  position: absolute;
   bottom: 0;
   width: 100%;
   text-align: center;
@@ -140,6 +140,7 @@ footer {
 }
 
 .spreadsheet {
-  width: 90vw;
+  width: 95vw;
+  min-height: 50vw;
   margin: auto;
 }
