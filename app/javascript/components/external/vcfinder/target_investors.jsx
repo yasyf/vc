@@ -34,19 +34,15 @@ export default class TargetInvestors extends React.Component {
     this.selectedCol = null;
   }
 
-  componentDidMount() {
-    this.hot.sort(this.hot.getColHeader().indexOf('Status'), true);
-  }
-
   componentDidUpdate() {
     if (!nullOrUndef(this.props.selected)) {
-      let i = this.hot.getPlugin('columnSorting').translateRow(this.props.selected);
+      let i = this.hot.getPlugin('columnSorting').untranslateRow(this.props.selected);
       this.hot.selectCell(i, this.selectedCol);
     }
   }
 
   getRow(i) {
-    if (this.hot.sortingEnabled) {
+    if (this.hot.sortingEnabled && this.hot.sortOrder !== undefined) {
       let ii = this.hot.sortIndex[i][0];
       return this.hot.getSourceDataAtRow(ii);
     } else {
@@ -105,7 +101,7 @@ export default class TargetInvestors extends React.Component {
   onChange = (changes, source) => {
     switch (source) {
       case 'loadData':
-        if (this.hot.sortingEnabled) {
+        if (this.hot.sortingEnabled && this.hot.sortOrder !== undefined) {
           this.hot.sort(this.hot.sortColumn, this.hot.sortOrder);
         }
         break;
