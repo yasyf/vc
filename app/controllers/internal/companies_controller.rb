@@ -1,5 +1,5 @@
 class Internal::CompaniesController < Internal::ApplicationController
-  PER_PAGE = 100
+  PER_PAGE = 50
 
   before_action :authenticate_internal_user!
 
@@ -15,7 +15,7 @@ class Internal::CompaniesController < Internal::ApplicationController
 
   def show
     @company = Company.find(params[:id])
-    @vote = @company.pitch.user_votes(current_internal_user).first
+    @vote = @company.pitch&.user_votes(current_internal_user)&.first
   end
 
   def voting
