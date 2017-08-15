@@ -33,15 +33,15 @@ class Investor < ApplicationRecord
     person = Http::Crunchbase::Person.new(crunchbase_id)
     return unless person.found?
 
-    self.first_name ||= person.first_name
-    self.last_name ||= person.last_name
+    self.first_name = person.first_name
+    self.last_name = person.last_name
     if person.affiliation.present?
-      self.role ||= person.affiliation.role
-      self.competitor ||= Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
+      self.role = person.affiliation.role
+      self.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
     end
-    self.description ||= person.bio
-    self.photo ||= person.image
-    self.location ||= person.location&.name
+    self.description = person.bio
+    self.photo = person.image
+    self.location = person.location&.name
 
     %w(twitter facebook linkedin homepage).each do |attr|
       self[attr] = person.public_send(attr)
