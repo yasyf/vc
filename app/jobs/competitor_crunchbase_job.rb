@@ -26,8 +26,10 @@ class CompetitorCrunchbaseJob < ApplicationJob
           c = Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
             c.name = company['properties']['name']
           end
-          c.competitors << competitor
-          c.save! if c.changed?
+
+          cc = c.companies_competitors.where(competitor: competitor).first_or_initialize
+          cc.funded_at = funding_round['properties']['announced_on'].to_date
+          cc.save! if cc.changed?
         end
       end
     end

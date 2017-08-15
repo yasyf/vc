@@ -65,6 +65,7 @@ class Competitor < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
   has_many :notes, as: :subject
+  has_many :companies_competitors
 
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, uniqueness: { allow_nil: true }
@@ -121,7 +122,19 @@ class Competitor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:industry, :name, :description, :funding_size], methods: [:acronym, :notes])
+    super options.reverse_merge(
+      only: [
+        :industry,
+        :name,
+        :description,
+        :funding_size
+      ],
+      methods: [
+        :acronym,
+        :notes,
+        :recent_investments,
+      ]
+    )
   end
 
   def acronym
@@ -133,6 +146,10 @@ class Competitor < ApplicationRecord
   end
 
   private
+
+  def recent_investments
+    companies_competitors.order('companies_competitors.funded_at DESC').limit(3).map(&:company)
+  end
 
   def start_crunchbase_job
     CompetitorCrunchbaseJob.perform_later(id)

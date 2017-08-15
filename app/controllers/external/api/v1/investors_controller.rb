@@ -9,6 +9,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored Investor.order(updated_at: :asc).limit(25).offset(page * 25)
   end
 
+  def posts
+    render json: Investor.find(params[:id]).posts
+  end
+
   def recommendations
     recommendations_shown!
     render_censored current_external_founder.recommended_investors(limit: 5, offset: 5 * page)

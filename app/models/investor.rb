@@ -10,6 +10,10 @@ class Investor < ApplicationRecord
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+  validates :facebook, uniqueness: { allow_nil: true }
+  validates :linkedin, uniqueness: { allow_nil: true }
+  validates :twitter, uniqueness: { allow_nil: true }
+  validates :homepage, uniqueness: { allow_nil: true }
 
   enum funding_size: Competitor::FUNDING_SIZES.keys
   sort :industry
@@ -33,7 +37,13 @@ class Investor < ApplicationRecord
       self.role ||= person.affiliation.role
       self.competitor ||= Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
     end
-    self.description ||= person.short_bio
+    self.description ||= person.bio
+    self.photo ||= person.image
+    self.location ||= person.location.name
+
+    %w(twitter facebook linkedin homepage).each do |attr|
+      self[attr] = person.public_send(attr)
+    end
   end
 
   def self.from_crunchbase(cb_id)
@@ -56,11 +66,38 @@ class Investor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :role, :first_name, :last_name, :description, :industry, :funding_size, :industry_highlight], methods: [:competitor, :notes])
+    super options.reverse_merge(
+      only: [
+        :id,
+        :role,
+        :first_name,
+        :last_name,
+        :description,
+        :industry,
+        :funding_size,
+        :industry_highlight,
+        :photo,
+        :twitter,
+        :facebook,
+        :linkedin,
+        :homepage,
+      ],
+     methods: [:competitor, :notes]
+    )
   end
 
   def crunchbase_person
     @crunchbase_person ||= Http::Crunchbase::Person.new(crunchbase_id) if crunchbase_id.present?
+  end
+
+  def posts
+    site = crunchbase_person.blog || homepage || "https://medium.com/@#{twitter}"
+    return [] unless site.present?
+    url = MetaInspector.new(site).feed
+    return [] unless url.present?
+    body = HTTParty.get(url).body
+    feed = Feedjira::Feed.parse body
+    feed.entries.map(&:to_h).first(3)
   end
 
   private

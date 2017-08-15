@@ -39,8 +39,12 @@ Rails.application.routes.draw do
     namespace :api, defaults: { format: :json } do
       namespace :v1 do
         resources :investors do
+          member do
+            get 'posts'
+          end
           collection do
             get 'search'
+            get 'fuzzy_search'
             get 'recommendations'
           end
         end

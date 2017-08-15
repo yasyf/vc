@@ -35,7 +35,7 @@ module Http::Crunchbase
     end
 
     def homepage
-      site = websites&.find { |site| site['properties']['website_type'] == 'homepage' }
+      site = website_of_type('homepage')
       site['properties']['url'] if site.present? && !site.include?('google.com')
     end
 
@@ -51,11 +51,15 @@ module Http::Crunchbase
     private
 
     def extract_website_id(name, index)
-      site = websites&.find { |site| site['properties']['website_type'] == name }
+      site = website_of_type(name)
       return nil unless site.present?
       url = site['properties']['url']&.split('/')
       return nil unless url.present? && url.length > [3, index].max
       url[index].downcase.split(/[?#]/).first
+    end
+
+    def website_of_type(type)
+      websites&.find { |site| site['properties']['website_type'] == type }
     end
 
     def websites

@@ -127,8 +127,29 @@ CREATE TABLE companies (
 
 CREATE TABLE companies_competitors (
     company_id integer NOT NULL,
-    competitor_id integer NOT NULL
+    competitor_id integer NOT NULL,
+    funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
+    id bigint NOT NULL
 );
+
+
+--
+-- Name: companies_competitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE companies_competitors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: companies_competitors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE companies_competitors_id_seq OWNED BY companies_competitors.id;
 
 
 --
@@ -296,7 +317,13 @@ CREATE TABLE investors (
     industry character varying[],
     funding_size integer,
     featured boolean DEFAULT false NOT NULL,
-    target_investors_count integer DEFAULT 0 NOT NULL
+    target_investors_count integer DEFAULT 0 NOT NULL,
+    photo character varying,
+    twitter character varying,
+    linkedin character varying,
+    facebook character varying,
+    homepage character varying,
+    location character varying
 );
 
 
@@ -733,6 +760,13 @@ ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq
 
 
 --
+-- Name: companies_competitors id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY companies_competitors ALTER COLUMN id SET DEFAULT nextval('companies_competitors_id_seq'::regclass);
+
+
+--
 -- Name: competitors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -859,6 +893,14 @@ ALTER TABLE ONLY calendar_events
 
 ALTER TABLE ONLY cards
     ADD CONSTRAINT cards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: companies_competitors companies_competitors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY companies_competitors
+    ADD CONSTRAINT companies_competitors_pkey PRIMARY KEY (id);
 
 
 --
@@ -1200,6 +1242,13 @@ CREATE UNIQUE INDEX index_investors_on_email ON investors USING btree (email);
 
 
 --
+-- Name: index_investors_on_facebook; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investors_on_facebook ON investors USING btree (facebook);
+
+
+--
 -- Name: index_investors_on_first_name_and_last_name_and_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1207,10 +1256,38 @@ CREATE UNIQUE INDEX index_investors_on_first_name_and_last_name_and_competitor_i
 
 
 --
+-- Name: index_investors_on_homepage; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investors_on_homepage ON investors USING btree (homepage);
+
+
+--
 -- Name: index_investors_on_industry; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_investors_on_industry ON investors USING gin (industry);
+
+
+--
+-- Name: index_investors_on_linkedin; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investors_on_linkedin ON investors USING btree (linkedin);
+
+
+--
+-- Name: index_investors_on_photo; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investors_on_photo ON investors USING btree (photo);
+
+
+--
+-- Name: index_investors_on_twitter; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investors_on_twitter ON investors USING btree (twitter);
 
 
 --
@@ -1651,6 +1728,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170721125920'),
 ('20170721205154'),
 ('20170724232031'),
-('20170803085715');
+('20170803085715'),
+('20170814215715'),
+('20170814222403'),
+('20170814224808');
 
 

@@ -63,6 +63,8 @@ gem 'retries'
 gem 'textacular'
 gem 'gon'
 gem 'retriable', '~> 3.0'
+gem 'metainspector'
+gem 'feedjira'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'

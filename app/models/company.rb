@@ -7,6 +7,7 @@ class Company < ActiveRecord::Base
   has_many :pitches
   has_many :cards
   has_many :calendar_events
+  has_many :companies_competitors
   belongs_to :team
   has_and_belongs_to_many :users, -> { distinct }
   has_and_belongs_to_many :competitors, -> { distinct }
@@ -89,7 +90,7 @@ class Company < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:name, :description, :industry], methods: [:complete?])
+    super options.reverse_merge(only: [:name, :description, :industry], methods: [:complete?, :cb_url])
   end
 
   def as_json_api(options = {})
@@ -152,7 +153,11 @@ class Company < ActiveRecord::Base
   end
 
   def cb_slack_link
-    "<#{crunchbase_org.crunchbase_url}|#{name}>"
+    "<#{cb_url}|#{name}>"
+  end
+
+  def cb_url
+    crunchbase_org.crunchbase_url
   end
 
   def tweeter

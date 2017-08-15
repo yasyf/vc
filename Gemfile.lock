@@ -82,8 +82,21 @@ GEM
     execjs (2.7.0)
     faraday (0.11.0)
       multipart-post (>= 1.2, < 3)
+    faraday-cookie_jar (0.0.6)
+      faraday (>= 0.7.4)
+      http-cookie (~> 1.0.0)
+    faraday-encoding (0.0.4)
+      faraday
+    faraday-http-cache (2.0.0)
+      faraday (~> 0.8)
     faraday_middleware (0.11.0.1)
       faraday (>= 0.7.4, < 1.0)
+    fastimage (2.1.0)
+    feedjira (2.1.2)
+      faraday (>= 0.9)
+      faraday_middleware (>= 0.9)
+      loofah (>= 2.0)
+      sax-machine (>= 1.0)
     ffi (1.9.18)
     gli (2.16.0)
     globalid (0.4.0)
@@ -172,6 +185,16 @@ GEM
     memoist (0.16.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
+    metainspector (5.4.1)
+      addressable (~> 2.5)
+      faraday (~> 0.11)
+      faraday-cookie_jar (~> 0.0)
+      faraday-encoding (~> 0.0)
+      faraday-http-cache (~> 2.0)
+      faraday_middleware (~> 0.11)
+      fastimage (~> 2.1)
+      nesty (~> 1.0)
+      nokogiri (~> 1.7)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -182,6 +205,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     naught (1.1.0)
+    nesty (1.0.2)
     netrc (0.11.0)
     nio4r (2.1.0)
     nokogiri (1.8.0)
@@ -300,6 +324,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sax-machine (1.3.2)
     scout_apm (2.1.26)
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
@@ -402,6 +427,7 @@ DEPENDENCIES
   dalli
   devise
   dotenv-rails
+  feedjira
   gon
   google-api-client
   googleauth
@@ -413,6 +439,7 @@ DEPENDENCIES
   levenshtein-ffi
   listen (>= 3.0.5, < 3.2)
   lograge
+  metainspector
   minitest (~> 5.10, != 5.10.2)
   nokogiri
   omniauth
