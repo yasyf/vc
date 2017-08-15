@@ -2,6 +2,7 @@ import React from 'react';
 import 'whatwg-fetch';
 import update from 'immutability-helper';
 import { toast } from 'react-toastify';
+import parseDomain from 'parse-domain';
 
 export let ffetch = function(path, method = 'GET', data = null) {
   let opts = {
@@ -68,3 +69,15 @@ export let buildQuery = (fields, row) =>
   }));
 
 export let nullOrUndef = (val) => val === undefined || val === null;
+
+export let getDomain = (url) => {
+  if (!url) {
+    return null;
+  }
+  let parts = parseDomain(url);
+  if (!parts) {
+    return null;
+  } else {
+    return _.compact([parts.subdomain, parts.domain, parts.tld]).join('.');
+  }
+};

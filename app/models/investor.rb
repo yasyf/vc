@@ -1,5 +1,7 @@
 class Investor < ApplicationRecord
   include Concerns::AttributeSortable
+  include Concerns::Cacheable
+  include Concerns::Twitterable
 
   belongs_to :competitor
   has_many :target_investors
@@ -39,7 +41,7 @@ class Investor < ApplicationRecord
     end
     self.description ||= person.bio
     self.photo ||= person.image
-    self.location ||= person.location.name
+    self.location ||= person.location&.name
 
     %w(twitter facebook linkedin homepage).each do |attr|
       self[attr] = person.public_send(attr)
@@ -81,9 +83,23 @@ class Investor < ApplicationRecord
         :facebook,
         :linkedin,
         :homepage,
+        :location,
       ],
      methods: [:competitor, :notes]
     )
+  end
+
+  def as_search_json
+    as_json(
+      only: [
+        :id,
+        :role,
+        :first_name,
+        :last_name,
+        :photo,
+      ],
+      methods: [:initials],
+    ).merge(competitor: competitor.as_search_json)
   end
 
   def crunchbase_person
@@ -91,16 +107,35 @@ class Investor < ApplicationRecord
   end
 
   def posts
-    site = crunchbase_person.blog || homepage || "https://medium.com/@#{twitter}"
-    return [] unless site.present?
-    url = MetaInspector.new(site).feed
-    return [] unless url.present?
-    body = HTTParty.get(url).body
-    feed = Feedjira::Feed.parse body
-    feed.entries.map(&:to_h).first(3)
+    cache_for_a_day do
+      site = crunchbase_person.blog || homepage || "https://medium.com/@#{twitter}"
+      return [] unless site.present?
+      url = MetaInspector.new(site).feed
+      return [] unless url.present?
+      body = HTTParty.get(url).body
+      feed = Feedjira::Feed.parse body
+      feed.entries.first(3).map do |e|
+        e.to_h.with_indifferent_access.slice(:title, :url, :categories, :published)
+      end
+    end
+  end
+
+  def tweets(n = 3)
+    return [] unless twitter.present?
+    cache_for_a_hour do
+      twitter_client.with_client([]) do |client|
+        client.user_timeline(twitter, count: n, include_rts: false, exclude_replies: true)
+      end.map do |t|
+        t.to_h.with_indifferent_access.slice(:text, :created_at, :id)
+      end
+    end
   end
 
   private
+
+  def initials
+    "#{first_name.first.upcase}#{last_name.first.upcase}"
+  end
 
   def titleize_role
     return unless self.role.present?

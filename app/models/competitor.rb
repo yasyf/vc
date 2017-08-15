@@ -137,6 +137,10 @@ class Competitor < ApplicationRecord
     )
   end
 
+  def as_search_json
+    as_json(only: [:name], methods: [])
+  end
+
   def acronym
     name.split('').select { |l| /[[:upper:]]/.match l }.join
   end

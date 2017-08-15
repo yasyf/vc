@@ -93,10 +93,10 @@ export default class TargetInvestor extends React.Component {
     return (
       <div className="card-section card-section-multi">
         <div className="grid-x grid-margin-x investor-row">
-          <div className="large-6 cell">
+          <div className="small-6 cell">
             {this.renderSavedText('Priority', 'tier')}
           </div>
-          <div className="large-6 cell">
+          <div className="small-6 cell">
             {this.renderSavedText('Note', 'note')}
           </div>
         </div>

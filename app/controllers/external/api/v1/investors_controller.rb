@@ -13,6 +13,14 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render json: Investor.find(params[:id]).posts
   end
 
+  def tweets
+    render json: Investor.find(params[:id]).tweets
+  end
+
+  def show
+    render json: Investor.find(params[:id])
+  end
+
   def recommendations
     recommendations_shown!
     render_censored current_external_founder.recommended_investors(limit: 5, offset: 5 * page)
@@ -40,12 +48,13 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   def fuzzy_search
     query = { first_name: params[:q], last_name: params[:q], competitors: { name: params[:q] } }
     results = Investor
-                .includes(:notes, competitor: :notes)
+                .includes(:competitor)
                 .references(:competitors)
                 .fuzzy_search(query, false)
                 .where.not(id: existing_target_investor_ids)
-                .order('featured')
-    render_censored results
+                .order('featured DESC')
+                .limit(10)
+    render_censored results.map(&:as_search_json)
   end
 
   def update

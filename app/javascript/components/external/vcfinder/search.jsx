@@ -1,8 +1,11 @@
 import Handlebars from 'handlebars';
 import React from 'react';
 import Modal from 'react-modal';
-import { InvestorsSearchPath, InvestorsPath } from './constants.js.erb';
+import { InvestorsFuzzySearchPath, InvestorsPath } from './constants.js.erb';
 import SearchCreate from './search/create';
+import Investor from './investor';
+
+Modal.defaultStyles.overlay.zIndex = 1000;
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -13,14 +16,14 @@ export default class Search extends React.Component {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name', 'firm'),
       identify: (o) => o.id,
       remote: {
-        url: InvestorsSearchPath,
+        url: InvestorsFuzzySearchPath,
         wildcard: 'QUERY',
       }
     });
 
     this.state = {
       modalOpen: false,
-      query: null,
+      investor: null,
     };
   }
 
@@ -29,7 +32,7 @@ export default class Search extends React.Component {
     let typeahead = this.typeahead;
 
     typeahead.bind('typeahead:beforeselect', (event, investor) => {
-      this.props.onSelect(investor);
+      this.onOpen(investor);
       typeahead.typeahead('val', '');
       typeahead.typeahead('close');
       event.preventDefault();
@@ -43,6 +46,7 @@ export default class Search extends React.Component {
       minLength: 3,
       highlight: true,
     }, {
+      limit: 5,
       source: this.engine,
       templates: {
         suggestion: Handlebars.compile($('#result-template').html()),
@@ -51,12 +55,8 @@ export default class Search extends React.Component {
     });
   }
 
-  onOpen = (query) => {
-    this.setState({modalOpen: true, query: query});
-  };
-
-  onClick = () => {
-    this.onOpen(this.typeahead.typeahead('val'));
+  onOpen = (investor) => {
+    this.setState({modalOpen: true, investor});
   };
 
   onClose = (success, investor) => {
@@ -72,7 +72,7 @@ export default class Search extends React.Component {
         isOpen={this.state.modalOpen}
         contentLabel="Create New Investor"
       >
-        <SearchCreate query={this.state.query} onClose={this.onClose} />
+        <Investor investor={this.state.investor} onClose={this.onClose} />
       </Modal>
     );
   }

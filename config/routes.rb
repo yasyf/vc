@@ -41,6 +41,7 @@ Rails.application.routes.draw do
         resources :investors do
           member do
             get 'posts'
+            get 'tweets'
           end
           collection do
             get 'search'

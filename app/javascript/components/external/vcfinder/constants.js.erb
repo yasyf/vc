@@ -17,6 +17,10 @@ class IDPath {
   id(id) {
     return this.withID(id);
   }
+
+  resource(id, resource) {
+    return `${this.id(id)}/${resource}`;
+  }
 }
 
 let idPath = function(path){
@@ -47,9 +51,10 @@ export const CompetitorIndustriesOptions = Object.freeze(<%= hash_to_options(Com
 
 // Paths
 
+export const InvestorsFuzzySearchPath = '<%= fuzzy_search_external_api_v1_investors_path(q: 'QUERY') %>';
 export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path %>';
 export const InvestorsRecommendationsPath = '<%= recommendations_external_api_v1_investors_path %>';
-export const InvestorsPath = '<%= external_api_v1_investors_path %>';
+export const InvestorsPath = idPath('<%= external_api_v1_investor_path(id: 'ID ') %>');
 export const TargetInvestorsPath = idPath('<%= external_api_v1_target_investor_path(id: 'ID') %>');
 export const LoginPath = '<%= omniauth_path('google_external') %>';
 export const FounderPath = '<%= external_api_v1_founder_path %>';

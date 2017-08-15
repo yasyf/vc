@@ -7,8 +7,8 @@ module Http::Crunchbase
       super timeout
     end
 
-    def short_description
-      get_in 'properties', 'short_description'
+    def description
+      get_in 'properties', 'description'
     end
 
     def team

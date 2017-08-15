@@ -7,8 +7,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor = Competitor.find(competitor_id)
     fund = competitor.crunchbase_fund
 
-    description = fund.short_description
-    competitor.description = description if description.present?
+    competitor.description = fund.description if fund.description.present?
     competitor.save! if competitor.changed?
 
     if (team = fund.team).present?

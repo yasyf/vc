@@ -33,10 +33,10 @@ export default class InvestorFields extends React.Component {
     return (
       <div>
         <div className="grid-x grid-margin-x investor-row">
-          <div className="large-6 cell">
+          <div className="small-6 cell">
             {this.renderSavedChoice('Industries', 'industry', CompetitorIndustries, true)}
           </div>
-          <div className="large-6 cell">
+          <div className="small-6 cell">
             {this.renderSavedChoice('Check Size', 'funding_size', CompetitorFundingSizes)}
           </div>
         </div>

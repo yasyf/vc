@@ -53,10 +53,10 @@ export default class InvestorDRFComments extends React.Component {
       <div>
         <hr />
         <div className="grid-x grid-margin-x investor-row">
-          <div className="large-6 cell">
+          <div className="small-6 cell">
             {investorNotes}
           </div>
-          <div className="large-6 cell">
+          <div className="small-6 cell">
             {fundNotes}
           </div>
         </div>

@@ -89,12 +89,12 @@ input.top-search-bar, .tt-menu {
   color: gray;
 }
 
-h3 {
-  margin-bottom: 1rem;
-}
-
 .pad-top {
   padding-top: 2em;
+}
+
+.pad-top-less {
+  padding-top: 1rem;
 }
 
 .vcwiz-info {
@@ -102,9 +102,18 @@ h3 {
 }
 
 .search-item {
-  padding: 0.5em;
+  padding: 0.5em 0;
   border: 2px solid #ccd6dd;
   border-radius: 5px;
+}
+
+.search-item > .column, .search-item > .columns {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+h3, h6 {
+  margin-bottom: 0;
 }
 
 footer {
@@ -118,6 +127,11 @@ footer {
   margin-right: 0.5em;
   padding: 0.4em;
   margin-bottom: 0.6em;
+  font-size: small;
+}
+
+.badge.small {
+  font-size: x-small;
 }
 
 .badge.success {
@@ -143,4 +157,20 @@ footer {
   min-height: 75vw;
   margin: auto;
   overflow: auto
+}
+
+.line-icon {
+  padding-right: 0.5rem;
+}
+
+p.icon {
+  margin-bottom: 0.4rem;
+}
+
+.slick-next:before, .slick-prev:before {
+  color: black;
+}
+
+.pull-right {
+  margin-left: 0.3rem;
 }
