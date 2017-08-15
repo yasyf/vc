@@ -80,7 +80,7 @@ class CardSyncJob < ApplicationJob
     card_data.delete(:members).map do |member|
       User.from_trello(member[:id]).tap do |user|
         if user.present?
-          user.team = team
+          user.team ||= team
           user.trello_id = member[:id]
           user.cached_name ||= member[:full_name]
           user.save! if user.changed?
