@@ -21,6 +21,7 @@ const sliderSettings = {
   autoplay: true,
   autoplaySpeed: 10000,
   arrows: true,
+  dots: true,
   adaptiveHeight: true
 };
 
@@ -65,11 +66,7 @@ export default class Investor extends React.Component {
 
   renderPhoto() {
     if (this.state.investor.photo) {
-      return (
-        <div className="float-center text-center">
-          <img src={this.state.investor.photo} />
-        </div>
-      );
+      return <img src={this.state.investor.photo} />;
     } else {
       return null;
     }
@@ -97,6 +94,7 @@ export default class Investor extends React.Component {
     let settings = {
       ...sliderSettings,
       arrows: false,
+      dots: false,
       autoplaySpeed: 6500
     };
 
@@ -152,14 +150,11 @@ export default class Investor extends React.Component {
       );
     });
     return (
-      <div>
-        <div className="row">
-          <div className="small-12 columns">
-            <h4>Blog Posts</h4>
-            {posts}
-          </div>
+      <div className="row">
+        <div className="small-12 columns">
+          <h4>Blog Posts</h4>
+          {posts}
         </div>
-        <hr/>
       </div>
     );
   }
@@ -175,78 +170,96 @@ export default class Investor extends React.Component {
     return (
       <div>
         <h4>Investments</h4>
-        <Slider {...sliderSettings}>
-          {recents}
-        </Slider>
+        <div className="pad-vert-less">
+          <Slider {...sliderSettings}>
+            {recents}
+          </Slider>
+        </div>
       </div>
     );
   }
 
-  renderDetailed() {
-    if (!this.state.loaded) {
-      return <div className="text-center">Loading...</div>;
-    }
+  renderBasic() {
+    let {role, competitor} = this.state.investor;
+    return (
+      <div className="float-center text-center">
+        {this.renderPhoto()}
+        <h3>{fullName(this.state.investor)}</h3>
+        <h4>{role}, {competitor.name}</h4>
+      </div>
+    );
+  }
 
+  renderSocial() {
     let {
-      description,
       location,
       facebook,
       twitter,
       linkedin,
-      competitor
     } = this.state.investor;
 
     return (
       <div>
-        <div className="float-center text-center">
-          {this.renderIndustries()}
-          {this.renderTweets()}
-        </div>
-        <hr/>
-        {this.renderPosts()}
-        <div className="row">
-          <div className="small-8 columns">
-            <p><ReadMore>{description}</ReadMore></p>
-          </div>
-          <div className="small-4 columns">
-            {this.renderIconLine('home', location)}
-            {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
-            {this.renderIconLine('social-twitter', twitter, 'https://twitter.com')}
-            {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
-            {this.renderHomepage()}
-          </div>
-        </div>
-        <hr/>
-        <div className="row">
-          <div className="small-8 columns">
-            <p><ReadMore>{competitor.description}</ReadMore></p>
-          </div>
-          <div className="small-4 columns">
-            {this.renderRecentInvestments()}
-          </div>
-        </div>
+        <h4>Social</h4>
+        {this.renderIconLine('home', location)}
+        {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
+        {this.renderIconLine('social-twitter', twitter, 'https://twitter.com')}
+        {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
+        {this.renderHomepage()}
       </div>
     );
   }
 
   renderProfile() {
-    let {role, competitor} = this.state.investor;
+    if (!this.state.loaded) {
+      return (
+        <div>
+          {this.renderBasic()}
+          <div className="text-center">Loading...</div>
+        </div>
+      );
+    }
+
+    let {competitor, description} = this.state.investor;
+
     return (
       <div>
-        <div className="float-center text-center">
-          <h3>{fullName(this.state.investor)}</h3>
-          <h4>{role}, {competitor.name}</h4>
+        <div className="row">
+          <div className="small-12 large-6 columns">
+            <div className="float-center text-center">
+              {this.renderBasic()}
+              {this.renderIndustries()}
+              {this.renderTweets()}
+            </div>
+          </div>
+          <div className="small-12 large-6 columns">
+            <hr className="hide-for-large"/>
+            <div className="row">
+              <div className="small-6 medium-4 large-5 columns">
+                {this.renderSocial()}
+              </div>
+              <div className="small-6 medium-8 large-7 columns">
+                {this.renderRecentInvestments()}
+              </div>
+            </div>
+            <hr/>
+            {this.renderPosts()}
+          </div>
         </div>
-        {this.renderDetailed()}
+        <hr/>
+        <div className="row">
+          <div className="small-6 large-12 columns">
+            <p><ReadMore>{competitor.description}</ReadMore></p>
+          </div>
+          <div className="small-6 large-12 columns">
+            <p><ReadMore>{description}</ReadMore></p>
+          </div>
+        </div>
       </div>
     );
   }
+
   render() {
-    return (
-      <div>
-        {this.renderPhoto()}
-        {this.renderProfile()}
-      </div>
-    );
+    return this.renderProfile();
   }
 }

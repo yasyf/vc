@@ -151,8 +151,8 @@ class Competitor < ApplicationRecord
 
   private
 
-  def recent_investments
-    companies_competitors.order('companies_competitors.funded_at DESC').limit(3).map(&:company)
+  def recent_investments(n = 5)
+    companies_competitors.order('companies_competitors.funded_at DESC').limit(n).map(&:company)
   end
 
   def start_crunchbase_job
