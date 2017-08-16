@@ -59,20 +59,25 @@ export default class Search extends React.Component {
     this.setState({modalOpen: true, investor});
   };
 
-  onClose = (success, investor) => {
+  onClose = () => {
+    this.setState({modalOpen: false});
+  };
+
+  onCloseWithInvestor = (success, investor) => {
     if (success) {
       this.props.onSelect(investor);
     }
-    this.setState({modalOpen: false});
+    this.onClose();
   };
 
   renderModal() {
     return (
       <Modal
         isOpen={this.state.modalOpen}
+        onRequestClose={this.onClose}
         contentLabel="Create New Investor"
       >
-        <Investor investor={this.state.investor} onClose={this.onClose} />
+        <Investor investor={this.state.investor} onClose={this.onCloseWithInvestor} />
       </Modal>
     );
   }

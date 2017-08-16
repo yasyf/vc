@@ -64,6 +64,14 @@ export default class Investor extends React.Component {
     });
   }
 
+  onCancel = () => {
+    this.props.onClose(false);
+  };
+
+  onAdd = () => {
+    this.props.onClose(true, this.props.investor);
+  };
+
   renderPhoto() {
     if (this.state.investor.photo) {
       return <img src={this.state.investor.photo} />;
@@ -210,6 +218,32 @@ export default class Investor extends React.Component {
     );
   }
 
+  renderDescriptions() {
+    let {competitor, description} = this.state.investor;
+    return (
+      <div className="row">
+        <div className="small-6 large-12 columns">
+          <p><ReadMore>{competitor.description}</ReadMore></p>
+        </div>
+        <div className="small-6 large-12 columns">
+          <p><ReadMore>{description}</ReadMore></p>
+        </div>
+      </div>
+    );
+  }
+
+  renderButtons() {
+    return (
+      <div className="row">
+        <div className="small-12 columns">
+          <button type="button" className="button full-button" onClick={this.onAdd}>
+            Add To List
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   renderProfile() {
     if (!this.state.loaded) {
       return (
@@ -219,8 +253,6 @@ export default class Investor extends React.Component {
         </div>
       );
     }
-
-    let {competitor, description} = this.state.investor;
 
     return (
       <div>
@@ -247,14 +279,9 @@ export default class Investor extends React.Component {
           </div>
         </div>
         <hr/>
-        <div className="row">
-          <div className="small-6 large-12 columns">
-            <p><ReadMore>{competitor.description}</ReadMore></p>
-          </div>
-          <div className="small-6 large-12 columns">
-            <p><ReadMore>{description}</ReadMore></p>
-          </div>
-        </div>
+        {this.renderDescriptions()}
+        <hr/>
+        {this.renderButtons()}
       </div>
     );
   }
