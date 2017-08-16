@@ -39,6 +39,7 @@ input.top-search-bar, .tt-menu {
 
 .tt-menu {
   background-color: $light-gray;
+  z-index: 100000 !important;
 }
 
 .tt-suggestion {

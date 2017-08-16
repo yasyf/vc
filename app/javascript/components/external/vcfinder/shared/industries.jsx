@@ -3,9 +3,15 @@ import {CompetitorIndustries} from '../constants.js.erb';
 
 export default class Industries extends React.Component {
   render() {
-    let className = `badge ${this.props.extraClass || ''}`;
-    let nodes = this.props.industry.map(i =>
-      <span className={className} key={i}>{this.props.translate[i] || i}</span>
+    let {industry, translate, extraClass} = this.props;
+
+    if (!industry) {
+      return null;
+    }
+
+    let className = `badge ${extraClass || ''}`;
+    let nodes = industry.map(i =>
+      <span className={className} key={i}>{translate[i] || i}</span>
     );
     return <span>{nodes}</span>;
   }
