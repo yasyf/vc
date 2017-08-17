@@ -50,7 +50,11 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :target_investors
+        resources :target_investors do
+          collection do
+            post 'import'
+          end
+        end
         resource :founder
       end
     end

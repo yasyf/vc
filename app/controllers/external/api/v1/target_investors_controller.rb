@@ -14,6 +14,12 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
                                        .order(:stage, :id)
   end
 
+  def import
+    investor = Investor.find(investor_params[:id])
+    target = current_external_founder.create_target!(investor)
+    render_censored target
+  end
+
   def create
     target = current_external_founder.target_investors.create! ti_params
     render_censored target
@@ -42,6 +48,10 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   private
+
+  def investor_params
+    params.require(:investor).permit(:id)
+  end
 
   def ti_params
     params.require(:target_investor).permit(:firm_name, :first_name, :last_name, :stage, :role, :funding_size, :note, industry: [])

@@ -2,8 +2,8 @@ import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import Search from './search.jsx';
 import TargetInvestors from './target_investors';
-import {emplace, ffetch, isDRF, pluckSort, flash, fullName} from './utils';
-import {TargetInvestorsPath, TargetInvestorStageKeys, TargetInvestorStages} from './constants.js.erb';
+import {emplace, ffetch, isDRF, flash, fullName} from './utils';
+import {TargetInvestorsPath, TargetInvestorStages, TargetInvestorsImportPath} from './constants.js.erb';
 
 export default class VCFinder extends React.Component {
   constructor(props) {
@@ -11,28 +11,15 @@ export default class VCFinder extends React.Component {
 
     this.state = {
       targets: [],
-      stage: TargetInvestorStageKeys[0],
       selected: null,
     };
   }
 
   componentDidMount() {
     ffetch(TargetInvestorsPath)
-    .then(targets => this.setState({
-      targets,
-      stage: this.defaultStage(targets),
-      open: _.get(targets, ['0', 'id']),
-    }));
+    .then(targets => this.setState({targets}));
   }
 
-  allStages(targets) {
-    return pluckSort(targets, 'stage', TargetInvestorStageKeys);;
-  }
-
-  defaultStage(targets) {
-    let stages = this.allStages(targets);
-    return stages[0] || TargetInvestorStageKeys[0];
-  }
 
   onNewTarget = (update) => {
     ffetch(TargetInvestorsPath, 'POST', update).then(target => {
@@ -45,12 +32,11 @@ export default class VCFinder extends React.Component {
   };
   
   onInvestorSelect = (investor) => {
-    ffetch(TargetInvestorsPath, 'POST', {investor: {id: investor.id}})
+    ffetch(TargetInvestorsImportPath, 'POST', {investor: {id: investor.id}})
     .then(target => {
       flash(`Now tracking ${fullName(target)}!`);
       let targets = this.state.targets.concat([target]);
       this.setState({
-        stage: TargetInvestorStageKeys[0],
         selected: targets.length - 1,
         targets,
       })

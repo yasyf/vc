@@ -33,6 +33,10 @@ class Founder < ApplicationRecord
     end
   end
 
+  def create_target!(investor)
+    TargetInvestor.from_investor! self, investor
+  end
+
   def create_company!
     Company.from_founder(self).tap do |company|
       self.companies << company

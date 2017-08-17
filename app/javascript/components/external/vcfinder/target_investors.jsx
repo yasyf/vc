@@ -145,6 +145,7 @@ export default class TargetInvestors extends React.Component {
       'First <br/> Name': remote('first_name'),
       'Last <br/> Name': remote('last_name'),
       'Role': simple('role'),
+      'Email': simple('email'),
       'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
       'Industry': nested(_.partial(autocomplete, CompetitorIndustries, CompetitorIndustriesInverse), 'industry', 3),
       'Check <br/> Size': autocomplete(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),

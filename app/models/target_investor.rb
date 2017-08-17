@@ -36,6 +36,20 @@ class TargetInvestor < ApplicationRecord
 
   sort :industry
 
+  def self.from_investor!(founder, investor)
+    instance = self.new(investor: investor, founder: founder)
+    instance.tap(&:load_from_investor!)
+  end
+
+  def load_from_investor!
+    return unless investor.present?
+    %w(first_name last_name role industry funding_size email).each do |attr|
+      self[attr] = investor[attr]
+    end
+    self.firm_name = investor.competitor.name
+    save!
+  end
+
   private
 
   def check_investor
