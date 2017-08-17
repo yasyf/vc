@@ -158,10 +158,13 @@ export default class Investor extends React.Component {
       );
     });
     return (
-      <div className="row">
-        <div className="small-12 columns">
-          <h4>Blog Posts</h4>
-          {posts}
+      <div>
+        <hr/>
+        <div className="row">
+          <div className="small-12 columns">
+            <h4>Blog Posts</h4>
+            {posts}
+          </div>
         </div>
       </div>
     );
@@ -183,6 +186,21 @@ export default class Investor extends React.Component {
             {recents}
           </Slider>
         </div>
+      </div>
+    );
+  }
+
+  renderRecentInvestmentsContainer(fullWidth) {
+    if (!this.state.investor.competitor.recent_investments.length) {
+      return null;
+    }
+    let className = "small-6 medium-8 large-7 columns";
+    if (fullWidth) {
+      className = "small-12 columns";
+    }
+    return (
+      <div className={className}>
+        {this.renderRecentInvestments()}
       </div>
     );
   }
@@ -218,6 +236,23 @@ export default class Investor extends React.Component {
     );
   }
 
+  renderSocialContainer() {
+    let {
+      location,
+      facebook,
+      twitter,
+      linkedin,
+    } = this.state.investor;
+    if (!_.some([location, facebook, twitter, linkedin])) {
+      return null;
+    }
+    return (
+      <div className="small-6 medium-4 large-5 columns">
+        {this.renderSocial()}
+      </div>
+    );
+  }
+
   renderDescriptions() {
     let {competitor, description} = this.state.investor;
     return (
@@ -244,6 +279,23 @@ export default class Investor extends React.Component {
     );
   }
 
+  renderSocialAndInvestments() {
+    let social = this.renderSocialContainer();
+    let investments = this.renderRecentInvestmentsContainer(!social);
+    if (!social && !investments) {
+      return null;
+    }
+    return (
+      <div>
+        <hr className="hide-for-large"/>
+        <div className="row">
+          {social}
+          {investments}
+        </div>
+      </div>
+    );
+  }
+
   renderProfile() {
     if (!this.state.loaded) {
       return (
@@ -265,16 +317,7 @@ export default class Investor extends React.Component {
             </div>
           </div>
           <div className="small-12 large-6 columns">
-            <hr className="hide-for-large"/>
-            <div className="row">
-              <div className="small-6 medium-4 large-5 columns">
-                {this.renderSocial()}
-              </div>
-              <div className="small-6 medium-8 large-7 columns">
-                {this.renderRecentInvestments()}
-              </div>
-            </div>
-            <hr/>
+            {this.renderSocialAndInvestments()}
             {this.renderPosts()}
           </div>
         </div>
