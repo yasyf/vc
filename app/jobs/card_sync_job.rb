@@ -1,5 +1,5 @@
 class CardSyncJob < ApplicationJob
-  include Concerns::TrelloIgnorable
+  include Concerns::CacheIgnorable
 
   queue_as :low
 

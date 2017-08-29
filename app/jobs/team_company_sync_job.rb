@@ -1,5 +1,5 @@
 class TeamCompanySyncJob < ApplicationJob
-  include Concerns::TrelloIgnorable
+  include Concerns::CacheIgnorable
 
   queue_as :default
 

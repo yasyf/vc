@@ -4,6 +4,8 @@ class TargetInvestor < ApplicationRecord
   belongs_to :investor, counter_cache: true
   belongs_to :founder
 
+  INVESTOR_FIELDS = %w(firm_name first_name last_name)
+
   DUMMY_ATTRS = {
     firm_name: 'Demo Capital',
     first_name: 'Jane',
@@ -36,6 +38,8 @@ class TargetInvestor < ApplicationRecord
 
   sort :industry
 
+  scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
+
   def self.from_investor!(founder, investor)
     instance = self.new(investor: investor, founder: founder)
     instance.tap(&:load_from_investor!)
@@ -50,10 +54,27 @@ class TargetInvestor < ApplicationRecord
     save!
   end
 
+  def find_investor!
+    return unless investor_fields_present?
+    check_investor && (save! if changed?)
+    return unless self.investor.blank?
+    investor = Investor.from_name("#{first_name} #{last_name}")
+    return unless investor.present? && investor.competitor.present?
+    distance = Levenshtein.distance investor.competitor.name, firm_name
+    if distance <= 3
+      self.investor ||= investor
+      save! if changed?
+    end
+  end
+
   private
 
+  def investor_fields_present?
+    INVESTOR_FIELDS.all? { |f| send(f).present? }
+  end
+
   def check_investor
-    return unless %w(firm_name first_name last_name).all? { |a| send(a).present? }
+    return unless investor_fields_present?
     investors = Investor
       .includes(:competitor)
       .references(:competitors)

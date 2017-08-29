@@ -21,4 +21,5 @@ module Clockwork
   every(1.hours, 'user.calendar') { UserCalendarJob.perform_later }
 
   every(1.day, 'vctool.industry', at: '00:00') { PropagateIndustryJob.perform_later }
+  every(1.hours, 'vctool.investors') { FindInvestorsJob.perform_later }
 end
