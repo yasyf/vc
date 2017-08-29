@@ -76,6 +76,7 @@ export default class TargetInvestors extends React.Component {
     let newChanges = [[i, prop, newVal]];
     ffetch(`${InvestorsSearchPath}?${query.join('&')}`).then(res => {
       if (!res.length) {
+        this.hot.setDataAtRowProp(newChanges);
         return;
       }
       let result = {
@@ -94,7 +95,6 @@ export default class TargetInvestors extends React.Component {
       });
       this.hot.setDataAtRowProp(newChanges);
     });
-
     return false;
   };
 
