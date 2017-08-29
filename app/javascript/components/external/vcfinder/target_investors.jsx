@@ -105,6 +105,7 @@ export default class TargetInvestors extends React.Component {
           this.hot.sort(this.hot.sortColumn, this.hot.sortOrder);
         }
         break;
+      case 'CopyPaste.paste':
       case 'edit':
         let updates = {};
         changes.forEach(([i, prop, oldVal, newVal]) => {
