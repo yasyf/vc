@@ -67,6 +67,12 @@ class Investor < ApplicationRecord
     [:first_name, :last_name]
   end
 
+  def self.locations
+    Rails.cache.fetch('Investor/locations', { expires_in: 1.day }) do
+      where.not(location: nil).pluck('DISTINCT location')
+    end
+  end
+
   def as_json(options = {})
     super options.reverse_merge(
       only: [
@@ -108,7 +114,7 @@ class Investor < ApplicationRecord
 
   def posts
     cache_for_a_day do
-      site = crunchbase_person.blog || homepage || "https://medium.com/@#{twitter}"
+      site = crunchbase_person&.blog || homepage || "https://medium.com/@#{twitter}"
       return [] unless site.present?
       url = MetaInspector.new(site).feed
       return [] unless url.present?

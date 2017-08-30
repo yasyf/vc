@@ -87,7 +87,7 @@ class Founder < ApplicationRecord
            WHERE  i_ind_t = ANY('{#{company.industry.join(',')}}')
         ) i_ind
       WHERE i_ind.cnt > 0
-      ORDER BY i.competitor_id, i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC
+      ORDER BY i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC
       LIMIT #{limit}
       OFFSET #{offset};
     SQL

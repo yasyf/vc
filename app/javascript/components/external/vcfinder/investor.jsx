@@ -211,7 +211,7 @@ export default class Investor extends React.Component {
       <div className="float-center text-center">
         {this.renderPhoto()}
         <h3>{fullName(this.state.investor)}</h3>
-        <h4>{role}, {competitor.name}</h4>
+        <h4>{role ? `${role}, ` : ''}{competitor.name}</h4>
       </div>
     );
   }

@@ -3,6 +3,7 @@ import 'whatwg-fetch';
 import update from 'immutability-helper';
 import { toast } from 'react-toastify';
 import parseDomain from 'parse-domain';
+import {StoragePrefix} from './constants.js.erb';
 
 export let ffetch = function(path, method = 'GET', data = null) {
   let opts = {
@@ -33,7 +34,7 @@ export let fullName = function(founder) {
 let _extend = function(dest, src, overwrite = true) {
   let ret = Object.assign({}, dest);
   Object.entries(src).forEach(([k, v]) => {
-    if (ret.hasOwnProperty(k) && v !== undefined && (overwrite || ret[k] === null)) {
+    if (v !== undefined && (overwrite || ret[k] === null)) {
       ret[k] = v;
     }
   });
@@ -62,8 +63,8 @@ export let onChangeSet = (item, path, cb) =>
 
 export let flash = (text) => toast(text);
 
-export let buildQuery = (fields, row) =>
-  _.compact(_.map(fields, k => {
+export let buildQuery = (row, fields = null) =>
+  _.compact(_.map(fields || Object.keys(row), k => {
     let val = _.get(row, k);
     return (nullOrUndef(val) || val === "") ? null : `${k}=${val}`;
   }));
@@ -81,3 +82,5 @@ export let getDomain = (url) => {
     return _.compact([parts.subdomain, parts.domain, parts.tld]).join('.');
   }
 };
+
+export let storageKey = (key) => `${StoragePrefix}::${key}`;

@@ -37,8 +37,9 @@ export default class SavedChoice extends SavedText {
   }
 
   renderInput() {
+    let Component = this.props.loadOptions ? Select.Async : Select;
     return (
-      <Select joinValues={true} clearable={false} {...this.inputProps()} />
+      <Component joinValues={true} clearable={false} {...this.inputProps()} />
     );
   }
 }

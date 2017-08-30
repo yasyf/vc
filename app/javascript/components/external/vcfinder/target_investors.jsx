@@ -72,7 +72,7 @@ export default class TargetInvestors extends React.Component {
       }
     }
 
-    let query = buildQuery(autofillPaths, row);
+    let query = buildQuery(row, autofillPaths);
     let newChanges = [[i, prop, newVal]];
     ffetch(`${InvestorsSearchPath}?${query.join('&')}`).then(res => {
       if (!res.length) {

@@ -5,6 +5,10 @@ module External::ApplicationHelper
     h.map { |k, v| { value: k, label: v } }
   end
 
+  def arr_to_options(a)
+    a.map { |v| { value: v, label: v } }
+  end
+
   def login_stages
     %w(start company profile suggest done).each_with_index.flat_map do |s, i|
       [[s, i], [i, i]]

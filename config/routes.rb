@@ -44,9 +44,11 @@ Rails.application.routes.draw do
             get 'tweets'
           end
           collection do
+            get 'filter'
             get 'search'
             get 'fuzzy_search'
             get 'recommendations'
+            get 'locations'
           end
         end
 

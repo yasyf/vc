@@ -1,12 +1,15 @@
 class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
+  include External::ApplicationHelper
+
+  LIMIT = 25
 
   before_action :authenticate_api_user!
 
   filter %w(comments competitor.comments)
 
   def index
-    render_censored Investor.order(updated_at: :asc).limit(25).offset(page * 25)
+    render_censored Investor.order(updated_at: :asc).limit(LIMIT).offset(page * LIMIT)
   end
 
   def posts
@@ -18,7 +21,19 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def show
-    render json: Investor.find(params[:id])
+    render_censored  Investor.find(params[:id])
+  end
+
+  def locations
+    render json: arr_to_options(Investor.locations)
+  end
+
+  def filter
+    investors = Investor.where filter_params.to_h.except(:industry).compact
+    investors = investors.where("industry @> '{#{filter_params[:industry]}}'") if filter_params[:industry].present?
+    investors = investors.order('featured DESC, target_investors_count DESC')
+    investors = investors.limit(LIMIT).offset(page * LIMIT)
+    render_censored investors.map(&:as_search_json)
   end
 
   def recommendations
@@ -119,6 +134,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def page
     (params[:page] || 0).to_i
+  end
+
+  def filter_params
+    params.permit(:industry, :location)
   end
 
   def investor_create_query_params

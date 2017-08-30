@@ -1,66 +1,44 @@
 import React from 'react';
-import Investor from './investor';
+import SearchResult from './search/result';
+import {buildQuery, ffetch} from './utils';
+import {InvestorsFilterPath} from './constants.js.erb';
 
 export default class Investors extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      offset: 0,
+      loading: true,
+      investors: [],
     };
   }
 
   componentDidMount() {
-    $(document.body).on('keyup.investors', this.onKeyUp);
-  }
-
-  componentWillUnmount() {
-    $(document.body).off('keyup.investors', this.onKeyUp);
+    this.fetchInvestors(this.props.filters);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.investors !== nextProps.investors) {
-      this.setState({offset: 0});
+    if (nextProps.filters !== this.props.filters) {
+      this.fetchInvestors(nextProps.filters);
     }
   }
 
-  onKeyUp = (event) => {
-    switch (event.key) {
-      case "n":
-        this.onClick();
-        break;
-    }
-  };
-
-  onClick = () => {
-    let offset = this.state.offset + 1;
-    this.setState({offset});
-    if (offset >= this.props.investors.length) {
-      this.props.requestNextPage();
-    }
-  };
-
-  currentInvestor() {
-    return this.props.investors[this.state.offset];
+  fetchInvestors(filters) {
+    ffetch(`${InvestorsFilterPath}?${buildQuery(filters).join('&')}`).then(investors => {
+      this.setState({investors, loading: false});
+    });
   }
 
   render() {
-    let investor = this.currentInvestor();
+    if (this.state.loading) {
+      return <div>'Loading...'</div>;
+    }
 
-    if (!investor)
-      return <p className="text-center">Loading...</p>;
+    if (!this.state.investors.length) {
+      return <div>No results!</div>;
+    }
 
-    return (
-      <div>
-        <div className="investors">
-          <Investor key={investor.id} {...investor} onChange={this.props.onChange} />
-        </div>
-        <div className="category-buttons float-center text-center">
-          <button type="button" className="button" onClick={this.onClick}>
-            Next
-          </button>
-        </div>
-      </div>
-    );
+    let investors = this.state.investors.map(inv => <SearchResult key={inv.id} {...inv} />);
+    return <div>{investors}</div>;
   }
 }

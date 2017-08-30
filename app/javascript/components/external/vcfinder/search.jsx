@@ -1,11 +1,20 @@
 import Handlebars from 'handlebars';
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import Modal from 'react-modal';
 import { InvestorsFuzzySearchPath, InvestorsPath } from './constants.js.erb';
 import SearchCreate from './search/create';
 import Investor from './investor';
+import {fullName} from './utils';
+import SearchFilters from './search/filters';
+import SearchResult from './search/result';
 
 Modal.defaultStyles.overlay.zIndex = 1000;
+
+const Modals = {
+  INVESTOR: 'INVESTOR',
+  FILTERS: 'FILTERS',
+};
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -22,7 +31,7 @@ export default class Search extends React.Component {
     });
 
     this.state = {
-      modalOpen: false,
+      modal: null,
       investor: null,
     };
   }
@@ -32,15 +41,17 @@ export default class Search extends React.Component {
     let typeahead = this.typeahead;
 
     typeahead.bind('typeahead:beforeselect', (event, investor) => {
-      this.onOpen(investor);
+      this.onOpenInvestor(investor);
       typeahead.typeahead('val', '');
       typeahead.typeahead('close');
       event.preventDefault();
     });
 
     typeahead.bind('vcwiz:createinvestor', (event, query) => {
-      this.onOpen(query);
+      this.onOpenInvestor(query);
     });
+
+    console.log();
 
     typeahead.typeahead({
       minLength: 3,
@@ -49,35 +60,54 @@ export default class Search extends React.Component {
       limit: 5,
       source: this.engine,
       templates: {
-        suggestion: Handlebars.compile($('#result-template').html()),
+        suggestion: props => ReactDOMServer.renderToStaticMarkup(<SearchResult {...props}/>),
         notFound: Handlebars.compile($('#no-result-template').html()),
       },
     });
   }
 
-  onOpen = (investor) => {
-    this.setState({modalOpen: true, investor});
+  onCloseModal = () => {
+    this.setState({modal: null});
   };
 
-  onClose = () => {
-    this.setState({modalOpen: false});
+  onOpenInvestor = (investor) => {
+    this.setState({modal: Modals.INVESTOR, investor});
   };
 
-  onCloseWithInvestor = (success, investor) => {
+  onOpenFilter = () => {
+    this.setState({modal: Modals.FILTERS});
+  };
+
+  onCloseInvestor = (success, investor) => {
     if (success) {
       this.props.onSelect(investor);
     }
-    this.onClose();
+    this.onCloseModal();
   };
 
-  renderModal() {
+  renderInvestorModal() {
+    if (!this.state.investor) {
+      return null;
+    }
     return (
       <Modal
-        isOpen={this.state.modalOpen}
-        onRequestClose={this.onClose}
-        contentLabel="Create New Investor"
+        isOpen={this.state.modal === Modals.INVESTOR}
+        onRequestClose={this.onCloseModal}
+        contentLabel={fullName(this.state.investor)}
       >
-        <Investor investor={this.state.investor} onClose={this.onCloseWithInvestor} />
+        <Investor investor={this.state.investor} onClose={this.onCloseInvestor} />
+      </Modal>
+    );
+  }
+
+  renderFilterModal() {
+    return (
+      <Modal
+        isOpen={this.state.modal === Modals.FILTERS}
+        onRequestClose={this.onCloseModal}
+        contentLabel={'Investor Search Filters'}
+      >
+        <SearchFilters onClose={this.onCloseModal} />
       </Modal>
     );
   }
@@ -88,8 +118,8 @@ export default class Search extends React.Component {
         <ul className="menu">
           <li>
             <input type="search" placeholder="Search our investor database..." className="typeahead top-search-bar" />
-            <button type="button" className="button tiny search-button" onClick={this.onClick}>
-              Add New Investor
+            <button type="button" className="button tiny search-button" onClick={this.onOpenFilter}>
+              Filter
             </button>
           </li>
         </ul>
@@ -100,7 +130,8 @@ export default class Search extends React.Component {
   render() {
     return (
       <div>
-        {this.renderModal()}
+        {this.renderInvestorModal()}
+        {this.renderFilterModal()}
         {this.renderNav()}
       </div>
     );

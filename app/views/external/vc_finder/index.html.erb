@@ -10,23 +10,6 @@
   }
 </script>
 
-<script id="result-template" type="text/x-handlebars-template">
-  <div class="row search-item">
-    <div class="small-1 columns">
-      {{#if photo}}
-        <img class="search-photo" src="{{photo}}"/>
-      {{else}}
-        <img class="search-photo" src="http://via.placeholder.com/75x75/e6e6e6?text={{initials}}"/>
-      {{/if}}
-    </div>
-    <div class="small-11 columns">
-        {{first_name}} {{last_name}}
-        <br>
-        {{role}}, {{competitor.name}}
-    </div>
-  </div>
-</script>
-
 <script id="no-result-template" type="text/x-handlebars-template">
   <div onclick="triggerCreateInvestor('{{query}}')" class="tt-suggestion">
     <div class="row">
