@@ -17,8 +17,8 @@ class Investor < ApplicationRecord
   validates :twitter, uniqueness: { allow_nil: true }
   validates :homepage, uniqueness: { allow_nil: true }
 
-  enum funding_size: Competitor::FUNDING_SIZES.keys
   sort :industry
+  sort :fund_type
 
   before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
@@ -28,10 +28,8 @@ class Investor < ApplicationRecord
   end
 
   def populate_from_cb!
-    @skip_job = true
-
-    person = Http::Crunchbase::Person.new(crunchbase_id)
-    return unless person.found?
+    person = crunchbase_person
+    return unless person.present?
 
     self.first_name = person.first_name
     self.last_name = person.last_name
@@ -48,6 +46,25 @@ class Investor < ApplicationRecord
     end
   end
 
+  def populate_from_al!
+    return unless angelist_user.present?
+
+    name = angelist_user.name.split(' ')
+    self.first_name ||= name.first
+    self.last_name ||= name.drop(1).join(' ')
+
+    self.photo = angelist_user.image
+    self.twitter = angelist_user.twitter
+    self.facebook = angelist_user.facebook
+    self.linkedin = angelist_user.linkedin
+
+    self.description ||= angelist_user.bio
+    self.homepage ||= angelist_user.homepage
+
+    self.fund_type ||= [] if angelist_user.fund_types.present?
+    self.fund_type += angelist_user.fund_types
+  end
+
   def self.from_crunchbase(cb_id)
     return nil unless cb_id.present?
     where(crunchbase_id: cb_id).first_or_create! do |investor|
@@ -57,10 +74,21 @@ class Investor < ApplicationRecord
     nil
   end
 
+  def self.from_angelist(al_id)
+    return nil unless al_id.present?
+    where(al_id: al_id).first_or_create! do |investor|
+      investor.populate_from_al!
+    end
+  rescue ActiveRecord::RecordInvalid
+    nil
+  end
+
   def self.from_name(name)
     existing = fuzzy_search(first_name: name, last_name: name).first
     return existing if existing.present?
-    from_crunchbase(Http::Crunchbase::Person.find_investor_id(name))
+    created = from_crunchbase(Http::Crunchbase::Person.find_investor_id(name))
+    return created if created.present?
+    from_angelist(Http::AngelList::User.find_investor_id(name))
   end
 
   def self.searchable_columns
@@ -109,14 +137,27 @@ class Investor < ApplicationRecord
   end
 
   def crunchbase_person
-    @crunchbase_person ||= Http::Crunchbase::Person.new(crunchbase_id) if crunchbase_id.present?
+    @crunchbase_person ||= begin
+      person = Http::Crunchbase::Person.new(crunchbase_id)
+      person if person.found?
+    end if crunchbase_id.present?
+  end
+
+  def angelist_user
+    @angelist_user ||= begin
+      user = Http::AngelList::User.new al_id
+      user if user.found?
+    end if al_id.present?
+  end
+
+  def blog_url
+    @blog_url ||= angelist_user&.blog || crunchbase_person&.blog || homepage || "https://medium.com/@#{twitter}"
   end
 
   def posts
     cache_for_a_day do
-      site = crunchbase_person&.blog || homepage || "https://medium.com/@#{twitter}"
-      return [] unless site.present?
-      url = MetaInspector.new(site).feed
+      return [] unless blog_url.present?
+      url = MetaInspector.new(blog_url).feed
       return [] unless url.present?
       body = HTTParty.get(url).body
       feed = Feedjira::Feed.parse body

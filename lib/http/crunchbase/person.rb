@@ -48,15 +48,10 @@ module Http::Crunchbase
 
     def location
       return nil unless found?
-      puts 'here'
-      puts search_for_data
       @location ||= begin
         loc = get_in 'relationships', 'primary_location'
-        puts loc.to_s
         loc = loc['item'] if loc.present?
-        puts loc.to_s
         loc = loc['properties'] if loc.present?
-        puts loc.to_s
         OpenStruct.new(loc) if loc.present?
       end
     end

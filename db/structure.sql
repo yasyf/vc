@@ -202,9 +202,9 @@ CREATE TABLE competitors (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     description text,
-    funding_size integer,
     industry character varying[],
-    city character varying
+    city character varying,
+    fund_type character varying[]
 );
 
 
@@ -315,7 +315,6 @@ CREATE TABLE investors (
     updated_at timestamp without time zone NOT NULL,
     description text,
     industry character varying[],
-    funding_size integer,
     featured boolean DEFAULT false NOT NULL,
     target_investors_count integer DEFAULT 0 NOT NULL,
     photo character varying,
@@ -323,7 +322,9 @@ CREATE TABLE investors (
     linkedin character varying,
     facebook character varying,
     homepage character varying,
-    location character varying
+    location character varying,
+    fund_type character varying[],
+    al_id integer
 );
 
 
@@ -541,14 +542,14 @@ CREATE TABLE target_investors (
     last_response timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    funding_size integer,
     note text,
     firm_name character varying,
     first_name character varying,
     last_name character varying,
     role character varying,
     industry character varying[],
-    email character varying
+    email character varying,
+    fund_type character varying[]
 );
 
 
@@ -1159,6 +1160,13 @@ CREATE UNIQUE INDEX index_competitors_on_crunchbase_id ON competitors USING btre
 
 
 --
+-- Name: index_competitors_on_fund_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_competitors_on_fund_type ON competitors USING gin (fund_type);
+
+
+--
 -- Name: index_competitors_on_industry; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1254,6 +1262,13 @@ CREATE UNIQUE INDEX index_investors_on_facebook ON investors USING btree (facebo
 --
 
 CREATE UNIQUE INDEX index_investors_on_first_name_and_last_name_and_competitor_id ON investors USING btree (first_name, last_name, competitor_id);
+
+
+--
+-- Name: index_investors_on_fund_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investors_on_fund_type ON investors USING gin (fund_type);
 
 
 --
@@ -1380,6 +1395,13 @@ CREATE UNIQUE INDEX index_pitches_on_snapshot ON pitches USING btree (snapshot);
 --
 
 CREATE INDEX index_target_investors_on_founder_id ON target_investors USING btree (founder_id);
+
+
+--
+-- Name: index_target_investors_on_fund_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_target_investors_on_fund_type ON target_investors USING gin (fund_type);
 
 
 --
@@ -1733,6 +1755,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170814215715'),
 ('20170814222403'),
 ('20170814224808'),
-('20170817093023');
+('20170817093023'),
+('20170831223533'),
+('20170831235358');
 
 

@@ -8,11 +8,11 @@ class Competitor < ApplicationRecord
     'TechStars': nil,
   }.with_indifferent_access.freeze
 
-  FUNDING_SIZES = {
-    '0': '10k to 100k',
-    '1': '100k to 250k',
-    '2': '250k to 500k',
-    '3': 'above 500k',
+  FUND_TYPES = {
+    seed: 'Seed',
+    angel: 'Angel',
+    venture: 'Venture',
+    pe: 'Private Equity',
   }.with_indifferent_access.freeze
 
   INDUSTRIES = {
@@ -59,8 +59,8 @@ class Competitor < ApplicationRecord
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
 
-  enum funding_size: FUNDING_SIZES.keys
   sort :industry
+  sort :fund_type
 
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors

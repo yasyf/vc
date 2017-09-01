@@ -28,7 +28,6 @@ class TargetInvestor < ApplicationRecord
   }.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h.freeze
 
   enum stage: STAGES.keys
-  enum funding_size: Competitor::FUNDING_SIZES.keys
 
   validates :investor, uniqueness: { scope: [:founder], allow_nil: true }
   validates :founder, presence: true
@@ -37,6 +36,7 @@ class TargetInvestor < ApplicationRecord
   before_save :check_stage_change, :check_investor
 
   sort :industry
+  sort :fund_type
 
   scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
 

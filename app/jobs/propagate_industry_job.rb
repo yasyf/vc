@@ -1,16 +1,34 @@
 class PropagateIndustryJob < ApplicationJob
   COMPETITOR_INDUSTRIES = 3
+  FUND_TYPE_THRESHOLD = 0.5
 
   queue_as :low
 
   def perform
-    propagate_down
-    propagate_up
+    propagate_industry_down
+    propagate_industry_up
+    propagate_fund_type_up
   end
 
   private
 
-  def propagate_down
+  def propagate_fund_type_up
+    #TODO: do this in sql
+    Competitor.includes(:investors).find_each do |c|
+      fund_types = Hash.new(0)
+      c.investors.each do |i|
+        i.fund_type.each do |ft|
+          fund_types[ft] += 1
+        end if i.fund_type.present?
+      end
+      next unless fund_types.present?
+      total = c.investors.count
+      c.fund_type = fund_types.keys.select { |ft| fund_types[ft] > FUND_TYPE_THRESHOLD * total }
+      c.save! if c.changed?
+    end
+  end
+
+  def propagate_industry_down
     query = <<-SQL
       UPDATE investors AS i
         SET industry = c.industry
@@ -21,7 +39,7 @@ class PropagateIndustryJob < ApplicationJob
     Investor.connection.update(query)
   end
 
-  def propagate_up
+  def propagate_industry_up
     #TODO: do this in sql
     query = <<-SQL
       SELECT competitors.id, array_agg(c_t.ind_t) as industries
