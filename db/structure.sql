@@ -267,39 +267,6 @@ ALTER SEQUENCE founders_id_seq OWNED BY founders.id;
 
 
 --
--- Name: investor_profiles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE investor_profiles (
-    id bigint NOT NULL,
-    founder_id bigint,
-    city character varying,
-    funding_size integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: investor_profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE investor_profiles_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: investor_profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE investor_profiles_id_seq OWNED BY investor_profiles.id;
-
-
---
 -- Name: investors; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -783,13 +750,6 @@ ALTER TABLE ONLY founders ALTER COLUMN id SET DEFAULT nextval('founders_id_seq':
 
 
 --
--- Name: investor_profiles id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY investor_profiles ALTER COLUMN id SET DEFAULT nextval('investor_profiles_id_seq'::regclass);
-
-
---
 -- Name: investors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -927,14 +887,6 @@ ALTER TABLE ONLY competitors
 
 ALTER TABLE ONLY founders
     ADD CONSTRAINT founders_pkey PRIMARY KEY (id);
-
-
---
--- Name: investor_profiles investor_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY investor_profiles
-    ADD CONSTRAINT investor_profiles_pkey PRIMARY KEY (id);
 
 
 --
@@ -1220,13 +1172,6 @@ CREATE UNIQUE INDEX index_founders_on_linkedin ON founders USING btree (linkedin
 --
 
 CREATE UNIQUE INDEX index_founders_on_twitter ON founders USING btree (twitter);
-
-
---
--- Name: index_investor_profiles_on_founder_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_investor_profiles_on_founder_id ON investor_profiles USING btree (founder_id);
 
 
 --
@@ -1555,14 +1500,6 @@ ALTER TABLE ONLY knowledges
 
 
 --
--- Name: investor_profiles fk_rails_298a392c6c; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY investor_profiles
-    ADD CONSTRAINT fk_rails_298a392c6c FOREIGN KEY (founder_id) REFERENCES founders(id);
-
-
---
 -- Name: cards fk_rails_31e9cb1159; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1757,6 +1694,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170814224808'),
 ('20170817093023'),
 ('20170831223533'),
-('20170831235358');
+('20170831235358'),
+('20170901002805');
 
 

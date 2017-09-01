@@ -41,13 +41,12 @@ export const TargetInvestorStageKeys = Object.freeze(<%= TargetInvestor::STAGES.
 export const CompetitorIndustries = Object.freeze(<%= Competitor::INDUSTRIES.to_json %>);
 export const CompetitorIndustriesInverse = Object.freeze(<%= Competitor::INDUSTRIES.invert.to_json %>);
 
-export const CompetitorFundingSizes = Object.freeze(<%= Competitor::FUNDING_SIZES.to_json %>);
-export const CompetitorFundingSizesInverse = Object.freeze(<%= Competitor::FUNDING_SIZES.invert.to_json %>);
+export const CompetitorFundTypes = Object.freeze(<%= Competitor::FUND_TYPES.to_json %>);
+export const CompetitorFundTypesInverse = Object.freeze(<%= Competitor::FUND_TYPES.invert.to_json %>);
 
 
 // Options
 
-export const CompetitorFundingSizesOptions = Object.freeze(<%= hash_to_options(Competitor::FUNDING_SIZES).to_json %>);
 export const CompetitorIndustriesOptions = Object.freeze(<%= hash_to_options(Competitor::INDUSTRIES).to_json %>);
 
 // Paths

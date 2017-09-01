@@ -110,7 +110,7 @@ class Investor < ApplicationRecord
         :last_name,
         :description,
         :industry,
-        :funding_size,
+        :fund_type,
         :industry_highlight,
         :photo,
         :twitter,
@@ -131,6 +131,8 @@ class Investor < ApplicationRecord
         :first_name,
         :last_name,
         :photo,
+        :industry,
+        :fund_type,
       ],
       methods: [:initials],
     ).merge(competitor: competitor.as_search_json)

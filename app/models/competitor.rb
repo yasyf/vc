@@ -127,7 +127,7 @@ class Competitor < ApplicationRecord
         :industry,
         :name,
         :description,
-        :funding_size
+        :fund_type
       ],
       methods: [
         :acronym,
@@ -138,7 +138,7 @@ class Competitor < ApplicationRecord
   end
 
   def as_search_json
-    as_json(only: [:name], methods: [])
+    as_json(only: [:name, :industry, :fund_type], methods: [])
   end
 
   def acronym

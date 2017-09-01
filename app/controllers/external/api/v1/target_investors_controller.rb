@@ -54,7 +54,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def ti_params
-    params.require(:target_investor).permit(:firm_name, :first_name, :last_name, :stage, :role, :funding_size, :note, industry: [])
+    params.require(:target_investor).permit(:firm_name, :first_name, :last_name, :stage, :role, :fund_type, :note, industry: [])
   end
 
   def ti_investor_params

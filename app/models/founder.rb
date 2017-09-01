@@ -66,7 +66,7 @@ class Founder < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company, :investor_profile])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company])
   end
 
   def existing_target_investor_ids

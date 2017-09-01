@@ -20,8 +20,6 @@ class External::VcFinderController < External::ApplicationController
       :start
     elsif !company&.complete? || !company&.verified?
       :company
-    elsif !investor_profile&.present?
-      :profile
     elsif !target_investors&.present? && !recommendations_shown?
       :suggest
     else
@@ -35,10 +33,6 @@ class External::VcFinderController < External::ApplicationController
 
   def target_investors
     current_external_founder&.target_investors
-  end
-
-  def investor_profile
-    current_external_founder&.investor_profile
   end
 
   def company

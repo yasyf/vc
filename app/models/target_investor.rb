@@ -13,7 +13,7 @@ class TargetInvestor < ApplicationRecord
     role: 'Managing Partner',
     stage: 0,
     industry: [:saas, :ai, :food],
-    funding_size: 1,
+    fund_type: [:seed],
     note: 'met through Jon Doe',
     last_response: 1.day.ago,
   }
@@ -47,7 +47,7 @@ class TargetInvestor < ApplicationRecord
 
   def load_from_investor!
     return unless investor.present?
-    %w(first_name last_name role industry funding_size email).each do |attr|
+    %w(first_name last_name role industry fund_type email).each do |attr|
       self[attr] = investor[attr]
     end
     self.firm_name = investor.competitor.name

@@ -6,11 +6,11 @@ import {
   TargetInvestorStagesInverse,
   CompetitorIndustries,
   CompetitorIndustriesInverse,
-  CompetitorFundingSizes,
-  CompetitorFundingSizesInverse,
+  CompetitorFundTypes,
+  CompetitorFundTypesInverse,
   InvestorsSearchPath,
 } from './constants.js.erb';
-import {buildQuery, ffetch, nullOrUndef, pluckSort} from './utils';
+import {buildQuery, ffetch, nullOrUndef, extend} from './utils';
 import {
   autocomplete,
   lazyAutocomplete,
@@ -64,7 +64,7 @@ export default class TargetInvestors extends React.Component {
       return;
     }
 
-    let row = this.getRow(i);
+    let row = extend(this.getRow(i), {[prop]: newVal});
 
     for (let path of autofillPaths) {
       if (nullOrUndef(_.get(row, path))) {
@@ -149,7 +149,7 @@ export default class TargetInvestors extends React.Component {
       'Email': simple('email'),
       'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
       'Industry': nested(_.partial(autocomplete, CompetitorIndustries, CompetitorIndustriesInverse), 'industry', 3),
-      'Check <br/> Size': autocomplete(CompetitorFundingSizes, CompetitorFundingSizesInverse, 'funding_size'),
+      'Type': autocomplete(CompetitorFundTypes, CompetitorFundTypesInverse, 'fund_type[0]'),
       'Note': simple('note'),
       'Last <br/> Response': simple('last_response'),
     };

@@ -56,7 +56,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
       end
       render json: results.map(&extract).uniq
     else
-      render_censored results
+      render_censored results.map(&:as_search_json)
     end
   end
 

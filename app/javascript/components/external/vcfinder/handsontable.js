@@ -65,7 +65,7 @@ export let lazyAutocomplete = function(path, fields, field, remoteField = null) 
     let selected = this.hot.getSelected();
     let row = this.getRow(selected[0]);
     _.set(row, field, q);
-    let query = buildQuery(fields, row);
+    let query = buildQuery(row, fields);
     if (!query.length) {
       return;
     }
