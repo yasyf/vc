@@ -23,7 +23,8 @@ class PropagateIndustryJob < ApplicationJob
       end
       next unless fund_types.present?
       total = c.investors.count
-      c.fund_type = fund_types.keys.select { |ft| fund_types[ft] > FUND_TYPE_THRESHOLD * total }
+      fund_type = fund_types.keys.select { |ft| fund_types[ft] > FUND_TYPE_THRESHOLD * total }
+      c.fund_type = fund_type if fund_type.present?
       c.save! if c.changed?
     end
   end
