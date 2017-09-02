@@ -13,7 +13,28 @@ class External::VcFinderController < External::ApplicationController
     render status: :not_found unless current_external_founder.admin?
   end
 
+  def opt_in
+    intro_request.investor.update! opted_in: optin?
+    intro_request.decide! accept?
+  end
+
+  def decide
+    intro_request.decide! accept?
+  end
+
   private
+
+  def optin?
+    params[:optin] == 'true'
+  end
+
+  def accept?
+    params[:accept] == 'true'
+  end
+
+  def intro_request
+    @intro_request ||= IntroRequest.where(token: params[:token]).first!
+  end
 
   def stage
     if !current_external_founder.present?
@@ -36,6 +57,6 @@ class External::VcFinderController < External::ApplicationController
   end
 
   def company
-    current_external_founder&.companies&.last
+    current_external_founder&.primary_company
   end
 end

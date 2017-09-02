@@ -1,6 +1,5 @@
 import React from 'react';
 import HotTable from 'react-handsontable';
-import Buttons from './buttons';
 import {
   TargetInvestorStages,
   TargetInvestorStagesInverse,
@@ -9,6 +8,7 @@ import {
   CompetitorFundTypes,
   CompetitorFundTypesInverse,
   InvestorsSearchPath,
+  IntroRequestsPath,
 } from './constants.js.erb';
 import {buildQuery, ffetch, nullOrUndef, extend} from './utils';
 import {
@@ -21,6 +21,7 @@ import {
   propToPath,
   nested,
   extractSchema,
+  requestable,
 } from './handsontable';
 
 const autofillPaths = ['first_name', 'last_name', 'firm_name'];
@@ -146,7 +147,7 @@ export default class TargetInvestors extends React.Component {
       'First <br/> Name': remote('first_name'),
       'Last <br/> Name': remote('last_name'),
       'Role': simple('role'),
-      'Email': simple('email'),
+      'Email': requestable('email', 'has_email?', 'email_requested?', IntroRequestsPath),
       'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
       'Industry': nested(_.partial(autocomplete, CompetitorIndustries, CompetitorIndustriesInverse), 'industry', 3),
       'Type': autocomplete(CompetitorFundTypes, CompetitorFundTypesInverse, 'fund_type[0]'),

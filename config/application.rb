@@ -13,7 +13,6 @@ module Drfvote
     # -- all .rb files in that directory are automatically loaded.
 
     config.eager_load_paths << Rails.root.join('lib')
-    config.active_job.queue_adapter = :sidekiq
     config.active_record.schema_format = :sql
     config.exceptions_app = self.routes
 

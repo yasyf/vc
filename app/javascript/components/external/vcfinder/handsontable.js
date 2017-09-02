@@ -1,16 +1,46 @@
 import Handsontable from 'handsontable-pro';
 import 'handsontable-pro/dist/handsontable.full.css';
-import {buildQuery, ffetch} from './utils';
+import {buildQuery, ffetch, flash, fullName} from './utils';
 
 let setColourClassName = function(instance, td, row) {
   let i = instance.getColHeader().indexOf('Status');
   let stage = (instance.getDataAtCell(row, i) || '').substring(2);
-  td.className = `stage-${stage}`;
+  $(td).addClass(`stage-${stage}`);
 };
 
 let ColourTextRenderer = function(instance, td, row, col, prop, value, cellProperties) {
   Handsontable.renderers.TextRenderer.apply(this, arguments);
   setColourClassName(instance, td, row);
+};
+
+let RequestableRenderer = function(hasPath, requestedPath, requestPath) {
+  return function(instance, td, row, col, prop, value, cellProperties) {
+    let sourceRow = instance.getSourceDataAtRow(row);
+    if (!value) {
+      let $td = $(td);
+      if (_.get(sourceRow, requestedPath)) {
+        td.innerText = 'Intro Requested';
+        $td.addClass('faded');
+      } else if (_.get(sourceRow, hasPath)) {
+        let $a = $('<a>Request Intro</a>');
+        $a.click(() => {
+          td.innerText = 'Intro Requested';
+          $td.addClass('faded');
+          ffetch(requestPath, 'POST', {
+            intro_request: {
+              founder_id: gon.founder.id,
+              company_id: gon.founder.primary_company.id,
+              investor_id: sourceRow.investor_id,
+            },
+          }).then(() => flash(`Requested intro to ${fullName(sourceRow)}!`));
+        });
+        $td.empty().append($a);
+      }
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    setColourClassName(instance, td, row);
+  };
 };
 
 let makeColourAutocomplete = function(translate) {
@@ -58,6 +88,13 @@ export let autocomplete = function(translate, inverse, path) {
 };
 
 export let simple = path => ({data: path, renderer: ColourTextRenderer});
+
+export let requestable = function(path, hasPath, requestedPath, requestPath) {
+  return {
+    data: path,
+    renderer: RequestableRenderer(hasPath, requestedPath, requestPath),
+  }
+};
 
 export let lazyAutocomplete = function(path, fields, field, remoteField = null) {
   remoteField = remoteField || field;

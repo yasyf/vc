@@ -90,7 +90,7 @@ class Company < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:name, :description, :industry], methods: [:complete?, :cb_url])
+    super options.reverse_merge(only: [:id, :name, :description, :industry], methods: [:complete?, :cb_url])
   end
 
   def as_json_api(options = {})

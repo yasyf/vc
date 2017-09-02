@@ -51,8 +51,6 @@ export default class Search extends React.Component {
       this.onOpenInvestor(query);
     });
 
-    console.log();
-
     typeahead.typeahead({
       minLength: 3,
       highlight: true,

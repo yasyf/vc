@@ -118,6 +118,7 @@ class Investor < ApplicationRecord
         :linkedin,
         :homepage,
         :location,
+        :email,
       ],
      methods: [:competitor, :notes]
     )

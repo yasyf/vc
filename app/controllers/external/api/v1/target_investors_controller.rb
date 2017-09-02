@@ -3,7 +3,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
 
   before_action :authenticate_api_user!
 
-  filter %w(investor.comments investor.competitor.comments)
+  filter %w(investor.email investor.comments investor.competitor.comments)
 
   def index
     if current_external_founder.target_investors.count == 0

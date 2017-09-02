@@ -1,0 +1,17 @@
+Hey <%= @investor.first_name %>!
+
+<p>
+  I'm VCWiz, a tool for founders to discover investors built by Dorm Room Fund and First Round.
+  <%= @founder.name %> is using me to reach out to you about potentially funding their company, <%= @company.name %>.
+</p>
+
+<p>
+  Before I can make the intro, I need you to opt-in to receiving intros through VCWiz.
+  You will still get the chance to say yes or no to each individual intro request.
+</p>
+
+<p>
+  Click <a href="<%= external_vcfinder_opt_in_url(optin: true, accept: true, token: @request.token) %>">here</a> to opt-in to VCWiz intros, and to accept <%= @founder.name %>'s request.<br>
+  Click <a href="<%= external_vcfinder_opt_in_url(optin: true, accept: false, token: @request.token) %>">here</a> to opt-in, but decline the intro request for <%= @company.name %>.<br>
+  Click <a href="<%= external_vcfinder_opt_in_url(optin: false, accept: false, token: @request.token) %>">here</a> if you'd rather not get intro requests through VCWiz.<br>
+</p>

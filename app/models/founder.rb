@@ -1,6 +1,7 @@
 class Founder < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :notes
+  has_many :intro_requests, dependent: :destroy
   has_many :target_investors, dependent: :destroy
   has_one :investor_profile, dependent: :destroy
 
@@ -61,12 +62,12 @@ class Founder < ApplicationRecord
     companies.any?(&:funded?) || admin? || Rails.env.development?
   end
 
-  def company
-    companies.last
+  def primary_company
+    companies.where(primary: true).last || companies.last
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :company])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company])
   end
 
   def existing_target_investor_ids

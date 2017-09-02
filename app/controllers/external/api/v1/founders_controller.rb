@@ -13,7 +13,7 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
     end
 
     if founder_company_params[:company].present?
-      founder.company.update! founder_company_params[:company]
+      founder.primary_company.update! founder_company_params[:company].merge(primary: true)
     end
 
     render json: founder

@@ -1,0 +1,19 @@
+<p>
+  Hey <%= @investor.first_name %>, <%= @founder.first_name %>!
+</p>
+
+<p>
+  I'd like to introduce you to each other.
+  <%= @founder.first_name %> is the founder of <%= company @company %>, and <%= @investor.first_name %> is <%= role @investor %> at <%= @competitor.name %>.
+</p>
+
+<% if @company.description %>
+  <p>
+    A little more about <%= @company.name %>. <%= @company.description %>
+  </p>
+<% end %>
+
+<p>
+  Cheers,<br>
+  VCWiz
+</p>

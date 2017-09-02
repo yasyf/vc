@@ -1,0 +1,37 @@
+Hey <%= @investor.first_name %>!
+
+<p>
+  <%= @founder.name %> would like to talk to you about their company, <%= @company.name %>.
+  Details about the company are below.
+</p>
+
+<p>
+  <%= @company.description %>
+</p>
+
+<p>
+  <% if @company.domain.present? %>
+    <b>Website</b>: <a href="http://<%= @company.domain %>"><%= @company.domain %></a><br>
+  <% end %>
+  <% if @company.crunchbase_org.found? %>
+    <b>Crunchbase</b>: <a href="<%= @company.cb_url %>"><%= @company.cb_url %></a><br>
+  <% end %>
+  <% if @company.capital_raised > 0 %>
+    <b>Raised</b>: At least <%= @company.capital_raised(format: true) %><br>
+  <% end %>
+  <% if @company.competitors.present? %>
+    <b>Investors</b>: <%= @company.competitors.pluck(:name).join(', ') %><br>
+  <% end %>
+  <% if @company.tweeter.present? %>
+    <b>Twitter</b>: <a href="http://twitter.com/<%= @company.tweeter.username %>">@<%= @company.tweeter.username %></a><br>
+    <% newsworthy = @company.tweeter.newsworthy_tweets %>
+    <% if newsworthy.present? %>
+      <b>Popular Tweet</b>: <%= newsworthy.last.text %><br>
+    <% end %>
+  <% end %>
+</p>
+
+<p>
+  Click <a href="<%= external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request.<br>
+  Click <a href="<%= external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject <%= @founder.name %>'s request.<br>
+</p>

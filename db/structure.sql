@@ -117,7 +117,8 @@ CREATE TABLE companies (
     capital_raised bigint DEFAULT 0 NOT NULL,
     description text,
     industry character varying[],
-    verified boolean DEFAULT false NOT NULL
+    verified boolean DEFAULT false NOT NULL,
+    "primary" boolean DEFAULT false NOT NULL
 );
 
 
@@ -267,6 +268,41 @@ ALTER SEQUENCE founders_id_seq OWNED BY founders.id;
 
 
 --
+-- Name: intro_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE intro_requests (
+    id bigint NOT NULL,
+    token character varying NOT NULL,
+    accepted boolean DEFAULT false NOT NULL,
+    investor_id bigint NOT NULL,
+    company_id bigint NOT NULL,
+    founder_id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: intro_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE intro_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: intro_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE intro_requests_id_seq OWNED BY intro_requests.id;
+
+
+--
 -- Name: investors; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -291,7 +327,8 @@ CREATE TABLE investors (
     homepage character varying,
     location character varying,
     fund_type character varying[],
-    al_id integer
+    al_id integer,
+    opted_in boolean
 );
 
 
@@ -750,6 +787,13 @@ ALTER TABLE ONLY founders ALTER COLUMN id SET DEFAULT nextval('founders_id_seq':
 
 
 --
+-- Name: intro_requests id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY intro_requests ALTER COLUMN id SET DEFAULT nextval('intro_requests_id_seq'::regclass);
+
+
+--
 -- Name: investors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -887,6 +931,14 @@ ALTER TABLE ONLY competitors
 
 ALTER TABLE ONLY founders
     ADD CONSTRAINT founders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: intro_requests intro_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY intro_requests
+    ADD CONSTRAINT intro_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -1172,6 +1224,41 @@ CREATE UNIQUE INDEX index_founders_on_linkedin ON founders USING btree (linkedin
 --
 
 CREATE UNIQUE INDEX index_founders_on_twitter ON founders USING btree (twitter);
+
+
+--
+-- Name: index_intro_requests_on_company_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_intro_requests_on_company_id ON intro_requests USING btree (company_id);
+
+
+--
+-- Name: index_intro_requests_on_founder_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_intro_requests_on_founder_id ON intro_requests USING btree (founder_id);
+
+
+--
+-- Name: index_intro_requests_on_investor_founder_and_company_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_intro_requests_on_investor_founder_and_company_id ON intro_requests USING btree (investor_id, founder_id, company_id);
+
+
+--
+-- Name: index_intro_requests_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_intro_requests_on_investor_id ON intro_requests USING btree (investor_id);
+
+
+--
+-- Name: index_intro_requests_on_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_intro_requests_on_token ON intro_requests USING btree (token);
 
 
 --
@@ -1492,6 +1579,14 @@ ALTER TABLE ONLY cards
 
 
 --
+-- Name: intro_requests fk_rails_203146869d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY intro_requests
+    ADD CONSTRAINT fk_rails_203146869d FOREIGN KEY (investor_id) REFERENCES investors(id);
+
+
+--
 -- Name: knowledges fk_rails_26ba4c0c3e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1548,6 +1643,14 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: intro_requests fk_rails_b2d35a8529; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY intro_requests
+    ADD CONSTRAINT fk_rails_b2d35a8529 FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
 -- Name: investors fk_rails_bfbc7d2c7a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1585,6 +1688,14 @@ ALTER TABLE ONLY notes
 
 ALTER TABLE ONLY knowledges
     ADD CONSTRAINT fk_rails_d823280e2d FOREIGN KEY (team_id) REFERENCES teams(id);
+
+
+--
+-- Name: intro_requests fk_rails_d87bff6194; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY intro_requests
+    ADD CONSTRAINT fk_rails_d87bff6194 FOREIGN KEY (founder_id) REFERENCES founders(id);
 
 
 --
@@ -1695,6 +1806,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170817093023'),
 ('20170831223533'),
 ('20170831235358'),
-('20170901002805');
+('20170901002805'),
+('20170901011132'),
+('20170901013410'),
+('20170901222323');
 
 

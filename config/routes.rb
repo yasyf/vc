@@ -34,6 +34,11 @@ Rails.application.routes.draw do
       root action: 'index'
       get 'login'
       get 'admin'
+
+      scope :intro do
+        get 'opt_in'
+        get 'decide'
+      end
     end
 
     namespace :api, defaults: { format: :json } do
@@ -52,11 +57,14 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :intro, only: [:create]
+
         resources :target_investors do
           collection do
             post 'import'
           end
         end
+
         resource :founder
       end
     end
