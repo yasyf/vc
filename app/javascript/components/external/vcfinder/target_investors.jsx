@@ -61,11 +61,25 @@ export default class TargetInvestors extends React.Component {
       return;
     }
     let [i, prop, oldVal, newVal] = changes[0];
+
+    if (!autofillPaths.includes(prop) && !prop.base) {
+      return;
+    }
+
+    let sourceRow = this.getRow(i);
+
+    if (prop.base) {
+      let oldBase = _.get(sourceRow, prop.base);
+      let newRow = _.set({[prop.base]: oldBase}, prop.path, prop.inverse[newVal]);
+      let newBase = _.compact(_.get(newRow, prop.base));
+      changes[0] = [i, prop.base, oldBase, newBase];
+    }
+
     if (!autofillPaths.includes(prop)) {
       return;
     }
 
-    let row = extend(this.getRow(i), {[prop]: newVal});
+    let row = extend(sourceRow, {[prop]: newVal});
 
     for (let path of autofillPaths) {
       if (nullOrUndef(_.get(row, path))) {

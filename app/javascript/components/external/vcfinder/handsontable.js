@@ -118,7 +118,11 @@ export let lazyAutocomplete = function(path, fields, field, remoteField = null) 
 export let nested = (fn, path, count) => {
   let paths = _.map(_.range(count), i => `${path}[${i}]`);
   paths.path = path;
-  let arr = _.map(paths, fn);
+  let arr = _.map(paths, p => {
+    let result = fn(p);
+    result.data.base = path;
+    return result;
+  });
   arr.paths = paths;
   return arr;
 };

@@ -2,7 +2,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   include External::Concerns::Censorable
   include External::ApplicationHelper
 
-  LIMIT = 25
+  LIMIT = 10
 
   before_action :authenticate_api_user!
 
