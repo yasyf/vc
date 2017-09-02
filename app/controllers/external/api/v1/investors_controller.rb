@@ -29,8 +29,9 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def filter
-    investors = Investor.where filter_params.to_h.except(:industry).compact
+    investors = Investor.where filter_params.to_h.except(:industry, :fund_type).compact
     investors = investors.where("industry @> '{#{filter_params[:industry]}}'") if filter_params[:industry].present?
+    investors = investors.where("fund_type @> '{#{filter_params[:fund_type]}}'") if filter_params[:fund_type].present?
     investors = investors.order('featured DESC, target_investors_count DESC')
     investors = investors.limit(LIMIT).offset(page * LIMIT)
     render_censored investors.map(&:as_search_json)
@@ -137,7 +138,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def filter_params
-    params.permit(:industry, :location)
+    params.permit(:industry, :location, :fund_type)
   end
 
   def investor_create_query_params

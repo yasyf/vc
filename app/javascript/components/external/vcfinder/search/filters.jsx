@@ -1,6 +1,6 @@
 import React from 'react';
 import {extend, ffetch, storageKey} from '../utils';
-import {CompetitorIndustriesOptions, InvestorsLocationsPath} from '../constants.js.erb';
+import {CompetitorIndustriesOptions, CompetitorFundTypeOptions, InvestorsLocationsPath} from '../constants.js.erb';
 import SavedChoice from '../saved_choice';
 import Investors from '../investors';
 
@@ -48,6 +48,7 @@ export default class SearchFilters extends React.Component {
   render() {
     return (
       <div className="float-center investor">
+        {this.renderSavedChoice('fund_type', CompetitorFundTypeOptions)}
         {this.renderSavedChoice('industry', CompetitorIndustriesOptions)}
         {this.renderRemoteSavedChoice('location', InvestorsLocationsPath)}
         <Investors filters={this.state.filters} />

@@ -27,7 +27,7 @@ const SearchResult = (props) => {
       <div className="small-11 columns">
         {props.first_name} {props.last_name}
         <br/>
-        {props.role}, {props.competitor.name}
+        {props.role ? `${props.role}, ` : ''}{props.competitor.name}
       </div>
     </div>
   );
