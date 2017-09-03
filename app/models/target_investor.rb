@@ -18,14 +18,16 @@ class TargetInvestor < ApplicationRecord
     last_response: 1.day.ago,
   }
 
-  STAGES = {
+  RAW_STAGES = {
     added: 'Need To Reach Out',
     intro: 'Waiting For Intro',
     waiting: 'Waiting For Response',
     respond: 'Need To Respond',
     interested: 'Interested',
     pass: 'Not Interested',
-  }.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h.freeze
+  }
+
+  STAGES = RAW_STAGES.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h.freeze
 
   enum stage: STAGES.keys
 
@@ -43,6 +45,18 @@ class TargetInvestor < ApplicationRecord
   def self.from_investor!(founder, investor)
     instance = self.new(investor: investor, founder: founder)
     instance.tap(&:load_from_investor!)
+  end
+
+  def self.from_addr(founder, addr)
+    target = founder.target_investors.where(email: addr.address).first || founder.target_investors.search(first_name: addr.name, last_name: addr.name).first
+    return target if target.present?
+
+    investor = Investor.where(email: addr.address).first || Investor.search(first_name: addr.name, last_name: addr.name).first
+    target = founder.target_investors.where(investor: investor).first || from_investor!(founder, investor) if investor.present?
+    return target if target.present?
+
+    name = addr.name ? addr.name.split(' ') : []
+    create! first_name: name.first, last_name: name.drop(1).join(' '), note: 'imported from email'
   end
 
   def load_from_investor!
@@ -101,6 +115,6 @@ class TargetInvestor < ApplicationRecord
     return if stage == stage_was
     LoggedEvent.log! :target_stage_changed, self,
                      notify: 0, data: { from: stage_was, to: stage }
-    self.last_response = DateTime.now if stage.to_sym == :respond
+    self.last_response = DateTime.now if stage.to_sym == :respond || stage_was.to_sym == :waiting
   end
 end

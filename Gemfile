@@ -65,6 +65,7 @@ gem 'gon'
 gem 'retriable', '~> 3.0'
 gem 'metainspector'
 gem 'feedjira'
+gem 'google-cloud-language'
 
 # temp fix
 gem 'rb-fsevent', '0.9.8'

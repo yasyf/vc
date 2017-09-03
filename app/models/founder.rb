@@ -1,12 +1,14 @@
 class Founder < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :notes
+  has_many :emails, dependent: :destroy
   has_many :intro_requests, dependent: :destroy
   has_many :target_investors, dependent: :destroy
   has_one :investor_profile, dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name, presence: true
+  validates :email, uniqueness: { allow_nil: true }
 
   devise
 

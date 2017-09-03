@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  body: MyText
+  sentiment_score: 1.5
+  sentiment_magnitude: 1.5
+  founder: one
+  company: one
+  investor: one
+  direction: 1
+  old_stage: 1
+  new_stage: 1
+
+two:
+  body: MyText
+  sentiment_score: 1.5
+  sentiment_magnitude: 1.5
+  founder: two
+  company: two
+  investor: two
+  direction: 1
+  old_stage: 1
+  new_stage: 1

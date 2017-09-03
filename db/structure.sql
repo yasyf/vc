@@ -229,6 +229,45 @@ ALTER SEQUENCE competitors_id_seq OWNED BY competitors.id;
 
 
 --
+-- Name: emails; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE emails (
+    id bigint NOT NULL,
+    body text,
+    sentiment_score double precision,
+    sentiment_magnitude double precision,
+    founder_id bigint NOT NULL,
+    company_id bigint NOT NULL,
+    investor_id bigint NOT NULL,
+    direction integer NOT NULL,
+    old_stage integer,
+    new_stage integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: emails_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE emails_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: emails_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
+
+
+--
 -- Name: founders; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -780,6 +819,13 @@ ALTER TABLE ONLY competitors ALTER COLUMN id SET DEFAULT nextval('competitors_id
 
 
 --
+-- Name: emails id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
+
+
+--
 -- Name: founders id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -923,6 +969,14 @@ ALTER TABLE ONLY companies
 
 ALTER TABLE ONLY competitors
     ADD CONSTRAINT competitors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: emails emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
 
 
 --
@@ -1182,6 +1236,27 @@ CREATE INDEX index_competitors_on_industry ON competitors USING gin (industry);
 --
 
 CREATE UNIQUE INDEX index_competitors_on_name ON competitors USING btree (name);
+
+
+--
+-- Name: index_emails_on_company_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_emails_on_company_id ON emails USING btree (company_id);
+
+
+--
+-- Name: index_emails_on_founder_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_emails_on_founder_id ON emails USING btree (founder_id);
+
+
+--
+-- Name: index_emails_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_emails_on_investor_id ON emails USING btree (investor_id);
 
 
 --
@@ -1563,6 +1638,14 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
+-- Name: emails fk_rails_041ca7bd32; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT fk_rails_041ca7bd32 FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
 -- Name: pitches fk_rails_115ef0c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1600,6 +1683,14 @@ ALTER TABLE ONLY knowledges
 
 ALTER TABLE ONLY cards
     ADD CONSTRAINT fk_rails_31e9cb1159 FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
+-- Name: emails fk_rails_602d137517; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT fk_rails_602d137517 FOREIGN KEY (investor_id) REFERENCES investors(id);
 
 
 --
@@ -1696,6 +1787,14 @@ ALTER TABLE ONLY knowledges
 
 ALTER TABLE ONLY intro_requests
     ADD CONSTRAINT fk_rails_d87bff6194 FOREIGN KEY (founder_id) REFERENCES founders(id);
+
+
+--
+-- Name: emails fk_rails_f6176d396e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT fk_rails_f6176d396e FOREIGN KEY (founder_id) REFERENCES founders(id);
 
 
 --
@@ -1809,6 +1908,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170901002805'),
 ('20170901011132'),
 ('20170901013410'),
-('20170901222323');
+('20170901222323'),
+('20170902232836');
 
 

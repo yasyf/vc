@@ -113,6 +113,24 @@ GEM
       mime-types (~> 3.0)
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
+    google-cloud-core (1.0.0)
+      google-cloud-env (~> 1.0)
+      googleauth (~> 0.5.1)
+    google-cloud-env (1.0.1)
+      faraday (~> 0.11)
+    google-cloud-language (0.27.1)
+      google-cloud-core (~> 1.0)
+      google-gax (~> 0.8.2)
+    google-gax (0.8.6)
+      google-protobuf (~> 3.2)
+      googleapis-common-protos (~> 1.3.5)
+      googleauth (~> 0.5.1)
+      grpc (~> 1.0)
+      rly (~> 0.2.3)
+    google-protobuf (3.4.0.2)
+    googleapis-common-protos (1.3.5)
+      google-protobuf (~> 3.2)
+      grpc (~> 1.0)
     googleauth (0.5.1)
       faraday (~> 0.9)
       jwt (~> 1.4)
@@ -121,6 +139,9 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    grpc (1.6.0)
+      google-protobuf (~> 3.1)
+      googleauth (~> 0.5.1)
     hashie (3.5.6)
     htmlentities (4.3.4)
     http (2.2.2)
@@ -302,6 +323,7 @@ GEM
       netrc (~> 0.8)
     retriable (3.0.2)
     retries (0.0.5)
+    rly (0.2.3)
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
@@ -430,6 +452,7 @@ DEPENDENCIES
   feedjira
   gon
   google-api-client
+  google-cloud-language
   googleauth
   httparty
   jbuilder (~> 2.0)

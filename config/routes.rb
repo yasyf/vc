@@ -57,6 +57,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :message, only: [:create]
+
         resource :intro, only: [:create]
 
         resources :target_investors do
