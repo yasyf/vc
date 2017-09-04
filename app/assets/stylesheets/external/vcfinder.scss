@@ -166,7 +166,7 @@ footer {
   width: 96vw;
   min-height: 75vw;
   margin: auto;
-  overflow: auto
+  overflow: hidden;
 }
 
 .line-icon {
@@ -183,4 +183,13 @@ p.icon {
 
 .pull-right {
   margin-left: 0.3rem;
+}
+
+.import-header {
+  min-width: 150px;
+}
+
+.intro-button {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

@@ -44,6 +44,14 @@ export default class VCFinder extends React.Component {
     });
   };
 
+  onTargetImport = (newTargets) => {
+    let targets = this.state.targets.concat(newTargets);
+    this.setState({
+      selected: null,
+      targets,
+    })
+  };
+
   onTargetChange = (id, change) => {
     ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: change})
     .then(target => {
@@ -63,7 +71,7 @@ export default class VCFinder extends React.Component {
     return (
       <div>
         <Search onSelect={this.onInvestorSelect} />
-        {<Import />}
+        {<Import onImport={this.onTargetImport} />}
         <TargetInvestors
           targets={this.state.targets}
           stage={this.state.stage}

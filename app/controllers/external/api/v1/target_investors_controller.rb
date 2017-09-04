@@ -21,7 +21,15 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def bulk_import
-    render json: Importers::External::TargetInvestors.new(params[:file]).parse!
+    if bulk_import_params[:headers].present?
+      importer = Importers::External::TargetInvestors.new(session[:bulk_import_meta]['filename'], current_external_founder)
+      targets = importer.import! bulk_import_params[:headers], session[:bulk_import_meta]['header_row']
+      render_censored targets
+    else
+      parsed, meta = Importers::External::TargetInvestors.new(bulk_import_params[:csv_file], current_external_founder).parse!
+      session[:bulk_import_meta] = meta
+      render json: parsed
+    end
   end
 
   def create
@@ -52,6 +60,10 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   private
+
+  def bulk_import_params
+    params.permit(:csv_file, headers: {})
+  end
 
   def investor_params
     params.require(:investor).permit(:id)

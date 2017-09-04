@@ -1,5 +1,6 @@
 import React from 'react';
 import HotTable from 'react-handsontable';
+
 import {
   TargetInvestorStages,
   TargetInvestorStagesInverse,
@@ -15,24 +16,26 @@ import {
   autocomplete,
   lazyAutocomplete,
   simple,
-  nestedHeaders,
   flattenedColumns,
   flattenedHeaders,
   propToPath,
-  nested,
   extractSchema,
   requestable,
 } from './handsontable';
 
 const autofillPaths = ['first_name', 'last_name', 'firm_name'];
 
-export default class TargetInvestors extends React.Component {
+export default class TargetInvestors extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.hot = {};
     this.columns = this.genColumns();
     this.selectedCol = null;
+  }
+
+  componentDidMount() {
+    this.maxColWidths = this.genMaxColWidths();
   }
 
   componentDidUpdate() {
@@ -50,6 +53,15 @@ export default class TargetInvestors extends React.Component {
       return this.hot.getSourceDataAtRow(i);
     }
   }
+
+  onModifyWidth = (w, c) => {
+    if (!this.maxColWidths) {
+      return;
+    }
+    if (w > this.maxColWidths[c]) {
+      return this.maxColWidths[c];
+    }
+  };
 
   onRemoveRow = (index, num) => {
     console.log('remove', index, num);
@@ -153,6 +165,19 @@ export default class TargetInvestors extends React.Component {
     this.selectedCol = c;
   };
 
+  genMaxColWidths() {
+    let keys = Object.keys(this.columns);
+    let defaultWidth = $('.spreadsheet').width() / keys.length;
+    let widths = {};
+    keys.forEach(c => {
+      widths[c] = defaultWidth;
+    });
+    widths['Status'] = 200;
+    widths['Industry'] = 200;
+    widths['Note'] = 350;
+    return Object.values(widths);
+  }
+
   genColumns() {
     let remote = _.bind(lazyAutocomplete, this, InvestorsSearchPath, autofillPaths);
 
@@ -163,7 +188,7 @@ export default class TargetInvestors extends React.Component {
       'Role': simple('role'),
       'Email': requestable('email', 'has_email?', 'email_requested?', IntroRequestsPath),
       'Status': autocomplete(TargetInvestorStages, TargetInvestorStagesInverse, 'stage'),
-      'Industry': nested(_.partial(autocomplete, CompetitorIndustries, CompetitorIndustriesInverse), 'industry', 3),
+      'Industry': autocomplete(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[0]'),
       'Type': autocomplete(CompetitorFundTypes, CompetitorFundTypesInverse, 'fund_type[0]'),
       'Note': simple('note'),
       'Last <br/> Response': simple('last_response'),
@@ -178,16 +203,13 @@ export default class TargetInvestors extends React.Component {
           data={JSON.parse(JSON.stringify(this.props.targets))}
           dataSchema={extractSchema(this.columns)}
           colHeaders={flattenedHeaders(this.columns)}
-          nestedHeaders={[nestedHeaders(this.columns)]}
           columns={flattenedColumns(this.columns)}
           stretchH="all"
           preventOverflow='horizontal'
           autoColumnSize={{
-            useHeaders: true
+            useHeaders: true,
           }}
           manualColumnResize={true}
-          collapsibleColumns={true}
-          autoRowSize={true}
           hiddenColumns={{
             indicators: true,
           }}
@@ -203,6 +225,7 @@ export default class TargetInvestors extends React.Component {
           onAfterChange={this.onChange}
           onAfterRemoveRow={this.onRemoveRow}
           onAfterSelection={this.onSelection}
+          onModifyColWidth={this.onModifyWidth}
           ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}
         />
       </div>

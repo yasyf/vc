@@ -2,6 +2,9 @@ import Handsontable from 'handsontable-pro';
 import 'handsontable-pro/dist/handsontable.full.css';
 import {buildQuery, ffetch, flash, fullName} from './utils';
 
+const IntroRequested = "<span class='faded'>Intro Requested</span>";
+const RequestIntro = "<div class='text-center'><a class='button small intro-button'>Request Intro</a></div>";
+
 let setColourClassName = function(instance, td, row) {
   let i = instance.getColHeader().indexOf('Status');
   let stage = (instance.getDataAtCell(row, i) || '').substring(2);
@@ -19,13 +22,11 @@ let RequestableRenderer = function(hasPath, requestedPath, requestPath) {
     if (!value) {
       let $td = $(td);
       if (_.get(sourceRow, requestedPath)) {
-        td.innerText = 'Intro Requested';
-        $td.addClass('faded');
+        td.innerHTML = IntroRequested;
       } else if (_.get(sourceRow, hasPath)) {
-        let $a = $('<a>Request Intro</a>');
-        $a.click(() => {
-          td.innerText = 'Intro Requested';
-          $td.addClass('faded');
+        let $el = $(RequestIntro);
+        $el.click(() => {
+          td.innerHTML = IntroRequested;
           ffetch(requestPath, 'POST', {
             intro_request: {
               founder_id: gon.founder.id,
@@ -34,7 +35,9 @@ let RequestableRenderer = function(hasPath, requestedPath, requestPath) {
             },
           }).then(() => flash(`Requested intro to ${fullName(sourceRow)}!`));
         });
-        $td.empty().append($a);
+        $td.empty().append($el);
+      } else {
+        td.innerHTML = "";
       }
     } else {
       Handsontable.renderers.TextRenderer.apply(this, arguments);

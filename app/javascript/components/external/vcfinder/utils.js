@@ -5,17 +5,26 @@ import { toast } from 'react-toastify';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
 
-export let ffetch = function(path, method = 'GET', data = null) {
+export let ffetch = function(path, method = 'GET', data = null, form = false) {
   let opts = {
     credentials: 'same-origin',
     headers: {
       'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
-      'Content-Type': 'application/json',
     },
     method,
   };
-  if (data)
+
+  if (form) {
+    let formData = new FormData();
+    Object.entries(data || {}).forEach(([k, v]) => {
+      formData.append(k, v);
+    });
+    opts['body'] = formData;
+  } else if (data) {
     opts['body'] = JSON.stringify(data);
+    opts['headers']['Content-Type'] = 'application/json';
+  }
+
   return fetch(path, opts).then(resp => resp.json());
 };
 
