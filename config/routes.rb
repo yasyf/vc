@@ -64,6 +64,7 @@ Rails.application.routes.draw do
         resources :target_investors do
           collection do
             post 'import'
+            post 'bulk_import'
           end
         end
 

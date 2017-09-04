@@ -4,6 +4,7 @@ import Search from './search.jsx';
 import TargetInvestors from './target_investors';
 import {emplace, ffetch, isDRF, flash, fullName} from './utils';
 import {TargetInvestorsPath, TargetInvestorStages, TargetInvestorsImportPath} from './constants.js.erb';
+import Import from './import';
 
 export default class VCFinder extends React.Component {
   constructor(props) {
@@ -58,36 +59,11 @@ export default class VCFinder extends React.Component {
     this.setState({stage});
   };
 
-  renderDRFWelcome() {
-    if (!isDRF()) {
-      return null;
-    }
-    return "Since you're a DRF founder, I can also help facilitate intros to other investors through First Round's network."
-  }
-
-  renderHelp() {
-    return (
-      <div className="vcwiz-info">
-        <p>
-          Welcome to the VCWiz investor outreach organizer!
-          I'm here to help you find relevant investors, and coordinate your outreach.
-          {' '}
-          {this.renderDRFWelcome()}
-        </p>
-        <p>
-          Use the search bar above to add all your target investors.
-          We split your investors up by priority tiers, and give you simple actions to track your outreach with each one.
-          Click on an investor's name to view or change their status.
-        </p>
-      </div>
-    );
-  }
-
   render() {
     return (
       <div>
         <Search onSelect={this.onInvestorSelect} />
-        {this.renderHelp()}
+        {<Import />}
         <TargetInvestors
           targets={this.state.targets}
           stage={this.state.stage}

@@ -20,6 +20,10 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     render_censored target
   end
 
+  def bulk_import
+    render json: Importers::External::TargetInvestors.new(params[:file]).parse!
+  end
+
   def create
     target = current_external_founder.target_investors.create! ti_params
     render_censored target

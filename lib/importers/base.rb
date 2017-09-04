@@ -8,6 +8,10 @@ module Importers
       filename =~ /\A#{URI::regexp(%w(ftp http https))}\z/
     end
 
+    def file?(file)
+      file.respond_to? :read
+    end
+
     def save(input)
       file = Tempfile.new 'csv'
       stream = input.is_a?(StringIO) ? input.tap(&:rewind) : open(input)
