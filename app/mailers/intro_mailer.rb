@@ -31,7 +31,7 @@ class IntroMailer < ApplicationMailer
   private
 
   def set_mailgun_options!
-    mail.delivery_method.settings = {
+    mail.delivery_method.settings.merge!(
       address:              'smtp.mailgun.org',
       port:                 587,
       domain:               ENV['MAILGUN_EMAIL'].split('@').last,
@@ -39,7 +39,7 @@ class IntroMailer < ApplicationMailer
       password:             ENV['MAILGUN_PASSWORD'],
       authentication:       'plain',
       enable_starttls_auto: true
-    }
+    )
   end
 
   def named_email(person)
