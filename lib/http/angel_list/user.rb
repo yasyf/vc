@@ -69,7 +69,7 @@ module Http::AngelList
     end
 
     def bio
-      @data['bio'] + @data['what_i_do'] if found?
+      (@data['bio'] || '') + (@data['what_i_do'] || '') if found?
     end
 
     def fund_types
