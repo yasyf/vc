@@ -7,7 +7,7 @@ one:
   founder: one
 
 two:
-  token: MyString
+  token: MyString2
   investor: two
   company: two
   founder: two
