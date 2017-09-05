@@ -63,9 +63,13 @@ export default class TargetInvestors extends React.PureComponent {
     }
   };
 
-  onRemoveRow = (index, num) => {
-    console.log('remove', index, num);
-    // destroy records
+  onRemoveRow = (index) => {
+    let sourceRow = this.getRow(index);
+    if (!sourceRow || !sourceRow.id) {
+      return;
+    }
+    this.props.onDestroyTarget(sourceRow.id);
+    this.hot.alter('remove_row', index);
   };
 
   onBeforeChange = (changes, source) => {
@@ -195,6 +199,16 @@ export default class TargetInvestors extends React.PureComponent {
     };
   };
 
+  beforeOnCellMouseDown = (e, {row, col}) => {
+    if (col === -1) {
+      e.stopImmediatePropagation();
+      this.onRemoveRow(row, 1);
+    }
+  };
+
+  static genRowHeader(i) {
+    return `<span data-index="${i}"><i class='fi-trash'></i></span>`
+  };
 
   render() {
     return (
@@ -203,6 +217,7 @@ export default class TargetInvestors extends React.PureComponent {
           data={JSON.parse(JSON.stringify(this.props.targets))}
           dataSchema={extractSchema(this.columns)}
           colHeaders={flattenedHeaders(this.columns)}
+          rowHeaders={TargetInvestors.genRowHeader}
           columns={flattenedColumns(this.columns)}
           stretchH="all"
           preventOverflow='horizontal'
@@ -222,8 +237,8 @@ export default class TargetInvestors extends React.PureComponent {
           }}
           sortIndicator={true}
           onBeforeChange={this.onBeforeChange}
+          beforeOnCellMouseDown={this.beforeOnCellMouseDown}
           onAfterChange={this.onChange}
-          onAfterRemoveRow={this.onRemoveRow}
           onAfterSelection={this.onSelection}
           onModifyColWidth={this.onModifyWidth}
           ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}

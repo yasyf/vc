@@ -63,6 +63,11 @@ export let extract = function(items, item) {
   return update(items, {$unset: [index]});
 };
 
+export let remove = function(items, item) {
+  let index = _.findIndex(items, {id: item.id});
+  return update(items, {$splice: [[index, 1]]});
+};
+
 export let pluckSort = function(objects, prop, keys) {
   return _.sortBy(_.uniq(_.map(objects, prop)), s => keys.indexOf(s));
 };

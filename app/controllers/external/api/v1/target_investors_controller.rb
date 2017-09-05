@@ -59,6 +59,11 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     render_censored target
   end
 
+  def destroy
+    TargetInvestor.find(params[:id]).destroy!
+    render json: {}
+  end
+
   private
 
   def bulk_import_params
