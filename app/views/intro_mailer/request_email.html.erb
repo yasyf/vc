@@ -32,6 +32,6 @@ Hey <%= @investor.first_name %>!
 </p>
 
 <p>
-  Click <a href="<%= external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request.<br>
-  Click <a href="<%= external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject <%= @founder.name %>'s request.<br>
+  Click <a href="<%= subdomain_external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request.<br>
+  Click <a href="<%= subdomain_external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject <%= @founder.name %>'s request.<br>
 </p>
