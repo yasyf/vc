@@ -12,6 +12,7 @@ class Investor < ApplicationRecord
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+  validates :al_id, uniqueness: { allow_nil: true }
   validates :facebook, uniqueness: { allow_nil: true }
   validates :linkedin, uniqueness: { allow_nil: true }
   validates :twitter, uniqueness: { allow_nil: true }
@@ -90,7 +91,7 @@ class Investor < ApplicationRecord
     return existing if existing.present?
     created = from_crunchbase(Http::Crunchbase::Person.find_investor_id(name))
     return created if created.present?
-    from_angelist(Http::AngelList::User.find_investor_id(name))
+    from_angelist(Http::AngelList::User.find_id(name))
   end
 
   def self.searchable_columns

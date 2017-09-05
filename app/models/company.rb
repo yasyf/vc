@@ -17,6 +17,7 @@ class Company < ActiveRecord::Base
 
   validates :domain, uniqueness: { allow_nil: true }
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+  validates :al_id, uniqueness: { allow_nil: true }
   validates :capital_raised, presence: true, numericality: { only_integer: true }
 
   sort :industry
@@ -127,6 +128,7 @@ class Company < ActiveRecord::Base
   def set_extra_attributes!
     pitch&.set_snapshot!
     set_crunchbase_attributes!
+    set_angelist_attributes!
     set_competitors!
     set_capital_raised!
   end
@@ -148,8 +150,12 @@ class Company < ActiveRecord::Base
     Team.send(cached_team.name)
   end
 
-  def crunchbase_org(timeout = 2)
+  def crunchbase_org(timeout = 3)
     @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
+  end
+
+  def angelist_startup(timeout = 3)
+    @angellist_startup ||= Http::AngelList::Startup.new(al_id, timeout: timeout)
   end
 
   def cb_slack_link
@@ -188,17 +194,10 @@ class Company < ActiveRecord::Base
     if (org = company.crunchbase_org).found?
       company.name = org.name
       company.description = org.description
-    else
-      company.skip_job!
     end
     company.save!
     company
   end
-
-  def skip_job!
-    @skip_job = true
-  end
-
 
   def complete?
     name.present? && description.present? && industry.present?
@@ -212,11 +211,11 @@ class Company < ActiveRecord::Base
   end
 
   def start_relationships_job
-    CompanyRelationshipsJob.perform_later(id) unless @skip_job
+    CompanyRelationshipsJob.perform_later(id)
   end
 
   def twitter_username
-    cached { crunchbase_org.twitter }
+    cached { crunchbase_org.twitter || angelist_startup.twitter }
   end
 
   def set_crunchbase_attributes!(timeout: 5)
@@ -225,6 +224,14 @@ class Company < ActiveRecord::Base
     self.crunchbase_id = org.permalink
     self.domain = org.url
     self.description = org.description
+  end
+
+  def set_angelist_attributes!(timeout: 5)
+    startup = angelist_startup(timeout)
+    return unless startup.found?
+    self.al_id = startup.id
+    self.domain ||= startup.url
+    self.description ||= startup.description
   end
 
   def set_competitors!

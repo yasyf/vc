@@ -1,0 +1,112 @@
+module Http::AngelList
+  class Base
+    extend Concerns::Cacheable
+
+    include HTTParty
+    base_uri 'https://api.angel.co/1'
+    format :json
+    headers 'Content-Type': 'application/json'
+    default_params access_token: ENV['AL_API_KEY']
+
+    def initialize(id_or_slug, timeout: nil)
+      raise 'missing id or slug!' unless id_or_slug.present?
+      @timeout = timeout
+      @id_or_slug = id_or_slug
+      fetch!
+    end
+
+    def self.resource
+      self.name.demodulize.downcase
+    end
+
+    def self.find_id(query)
+      results = api_get('/search', query: query, type: resource.titleize)
+      results.first['id'] if results.present?
+    end
+
+    def self.search(query)
+      id = find_id query
+      self.new(id) if id.present?
+    end
+
+    def found?
+      @data.present? && @data['id'].present?
+    end
+
+    def roles
+      return [] unless found?
+      @roles ||= fetch_roles!
+    end
+
+    def id
+      @data['id'] if found?
+    end
+
+    def name
+      @data['name'] if found?
+    end
+
+    def blog
+      @data['blog_url'] if found?
+    end
+
+    def twitter
+      url = @data['twitter_url'] if found?
+      url.split('/').last if url.present?
+    end
+
+    def facebook
+      url = @data['facebook_url'] if found?
+      url.split('/').last if url.present?
+    end
+
+    def linkedin
+      url = @data['linkedin_url'] if found?
+      url.split('/').last if url.present?
+    end
+
+    def crunchbase
+      url = @data['crunchbase_url'] if found?
+      url.split(/\/|\%2F/).last if url.present?
+    end
+
+    def locations
+      return [] unless found? && @data['locations'].present?
+      @locations ||= @data['locations'].map { |l| l['display_name'] }
+    end
+
+    private
+
+    def fetch_roles!(query = {})
+      self.class.api_get("/#{self.class.resource.pluralize}/#{@id_or_slug}/roles", query)['startup_roles']
+    end
+
+    def fetch!
+      if @id_or_slug.is_a?(Integer)
+        @data = self.class.api_get("/#{self.class.resource.pluralize}/#{@id_or_slug}")
+      else
+        @data = self.class.api_get('/search/slugs', slug: @id_or_slug)
+      end
+    end
+
+    def self.base_cache_key
+      "http/angelist/#{resource}"
+    end
+
+    def self._api_get(path, query)
+      key_cached(query.merge(path: path)) do
+        Retriable.retriable { get(path, query: query).parsed_response }
+      end
+    end
+
+    def self.api_get(path, query = {})
+      if @timeout.present?
+        Timeout::timeout(@timeout) { _api_get(path, query) }
+      else
+        _api_get(path, query)
+      end
+    rescue Timeout::Error
+      []
+    end
+  end
+end

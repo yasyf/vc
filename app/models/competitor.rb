@@ -61,6 +61,7 @@ class Competitor < ApplicationRecord
 
   sort :industry
   sort :fund_type
+  sort :location
 
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
@@ -69,6 +70,7 @@ class Competitor < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, uniqueness: { allow_nil: true }
+  validates :al_id, uniqueness: { allow_nil: true }
 
   after_commit :start_crunchbase_job, on: :create
 
@@ -89,9 +91,10 @@ class Competitor < ApplicationRecord
     existing = search(name: name).first
     return existing if existing.present?
 
-    crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)
-    if crunchbase_id.present?
+    if (crunchbase_id = Http::Crunchbase::Organization.find_investor_id(name)).present?
       from_crunchbase! crunchbase_id, name
+    elsif (al_id = Http::AngelList::Startup.find_id(name))
+      from_angelist! al_id, name
     else
       create! name: name
     end
@@ -104,6 +107,12 @@ class Competitor < ApplicationRecord
 
   def self.from_crunchbase!(crunchbase_id, name)
     where(crunchbase_id: crunchbase_id).first_or_create! do |competitor|
+      competitor.name = name
+    end
+  end
+
+  def self.from_angelist!(al_id, name)
+    where(al_id: al_id).first_or_create! do |competitor|
       competitor.name = name
     end
   end
@@ -147,6 +156,10 @@ class Competitor < ApplicationRecord
 
   def crunchbase_fund
     @crunchbase_fund ||= Http::Crunchbase::Fund.new(crunchbase_id)
+  end
+
+  def angellist_startup
+    @angellist_startup ||= Http::AngelList::Startup.new(al_id)
   end
 
   private

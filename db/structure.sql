@@ -118,7 +118,8 @@ CREATE TABLE companies (
     description text,
     industry character varying[],
     verified boolean DEFAULT false NOT NULL,
-    "primary" boolean DEFAULT false NOT NULL
+    "primary" boolean DEFAULT false NOT NULL,
+    al_id integer
 );
 
 
@@ -205,7 +206,9 @@ CREATE TABLE competitors (
     description text,
     industry character varying[],
     city character varying,
-    fund_type character varying[]
+    fund_type character varying[],
+    al_id integer,
+    location character varying[]
 );
 
 
@@ -1232,6 +1235,13 @@ CREATE INDEX index_competitors_on_industry ON competitors USING gin (industry);
 
 
 --
+-- Name: index_competitors_on_location; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_competitors_on_location ON competitors USING gin (location);
+
+
+--
 -- Name: index_competitors_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1909,6 +1919,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170901011132'),
 ('20170901013410'),
 ('20170901222323'),
-('20170902232836');
+('20170902232836'),
+('20170905202435'),
+('20170905203536'),
+('20170905205048');
 
 
