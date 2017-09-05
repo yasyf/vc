@@ -142,7 +142,7 @@ export default class Investor extends React.Component {
       return null;
     }
     let posts = this.state.posts.map(post => {
-      let industry = post.categories.map(c =>
+      let industry = (post.categories || []).map(c =>
         inflection.titleize(c.replace(/-/g, '_'))
       );
       return (

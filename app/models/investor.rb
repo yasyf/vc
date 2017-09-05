@@ -155,7 +155,7 @@ class Investor < ApplicationRecord
   end
 
   def blog_url
-    @blog_url ||= angelist_user&.blog || crunchbase_person&.blog || homepage || "https://medium.com/@#{twitter}"
+    @blog_url ||= angelist_user&.blog || crunchbase_person&.blog || homepage || ("https://medium.com/@#{twitter}" if twitter.present?)
   end
 
   def posts
