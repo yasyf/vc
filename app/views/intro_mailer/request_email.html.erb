@@ -2,6 +2,7 @@ Hey <%= @investor.first_name %>!
 
 <p>
   <%= @founder.name %> would like to talk to you about their company, <%= @company.name %>.
+  Respond "yes" or "no" to quickly deal with this request.
   Details about the company are below.
 </p>
 
@@ -32,6 +33,6 @@ Hey <%= @investor.first_name %>!
 </p>
 
 <p>
-  Click <a href="<%= subdomain_external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request.<br>
-  Click <a href="<%= subdomain_external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject <%= @founder.name %>'s request.<br>
+  Click <a href="<%= subdomain_external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
+  or <a href="<%= subdomain_external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject it.
 </p>
