@@ -1,10 +1,4 @@
 module Http::AngelList
-  class APIError < StandardError
-  end
-
-  class RateLimited < APIError
-  end
-
   class Base
     extend Concerns::Cacheable
 
@@ -105,9 +99,9 @@ module Http::AngelList
           response = get(path, query: query)
           parsed = response.parsed_response
           if response.code == 403
-            raise RateLimited.new(parsed)
+            raise Errors::RateLimited.new(parsed)
           elsif parsed.is_a?(Hash) && parsed['error'].present?
-            raise APIError.new(parsed['error'])
+            raise Errors::APIError.new(parsed['error'])
           else
             response.parsed_response
           end
