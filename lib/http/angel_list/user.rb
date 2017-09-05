@@ -81,6 +81,11 @@ module Http::AngelList
       @fund_types ||= @data['roles'].map { |r| ROLES[r['name']] }.compact
     end
 
+    def locations
+      return [] unless found? && @data['locations'].present?
+      @locations ||= @data['locations'].map { |l| l['display_name'] }
+    end
+
     private
 
     def fetch!

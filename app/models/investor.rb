@@ -60,6 +60,7 @@ class Investor < ApplicationRecord
 
     self.description ||= angelist_user.bio
     self.homepage ||= angelist_user.homepage
+    self.location ||= angelist_user.locations.first
 
     if angelist_user.fund_types.present?
       self.fund_type = (self.fund_type || []) + angelist_user.fund_types
