@@ -1,5 +1,5 @@
 class External::VcFinderController < External::ApplicationController
-  before_action :check_founder!, except: :login
+  before_action :check_founder!, except: [:login, :opt_in, :decide]
 
   def index
     redirect_to action: :login unless stage == :done
