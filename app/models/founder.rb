@@ -13,7 +13,7 @@ class Founder < ApplicationRecord
 
   def self.find_or_create_from_social!(first_name, last_name, social, context: nil)
     name_hash = {first_name: first_name, last_name: last_name}
-    social = social.compact
+    social = social.select { |k,v| v.present? }
     attrs = social.merge(name_hash)
 
     if social.blank?

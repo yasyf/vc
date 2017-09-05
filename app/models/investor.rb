@@ -196,6 +196,6 @@ class Investor < ApplicationRecord
   end
 
   def start_crunchbase_job
-    InvestorCrunchbaseJob.perform_later(id) unless @skip_job
+    InvestorCrunchbaseJob.perform_later(id)
   end
 end

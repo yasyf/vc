@@ -1,4 +1,10 @@
 module Http::AngelList
+  class APIError < StandardError
+  end
+
+  class RateLimited < APIError
+  end
+
   class Base
     extend Concerns::Cacheable
 
@@ -95,7 +101,17 @@ module Http::AngelList
 
     def self._api_get(path, query)
       key_cached(query.merge(path: path)) do
-        Retriable.retriable { get(path, query: query).parsed_response }
+        Retriable.retriable do
+          response = get(path, query: query)
+          parsed = response.parsed_response
+          if response.code == 403
+            raise RateLimited.new(parsed)
+          elsif parsed.is_a?(Hash) && parsed['error'].present?
+            raise APIError.new(parsed['error'])
+          else
+            response.parsed_response
+          end
+        end
       end
     end
 
