@@ -2,6 +2,8 @@ module Http::AngelList
   class User
     extend Concerns::Cacheable
 
+    NOPIC = 'https://angel.co/images/shared/nopic.png'
+
     ROLES = {
       'seed funds' => :seed,
       'angels' => :angel,
@@ -44,7 +46,7 @@ module Http::AngelList
     end
 
     def image
-      @data['image'] if found?
+      @data['image'] if found? && @data['image'] != NOPIC
     end
 
     def blog
