@@ -1,4 +1,6 @@
 class IntroRequest < ApplicationRecord
+  TOKEN_MAGIC = "VCWIZ_INTRO_"
+
   belongs_to :investor
   belongs_to :company
   belongs_to :founder
@@ -24,6 +26,10 @@ class IntroRequest < ApplicationRecord
     end
   end
 
+  def public_token
+    "#{TOKEN_MAGIC}#{token}"
+  end
+
   private
 
   def send!
@@ -37,6 +43,6 @@ class IntroRequest < ApplicationRecord
   end
 
   def set_token!
-    self.token ||= SecureRandom.hex[0,10].upcase
+    self.token ||= SecureRandom.hex.first(10).upcase
   end
 end

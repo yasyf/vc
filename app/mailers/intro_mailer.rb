@@ -1,6 +1,7 @@
 class IntroMailer < ApplicationMailer
   helper :intro_mail
   default from: "VCWiz <#{ENV['MAILGUN_EMAIL']}>"
+  after_action :add_headers!
   after_action :set_mailgun_options!
 
   def opt_in_email(request)
@@ -29,6 +30,11 @@ class IntroMailer < ApplicationMailer
   end
 
   private
+
+  def add_headers!
+    vars = { 'intro_request_token': @request.public_token }
+    mail.headers 'X-Mailgun-Recipient-Variables' => mail.to.map { |to| [to, vars] }.to_h.to_json
+  end
 
   def set_mailgun_options!
     mail.delivery_method.settings.merge!(

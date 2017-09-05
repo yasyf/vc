@@ -43,16 +43,18 @@ class TargetInvestor < ApplicationRecord
   scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
 
   def self.from_investor!(founder, investor)
+    existing = founder.target_investors.where(investor: investor)
+    return existing.first if existing.present?
     instance = self.new(investor: investor, founder: founder)
     instance.tap(&:load_from_investor!)
   end
 
-  def self.from_addr(founder, addr)
+  def self.from_addr!(founder, addr)
     target = founder.target_investors.where(email: addr.address).first || founder.target_investors.search(first_name: addr.name, last_name: addr.name).first
     return target if target.present?
 
     investor = Investor.where(email: addr.address).first || Investor.search(first_name: addr.name, last_name: addr.name).first
-    target = founder.target_investors.where(investor: investor).first || from_investor!(founder, investor) if investor.present?
+    target = from_investor!(founder, investor) if investor.present?
     return target if target.present?
 
     name = addr.name ? addr.name.split(' ') : []
@@ -100,13 +102,18 @@ class TargetInvestor < ApplicationRecord
     INVESTOR_FIELDS.all? { |f| send(f).present? }
   end
 
+  def investor_fields_changed?
+    INVESTOR_FIELDS.any? { |f| send("#{f}_changed?") }
+  end
+
   def check_investor
     return unless investor_fields_present?
+    return unless investor_fields_changed?
     investors = Investor
       .includes(:competitor)
       .references(:competitors)
       .search(first_name: first_name, last_name: last_name, competitors: { name: firm_name })
-      .where.not(id: founder.existing_target_investor_ids)
+      .where.not(id: founder.existing_target_investor_ids - [self.investor_id])
       .limit(1)
     self.investor = investors.first
   end
