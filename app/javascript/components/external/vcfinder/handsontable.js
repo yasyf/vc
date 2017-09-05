@@ -27,6 +27,8 @@ let RequestableRenderer = function(hasPath, requestedPath, requestPath) {
         let $el = $(RequestIntro);
         $el.click(() => {
           td.innerHTML = IntroRequested;
+          _.set(sourceRow, requestedPath, true);
+          instance.render();
           ffetch(requestPath, 'POST', {
             intro_request: {
               founder_id: gon.founder.id,

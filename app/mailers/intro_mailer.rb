@@ -1,7 +1,7 @@
 class IntroMailer < ApplicationMailer
   helper :intro_mail
   default from: ENV['MAILGUN_EMAIL']
-  before_action :set_mailgun_options!
+  after_action :set_mailgun_options!
 
   def opt_in_email(request)
     set_instance_vars! request
