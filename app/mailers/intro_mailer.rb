@@ -1,6 +1,6 @@
 class IntroMailer < ApplicationMailer
   helper :intro_mail
-  default from: ENV['MAILGUN_EMAIL']
+  default from: "VCWiz <#{ENV['MAILGUN_EMAIL']}>"
   after_action :set_mailgun_options!
 
   def opt_in_email(request)
