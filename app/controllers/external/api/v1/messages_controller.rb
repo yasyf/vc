@@ -4,8 +4,8 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   before_action :check_signature unless Rails.env.development?
 
   def create
-    from = Mail::Address.new(create_params[:from])
-    to = Mail::Address.new(create_params[:to])
+    from = Mail::Address.new(create_params[:From])
+    to = Mail::Address.new(create_params[:To])
 
     if (founder = Founder.where(email: from.address).first).present?
       create_outgoing founder, to
@@ -76,7 +76,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_params
-    params.permit(:to, :from, 'stripped-text')
+    params.permit(:To, :From, 'stripped-text')
   end
 
   def check_signature

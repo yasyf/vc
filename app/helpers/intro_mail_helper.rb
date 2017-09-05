@@ -8,6 +8,6 @@ module IntroMailHelper
 
   def company(company)
     return company.name unless company.domain.present?
-    "<a href='http://#{company.domain}'>#{company.name}</a>"
+    "<a href='http://#{company.domain}'>#{company.name}</a>".html_safe
   end
 end
