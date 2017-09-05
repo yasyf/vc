@@ -32,13 +32,12 @@ module Http::AngelList
     end
 
     def found?
-      @data.present?
+      @data.present? && @data['id'].present?
     end
 
     def id
       @data['id'] if found?
     end
-
 
     def name
       @data['name'] if found?
@@ -57,15 +56,18 @@ module Http::AngelList
     end
 
     def twitter
-      @data['twitter_url'].split('/').last if found?
+      url = @data['twitter_url'] if found?
+      url.split('/').last if url.present?
     end
 
     def facebook
-      @data['facebook_url'].split('/').last if found?
+      url = @data['facebook_url'] if found?
+      url.split('/').last if url.present?
     end
 
     def linkedin
-      @data['linkedin_url'].split('/').last if found?
+      url = @data['linkedin_url'] if found?
+      url.split('/').last if url.present?
     end
 
     def bio
