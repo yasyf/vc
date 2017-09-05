@@ -45,13 +45,17 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     @sentiment ||= GoogleCloud::Language.new(text).sentiment
   end
 
+  def intro_request
+    @intro_request ||= begin
+      match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(body)
+      IntroRequest.where(token: match[1]).first if match.present?
+    end
+  end
+
   def handle_response(from, tos)
     investor = Investor.where(email: from.address).first
     return unless investor.present?
-
-    match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(body)
-    return unless match.present?
-    intro_request = IntroRequest.where(token: match[1]).first!
+    return unless intro_request.present?
 
     if YES_PHRASES.any? { |s| s == text.downcase }
       intro_request.decide! true
