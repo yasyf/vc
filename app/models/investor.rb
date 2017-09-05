@@ -61,8 +61,9 @@ class Investor < ApplicationRecord
     self.description ||= angelist_user.bio
     self.homepage ||= angelist_user.homepage
 
-    self.fund_type ||= [] if angelist_user.fund_types.present?
-    self.fund_type += angelist_user.fund_types
+    if angelist_user.fund_types.present?
+      self.fund_type = (self.fund_type || []) + angelist_user.fund_types
+    end
   end
 
   def self.from_crunchbase(cb_id)
