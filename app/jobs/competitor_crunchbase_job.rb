@@ -13,7 +13,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     begin
       competitor.save!
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid => e
       raise unless e.record.errors.details.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
 
       other = Competitor
