@@ -45,8 +45,6 @@ class CompanyRelationshipsJob < ApplicationJob
       next unless name.length > 1
       ignore_record_errors do
         founder = Founder.find_or_create_from_social!(name.first, name.drop(1).join(' '), social, context: @company)
-      end
-      ignore_record_errors do
         founder.tap { |f| f.companies << @company }.save! if founder.present?
       end
     end
@@ -72,8 +70,6 @@ class CompanyRelationshipsJob < ApplicationJob
       social = SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
       ignore_record_errors do
         founder = Founder.find_or_create_from_social!(person.first_name, person.last_name, social, context: @company)
-      end
-      ignore_record_errors do
         founder.tap { |f| f.companies << @company }.save! if founder.present?
       end
     end
