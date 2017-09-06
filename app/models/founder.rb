@@ -86,7 +86,7 @@ class Founder < ApplicationRecord
             count(*) AS cnt,
             array_agg(i_ind_t) AS industry_highlight
            FROM   unnest(i.industry) i_ind_t
-           WHERE  i_ind_t = ANY('{#{company.industry.join(',')}}')
+           WHERE  i_ind_t = ANY('{#{primary_company.industry.join(',')}}')
         ) i_ind
       WHERE i_ind.cnt > 0
       ORDER BY i.featured DESC, i_ind.cnt DESC, i.target_investors_count DESC
