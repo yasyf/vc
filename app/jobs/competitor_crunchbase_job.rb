@@ -11,6 +11,34 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor.crunchbase_id ||= Http::Crunchbase::Organization.find_investor_id(competitor.name)
     competitor.al_id ||= Http::AngelList::Startup.find_id(competitor.name)
 
+    begin
+      competitor.save!
+    rescue ActiveRecord::RecordInvalid # handle duplicates
+      other = Competitor
+        .where(crunchbase_id: competitor.crunchbase_id)
+        .or(Competitor.where(al_id: competitor.al_id))
+        .where.not(id: competitor.id)
+        .first
+      return unless other.present?
+      competitor.companies_competitors.each do |cc|
+        cc2 = CompaniesCompetitor.where(company: cc.company, competitor: other).first_or_create!
+        cc2.funded_at ||= cc.funded_at
+        cc2.save! if cc2.changed?
+        cc.destroy!
+      end
+      competitor.investors.each do |investor|
+        begin
+          investor.update! competitor: other
+        rescue ActiveRecord::ActiveRecordError
+          investor.update! competitor: nil
+        end
+      end
+      competitor.notes.each do |note|
+        note.update! subject: other
+      end
+      competitor.destroy!
+    end
+
     cb_fund = competitor.crunchbase_fund
     al_fund = competitor.angellist_startup
 
