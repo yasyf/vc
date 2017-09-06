@@ -41,6 +41,10 @@ module Http::AngelList
       @data['id'] if found?
     end
 
+    def angellist_url
+      @data['angellist_url'] if found?
+    end
+
     def name
       @data['name'] if found?
     end

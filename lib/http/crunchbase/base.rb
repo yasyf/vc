@@ -18,7 +18,7 @@ module Http::Crunchbase
 
     def crunchbase_url
       path = get_in 'properties', 'web_path'
-      "https://www.crunchbase.com/#{path}"
+      "https://www.crunchbase.com/#{path}" if path.present?
     end
 
     def twitter

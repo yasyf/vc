@@ -91,7 +91,7 @@ class Company < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :name, :description, :industry], methods: [:complete?, :cb_url])
+    super options.reverse_merge(only: [:id, :name, :description, :industry], methods: [:complete?, :cb_url, :al_url, :website])
   end
 
   def as_json_api(options = {})
@@ -147,7 +147,6 @@ class Company < ActiveRecord::Base
 
   def team
     return nil unless (cached_team = super).present?
-    puts "HERE: #{cached_team.name}"
     Team.send(cached_team.name)
   end
 
@@ -164,7 +163,15 @@ class Company < ActiveRecord::Base
   end
 
   def cb_url
-    crunchbase_org.crunchbase_url
+    cached { crunchbase_org.crunchbase_url }
+  end
+
+  def al_url
+    cached { angelist_startup.angellist_url }
+  end
+
+  def website
+    "http://#{domain}" if domain.present?
   end
 
   def tweeter
