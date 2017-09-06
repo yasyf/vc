@@ -11,4 +11,4 @@ Raven.setDataCallback(data => {
   return data;
 });
 
-LogRocket.identify(gon.user_context.id, gon.user_context);
+LogRocket.identify(gon.userContext.id, gon.userContext);
