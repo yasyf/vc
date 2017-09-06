@@ -67,10 +67,9 @@ gem 'metainspector'
 gem 'feedjira'
 gem 'google-cloud-language'
 
-# temp fix
-gem 'rb-fsevent', '0.9.8'
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'
+  gem 'webmock'
 end
 
 group :production do
@@ -98,6 +97,11 @@ end
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'rspec-rails', '~> 3.6'
+  gem 'factory_girl_rails'
+  gem 'guard-rspec', require: false
+  gem 'rb-fsevent', '0.10.2'
+  gem 'spring-commands-rspec'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

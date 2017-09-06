@@ -1,0 +1,109 @@
+require 'rails_helper'
+require 'google/cloud/language'
+
+RSpec.describe 'intro request', type: :request do
+  before do
+    allow(::Google::Cloud::Language).to receive_message_chain(:new, :document, :sentiment) { OpenStruct.new(score: -1, magnitude: 1) }
+
+    @founder = FactoryGirl.create(:founder, :with_companies)
+    @company = @founder.primary_company
+    @investor = FactoryGirl.create(:investor)
+
+    sign_in @founder
+  end
+
+  it 'asks for an opt in' do
+    expect do
+      perform_enqueued_jobs do
+        post external_api_v1_intro_path, params: {
+          intro_request: {
+            investor_id: @investor.id,
+            founder_id: @founder.id,
+            company_id: @company.id,
+          }
+        }
+        expect(response).to be_success
+      end
+    end.to change { IntroRequest.count }.from(0).to(1)
+    expect(ActionMailer::Base.deliveries.count).to eq(1)
+
+    mail = ActionMailer::Base.deliveries.last
+    expect(mail.to.length).to eq(1)
+    expect(mail.to.first).to eq(@investor.email)
+    expect(mail.subject).to include(@company.name)
+    expect(mail.body.encoded).to include(@founder.first_name)
+    expect(mail.body.encoded).to include(@investor.first_name)
+    expect(mail.body.encoded).to include(@company.description)
+    expect(mail.body.encoded).to include(subdomain_external_vcfinder_opt_in_path)
+    expect(mail.body.encoded).to include(IntroRequest.last.token)
+  end
+
+  it 'makes the intro' do
+    intro_request = FactoryGirl.create(:intro_request, founder: @founder, company: @company, investor: @investor)
+
+    perform_enqueued_jobs do
+      get external_vcfinder_opt_in_path, params: {
+        optin: true,
+        accept: true,
+        token: intro_request.token,
+      }
+    end
+    expect(response).to be_success
+    expect(ActionMailer::Base.deliveries.count).to eq(1)
+
+    mail = ActionMailer::Base.deliveries.last
+    expect(mail.to.length).to eq(2)
+    expect(mail.to).to include(@founder.email)
+    expect(mail.to).to include(@investor.email)
+    expect(mail.subject).to include(@company.name)
+    expect(mail.body.encoded).to include(@founder.first_name)
+    expect(mail.body.encoded).to include(@investor.first_name)
+    expect(mail.body.encoded).to include(@company.description)
+  end
+
+  it 'tracks outreach' do
+    expect do
+      post external_api_v1_message_path, params: {
+        To: @investor.email,
+        From: @founder.email,
+        'stripped-text': 'hi'
+      }
+      expect(response).to be_success
+    end.to change { TargetInvestor.count }.from(0).to(1)
+
+    target = TargetInvestor.last
+    expect(target.investor).to eq(@investor)
+    expect(target.email).to eq(@investor.email)
+    expect(target.stage).to include('waiting')
+  end
+
+  it 'tracks responses and recognizes passes' do
+    expect do
+      post external_api_v1_message_path, params: {
+        From: @investor.email,
+        To: @founder.email,
+        'stripped-text': 'hello'
+      }
+      expect(response).to be_success
+    end.to change { TargetInvestor.count }.from(0).to(1)
+
+    target = TargetInvestor.last
+    expect(target.investor).to eq(@investor)
+    expect(target.email).to eq(@investor.email)
+    expect(target.stage).to include('respond')
+
+    expect do
+      post external_api_v1_message_path, params: {
+        From: @investor.email,
+        To: @founder.email,
+        'stripped-text': 'sorry, not interested right now.'
+      }
+      expect(response).to be_success
+    end.to_not change { TargetInvestor.count }
+
+    target = TargetInvestor.last
+    expect(target.investor).to eq(@investor)
+    expect(target.email).to eq(@investor.email)
+    expect(target.stage).to include('pass')
+  end
+end

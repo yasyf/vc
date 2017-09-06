@@ -147,6 +147,7 @@ class Company < ActiveRecord::Base
 
   def team
     return nil unless (cached_team = super).present?
+    puts "HERE: #{cached_team.name}"
     Team.send(cached_team.name)
   end
 

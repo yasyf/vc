@@ -16,6 +16,10 @@ module Drfvote
     config.active_record.schema_format = :sql
     config.exceptions_app = self.routes
 
+    config.generators do |g|
+      g.test_framework :rspec
+    end
+
     %w(teams overrides).each do |name|
       result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)
       config.send("#{name}=", result)

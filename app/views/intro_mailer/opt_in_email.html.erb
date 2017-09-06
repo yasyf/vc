@@ -5,6 +5,8 @@ Hey <%= @investor.first_name %>!
   <%= @founder.name %> is using me to reach out to you about potentially funding their company, <%= @company.name %>.
 </p>
 
+<%= render partial: 'company' %>
+
 <p>
   Before I can make the intro, I need you to opt-in to receiving intros through VCWiz.
   You will still get the chance to say yes or no to each individual intro request.

@@ -10,7 +10,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   YES_PHRASES = %w(yes y yea yeah yup)
   NO_PHRASES = %w(no n nope)
 
-  before_action :check_signature unless Rails.env.development?
+  before_action :check_signature if Rails.env.production?
 
   def create
     from = Mail::Address.new(create_params[:From])

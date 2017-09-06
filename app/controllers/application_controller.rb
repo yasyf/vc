@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
       name: current_internal_user.try(:name) || current_external_founder.try(:name),
       email: current_internal_user.try(:email) || current_external_founder.try(:email),
     }
-    gon.context = context
+    gon.user_context = context
 
     Raven.user_context(context)
     Raven.extra_context(params: params.to_unsafe_h, url: request.url)

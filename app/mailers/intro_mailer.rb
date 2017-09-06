@@ -33,7 +33,7 @@ class IntroMailer < ApplicationMailer
 
   def add_headers!
     vars = { 'intro_request_token': @request.public_token }
-    mail.headers 'X-Mailgun-Recipient-Variables' => mail.to.map { |to| [to, vars] }.to_h.to_json
+    mail.headers 'X-Mailgun-Recipient-Variables' => Array.wrap(mail.to).map { |to| [to, vars] }.to_h.to_json
   end
 
   def set_mailgun_options!

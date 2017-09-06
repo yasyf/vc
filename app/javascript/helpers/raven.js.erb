@@ -43,6 +43,6 @@ let ravenOptions = {
 };
 
 Raven.config('<%= ENV['SENTRY_SAFE_DSN'] %>', ravenOptions).install();
-Raven.setUserContext(gon.context);
+Raven.setUserContext(gon.user_context);
 
 window.Raven = Raven;
