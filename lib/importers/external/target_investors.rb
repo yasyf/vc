@@ -75,6 +75,8 @@ module Importers::External
         email: email,
         note: row[:note]
       )
+    rescue ActiveRecord::RecordNotUnique
+      nil
     end
   end
 end
