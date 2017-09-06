@@ -13,13 +13,16 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     begin
       competitor.save!
-    rescue ActiveRecord::RecordInvalid # handle duplicates
+    rescue ActiveRecord::RecordInvalid
+      raise unless e.record.errors.details.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
+
       other = Competitor
         .where(crunchbase_id: competitor.crunchbase_id)
         .or(Competitor.where(al_id: competitor.al_id))
         .where.not(id: competitor.id)
         .first
       return unless other.present?
+
       competitor.companies_competitors.each do |cc|
         cc2 = CompaniesCompetitor.where(company: cc.company, competitor: other).first_or_create!
         cc2.funded_at ||= cc.funded_at
@@ -36,7 +39,9 @@ class CompetitorCrunchbaseJob < ApplicationJob
       competitor.notes.each do |note|
         note.update! subject: other
       end
+
       competitor.destroy!
+      return
     end
 
     cb_fund = competitor.crunchbase_fund
