@@ -13,7 +13,8 @@ module Http::AngelList
     end
 
     def homepage
-      @data['online_bio_url'] if found? && !@data['online_bio_url'].include?('google.com')
+      homepage = @data['online_bio_url'] if found?
+      homepage if homepage.present? && !homepage.include?('google.com')
     end
 
     def bio

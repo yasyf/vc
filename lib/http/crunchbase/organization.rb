@@ -61,7 +61,7 @@ module Http::Crunchbase
         data = fetch_data
         if company_id.present? && id_valid?
           data
-        elsif data.present?
+        elsif data.present? && data['properties'].present?
           self.class.api_get("/#{data['properties']['permalink']}", {}, false)
         end
       end

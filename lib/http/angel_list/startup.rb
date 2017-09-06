@@ -1,7 +1,8 @@
 module Http::AngelList
   class Startup < Base
     def url
-      @data['company_url'] if found? && !@data['company_url'].include?('google.com')
+      url = @data['company_url'] if found?
+      url if url.present? && !url.include?('google.com')
     end
 
     def description
