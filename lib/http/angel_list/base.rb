@@ -77,7 +77,8 @@ module Http::AngelList
     private
 
     def fetch_roles!(query = {})
-      self.class.api_get("/#{self.class.resource.pluralize}/#{@id_or_slug}/roles", query)['startup_roles']
+      roles = self.class.api_get("/#{self.class.resource.pluralize}/#{@id_or_slug}/roles", query)
+      roles['startup_roles'] if roles.present?
     end
 
     def fetch!
@@ -97,7 +98,9 @@ module Http::AngelList
         Retriable.retriable do
           response = get(path, query: query)
           parsed = response.parsed_response
-          if response.code == 403
+          if response.code == 404
+            nil
+          elsif response.code == 403
             raise Errors::RateLimited.new(parsed)
           elsif parsed.is_a?(Hash) && parsed['error'].present?
             raise Errors::APIError.new(parsed['error'])
