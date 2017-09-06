@@ -149,15 +149,20 @@ class Investor < ApplicationRecord
     end if crunchbase_id.present?
   end
 
-  def angelist_user
+  def angelist_user(safe: false)
     @angelist_user ||= begin
       user = Http::AngelList::User.new al_id
       user if user.found?
     end if al_id.present?
+  rescue HTTP::AngelList::Errors::RateLimited
+    raise unless safe
+    nil
   end
 
   def blog_url
-    @blog_url ||= angelist_user&.blog || crunchbase_person&.blog || homepage || ("https://medium.com/@#{twitter}" if twitter.present?)
+    @blog_url ||= cached do
+      angelist_user(safe: true)&.blog || crunchbase_person&.blog || homepage || ("https://medium.com/@#{twitter}" if twitter.present?)
+    end
   end
 
   def posts
