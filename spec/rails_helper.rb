@@ -66,5 +66,7 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!(allow_localhost: true)
     WebMock.stub_request(:post, /api.wit.ai/)
     WebMock.stub_request(:post, /googleapis.com/)
+    WebMock.stub_request(:post, /api.crunchbase.com/).to_return(status: 404)
+    WebMock.stub_request(:get, /api.trello.com/).to_return(status: 404)
   end
 end
