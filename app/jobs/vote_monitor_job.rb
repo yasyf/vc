@@ -1,7 +1,7 @@
 class VoteMonitorJob < ActiveJob::Base
   REMAINING_THRESHOLD = 10.minutes
 
-  queue_as :default
+  queue_as :now
 
   def perform
     Team.for_each do |team|
