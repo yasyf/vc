@@ -1,5 +1,12 @@
 class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
-  PASS_PHRASES = ['keep in touch', 'not interested', 'not right now']
+  PASS_PHRASES = [
+    'keep in touch',
+    'not interested',
+    'not right now',
+    'not a good fit',
+    'keep in touch',
+    'i can be helpful',
+  ]
   YES_PHRASES = %w(yes y yea yeah yup)
   NO_PHRASES = %w(no n nope)
 
@@ -112,7 +119,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def create_incoming(founder, from)
     stage =
-      if sentiment.negative? && PASS_PHRASES.any? { |p| p.in?(text) }
+      if sentiment.negative? && PASS_PHRASES.any? { |p| p.in?(text.downcase) }
         TargetInvestor::RAW_STAGES.keys.index(:pass)
       else
         TargetInvestor::RAW_STAGES.keys.index(:respond)
