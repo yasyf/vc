@@ -89,9 +89,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
           c.domain = startup['company_url']
         end
 
-        cc = c.companies_competitors.where(competitor: competitor).first_or_initialize
-        cc.funded_at ||= investment['created_at'].to_date
-        cc.save! if cc.changed?
+        c.companies_competitors.where(competitor: competitor).first_or_create!
       end
     end
   end

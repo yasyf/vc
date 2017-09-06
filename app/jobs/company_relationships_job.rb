@@ -55,9 +55,7 @@ class CompanyRelationshipsJob < ApplicationJob
       next unless person['role'] == 'past_investor' && person['tagged']['type'] == 'Startup'
       ignore_invalid do
         competitor = Competitor.from_angelist! person['tagged']['id'], person['tagged']['name']
-        cc = competitor.companies_competitors.where(company: @company).first_or_initialize
-        cc.funded_at ||= person['created_at'].to_date
-        cc.save! if cc.changed?
+        competitor.companies_competitors.where(company: @company).first_or_create!
       end
     end
   end
