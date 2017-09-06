@@ -9,10 +9,9 @@ module Http::AngelList
     default_params access_token: ENV['AL_API_KEY']
 
     def initialize(id_or_slug, timeout: nil)
-      raise 'missing id or slug!' unless id_or_slug.present?
       @timeout = timeout
       @id_or_slug = id_or_slug
-      fetch!
+      fetch! if id_or_slug.present?
     end
 
     def self.resource
