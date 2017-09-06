@@ -176,6 +176,7 @@ export default class TargetInvestors extends React.PureComponent {
     keys.forEach(c => {
       widths[c] = defaultWidth;
     });
+    widths['email'] = 100;
     widths['Status'] = 200;
     widths['Industry'] = 200;
     widths['Note'] = 350;
