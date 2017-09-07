@@ -36,7 +36,7 @@ export default class TargetInvestor extends React.Component {
     } else if (intro_request.accepted === true) {
       return <span>You requested an intro, and {first_name} is <b>interested in speaking with you</b>.</span>;
     } else if (intro_request.opened_at) {
-      return <span>You've requested an intro, and {first_name} opened the request <b>{moment(intro_request.opened_at).fromNow()}</b></span>;
+      return <span>You've requested an intro, and {first_name} last opened the request <b>{moment(intro_request.opened_at).fromNow()}</b></span>;
     } else {
       return <span>You've requested an intro, but so far we have <b>no response</b> from {first_name}.</span>;
     }

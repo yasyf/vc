@@ -37,6 +37,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   def open
     return head :not_acceptable unless intro_request.present?
     intro_request.update!(
+      opened_at: DateTime.now,
       open_city: hook_params['city'],
       open_country: hook_params['country'],
       open_device_type: hook_params['device-type'],
@@ -47,7 +48,6 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   def click
     return head :not_acceptable unless intro_request.present?
     intro_request.update!(
-      opened_at: DateTime.now,
       open_city: hook_params['city'],
       open_country: hook_params['country'],
       open_device_type: hook_params['device-type'],
