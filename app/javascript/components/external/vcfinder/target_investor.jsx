@@ -15,15 +15,18 @@ export default class TargetInvestor extends React.Component {
   }
 
   renderClicks(targetInvestor) {
-    let { first_name, intro_request, gender } = targetInvestor;
+    let { first_name, intro_request } = targetInvestor;
     if (!intro_request.id) {
       return null;
     }
-    let clicks = Object.entries(intro_request.clicks).filter(([k, v]) => v).map(([k, v]) => inflection.titleize(k));
+    let clicks = Object.
+      entries(intro_request.clicks).
+      filter(([k, v]) => v).
+      map(([k, v]) => k === 'website' ? k : inflection.titleize(k));
     if (!clicks.length) {
       return null;
     }
-    return <span>{pronoun(gender)} has checked out your <b>{wordJoin(clicks)}</b>.</span>;
+    return <span>{first_name} has checked out your <b>{wordJoin(clicks)}</b>.</span>;
   }
 
   renderIntroRequest(targetInvestor) {
