@@ -71,7 +71,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def headers
-    @headers ||= (create_params['message-headers'] || []).to_h
+    @headers ||= JSON.parse(create_params['message-headers'] || '[]').to_h
   end
 
   def sentiment
