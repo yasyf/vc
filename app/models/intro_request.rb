@@ -48,7 +48,7 @@ class IntroRequest < ApplicationRecord
   end
 
   def clicked?(url)
-    (URI.parse(url).host rescue nil || url).in? click_domains
+    ((URI.parse(url).host rescue nil) || url).in? click_domains
   end
 
   %w(twitter linkedin).each do |s|
