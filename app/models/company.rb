@@ -164,11 +164,13 @@ class Company < ActiveRecord::Base
 
   def cb_url
     cached { crunchbase_org.crunchbase_url }
+  rescue HTTP::Crunchbase::Errors::APIError
+    nil
   end
 
   def al_url
     cached { angelist_startup.angellist_url }
-  rescue HTTP::AngelList::Errors::RateLimited
+  rescue HTTP::AngelList::Errors::APIError
     nil
   end
 

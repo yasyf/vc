@@ -46,6 +46,8 @@ module Http::Crunchbase
 
     def found?
       search_for_data.present?
+    rescue Errors::APIError
+      false
     end
 
     private
