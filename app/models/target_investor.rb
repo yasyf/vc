@@ -122,6 +122,6 @@ class TargetInvestor < ApplicationRecord
     return if stage == stage_was
     LoggedEvent.log! :target_stage_changed, self,
                      notify: 0, data: { from: stage_was, to: stage }
-    self.last_response = DateTime.now if stage.to_sym == :respond || stage_was.to_sym == :waiting
+    self.last_response = DateTime.now if stage.to_s == '3_respond' || stage_was.to_s == '2_waiting'
   end
 end
