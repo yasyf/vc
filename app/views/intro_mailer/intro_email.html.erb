@@ -4,7 +4,7 @@
 
 <p>
   I'd like to introduce you to each other.
-  <%= @founder.first_name %> is the founder of <%= company @company %>, and <%= @investor.first_name %> is <%= role @investor %> at <%= @competitor.name %>.
+  <%= founder @founder %> is the founder of <%= company @company %>, and <%= @investor.first_name %> is <%= role @investor %> at <%= @competitor.name %>.
 </p>
 
 <% if @company.description %>

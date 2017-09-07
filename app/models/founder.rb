@@ -1,4 +1,6 @@
 class Founder < ApplicationRecord
+  SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
+
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :notes
   has_many :emails, dependent: :destroy

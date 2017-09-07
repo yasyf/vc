@@ -1,10 +1,9 @@
 class CompanyRelationshipsJob < ApplicationJob
   include Concerns::Ignorable
 
-  queue_as :default
-
   TIMEOUT = 5
-  SOCIAL_KEYS = %w(homepage twitter linkedin facebook)
+
+  queue_as :default
 
   def perform(company_id)
     @company = Company.find(company_id)
@@ -40,7 +39,7 @@ class CompanyRelationshipsJob < ApplicationJob
     @al_startup.roles.each do |person|
       next unless person['role'] == 'founder'
       user = Http::AngelList::User.new person['tagged']['id']
-      social = SOCIAL_KEYS.map { |k| [k, user.public_send(k)] }.to_h
+      social = Founder::SOCIAL_KEYS.map { |k| [k, user.public_send(k)] }.to_h
       next unless user.name.present?
       name = user.name.split(/[\s.]/).map(&:titleize)
       next unless name.length > 1
@@ -66,7 +65,7 @@ class CompanyRelationshipsJob < ApplicationJob
     founders.each do |founder|
       person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
       next unless person.found?
-      social = SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
+      social = Founder::SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
       ignore_record_errors do
         founder = Founder.find_or_create_from_social!(person.first_name, person.last_name, social, context: @company)
         founder.tap { |f| f.companies << @company }.save! if founder.present?

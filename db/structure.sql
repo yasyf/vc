@@ -317,7 +317,7 @@ ALTER SEQUENCE founders_id_seq OWNED BY founders.id;
 CREATE TABLE intro_requests (
     id bigint NOT NULL,
     token character varying NOT NULL,
-    accepted boolean DEFAULT false NOT NULL,
+    accepted boolean,
     investor_id bigint NOT NULL,
     company_id bigint NOT NULL,
     founder_id bigint NOT NULL,
@@ -1954,6 +1954,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170907011330'),
 ('20170907013240'),
 ('20170907020331'),
-('20170907082031');
+('20170907082031'),
+('20170907082851');
 
 
