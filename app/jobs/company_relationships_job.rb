@@ -41,6 +41,7 @@ class CompanyRelationshipsJob < ApplicationJob
       next unless person['role'] == 'founder'
       user = Http::AngelList::User.new person['tagged']['id']
       social = SOCIAL_KEYS.map { |k| [k, user.public_send(k)] }.to_h
+      next unless user.name.present?
       name = user.name.split(/[\s.]/).map(&:titleize)
       next unless name.length > 1
       ignore_record_errors do
