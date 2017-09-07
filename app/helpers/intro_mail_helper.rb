@@ -2,7 +2,7 @@ module IntroMailHelper
   VOWELS = %w(a e i o u)
 
   def founder(founder)
-    link = Founder::SOCIAL_KEYS.find? { |k| founder.send(k).present? }
+    link = Founder::SOCIAL_KEYS.find { |k| founder.send(k).present? }
     return founder.name unless link.present?
     prefix = case link
       when :linkedin
