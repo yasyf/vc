@@ -16,6 +16,7 @@
 .DS_Store
 .env
 /public/packs
+/public/packs-test
 /node_modules
 
 

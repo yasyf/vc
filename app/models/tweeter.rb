@@ -24,8 +24,6 @@ class Tweeter < ApplicationRecord
     end
   end
 
-  private
-
   def latest_tweets(n = 5)
     twitter_client.with_client do |client|
       client.user_timeline(username, count: n * 2, include_rts: false, exclude_replies: true).first(n)

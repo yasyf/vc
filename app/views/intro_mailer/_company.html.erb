@@ -27,6 +27,8 @@
     <% newsworthy = @company.tweeter.newsworthy_tweets %>
     <% if newsworthy.present? %>
       <b>Popular Tweet</b>: <%= newsworthy.last.text %><br>
+    <% else %>
+      <b>Recent Tweet</b>: <%= @company.tweeter.latest_tweets(1).last.text %><br>
     <% end %>
   <% end %>
 </p>
