@@ -38,7 +38,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'ruby-trello'
 gem 'chronic'
-gem 'picky'
 gem 'slack-ruby-client'
 gem 'devise'
 gem 'omniauth'
