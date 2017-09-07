@@ -168,6 +168,8 @@ class Company < ActiveRecord::Base
 
   def al_url
     cached { angelist_startup.angellist_url }
+  rescue HTTP::AngelList::Errors::RateLimited
+    nil
   end
 
   def website
