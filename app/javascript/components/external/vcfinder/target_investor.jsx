@@ -30,7 +30,7 @@ export default class TargetInvestor extends React.Component {
     let { first_name, intro_request } = targetInvestor;
     if (!intro_request.id) {
       return null;
-    } else if (intro_request.accepted === false) {
+    } else if (intro_request.opened_at && !intro_request.accepted) {
       let reason = intro_request.reason ? <span>, because "{intro_request.reason}"</span> : null;
       return <span>You requested an intro, but {first_name} was <b>not interested</b>{reason}.</span>;
     } else if (intro_request.accepted === true) {
