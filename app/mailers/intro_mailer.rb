@@ -40,7 +40,7 @@ class IntroMailer < ApplicationMailer
     vars = { intro_request_token: @request.public_token }
     mail.headers({
       'X-Mailgun-Recipient-Variables': Array.wrap(mail.to).map { |to| [to, vars] }.to_h.to_json,
-      'X-Mailgun-Variables': vars,
+      'X-Mailgun-Variables': vars.to_json,
     })
   end
 
