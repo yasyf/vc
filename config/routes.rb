@@ -57,7 +57,10 @@ Rails.application.routes.draw do
           end
         end
 
-        resource :message, only: [:create]
+        resource :message, only: [:create] do
+          post 'open'
+          post 'click'
+        end
 
         resource :intro, only: [:create]
 

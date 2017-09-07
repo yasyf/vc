@@ -1,5 +1,7 @@
 import React from 'react';
 import HotTable from 'react-handsontable';
+import Modal from 'react-modal';
+import TargetInvestor from './target_investor';
 
 import {
   TargetInvestorStages,
@@ -21,6 +23,7 @@ import {
   propToPath,
   extractSchema,
   requestable,
+  button,
 } from './handsontable';
 
 const autofillPaths = ['first_name', 'last_name', 'firm_name'];
@@ -28,6 +31,10 @@ const autofillPaths = ['first_name', 'last_name', 'firm_name'];
 export default class TargetInvestors extends React.PureComponent {
   constructor(props) {
     super(props);
+
+    this.state = {
+      detailTarget: null,
+    };
 
     this.hot = {};
     this.columns = this.genColumns();
@@ -196,7 +203,7 @@ export default class TargetInvestors extends React.PureComponent {
       'Industry': autocomplete(CompetitorIndustries, CompetitorIndustriesInverse, 'industry[0]'),
       'Type': autocomplete(CompetitorFundTypes, CompetitorFundTypesInverse, 'fund_type[0]'),
       'Note': simple('note'),
-      'Last <br/> Response': simple('last_response'),
+      'Details': button('Details', this.onDetails),
     };
   };
 
@@ -211,39 +218,63 @@ export default class TargetInvestors extends React.PureComponent {
     return `<span data-index="${i}"><i class='fi-trash'></i></span>`
   };
 
+  onDetails = (row) => {
+    let detailTarget = this.getRow(row);
+    this.setState({detailTarget});
+  };
+
+  onCloseModal = () => {
+    this.setState({detailTarget: null});
+  };
+
+  renderModal() {
+    return (
+      <Modal
+        isOpen={!!this.state.detailTarget}
+        onRequestClose={this.onCloseModal}
+        contentLabel={'Details'}
+      >
+        <TargetInvestor onClose={this.onCloseModal} targetInvestor={this.state.detailTarget} />
+      </Modal>
+    )
+  }
+
   render() {
     return (
-      <div className="spreadsheet">
-        <HotTable
-          data={JSON.parse(JSON.stringify(this.props.targets))}
-          dataSchema={extractSchema(this.columns)}
-          colHeaders={flattenedHeaders(this.columns)}
-          rowHeaders={TargetInvestors.genRowHeader}
-          columns={flattenedColumns(this.columns)}
-          stretchH="all"
-          preventOverflow='horizontal'
-          autoColumnSize={{
-            useHeaders: true,
-          }}
-          manualColumnResize={true}
-          hiddenColumns={{
-            indicators: true,
-          }}
-          contextMenu={['hidden_columns_hide', 'hidden_columns_show']}
-          minRows={10}
-          minSpareRows={1}
-          bindRowsWithHeaders={true}
-          columnSorting={{
-            sortEmptyCells: false,
-          }}
-          sortIndicator={true}
-          onBeforeChange={this.onBeforeChange}
-          beforeOnCellMouseDown={this.beforeOnCellMouseDown}
-          onAfterChange={this.onChange}
-          onAfterSelection={this.onSelection}
-          onModifyColWidth={this.onModifyWidth}
-          ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}
-        />
+      <div>
+        {this.renderModal()}
+        <div className="spreadsheet">
+          <HotTable
+            data={JSON.parse(JSON.stringify(this.props.targets))}
+            dataSchema={extractSchema(this.columns)}
+            colHeaders={flattenedHeaders(this.columns)}
+            rowHeaders={TargetInvestors.genRowHeader}
+            columns={flattenedColumns(this.columns)}
+            stretchH="all"
+            preventOverflow='horizontal'
+            autoColumnSize={{
+              useHeaders: true,
+            }}
+            manualColumnResize={true}
+            hiddenColumns={{
+              indicators: true,
+            }}
+            contextMenu={['hidden_columns_hide', 'hidden_columns_show']}
+            minRows={10}
+            minSpareRows={1}
+            bindRowsWithHeaders={true}
+            columnSorting={{
+              sortEmptyCells: false,
+            }}
+            sortIndicator={true}
+            onBeforeChange={this.onBeforeChange}
+            beforeOnCellMouseDown={this.beforeOnCellMouseDown}
+            onAfterChange={this.onChange}
+            onAfterSelection={this.onSelection}
+            onModifyColWidth={this.onModifyWidth}
+            ref={hot => { if (hot) { this.hot = hot.hotInstance; } }}
+          />
+        </div>
       </div>
     );
   }

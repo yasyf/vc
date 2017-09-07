@@ -87,13 +87,13 @@ class TargetInvestor < ApplicationRecord
     investor&.email.present? && investor&.opted_in != false
   end
 
-  def email_requested?
-    return false unless investor.present?
-    founder.intro_requests.where(investor: investor).present?
+  def intro_request
+    return nil unless investor.present?
+    founder.intro_requests.where(investor: investor).first
   end
 
   def as_json(options = {})
-    super options.reverse_merge(methods: [:has_email?, :email_requested?])
+    super options.reverse_merge(methods: [:has_email?, :intro_request])
   end
 
   private

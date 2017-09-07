@@ -108,6 +108,7 @@ GEM
       sax-machine (>= 1.0)
     ffi (1.9.18)
     formatador (0.2.5)
+    gender_detector (1.0.0)
     gli (2.16.1)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
@@ -518,6 +519,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   feedjira
+  gender_detector
   gon
   google-api-client
   google-cloud-language

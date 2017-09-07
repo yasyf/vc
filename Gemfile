@@ -66,6 +66,7 @@ gem 'retriable', '~> 3.0'
 gem 'metainspector'
 gem 'feedjira'
 gem 'google-cloud-language'
+gem 'gender_detector'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

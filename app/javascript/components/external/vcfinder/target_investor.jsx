@@ -1,126 +1,67 @@
-import moment from 'moment';
 import React from 'react';
-import classNames from 'classnames';
-import SavedText from './saved_text';
-import { CompetitorFundingSizes, CompetitorIndustries } from './constants.js.erb';
-import {  extend } from './utils'
-import InvestorHead from './investor/head';
-import InvestorBody from './investor/body';
-import Collapsible from 'react-collapsible';
+import moment from 'moment';
+import inflection from 'inflection';
+import {pronoun, wordJoin} from './utils';
 
 export default class TargetInvestor extends React.Component {
-  changeStage(stage) {
-    return () => this.props.onTargetChange(this.props.id, {stage});
-  }
-
-  onChange = (update) => {
-    this.props.onTargetChange(this.props.id, update);
-  };
-
-  onInvestorChange = (update) => {
-    this.onChange({investor: update});
-  };
-
-  renderHollowButton(colour, text, newStage) {
-    return (
-      <span className="hollowButton">
-        <button
-          type="button"
-          className={classNames('hollow', colour, 'button')}
-          onClick={this.changeStage(newStage)}
-        >
-          {text}
-         </button>
-      </span>
-    );
-  }
-
-  renderSavedText(label, name, value = null) {
-    return <SavedText
-      name={name}
-      value={value || this.props[name]}
-      label={label}
-      onChange={this.onChange}
-    />
-  }
-
-  renderButtons() {
-    switch (this.props.stage) {
-      case 'added':
-        return (
-          <div className="float-center text-center">
-            {this.renderHollowButton('success', 'I heard back', 'waiting')}
-            {this.renderHollowButton('warning', 'I need an intro!', 'intro')}
-          </div>
-        );
-        break;
-      case 'intro':
-        return (
-          <div className="float-center text-center">
-            {this.renderHollowButton('success', 'I got an intro!', 'waiting')}
-          </div>
-        );
-        break;
-      case 'waiting':
-        return (
-          <div className="float-center text-center">
-            {this.renderHollowButton('primary', 'I heard back', 'respond')}
-            {this.renderHollowButton('success', "They're interested!", 'interested')}
-            {this.renderHollowButton('alert', "They're not interested", 'pass')}
-          </div>
-        );
-        break;
-      case 'respond':
-        return (
-          <div className="float-center text-center">
-            {this.renderHollowButton('primary', 'I responded', 'waiting')}
-            {this.renderHollowButton('success', "They're interested!", 'interested')}
-            {this.renderHollowButton('alert', "They're not interested", 'pass')}
-          </div>
-        );
-        break;
-      case 'interested':
-        return (
-          <div className="float-center text-center">
-            {this.renderHollowButton('alert', "They're not interested anymore", 'pass')}
-          </div>
-        );
-        break;
+  renderLastResponse(targetInvestor) {
+    let { last_responded, first_name, firm_name, intro_request, gender } = targetInvestor;
+    if (last_responded) {
+      return <span><b>{first_name}</b> last responded to you {moment(last_response).fromNow()}</span>
+    } else {
+      let busy = intro_request['traveling?'] ? null : <span>{inflection.titleize(pronoun(gender, 'pos'))} job at {firm_name} must be keeping {pronoun(gender, 'past')} busy!</span>;
+      return <span><b>{first_name}</b> hasn't responded to you yet. {busy}</span>;
     }
   }
 
-  renderSavedFields() {
-    return (
-      <div className="card-section card-section-multi">
-        <div className="grid-x grid-margin-x investor-row">
-          <div className="small-6 cell">
-            {this.renderSavedText('Priority', 'tier')}
-          </div>
-          <div className="small-6 cell">
-            {this.renderSavedText('Note', 'note')}
-          </div>
-        </div>
-      </div>
-    );
+  renderClicks(targetInvestor) {
+    let { first_name, intro_request, gender } = targetInvestor;
+    if (!intro_request.id) {
+      return null;
+    }
+    let clicks = Object.entries(intro_request.clicks).filter(([k, v]) => v).map(([k, v]) => inflection.titleize(k));
+    if (!clicks.length) {
+      return null;
+    }
+    return <span>{pronoun(gender)} has checked out your <b>{wordJoin(clicks)}</b>.</span>;
+  }
+
+  renderIntroRequest(targetInvestor) {
+    let { first_name, intro_request } = targetInvestor;
+    if (!intro_request.id) {
+      return null;
+    } else if (intro_request.accepted === false) {
+      let reason = intro_request.reason ? <span>, because "{intro_request.reason}"</span> : null;
+      return <span>You requested an intro, but {first_name} was <b>not interested</b>{reason}.</span>;
+    } else if (intro_request.accepted === true) {
+      return <span>You requested an intro, and {first_name} is <b>interested in speaking with you</b>.</span>;
+    } else if (intro_request.opened_at) {
+      return <span>You've requested an intro, and {first_name} opened the request <b>{moment(intro_request.opened_at).fromNow()}</b></span>;
+    } else {
+      return <span>You've requested an intro, but so far we have <b>no response</b> from {first_name}.</span>;
+    }
+  }
+
+  renderLocation(targetInvestor) {
+    let { first_name, intro_request, gender } = targetInvestor;
+    if (!intro_request.open_city) {
+      return null;
+    }
+    let traveling = intro_request['traveling?'] ? <span>Heads up! {first_name} is traveling.</span> : null;
+    return <span>{traveling} We last saw {pronoun(gender, 'past')} in {intro_request.open_city}.</span>
   }
 
   render() {
-    let merged = extend(this.props.investor, this.props);
-
-    let { last_response } = this.props;
-    let ago = last_response ? moment(last_response).fromNow() : undefined;
-
-    let head = <InvestorHead {...merged} badge={ago} onChange={this.onInvestorChange} />;
+    let targetInvestor = this.props.targetInvestor;
+    if (!targetInvestor.intro_request)
+      targetInvestor.intro_request = {};
 
     return (
       <div className="card float-center investor">
-        <Collapsible trigger={head} open={this.props.open}>
-          {this.renderSavedFields()}
-          <InvestorBody {...merged} onChange={this.onInvestorChange} />
-          <div className="card-section card-section-multi">
-            {this.renderButtons()}
-          </div>
-        </Collapsible>
+        <p>{this.renderLastResponse(targetInvestor)}</p>
+        <p>{this.renderClicks(targetInvestor)}</p>
+        <p>{this.renderIntroRequest(targetInvestor)}</p>
+        <p>{this.renderLocation(targetInvestor)}</p>
       </div>
     );
   }

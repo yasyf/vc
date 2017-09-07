@@ -247,7 +247,8 @@ CREATE TABLE emails (
     old_stage integer,
     new_stage integer,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    intro_request_id bigint
 );
 
 
@@ -321,7 +322,14 @@ CREATE TABLE intro_requests (
     company_id bigint NOT NULL,
     founder_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    open_city character varying,
+    open_country character varying,
+    open_device_type integer,
+    click_domains character varying[] DEFAULT '{}'::character varying[],
+    pitch_deck character varying,
+    reason character varying,
+    opened_at timestamp without time zone
 );
 
 
@@ -370,7 +378,8 @@ CREATE TABLE investors (
     location character varying,
     fund_type character varying[],
     al_id integer,
-    opted_in boolean
+    opted_in boolean,
+    gender integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1263,6 +1272,13 @@ CREATE INDEX index_emails_on_founder_id ON emails USING btree (founder_id);
 
 
 --
+-- Name: index_emails_on_intro_request_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_emails_on_intro_request_id ON emails USING btree (intro_request_id);
+
+
+--
 -- Name: index_emails_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1696,6 +1712,14 @@ ALTER TABLE ONLY cards
 
 
 --
+-- Name: emails fk_rails_4f7e384dec; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT fk_rails_4f7e384dec FOREIGN KEY (intro_request_id) REFERENCES intro_requests(id);
+
+
+--
 -- Name: emails fk_rails_602d137517; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1922,6 +1946,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170902232836'),
 ('20170905202435'),
 ('20170905203536'),
-('20170905205048');
+('20170905205048'),
+('20170906224155'),
+('20170906230733'),
+('20170907002704'),
+('20170907011330'),
+('20170907013240'),
+('20170907020331');
 
 

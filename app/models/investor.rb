@@ -3,6 +3,8 @@ class Investor < ApplicationRecord
   include Concerns::Cacheable
   include Concerns::Twitterable
 
+  GENDERS = %w(unknown male female)
+
   belongs_to :competitor
   has_many :target_investors
   has_many :notes, as: :subject
@@ -20,6 +22,7 @@ class Investor < ApplicationRecord
 
   sort :industry
   sort :fund_type
+  enum gender: GENDERS
 
   before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
@@ -41,6 +44,7 @@ class Investor < ApplicationRecord
     self.description = person.bio
     self.photo = person.image
     self.location = person.location&.name
+    self.gender = person.gender || self.gender
 
     %w(twitter facebook linkedin homepage).each do |attr|
       self[attr] = person.public_send(attr)
@@ -66,6 +70,12 @@ class Investor < ApplicationRecord
     if angelist_user.fund_types.present?
       self.fund_type = (self.fund_type || []) + angelist_user.fund_types
     end
+  end
+
+  def set_gender!
+    return unless self.gender == :unknown
+    gender = GenderDetector.new.get_gender(self.first_name)
+    self.gender = gender if gender.in?(GENDERS)
   end
 
   def self.from_crunchbase(cb_id)
@@ -187,6 +197,10 @@ class Investor < ApplicationRecord
         t.to_h.with_indifferent_access.slice(:text, :created_at, :id)
       end
     end
+  end
+
+  def home?(city)
+    city == location || city.in?(competitor.location)
   end
 
   private

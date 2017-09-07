@@ -34,6 +34,28 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     head :ok
   end
 
+  def open
+    return head :not_acceptable unless intro_request.present?
+    intro_request.update!(
+      open_city: hook_params['city'],
+      open_country: hook_params['country'],
+      open_device_type: hook_params['device-type'],
+    )
+    head :ok
+  end
+
+  def click
+    return head :not_acceptable unless intro_request.present?
+    intro_request.update!(
+      opened_at: DateTime.now,
+      open_city: hook_params['city'],
+      open_country: hook_params['country'],
+      open_device_type: hook_params['device-type'],
+    )
+    intro_request.add_domain!(hook_params['url'])
+    head :ok
+  end
+
   private
 
   def existing_emails(klass, tos)
@@ -48,21 +70,38 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     create_params['body-plain']
   end
 
+  def headers
+    @headers ||= (create_params['message-headers'] || []).to_h
+  end
+
   def sentiment
     @sentiment ||= GoogleCloud::Language.new(text).sentiment
   end
 
   def intro_request
-    @intro_request ||= begin
-      match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(body)
-      IntroRequest.where(token: match[1]).first if match.present?
-    end
+    @intro_request ||= intro_request_from_header || intro_request_from_body
+  end
+
+  def intro_request_from_header
+    token = hook_params['intro_request_token'] || (headers['X-Mailgun-Variables'] || {})['intro_request_token']
+    IntroRequest.where(token: token).first if token.present?
+  end
+
+  def intro_request_from_body
+    return nil unless body.present?
+    match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(body)
+    IntroRequest.where(token: match[1]).first if match.present?
   end
 
   def handle_response(from, tos)
     investor = Investor.where(email: from.address).first
     return unless investor.present?
     return unless intro_request.present?
+
+    if intro_request.decided?
+      intro_request.update! reason: text
+      return
+    end
 
     if YES_PHRASES.any? { |s| s == text.downcase }
       intro_request.decide! true
@@ -98,6 +137,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
 
     Email.create!(
+      intro_request: intro_request,
       founder: founder,
       investor: target.investor,
       company: founder.primary_company,
@@ -127,6 +167,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     target = TargetInvestor.from_addr! founder, from
 
     Email.create!(
+      intro_request: intro_request
       founder: founder,
       investor: target.investor,
       company: founder.primary_company,
@@ -143,8 +184,12 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     target.save!
   end
 
+  def hook_params
+    params.permit('intro_request_token', 'country', 'city', 'device-type', 'url')
+  end
+
   def create_params
-    params.permit(:To, :From, :Cc, 'stripped-text', 'body-plain')
+    params.permit(:To, :From, :Cc, 'stripped-text', 'body-plain', 'message-headers')
   end
 
   def check_signature

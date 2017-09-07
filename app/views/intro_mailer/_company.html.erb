@@ -3,6 +3,9 @@
 </p>
 
 <p>
+  <% if @request.pitch_deck.present? %>
+    <b>Deck</b>: <a href="<%= @request.pitch_deck %>"><%= @company.name %> Pitch Deck</a><br>
+  <% end %>
   <% if @company.domain.present? %>
     <b>Website</b>: <a href="http://<%= @company.domain %>"><%= @company.domain %></a><br>
   <% end %>

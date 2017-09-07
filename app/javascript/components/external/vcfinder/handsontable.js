@@ -48,6 +48,20 @@ let RequestableRenderer = function(hasPath, requestedPath, requestPath) {
   };
 };
 
+let ButtonRenderer = function(text, onClick) {
+  return function(instance, td, row, col, prop, value, cellProperties) {
+    let sourceRow = instance.getSourceDataAtRow(row);
+    if (!sourceRow.id) {
+      td.innerHTML = "";
+      return;
+    }
+    let $el = $(`<div class='text-center'><a class='button small intro-button'>${text}</a></div>`);
+    $el.click(() => onClick(row));
+    $(td).empty().append($el);
+    setColourClassName(instance, td, row);
+  };
+};
+
 let makeColourAutocomplete = function(translate) {
   let renderer = function(instance, td, row, col, prop, value, cellProperties) {
     arguments[5] = translate[arguments[5]] || arguments[5];
@@ -93,6 +107,7 @@ export let autocomplete = function(translate, inverse, path) {
 };
 
 export let simple = path => ({data: path, renderer: ColourTextRenderer});
+export let button = (text, fn) => ({renderer: ButtonRenderer(text, fn)});
 
 export let requestable = function(path, hasPath, requestedPath, requestPath) {
   return {

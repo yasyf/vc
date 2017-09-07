@@ -23,6 +23,12 @@ module Http::Crunchbase
       get_in 'properties', 'profile_image_url'
     end
 
+    def gender
+      gender = get_in('properties', 'gender')
+      return nil unless gender.present?
+      gender.downcase.to_sym.in?(Investor::GENDERS) ? gender.downcase : nil
+    end
+
     def short_bio
       bio.split('.').first + '.' if bio.present?
     end

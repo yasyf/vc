@@ -40,6 +40,26 @@ export let fullName = function(founder) {
   return `${founder.first_name} ${founder.last_name}`;
 };
 
+export let wordJoin = function(words) {
+  if (words.length === 1) {
+    return words[0];
+  } else if (words.length === 2) {
+    return words.join(' and ');
+  } else {
+    return `${_.initial(words).join(', ')}, and ${_.last(words)}`;
+  }
+};
+
+export let pronoun = function(gender, tense = null) {
+  if (gender === 'male') {
+    return (tense === 'pos') ? 'his' : (tense === 'past') ? 'him' : 'he';
+  } else if (gender === 'female') {
+    return (tense === 'pos') ? 'her' : (tense === 'past') ? 'her' : 'she';
+  } else {
+    return (tense === 'pos') ? 'their' : (tense === 'past') ? 'them' : 'they';
+  }
+};
+
 let _extend = function(dest, src, overwrite = true) {
   let ret = Object.assign({}, dest);
   Object.entries(src).forEach(([k, v]) => {
