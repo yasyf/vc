@@ -167,7 +167,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     target = TargetInvestor.from_addr! founder, from
 
     Email.create!(
-      intro_request: intro_request
+      intro_request: intro_request,
       founder: founder,
       investor: target.investor,
       company: founder.primary_company,
