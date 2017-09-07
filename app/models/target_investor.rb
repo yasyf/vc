@@ -93,7 +93,7 @@ class TargetInvestor < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(methods: [:has_email?, :intro_request])
+    super options.reverse_merge(methods: [:investor, :has_email?, :intro_request])
   end
 
   private

@@ -85,7 +85,7 @@ module Http::Crunchbase
           Rails.logger.warn "Crunchbase 401: #{path}/#{query}"
           nil
         else
-          raise "Crunchbase #{response.code}: #{path}/#{query}"
+          raise Errors::APIError.new(response.code)
       end
     end
 
