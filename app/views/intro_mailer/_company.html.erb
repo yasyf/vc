@@ -3,6 +3,10 @@
 </p>
 
 <p>
+  <%= @request.context %>
+</p>
+
+<p>
   <% if @request.pitch_deck.present? %>
     <b>Deck</b>: <a href="<%= @request.pitch_deck %>"><%= @company.name %> Pitch Deck</a><br>
   <% end %>

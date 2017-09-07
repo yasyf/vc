@@ -329,7 +329,8 @@ CREATE TABLE intro_requests (
     click_domains character varying[] DEFAULT '{}'::character varying[],
     pitch_deck character varying,
     reason character varying,
-    opened_at timestamp without time zone
+    opened_at timestamp without time zone,
+    context text
 );
 
 
@@ -1952,6 +1953,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170907002704'),
 ('20170907011330'),
 ('20170907013240'),
-('20170907020331');
+('20170907020331'),
+('20170907082031');
 
 
