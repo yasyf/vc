@@ -84,12 +84,16 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def intro_request_from_header
     token = hook_params['intro_request_token'] || (headers['X-Mailgun-Variables'] || {})['intro_request_token']
-    IntroRequest.where(token: token).first if token.present?
+    intro_request_from token
   end
 
   def intro_request_from_body
-    return nil unless body.present?
-    match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(body)
+    intro_request_from body
+  end
+
+  def intro_request_from(source)
+    return nil unless source.present?
+    match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(source)
     IntroRequest.where(token: match[1]).first if match.present?
   end
 
