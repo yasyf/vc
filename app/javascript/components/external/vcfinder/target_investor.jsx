@@ -48,7 +48,7 @@ export default class TargetInvestor extends React.Component {
       return null;
     }
     let traveling = intro_request['traveling?'] ? <span>Heads up! {first_name} is traveling.</span> : null;
-    return <span>{traveling} We last saw {pronoun(gender, 'past')} in {intro_request.open_city}.</span>
+    return <span>{traveling} We last saw {pronoun(gender, 'past')} in <b>{intro_request.open_city}</b> {moment(intro_request.opened_at).fromNow()}.</span>
   }
 
   render() {
