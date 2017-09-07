@@ -1,6 +1,10 @@
 module IntroMailHelper
   VOWELS = %w(a e i o u)
 
+  def investor(investor)
+    founder investor
+  end
+
   def founder(founder)
     link = Founder::SOCIAL_KEYS.find { |k| founder.send(k).present? }
     return founder.name unless link.present?

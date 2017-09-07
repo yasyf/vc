@@ -46,7 +46,7 @@ class Investor < ApplicationRecord
     self.location = person.location&.name
     self.gender = person.gender || self.gender
 
-    %w(twitter facebook linkedin homepage).each do |attr|
+    Founder::SOCIAL_KEYS.each do |attr|
       self[attr] = person.public_send(attr)
     end
   end
