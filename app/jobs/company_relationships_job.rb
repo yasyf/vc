@@ -104,7 +104,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
     @cb_org.news.each do |news|
       body = HTTParty.get(news['url']).body
-      @company.companies_competitors.where(investor: nil).includes(competitor: :investors).each do |cc|
+      @company.companies_competitors.where(investor_id: nil).includes(competitor: :investors).each do |cc|
         cc.competitor.investors.each do |investor|
           if body.include?(investor.name)
             cc.update! investor: investor
