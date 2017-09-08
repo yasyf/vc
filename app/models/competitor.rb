@@ -141,7 +141,6 @@ class Competitor < ApplicationRecord
       methods: [
         :acronym,
         :notes,
-        :recent_investments,
       ]
     )
   end
@@ -162,11 +161,11 @@ class Competitor < ApplicationRecord
     @angellist_startup ||= Http::AngelList::Startup.new(al_id)
   end
 
-  private
-
   def recent_investments(n = 5)
-    companies_competitors.order('companies_competitors.funded_at DESC').limit(n).map(&:company)
+    companies_competitors.order('funded_at DESC').limit(n).map(&:company)
   end
+
+  private
 
   def start_crunchbase_job
     CompetitorCrunchbaseJob.perform_later(id)

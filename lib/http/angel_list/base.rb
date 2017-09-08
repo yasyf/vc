@@ -6,7 +6,6 @@ module Http::AngelList
     base_uri 'https://api.angel.co/1'
     format :json
     headers 'Content-Type': 'application/json'
-    default_params access_token: ENV['AL_API_KEY']
 
     def initialize(id_or_slug, timeout: nil)
       @timeout = timeout
@@ -97,10 +96,14 @@ module Http::AngelList
       "http/angelist/#{resource}"
     end
 
+    def self.next_token
+      ENV['AL_API_KEY'].split(',').sample
+    end
+
     def self._api_get(path, query)
       key_cached(query.merge(path: path)) do
         Retriable.retriable do
-          response = get(path, query: query)
+          response = get(path, query: query.merge(access_token: next_token))
           parsed = response.parsed_response
           if response.code == 404
             nil

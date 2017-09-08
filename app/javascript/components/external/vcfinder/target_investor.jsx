@@ -47,11 +47,15 @@ export default class TargetInvestor extends React.Component {
 
   renderLocation(targetInvestor) {
     let { first_name, intro_request, gender } = targetInvestor;
-    if (!intro_request.open_city) {
+    if (!intro_request.travel_status) {
       return null;
+    } else if (intro_request.travel_status === 'pleasure_traveling') {
+      return <span>{first_name} was on vacation in <b>{intro_request.open_city}</b> {moment(intro_request.opened_at).fromNow()}, so expect delays.</span>;
+    } else if (intro_request.travel_status === 'work_traveling') {
+      return <span>As of {moment(intro_request.opened_at).fromNow()}, {first_name} is traveling for work in <b>{intro_request.open_city}</b>. {inflection.titleize(pronoun(gender, 'pos'))} responses might be delayed!</span>;
+    } else {
+      return <span>Last time we checked, {first_name} was working in <b>{intro_request.open_city}</b> (around {moment(intro_request.opened_at).fromNow()}).</span>;
     }
-    let traveling = intro_request['traveling?'] ? <span>Heads up! {first_name} is traveling.</span> : null;
-    return <span>{traveling} We last saw {pronoun(gender, 'past')} in <b>{intro_request.open_city}</b> {moment(intro_request.opened_at).fromNow()}.</span>
   }
 
   render() {

@@ -39,6 +39,12 @@ module Http::Crunchbase
       site['properties']['url'] if site.present? && !site.include?('google.com')
     end
 
+    def news
+      news = get_in 'relationships', 'news', multi: true
+      return nil unless news.present?
+      news.map { |n| n['properties'].slice('url', 'title') }
+    end
+
     def self.find_id(query)
       result = api_get('/', query).first
       result && result['properties']['permalink']

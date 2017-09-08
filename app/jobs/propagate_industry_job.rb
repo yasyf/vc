@@ -1,12 +1,13 @@
 class PropagateIndustryJob < ApplicationJob
-  COMPETITOR_INDUSTRIES = 3
+  NUM_INDUSTRIES = 3
   FUND_TYPE_THRESHOLD = 0.5
 
   queue_as :low
 
   def perform
+    propagate_industry_up_to(Investor)
+    propagate_industry_up_to(Competitor)
     propagate_industry_down
-    propagate_industry_up
     propagate_fund_type_up
   end
 
@@ -40,19 +41,23 @@ class PropagateIndustryJob < ApplicationJob
     Investor.connection.update(query)
   end
 
-  def propagate_industry_up
+
+  def propagate_industry_up_to(klass)
     #TODO: do this in sql
+    name = klass.name.downcase
+    table = "#{name}s"
+
     query = <<-SQL
-      SELECT competitors.id, array_agg(c_t.ind_t) as industries
+      SELECT #{table}.id, array_agg(c_t.ind_t) as industries
       FROM 
        (
         SELECT id, industry, unnest(industry) as ind_t
         FROM companies
       ) c_t 
       INNER JOIN companies_competitors ON c_t.id = companies_competitors.company_id
-      INNER JOIN competitors ON competitors.id = companies_competitors.competitor_id
+      INNER JOIN #{table} ON #{table}.id = companies_competitors.#{name}_id
       WHERE (c_t.industry <> '{}' AND c_t.industry IS NOT NULL)
-      GROUP BY competitors.id
+      GROUP BY #{table}.id
     SQL
     Competitor.transaction do
       Competitor.connection.execute(query).to_a.each do |result|
@@ -60,8 +65,8 @@ class PropagateIndustryJob < ApplicationJob
         frequencies = industries.each_with_object(Hash.new(0)) do |i, h|
           h[i] += 1
         end
-        top = industries.sort { |i| frequencies[i] }.first(COMPETITOR_INDUSTRIES)
-        Competitor.update(result['id'], industry: top)
+        top = industries.sort { |i| frequencies[i] }.first(NUM_INDUSTRIES)
+        klass.update(result['id'], industry: top)
       end
     end
   end

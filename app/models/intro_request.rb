@@ -43,8 +43,14 @@ class IntroRequest < ApplicationRecord
     save!
   end
 
-  def traveling?
-    (open_country.present? && open_country != "US") || (open_city.present? && !investor.home?(open_city))
+  def travel_status
+    if open_country.blank?
+      nil
+    elsif open_country != 'US'
+      :pleasure_traveling
+    else
+      investor.travel_status open_city
+    end
   end
 
   def clicked?(url)
@@ -70,7 +76,7 @@ class IntroRequest < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :opened_at, :open_city, :accepted, :reason], methods: [:clicks, :traveling?])
+    super options.reverse_merge(only: [:id, :opened_at, :open_city, :accepted, :reason], methods: [:clicks, :travel_status])
   end
 
   private

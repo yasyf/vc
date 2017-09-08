@@ -30,6 +30,14 @@ module Http::Crunchbase
       get_in 'relationships', 'founders', multi: true
     end
 
+    def board_members_and_advisors
+      get_in 'relationships', 'board_members_and_advisors', multi: true
+    end
+
+    def funding_rounds
+      get_in 'relationships', 'funding_rounds', multi: true
+    end
+
     def categories
       get_in 'relationships', 'categories', multi: true
     end

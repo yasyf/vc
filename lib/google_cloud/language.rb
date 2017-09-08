@@ -27,6 +27,32 @@ module GoogleCloud
     end
   end
 
+  class Entities
+    def initialize(entities)
+      @entities = entities
+    end
+
+    def to_a
+      @entities
+    end
+
+    %i(common proper).each do |type|
+      define_method(type) do
+        Entities.new of_mention_type(type)
+      end
+    end
+
+    def of_type(type)
+      Entities.new(@entities.select {|e| e.type == type.upcase })
+    end
+
+    private
+
+    def of_mention_type(type)
+      @entities.select {|e| e.mentions.all? { |m| m.type == type.upcase } }
+    end
+  end
+
   class Language
     def initialize(text)
       @language = ::Google::Cloud::Language.new project: ENV['GC_PROJECT_ID']
@@ -35,6 +61,10 @@ module GoogleCloud
 
     def sentiment
       Sentiment.new @document.sentiment
+    end
+
+    def entities
+      Entities.new @document.entities
     end
   end
 end

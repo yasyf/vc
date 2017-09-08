@@ -131,7 +131,8 @@ CREATE TABLE companies_competitors (
     company_id integer NOT NULL,
     competitor_id integer NOT NULL,
     funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
-    id bigint NOT NULL
+    id bigint NOT NULL,
+    investor_id bigint
 );
 
 
@@ -272,6 +273,40 @@ ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
 
 
 --
+-- Name: entities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE entities (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    category character varying DEFAULT 'OTHER'::character varying NOT NULL,
+    wiki character varying,
+    mid character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: entities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE entities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: entities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE entities_id_seq OWNED BY entities.id;
+
+
+--
 -- Name: founders; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -380,7 +415,8 @@ CREATE TABLE investors (
     fund_type character varying[],
     al_id integer,
     opted_in boolean,
-    gender integer DEFAULT 0 NOT NULL
+    gender integer DEFAULT 0 NOT NULL,
+    university_id bigint
 );
 
 
@@ -506,6 +542,41 @@ ALTER SEQUENCE logged_events_id_seq OWNED BY logged_events.id;
 
 
 --
+-- Name: news; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE news (
+    id bigint NOT NULL,
+    investor_id bigint,
+    company_id bigint,
+    url character varying,
+    title character varying,
+    description text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE news_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE news_id_seq OWNED BY news.id;
+
+
+--
 -- Name: notes; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -537,6 +608,39 @@ CREATE SEQUENCE notes_id_seq
 --
 
 ALTER SEQUENCE notes_id_seq OWNED BY notes.id;
+
+
+--
+-- Name: person_entities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE person_entities (
+    id bigint NOT NULL,
+    entity_id bigint NOT NULL,
+    person_type character varying NOT NULL,
+    person_id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: person_entities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE person_entities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: person_entities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE person_entities_id_seq OWNED BY person_entities.id;
 
 
 --
@@ -725,6 +829,37 @@ ALTER SEQUENCE tweets_id_seq OWNED BY tweets.id;
 
 
 --
+-- Name: universities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE universities (
+    id bigint NOT NULL,
+    name character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: universities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE universities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: universities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE universities_id_seq OWNED BY universities.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -839,6 +974,13 @@ ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::reg
 
 
 --
+-- Name: entities id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY entities ALTER COLUMN id SET DEFAULT nextval('entities_id_seq'::regclass);
+
+
+--
 -- Name: founders id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -881,10 +1023,24 @@ ALTER TABLE ONLY logged_events ALTER COLUMN id SET DEFAULT nextval('logged_event
 
 
 --
+-- Name: news id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
+
+
+--
 -- Name: notes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY notes ALTER COLUMN id SET DEFAULT nextval('notes_id_seq'::regclass);
+
+
+--
+-- Name: person_entities id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY person_entities ALTER COLUMN id SET DEFAULT nextval('person_entities_id_seq'::regclass);
 
 
 --
@@ -920,6 +1076,13 @@ ALTER TABLE ONLY tweeters ALTER COLUMN id SET DEFAULT nextval('tweeters_id_seq':
 --
 
 ALTER TABLE ONLY tweets ALTER COLUMN id SET DEFAULT nextval('tweets_id_seq'::regclass);
+
+
+--
+-- Name: universities id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY universities ALTER COLUMN id SET DEFAULT nextval('universities_id_seq'::regclass);
 
 
 --
@@ -993,6 +1156,14 @@ ALTER TABLE ONLY emails
 
 
 --
+-- Name: entities entities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY entities
+    ADD CONSTRAINT entities_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: founders founders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1041,11 +1212,27 @@ ALTER TABLE ONLY logged_events
 
 
 --
+-- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY news
+    ADD CONSTRAINT news_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: notes notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT notes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person_entities person_entities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY person_entities
+    ADD CONSTRAINT person_entities_pkey PRIMARY KEY (id);
 
 
 --
@@ -1086,6 +1273,14 @@ ALTER TABLE ONLY tweeters
 
 ALTER TABLE ONLY tweets
     ADD CONSTRAINT tweets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: universities universities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY universities
+    ADD CONSTRAINT universities_pkey PRIMARY KEY (id);
 
 
 --
@@ -1158,6 +1353,13 @@ CREATE UNIQUE INDEX index_companies_competitors_on_company_id_and_competitor_id 
 --
 
 CREATE UNIQUE INDEX index_companies_competitors_on_competitor_id_and_company_id ON companies_competitors USING btree (competitor_id, company_id);
+
+
+--
+-- Name: index_companies_competitors_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_companies_competitors_on_investor_id ON companies_competitors USING btree (investor_id);
 
 
 --
@@ -1284,6 +1486,13 @@ CREATE INDEX index_emails_on_intro_request_id ON emails USING btree (intro_reque
 --
 
 CREATE INDEX index_emails_on_investor_id ON emails USING btree (investor_id);
+
+
+--
+-- Name: index_entities_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_entities_on_name ON entities USING btree (name);
 
 
 --
@@ -1441,6 +1650,13 @@ CREATE UNIQUE INDEX index_investors_on_twitter ON investors USING btree (twitter
 
 
 --
+-- Name: index_investors_on_university_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investors_on_university_id ON investors USING btree (university_id);
+
+
+--
 -- Name: index_knowledges_on_team_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1483,6 +1699,20 @@ CREATE UNIQUE INDEX index_logged_events_on_reason_and_record_id ON logged_events
 
 
 --
+-- Name: index_news_on_company_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_news_on_company_id ON news USING btree (company_id);
+
+
+--
+-- Name: index_news_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_news_on_investor_id ON news USING btree (investor_id);
+
+
+--
 -- Name: index_notes_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1494,6 +1724,20 @@ CREATE INDEX index_notes_on_founder_id ON notes USING btree (founder_id);
 --
 
 CREATE INDEX index_notes_on_subject_type_and_subject_id ON notes USING btree (subject_type, subject_id);
+
+
+--
+-- Name: index_person_entities_on_entity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_person_entities_on_entity_id ON person_entities USING btree (entity_id);
+
+
+--
+-- Name: index_person_entities_on_person_type_and_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_person_entities_on_person_type_and_person_id ON person_entities USING btree (person_type, person_id);
 
 
 --
@@ -1721,11 +1965,35 @@ ALTER TABLE ONLY emails
 
 
 --
+-- Name: investors fk_rails_5e5b9710a2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY investors
+    ADD CONSTRAINT fk_rails_5e5b9710a2 FOREIGN KEY (university_id) REFERENCES universities(id);
+
+
+--
 -- Name: emails fk_rails_602d137517; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT fk_rails_602d137517 FOREIGN KEY (investor_id) REFERENCES investors(id);
+
+
+--
+-- Name: news fk_rails_646d2bd38d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY news
+    ADD CONSTRAINT fk_rails_646d2bd38d FOREIGN KEY (investor_id) REFERENCES investors(id);
+
+
+--
+-- Name: person_entities fk_rails_6d42d0b8bf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY person_entities
+    ADD CONSTRAINT fk_rails_6d42d0b8bf FOREIGN KEY (entity_id) REFERENCES entities(id);
 
 
 --
@@ -1822,6 +2090,22 @@ ALTER TABLE ONLY knowledges
 
 ALTER TABLE ONLY intro_requests
     ADD CONSTRAINT fk_rails_d87bff6194 FOREIGN KEY (founder_id) REFERENCES founders(id);
+
+
+--
+-- Name: news fk_rails_ddd1ba457d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY news
+    ADD CONSTRAINT fk_rails_ddd1ba457d FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
+-- Name: companies_competitors fk_rails_e0aa7acb5f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY companies_competitors
+    ADD CONSTRAINT fk_rails_e0aa7acb5f FOREIGN KEY (investor_id) REFERENCES investors(id);
 
 
 --
@@ -1955,6 +2239,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170907013240'),
 ('20170907020331'),
 ('20170907082031'),
-('20170907082851');
+('20170907082851'),
+('20170907191659'),
+('20170908001751'),
+('20170908001828'),
+('20170908014807'),
+('20170908061548'),
+('20170908062006');
 
 

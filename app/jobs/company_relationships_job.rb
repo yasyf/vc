@@ -74,10 +74,46 @@ class CompanyRelationshipsJob < ApplicationJob
   end
 
   def add_cb_investors
-    return unless (investors = @cb_org.investors).present?
-    investors.each do |competitor|
+    @cb_org.investors.each do |competitor|
       ignore_invalid do
-        Competitor.from_crunchbase! competitor['properties']['permalink'], competitor['properties']['name']
+        competitor = Competitor.from_crunchbase! competitor['properties']['permalink'], competitor['properties']['name']
+        competitor.companies_competitors.where(company: @company).first_or_create!
+      end
+    end
+
+    @cb_org.funding_rounds.each do |funding_round|
+      funding_round['relationships']['investments'].each do |investment|
+        investor = investment['relationships']['investors']
+        partner = investment['relationships']['partners'].first
+
+        competitor = Competitor.from_crunchbase! investor['properties']['properties'], investor['properties']['name']
+        cc = competitor.companies_competitors.where(company: @company).first_or_initialize
+        cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
+        cc.investor = Investor.from_crunchbase(partner['properties']['permalink']) if partner.present?
+        cc.save! if cc.changed?
+      end
+    end
+
+    @cb_org.board_members_and_advisors.each do |person|
+      id = person['relationships']['person']['properties']['permalink']
+      details = Http::Crunchbase::Person.new(id, TIMEOUT)
+      competitor = Competitor.where(crunchbase_id: details.affiliation.permalink).first
+      next unless competitor.present? && (cc = competitor.companies_competitors.where(company: @company).first).present?
+      cc.update! investor: Investor.from_crunchbase(id)
+    end
+
+    @cb_org.news.each do |news|
+      body = HTTParty.get(news['url']).body
+      @company.companies_competitors.where(investor: nil).includes(competitor: :investors).each do |cc|
+        cc.competitor.investors.each do |investor|
+          if body.include?(investor.name)
+            cc.update! investor: investor
+            news = News.where(investor: investor, url: news['url']).first_or_initialize(title: news['title'])
+            news.company = @company
+            news.save! if news.changed?
+            break
+          end
+        end
       end
     end
   end

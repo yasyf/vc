@@ -8,6 +8,12 @@ class Investor < ApplicationRecord
   belongs_to :competitor
   has_many :target_investors
   has_many :notes, as: :subject
+  has_many :investments, class_name: 'CompaniesCompetitor'
+  has_many :companies, through: :investments
+  belongs_to :university
+  has_many :news
+  has_many :person_entities, as: :person
+  has_many :entities, through: :person_entities
 
   validates :competitor, presence: true
   validates :first_name, presence: true, uniqueness: { scope: [:last_name, :competitor_id] }
@@ -45,9 +51,37 @@ class Investor < ApplicationRecord
     self.photo = person.image
     self.location = person.location&.name
     self.gender = person.gender || self.gender
+    self.university = University.from_name(person.university) if person.university.present?
+
+    person.affiliated_companies.each do |company|
+      scope = self.competitor.companies
+      company = scope.where(crunchbase_id: company['permalink']).or(scope.where(name: company['name'])).first
+      next unless company.present?
+      assign_company! company
+    end
+
+    person.news.each do |news|
+      news = News.where(investor: self, url: news['url']).first_or_create!(title: news['title'])
+      self.competitor.companies.each do |company|
+        if news.page.to_s.include?(company.name)
+          news.update! company: company
+          assign_company! company
+        end
+      end
+    end
 
     Founder::SOCIAL_KEYS.each do |attr|
       self[attr] = person.public_send(attr)
+    end
+
+    if self.homepage.present?
+      body = HTTParty.get(self.homepage).body
+      self.entities += Entity.from_html(body)
+      self.competitor.companies.each do |company|
+        if body.include?(company.name)
+          assign_company! company
+        end
+      end
     end
   end
 
@@ -70,6 +104,10 @@ class Investor < ApplicationRecord
     if angelist_user.fund_types.present?
       self.fund_type = (self.fund_type || []) + angelist_user.fund_types
     end
+  end
+
+  def assign_company!(company)
+    CompaniesCompetitor.assign_to_investor(self, company)
   end
 
   def set_gender!
@@ -110,7 +148,7 @@ class Investor < ApplicationRecord
 
   def self.locations
     Rails.cache.fetch('Investor/locations', { expires_in: 1.day }) do
-      where.not(location: nil).pluck('DISTINCT location')
+      where.not(location: nil).group('location').order('count(*) DESC').pluck('location')
     end
   end
 
@@ -133,7 +171,7 @@ class Investor < ApplicationRecord
         :location,
         :email,
       ],
-     methods: [:competitor, :notes]
+     methods: [:competitor, :recent_investments, :recent_news, :university, :notes]
     )
   end
 
@@ -199,11 +237,26 @@ class Investor < ApplicationRecord
     end
   end
 
-  def home?(city)
-    city == location || city.in?(competitor.location)
+  def travel_status(city)
+    if city == location
+      :working
+    elsif city.in?(competitor.location)
+      :work_traveling
+    else
+      :pleasure_traveling
+    end
   end
 
   private
+
+  def recent_news(n = 5)
+    news.order('created_at DESC').limit(n)
+  end
+
+  def recent_investments(n = 5)
+    mine = investments.order('funded_at DESC').limit(n).map(&:company)
+    mine.present? ? mine : competitor.recent_investments(n)
+  end
 
   def initials
     "#{first_name.first.upcase}#{last_name.first.upcase}"

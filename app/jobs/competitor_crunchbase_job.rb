@@ -64,8 +64,11 @@ class CompetitorCrunchbaseJob < ApplicationJob
       Investor.from_angelist(person['id'])
     end
 
-    if (investments = cb_fund.investments).present?
+    if (investments = cb_fund.investments(deep: true)).present?
       investments.each do |investment|
+        partners = investment['relationships']['partners'].map do |partner|
+          Investor.from_crunchbase(partner['properties']['permalink'])
+        end
         funding_round = investment['relationships']['funding_round']
         next unless funding_round.present? && funding_round['relationships'].present?
         company = funding_round['relationships']['funded_organization']
@@ -75,7 +78,8 @@ class CompetitorCrunchbaseJob < ApplicationJob
           end
 
           cc = c.companies_competitors.where(competitor: competitor).first_or_initialize
-          cc.funded_at ||= funding_round['properties']['announced_on'].to_date
+          cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
+          cc.investor = partners.first if partners.present?
           cc.save! if cc.changed?
         end
       end

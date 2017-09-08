@@ -12,6 +12,7 @@ import Slider from 'react-slick';
 import Industries from './shared/industries';
 import Company from './company';
 import Linkify from 'linkifyjs/react';
+import News from './news';
 
 const sliderSettings = {
   infinite: true,
@@ -171,7 +172,7 @@ export default class Investor extends React.Component {
   }
 
   renderRecentInvestments() {
-    let recentInvestments = this.state.investor.competitor.recent_investments;
+    let recentInvestments = this.state.investor.recent_investments;
     if (!recentInvestments.length) {
       return null;
     }
@@ -190,8 +191,28 @@ export default class Investor extends React.Component {
     );
   }
 
+  renderRecentNews() {
+    let recentNews = this.state.investor.recent_news;
+    if (!recentNews.length) {
+      return null;
+    }
+    let recents = recentNews.map(rn =>
+      <div key={rn.url}><News news={rn}/></div>
+    );
+    return (
+      <div>
+        <h4>News</h4>
+        <div className="pad-vert-less">
+          <Slider {...sliderSettings}>
+            {recents}
+          </Slider>
+        </div>
+      </div>
+    );
+  }
+
   renderRecentInvestmentsContainer(fullWidth) {
-    if (!this.state.investor.competitor.recent_investments.length) {
+    if (!this.state.investor.recent_investments.length) {
       return null;
     }
     let className = "small-6 medium-8 large-7 columns";
@@ -201,6 +222,21 @@ export default class Investor extends React.Component {
     return (
       <div className={className}>
         {this.renderRecentInvestments()}
+      </div>
+    );
+  }
+
+  renderRecentNewsContainer(fullWidth) {
+    if (!this.state.investor.recent_news.length) {
+      return null;
+    }
+    let className = "small-6 medium-8 large-7 columns";
+    if (fullWidth) {
+      className = "small-12 columns";
+    }
+    return (
+      <div className={className}>
+        {this.renderRecentNews()}
       </div>
     );
   }
@@ -222,11 +258,13 @@ export default class Investor extends React.Component {
       facebook,
       twitter,
       linkedin,
+      university,
     } = this.state.investor;
 
     return (
       <div>
         <h4>Social</h4>
+        {this.renderIconLine('book-bookmark', university && university.name)}
         {this.renderIconLine('home', location)}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
         {this.renderIconLine('social-twitter', twitter, 'https://twitter.com')}
@@ -279,10 +317,11 @@ export default class Investor extends React.Component {
     );
   }
 
-  renderSocialAndInvestments() {
+  renderSocialAndInvestmentsAndNews() {
     let social = this.renderSocialContainer();
     let investments = this.renderRecentInvestmentsContainer(!social);
-    if (!social && !investments) {
+    let news = this.renderRecentNewsContainer(!social);
+    if (!social && !investments && !news) {
       return null;
     }
     return (
@@ -291,6 +330,7 @@ export default class Investor extends React.Component {
         <div className="row">
           {social}
           {investments}
+          {news}
         </div>
       </div>
     );
@@ -317,7 +357,7 @@ export default class Investor extends React.Component {
             </div>
           </div>
           <div className="small-12 large-6 columns">
-            {this.renderSocialAndInvestments()}
+            {this.renderSocialAndInvestmentsAndNews()}
             {this.renderPosts()}
           </div>
         </div>
