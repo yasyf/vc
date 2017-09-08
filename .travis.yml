@@ -23,10 +23,9 @@ before_install:
   - chmod 600 ~/.ssh/id_rsa
 before_script:
   - npm rebuild node-sass
+  - psql -c 'create database drfvote_test;' -U postgres
 script:
   - RAILS_ENV=test bundle exec rake assets:precompile
   - RAILS_ENV=test bundle exec rake db:test:prepare
   - RAILS_ENV=test bundle exec rspec
   - RAILS_ENV=test bundle exec rake test
-before_script:
-  - psql -c 'create database drfvote_test;' -U postgres
