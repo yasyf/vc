@@ -5,6 +5,8 @@ class Entity < ApplicationRecord
   def self.from_html(body)
     text = ActionView::Base.full_sanitizer.sanitize(body).squish
     from_cloud GoogleCloud::Language.new(text).entities.proper
+  rescue Google::Cloud::InvalidArgumentError
+    []
   end
 
   def self.from_cloud(entities)
@@ -15,7 +17,5 @@ class Entity < ApplicationRecord
         entity.mid = e.metadata['mid']
       end
     end
-  rescue Google::Cloud::InvalidArgumentError
-    []
   end
 end
