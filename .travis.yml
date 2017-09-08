@@ -10,7 +10,8 @@ addons:
   postgresql: "9.6"
   ssh_known_hosts: git@git.handsontable.com
 before_install:
-  - openssl aes-256-cbc -K $encrypted_daa687493782_key -iv $encrypted_daa687493782_iv -in ci/frc_rsa.enc -out ~/.ssh/frc_rsa -d
+  - openssl aes-256-cbc -K $encrypted_daa687493782_key -iv $encrypted_daa687493782_iv -in ci/id_rsa.enc -out ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
 script:
   - RAILS_ENV=test bundle exec rake assets:precompile
   - RAILS_ENV=test bundle exec rake db:test:prepare
