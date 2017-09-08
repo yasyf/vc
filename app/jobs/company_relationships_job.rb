@@ -112,7 +112,7 @@ class CompanyRelationshipsJob < ApplicationJob
       @company.investments.where(investor_id: nil).includes(competitor: :investors).each do |cc|
         cc.competitor.investors.each do |investor|
           if body.include?(investor.name)
-            cc.update! investor: investor
+            cc.update! investor: investor unless cc.investor.present?
             news = News.where(investor: investor, url: news['url']).first_or_initialize(title: news['title'])
             news.company = @company
             news.save! if news.changed?

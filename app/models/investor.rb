@@ -67,7 +67,7 @@ class Investor < ApplicationRecord
       self.competitor.companies.find_each do |company|
         if news.page.to_s.include?(company.name)
           news.update! company: company
-          assign_company! company
+          assign_company! company, no_replace: true
         end
       end
     end
@@ -108,8 +108,8 @@ class Investor < ApplicationRecord
     end
   end
 
-  def assign_company!(company)
-    CompaniesCompetitor.assign_to_investor(self, company)
+  def assign_company!(company, no_replace: false)
+    CompaniesCompetitor.assign_to_investor(self, company, no_replace: no_replace)
   end
 
   def set_gender!
