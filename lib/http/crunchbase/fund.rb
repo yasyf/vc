@@ -1,6 +1,6 @@
 module Http::Crunchbase
   class Fund < Base
-    base_uri 'https://api.crunchbase.com/v/3/organizations'
+    base_uri 'https://api.crunchbase.com/v3.1/organizations'
 
     def initialize(permalink, timeout = nil)
       @permalink = permalink

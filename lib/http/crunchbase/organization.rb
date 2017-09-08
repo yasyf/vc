@@ -3,7 +3,7 @@ module Http::Crunchbase
     INVALID_KEY = '_invalid_magic_cb_org_key'
     SIGNAL_INVESTORS = ['Dorm Room Fund', 'Rough Draft Ventures']
 
-    base_uri 'https://api.crunchbase.com/v/3/organizations'
+    base_uri 'https://api.crunchbase.com/v3.1/organizations'
 
     def initialize(company, timeout = nil)
       @company = company

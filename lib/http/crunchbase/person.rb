@@ -1,6 +1,6 @@
 module Http::Crunchbase
   class Person < Base
-    base_uri 'https://api.crunchbase.com/v/3/people'
+    base_uri 'https://api.crunchbase.com/v3.1/people'
 
     def initialize(permalink, timeout = nil)
       @permalink = permalink
