@@ -3,7 +3,7 @@ module Http::Crunchbase
     extend Concerns::Cacheable
 
     include HTTParty
-    base_uri 'https://api.crunchbase.com/v/3/'
+    base_uri 'https://api.crunchbase.com/v3.1/'
     format :json
     headers 'Content-Type': 'application/json'
     default_params user_key: ENV['CB_API_KEY']
