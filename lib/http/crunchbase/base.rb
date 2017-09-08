@@ -115,12 +115,12 @@ module Http::Crunchbase
       else
         get_in_raw(path, multi)
       end
-    rescue Timeout::Error, JSON::ParserError # when we hit rate limiting
-      multi ? [] : nil
+    rescue Timeout::Error
+      raise Errors::Timeout.new(path)
     end
 
     def search_for_data
-      raise "must implement search_for_data"
+      raise 'must implement search_for_data'
     end
   end
 end

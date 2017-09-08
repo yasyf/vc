@@ -82,6 +82,7 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.funding_rounds.each do |funding_round|
+      next unless funding_round['relationships'].present?
       funding_round['relationships']['investments'].each do |investment|
         investor = investment['relationships']['investors']
         partner = investment['relationships']['partners'].first
@@ -103,7 +104,11 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.news.each do |news|
-      body = HTTParty.get(news['url']).body
+      body = begin
+        HTTParty.get(news['url']).body
+      rescue
+        next
+      end
       @company.investments.where(investor_id: nil).includes(competitor: :investors).each do |cc|
         cc.competitor.investors.each do |investor|
           if body.include?(investor.name)

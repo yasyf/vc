@@ -39,14 +39,12 @@ class Investor < ApplicationRecord
 
   def populate_from_cb!
     person = crunchbase_person
-    return unless person.present?
+    return unless person.present? && person.found?
 
     self.first_name = person.first_name
     self.last_name = person.last_name
-    if person.affiliation.present?
-      self.role = person.affiliation.role
-      self.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
-    end
+    self.role = person.affiliation.role
+    self.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
     self.description = person.bio
     self.photo = person.image
     self.location = person.location&.name
@@ -66,7 +64,7 @@ class Investor < ApplicationRecord
       rescue ActiveRecord::RecordInvalid
         next
       end
-      self.competitor.companies.each do |company|
+      self.competitor.companies.find_each do |company|
         if news.page.to_s.include?(company.name)
           news.update! company: company
           assign_company! company
@@ -81,7 +79,7 @@ class Investor < ApplicationRecord
     if self.homepage.present?
       body = HTTParty.get(self.homepage).body
       self.entities += Entity.from_html(body)
-      self.competitor.companies.each do |company|
+      self.competitor.companies.find_each do |company|
         if body.include?(company.name)
           assign_company! company
         end
@@ -90,7 +88,7 @@ class Investor < ApplicationRecord
   end
 
   def populate_from_al!
-    return unless angelist_user.present?
+    return unless angelist_user.present? && angelist_user.found?
 
     name = angelist_user.name.split(' ')
     self.first_name ||= name.first
