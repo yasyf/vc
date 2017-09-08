@@ -91,7 +91,7 @@ module Http::Crunchbase
         when 401
           raise Errors::RateLimited.new(response.code)
         else
-          raise Errors::APIError.new(response.code)
+          raise Errors::APIError.new("#{response.code}: #{response.body}")
       end
     end
 

@@ -80,7 +80,7 @@ module Http::Crunchbase
     end
 
     def self.find_investor_id(name)
-      find_id(name: name)
+      find_id(name: name.gsub('&') { '\\&' })
     end
 
     private

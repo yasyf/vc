@@ -51,7 +51,7 @@ module Http::Crunchbase
     end
 
     def self.find_investor_id(name)
-      find_id(name: name, organization_types: 'investor')
+      find_id(name: name.gsub('&') { '\\&' }, organization_types: 'investor')
     end
 
     def self.find_domain_id(domain, types: 'investor')
@@ -61,7 +61,7 @@ module Http::Crunchbase
     private
 
     def self.base_cache_key
-      "http/crunchbase/organizations"
+      'http/crunchbase/organizations'
     end
 
     def search_for_data
