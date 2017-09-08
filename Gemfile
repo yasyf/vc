@@ -77,6 +77,7 @@ group :production do
   gem 'dalli'
   gem 'connection_pool'
   gem 'scout_apm', '~> 3.0.x'
+  gem 'tunemygc'
 end
 
 group :development, :staging do
@@ -92,6 +93,7 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'derailed'
 end
 
 group :development, :test do
