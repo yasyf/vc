@@ -8,8 +8,9 @@ module Http::Crunchbase
     headers 'Content-Type': 'application/json'
     default_params user_key: ENV['CB_API_KEY']
 
-    def initialize(timeout = nil)
+    def initialize(timeout = nil, raise_on_error = false)
       @timeout = timeout
+      @raise_on_error = raise_on_error
     end
 
     def permalink
@@ -52,7 +53,7 @@ module Http::Crunchbase
     def found?
       search_for_data.present?
     rescue Errors::APIError
-      false
+      @raise_on_error ? raise : false
     end
 
     private

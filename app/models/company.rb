@@ -150,8 +150,8 @@ class Company < ActiveRecord::Base
     Team.send(cached_team.name)
   end
 
-  def crunchbase_org(timeout = 3)
-    @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout)
+  def crunchbase_org(timeout = 3, raise_on_error: false)
+    @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout, raise_on_error)
   end
 
   def angelist_startup(timeout = 3)

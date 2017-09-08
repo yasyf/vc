@@ -2,9 +2,9 @@ module Http::Crunchbase
   class Person < Base
     base_uri 'https://api.crunchbase.com/v3.1/people'
 
-    def initialize(permalink, timeout = nil)
+    def initialize(permalink, timeout = nil, raise_on_error = false)
       @permalink = permalink
-      super timeout
+      super timeout, raise_on_error
     end
 
     def first_name
