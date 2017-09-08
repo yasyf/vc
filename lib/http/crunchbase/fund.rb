@@ -16,7 +16,7 @@ module Http::Crunchbase
     end
 
     def investments(deep: false)
-      if deep
+      if deep && found?
         self.class.api_get("/#{@permalink}/investments")
       else
         get_in 'relationships', 'investments', multi: true
