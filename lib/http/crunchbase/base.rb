@@ -41,7 +41,6 @@ module Http::Crunchbase
 
     def news
       news = get_in 'relationships', 'news', multi: true
-      return nil unless news.present?
       news.map { |n| n['properties'].slice('url', 'title') }
     end
 
