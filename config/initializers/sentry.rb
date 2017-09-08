@@ -11,5 +11,6 @@ Raven.configure do |config|
     HTTP::AngelList::Errors::Timeout
     HTTP::Crunchbase::Errors::RateLimited
     HTTP::Crunchbase::Errors::Timeout
+    Sidekiq::Shutdown
   )
 end
