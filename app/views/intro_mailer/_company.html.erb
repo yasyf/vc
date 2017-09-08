@@ -13,7 +13,7 @@
   <% if @company.domain.present? %>
     <b>Website</b>: <a href="http://<%= @company.domain %>"><%= @company.domain %></a><br>
   <% end %>
-  <% if @company.crunchbase_org.found? %>
+  <% if @company.crunchbase_org(raise_on_error: false).found? %>
     <b>Crunchbase</b>: <a href="<%= @company.cb_url %>"><%= @company.cb_url %></a><br>
   <% end %>
   <% if @company.capital_raised > 0 %>
