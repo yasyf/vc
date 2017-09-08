@@ -20,6 +20,7 @@ class News < ApplicationRecord
   private
 
   def set_meta!
+    raise ActiveRecord::RecordInvalid.new(self) unless page.response.status == 200
     self.title ||= page.best_title
     self.description ||= page.best_description
   end

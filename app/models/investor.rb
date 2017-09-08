@@ -61,7 +61,11 @@ class Investor < ApplicationRecord
     end
 
     person.news.each do |news|
-      news = News.where(investor: self, url: news['url']).first_or_create!(title: news['title'])
+      news = begin
+        News.where(investor: self, url: news['url']).first_or_create!(title: news['title'])
+      rescue ActiveRecord::RecordInvalid
+        next
+      end
       self.competitor.companies.each do |company|
         if news.page.to_s.include?(company.name)
           news.update! company: company
