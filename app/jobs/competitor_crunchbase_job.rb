@@ -29,13 +29,9 @@ class CompetitorCrunchbaseJob < ApplicationJob
         cc2.save! if cc2.changed?
         cc.destroy!
       end
-      competitor.investors.each do |investor|
-        begin
-          investor.update! competitor: other
-        rescue ActiveRecord::ActiveRecordError
-          investor.update! competitor: nil
-        end
-      end
+
+      competitor.investors.update_all competitor_id: other.id
+
       competitor.notes.each do |note|
         note.update! subject: other
       end
