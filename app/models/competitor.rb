@@ -153,8 +153,8 @@ class Competitor < ApplicationRecord
     name.split('').select { |l| /[[:upper:]]/.match l }.join
   end
 
-  def crunchbase_fund(raise_on_error: true)
-    @crunchbase_fund ||= Http::Crunchbase::Fund.new(crunchbase_id, nil, raise_on_error)
+  def crunchbase_fund
+    @crunchbase_fund ||= Http::Crunchbase::Fund.new(crunchbase_id, nil)
   end
 
   def angellist_startup

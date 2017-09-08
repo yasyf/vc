@@ -63,7 +63,7 @@ class CompanyRelationshipsJob < ApplicationJob
   def add_cb_founders
     return unless (founders = @cb_org.founders).present?
     founders.each do |founder|
-      person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT, true)
+      person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
       next unless person.found?
       social = Founder::SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
       ignore_record_errors do
@@ -97,7 +97,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
     @cb_org.board_members_and_advisors.each do |person|
       id = person['relationships']['person']['properties']['permalink']
-      details = Http::Crunchbase::Person.new(id, TIMEOUT, true)
+      details = Http::Crunchbase::Person.new(id, TIMEOUT)
       competitor = Competitor.where(crunchbase_id: details.affiliation.permalink).first
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       cc.update! investor: Investor.from_crunchbase(id)

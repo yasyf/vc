@@ -2,7 +2,7 @@ module Http::Crunchbase
   class Fund < Base
     base_uri 'https://api.crunchbase.com/v3.1/organizations'
 
-    def initialize(permalink, timeout = nil, raise_on_error = false)
+    def initialize(permalink, timeout = nil, raise_on_error = true)
       @permalink = permalink
       super timeout, raise_on_error
     end

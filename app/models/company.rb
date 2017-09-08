@@ -150,7 +150,7 @@ class Company < ActiveRecord::Base
     Team.send(cached_team.name)
   end
 
-  def crunchbase_org(timeout = 3, raise_on_error: false)
+  def crunchbase_org(timeout = 3, raise_on_error: true)
     @crunchbase_org ||= Http::Crunchbase::Organization.new(self, timeout, raise_on_error)
   end
 
@@ -163,7 +163,7 @@ class Company < ActiveRecord::Base
   end
 
   def cb_url
-    cached { crunchbase_org.crunchbase_url }
+    cached { crunchbase_org(1, raise_on_error: false).crunchbase_url }
   rescue HTTP::Crunchbase::Errors::APIError
     nil
   end
@@ -227,7 +227,7 @@ class Company < ActiveRecord::Base
   end
 
   def twitter_username
-    cached { crunchbase_org.twitter || angelist_startup.twitter }
+    cached { crunchbase_org(3, raise_on_error: false).twitter || angelist_startup.twitter }
   end
 
   def set_crunchbase_attributes!(timeout: 5)

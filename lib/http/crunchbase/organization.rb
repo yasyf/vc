@@ -5,7 +5,7 @@ module Http::Crunchbase
 
     base_uri 'https://api.crunchbase.com/v3.1/organizations'
 
-    def initialize(company, timeout = nil, raise_on_error = false)
+    def initialize(company, timeout = nil, raise_on_error = true)
       @company = company
       super timeout, raise_on_error
     end

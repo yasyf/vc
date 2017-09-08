@@ -192,9 +192,9 @@ class Investor < ApplicationRecord
     ).merge(competitor: competitor.as_search_json)
   end
 
-  def crunchbase_person(raise_on_error: true)
+  def crunchbase_person
     @crunchbase_person ||= begin
-      person = Http::Crunchbase::Person.new(crunchbase_id, nil, raise_on_error)
+      person = Http::Crunchbase::Person.new(crunchbase_id, nil)
       person if person.found?
     end if crunchbase_id.present?
   end

@@ -8,7 +8,7 @@ module Http::Crunchbase
     headers 'Content-Type': 'application/json'
     default_params user_key: ENV['CB_API_KEY']
 
-    def initialize(timeout = nil, raise_on_error = false)
+    def initialize(timeout = nil, raise_on_error = true)
       @timeout = timeout
       @raise_on_error = raise_on_error
     end
