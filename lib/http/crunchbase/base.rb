@@ -89,15 +89,14 @@ module Http::Crunchbase
         when 404
           nil
         when 401
-          Rails.logger.warn "Crunchbase 401: #{path}/#{query}"
-          nil
+          raise Errors::RateLimited.new(response.code)
         else
           raise Errors::APIError.new(response.code)
       end
     end
 
     def self.base_cache_key
-      "http/crunchbase"
+      'http/crunchbase'
     end
 
     def get_in_raw(path, multi)
