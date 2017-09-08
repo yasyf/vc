@@ -104,6 +104,7 @@ module Http::AngelList
       key_cached(query.merge(path: path)) do
         Retriable.retriable do
           response = get(path, query: query.merge(access_token: next_token))
+          raise Errors::APIError.new(response.code) if response.code == 500
           parsed = response.parsed_response
           if response.code == 404
             nil
