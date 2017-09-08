@@ -15,29 +15,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
       competitor.save!
     rescue ActiveRecord::RecordInvalid => e
       raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
-
-      other = Competitor
-        .where(crunchbase_id: competitor.crunchbase_id)
-        .or(Competitor.where(al_id: competitor.al_id))
-        .where.not(id: competitor.id)
-        .first
-      return unless other.present?
-
-      competitor.investments.each do |cc|
-        cc2 = CompaniesCompetitor.where(company: cc.company, competitor: other).first_or_create!
-        cc2.funded_at ||= cc.funded_at
-        cc2.save! if cc2.changed?
-        cc.destroy!
-      end
-
-      competitor.investors.update_all competitor_id: other.id
-
-      competitor.notes.each do |note|
-        note.update! subject: other
-      end
-
-      competitor.destroy!
-      return
+      DuplicateCompetitorJob.perform_later competitor.id
     end
 
     cb_fund = competitor.crunchbase_fund
@@ -62,6 +40,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (investments = cb_fund.investments(deep: true)).present?
       investments.each do |investment|
+        next unless investment['relationships'].present?
         partners = investment['relationships']['partners'].map do |partner|
           Investor.from_crunchbase(partner['properties']['permalink'])
         end

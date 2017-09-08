@@ -15,5 +15,7 @@ class Entity < ApplicationRecord
         entity.mid = e.metadata['mid']
       end
     end
+  rescue Google::Cloud::InvalidArgumentError
+    []
   end
 end

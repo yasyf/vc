@@ -41,6 +41,10 @@ class Investor < ApplicationRecord
     person = crunchbase_person
     return unless person.present? && person.found?
 
+    Founder::SOCIAL_KEYS.each do |attr|
+      self[attr] = person.public_send(attr)
+    end
+
     self.first_name = person.first_name
     self.last_name = person.last_name
     if person.affiliation.present?
@@ -52,6 +56,8 @@ class Investor < ApplicationRecord
     self.location = person.location&.name
     self.gender = person.gender || self.gender
     self.university = University.from_name(person.university) if person.university.present?
+
+    return unless self.competitor.present?
 
     person.affiliated_companies.each do |company|
       scope = self.competitor.companies
@@ -73,16 +79,12 @@ class Investor < ApplicationRecord
         end
       end
     end
-
-    Founder::SOCIAL_KEYS.each do |attr|
-      self[attr] = person.public_send(attr)
-    end
   end
 
   def crawl_homepage!
     return unless self.homepage.present?
     body = begin
-      HTTParty.get(self.homepage).body
+      HTTParty.get(self.homepage).body.encode('UTF-8')
     rescue
       self.homepage = nil
       return

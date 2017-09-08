@@ -105,7 +105,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
     @cb_org.news.each do |news|
       body = begin
-        HTTParty.get(news['url']).body
+        HTTParty.get(news['url']).body.encode('UTF-8')
       rescue
         next
       end

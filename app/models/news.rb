@@ -11,6 +11,8 @@ class News < ApplicationRecord
 
   def page
     @page ||= MetaInspector.new(url, download_images: false)
+  rescue MetaInspector::TimeoutError
+    raise ActiveRecord::RecordInvalid.new(self)
   end
 
   def as_json(options = {})
