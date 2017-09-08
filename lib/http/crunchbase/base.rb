@@ -6,7 +6,6 @@ module Http::Crunchbase
     base_uri 'https://api.crunchbase.com/v3.1/'
     format :json
     headers 'Content-Type': 'application/json'
-    default_params user_key: ENV['CB_API_KEY']
 
     def initialize(timeout = nil, raise_on_error = true)
       @timeout = timeout
@@ -83,7 +82,7 @@ module Http::Crunchbase
     end
 
     def self._api_get(path, query)
-      response = get(path, query: query)
+      response = get(path, query: query.merge(user_key: next_token))
       case response.code
         when 200
           response.parsed_response['data']
@@ -98,6 +97,10 @@ module Http::Crunchbase
 
     def self.base_cache_key
       'http/crunchbase'
+    end
+
+    def self.next_token
+      ENV['CB_API_KEY'].split(',').sample
     end
 
     def get_in_raw(path, multi)
