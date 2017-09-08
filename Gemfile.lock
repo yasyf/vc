@@ -354,7 +354,6 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     retriable (3.1.1)
-    retries (0.0.5)
     rly (0.2.3)
     roo (2.7.1)
       nokogiri (~> 1)
@@ -540,7 +539,6 @@ DEPENDENCIES
   redis
   redis-namespace
   retriable (~> 3.0)
-  retries
   roo
   rspec-rails (~> 3.6)
   ruby-trello

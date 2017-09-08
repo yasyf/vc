@@ -102,7 +102,7 @@ module Http::AngelList
 
     def self._api_get(path, query)
       key_cached(query.merge(path: path)) do
-        Retriable.retriable do
+        Retriable.retriable(on: Errors::APIError) do
           response = get(path, query: query.merge(access_token: next_token))
           raise Errors::APIError.new(response.code) if response.code == 500
           parsed = response.parsed_response
@@ -126,7 +126,7 @@ module Http::AngelList
         _api_get(path, query)
       end
     rescue Timeout::Error
-      []
+      raise Errors::Timeout.new(path)
     end
   end
 end

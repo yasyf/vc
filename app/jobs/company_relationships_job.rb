@@ -98,7 +98,7 @@ class CompanyRelationshipsJob < ApplicationJob
     @cb_org.board_members_and_advisors.each do |person|
       id = person['relationships']['person']['properties']['permalink']
       details = Http::Crunchbase::Person.new(id, TIMEOUT)
-      competitor = Competitor.where(crunchbase_id: details.affiliation.permalink).first
+      competitor = Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       cc.update! investor: Investor.from_crunchbase(id)
     end

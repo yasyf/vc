@@ -77,7 +77,7 @@ module Http::Crunchbase
     def self.api_get(raw_path, query = {}, multi = true)
       path = URI.encode raw_path
       data = key_cached(query.merge(path: path)) do
-        Retriable.retriable { _api_get(path, query) }
+        Retriable.retriable(on: Errors::APIError) { _api_get(path, query) }
       end
       multi ? (data && data['items']) || [] : data
     end
