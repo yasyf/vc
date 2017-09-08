@@ -23,7 +23,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
         .first
       return unless other.present?
 
-      competitor.companies_competitors.each do |cc|
+      competitor.investments.each do |cc|
         cc2 = CompaniesCompetitor.where(company: cc.company, competitor: other).first_or_create!
         cc2.funded_at ||= cc.funded_at
         cc2.save! if cc2.changed?
@@ -73,7 +73,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
             c.name = company['properties']['name']
           end
 
-          cc = c.companies_competitors.where(competitor: competitor).first_or_initialize
+          cc = c.investments.where(competitor: competitor).first_or_initialize
           cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
           cc.investor = partners.first if partners.present?
           cc.save! if cc.changed?
@@ -89,7 +89,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
           c.domain = startup['company_url']
         end
 
-        c.companies_competitors.where(competitor: competitor).first_or_create!
+        c.investments.where(competitor: competitor).first_or_create!
       end
     end
   end

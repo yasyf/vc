@@ -7,7 +7,7 @@ class Company < ActiveRecord::Base
   has_many :pitches
   has_many :cards
   has_many :calendar_events
-  has_many :companies_competitors
+  has_many :investments, class_name: 'CompaniesCompetitor'
   belongs_to :team
   has_and_belongs_to_many :users, -> { distinct }
   has_and_belongs_to_many :competitors, -> { distinct }

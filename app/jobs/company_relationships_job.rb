@@ -55,7 +55,7 @@ class CompanyRelationshipsJob < ApplicationJob
       next unless person['role'] == 'past_investor' && person['tagged']['type'] == 'Startup'
       ignore_invalid do
         competitor = Competitor.from_angelist! person['tagged']['id'], person['tagged']['name']
-        competitor.companies_competitors.where(company: @company).first_or_create!
+        competitor.investments.where(company: @company).first_or_create!
       end
     end
   end
@@ -77,7 +77,7 @@ class CompanyRelationshipsJob < ApplicationJob
     @cb_org.investors.each do |competitor|
       ignore_invalid do
         competitor = Competitor.from_crunchbase! competitor['properties']['permalink'], competitor['properties']['name']
-        competitor.companies_competitors.where(company: @company).first_or_create!
+        competitor.investments.where(company: @company).first_or_create!
       end
     end
 
@@ -87,7 +87,7 @@ class CompanyRelationshipsJob < ApplicationJob
         partner = investment['relationships']['partners'].first
 
         competitor = Competitor.from_crunchbase! investor['properties']['properties'], investor['properties']['name']
-        cc = competitor.companies_competitors.where(company: @company).first_or_initialize
+        cc = competitor.investments.where(company: @company).first_or_initialize
         cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
         cc.investor = Investor.from_crunchbase(partner['properties']['permalink']) if partner.present?
         cc.save! if cc.changed?
@@ -98,13 +98,13 @@ class CompanyRelationshipsJob < ApplicationJob
       id = person['relationships']['person']['properties']['permalink']
       details = Http::Crunchbase::Person.new(id, TIMEOUT)
       competitor = Competitor.where(crunchbase_id: details.affiliation.permalink).first
-      next unless competitor.present? && (cc = competitor.companies_competitors.where(company: @company).first).present?
+      next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       cc.update! investor: Investor.from_crunchbase(id)
     end
 
     @cb_org.news.each do |news|
       body = HTTParty.get(news['url']).body
-      @company.companies_competitors.where(investor_id: nil).includes(competitor: :investors).each do |cc|
+      @company.investments.where(investor_id: nil).includes(competitor: :investors).each do |cc|
         cc.competitor.investors.each do |investor|
           if body.include?(investor.name)
             cc.update! investor: investor

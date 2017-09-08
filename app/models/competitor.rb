@@ -66,7 +66,7 @@ class Competitor < ApplicationRecord
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :investors
   has_many :notes, as: :subject
-  has_many :companies_competitors
+  has_many :investments, class_name: 'CompaniesCompetitor'
 
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, uniqueness: { allow_nil: true }
@@ -162,7 +162,7 @@ class Competitor < ApplicationRecord
   end
 
   def recent_investments(n = 5)
-    companies_competitors.order('funded_at DESC').limit(n).map(&:company)
+    investments.order('funded_at DESC').limit(n).map(&:company)
   end
 
   private
