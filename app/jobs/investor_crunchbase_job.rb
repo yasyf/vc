@@ -9,6 +9,7 @@ class InvestorCrunchbaseJob < ApplicationJob
     investor.al_id ||= Http::AngelList::User.find_id(investor.name)
     investor.populate_from_cb!
     investor.populate_from_al!
+    investor.crawl_homepage!
     investor.set_gender!
     ignore_invalid { investor.save! } if investor.changed?
   end

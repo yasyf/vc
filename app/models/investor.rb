@@ -75,14 +75,20 @@ class Investor < ApplicationRecord
     Founder::SOCIAL_KEYS.each do |attr|
       self[attr] = person.public_send(attr)
     end
+  end
 
-    if self.homepage.present?
-      body = HTTParty.get(self.homepage).body
-      self.entities += Entity.from_html(body)
-      self.competitor.companies.find_each do |company|
-        if body.include?(company.name)
-          assign_company! company
-        end
+  def crawl_homepage!
+    return unless self.homepage.present?
+    body = begin
+      HTTParty.get(self.homepage).body
+    rescue
+      self.homepage = nil
+      return
+    end
+    self.entities += Entity.from_html(body)
+    self.competitor.companies.find_each do |company|
+      if body.include?(company.name)
+        assign_company! company
       end
     end
   end
