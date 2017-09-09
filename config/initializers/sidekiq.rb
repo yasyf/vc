@@ -9,3 +9,8 @@ end
 Sidekiq.configure_server do |config|
   config.redis = { namespace: 'sidekiq', size: CONNECTION_LIMIT - (ENV['WEB_CONCURRENCY'].to_i * ENV['MAX_THREADS'].to_i) }
 end
+
+Sidekiq.default_worker_options = {
+  unique: :until_and_while_executing,
+  unique_args: ->(args) { [ args.first.except('job_id') ] }
+}

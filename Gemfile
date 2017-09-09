@@ -65,6 +65,7 @@ gem 'metainspector'
 gem 'feedjira'
 gem 'google-cloud-language'
 gem 'gender_detector'
+gem 'sidekiq-unique-jobs'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'
@@ -77,7 +78,6 @@ group :production do
   gem 'dalli'
   gem 'connection_pool'
   gem 'scout_apm', '~> 3.0.x'
-  gem 'tunemygc'
 end
 
 group :development, :staging do
