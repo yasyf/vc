@@ -15,6 +15,10 @@ module Http::Crunchbase
       get_in 'relationships', 'featured_team', multi: true
     end
 
+    def found?
+      @permalink.present? && super
+    end
+
     def investments(deep: false)
       if deep && found?
         self.class.api_get("/#{@permalink}/investments")

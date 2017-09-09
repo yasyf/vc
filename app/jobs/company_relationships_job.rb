@@ -26,11 +26,15 @@ class CompanyRelationshipsJob < ApplicationJob
     @company.industry = (@company.industry || []) + @al_startup.markets
     ignore_invalid { @company.save! } if @company.changed?
 
-    add_cb_founders
-    add_cb_investors
+    if @cb_org.found?
+      add_cb_founders
+      add_cb_investors
+    end
 
-    add_al_founders
-    add_al_investors
+    if @al_startup.found?
+      add_al_founders
+      add_al_investors
+    end
   end
 
   private
@@ -110,7 +114,9 @@ class CompanyRelationshipsJob < ApplicationJob
 
     @cb_org.news.each do |news|
       body = begin
-        HTTParty.get(news['url']).body.force_encoding('UTF-8')
+        response = HTTParty.get(news['url'])
+        next unless response.code == 200
+        response.body.force_encoding('UTF-8')
       rescue
         next
       end
@@ -125,7 +131,7 @@ class CompanyRelationshipsJob < ApplicationJob
           end
         end
       end
-      News.where(company: @company, url: news['url']).first_or_create(title: news['title'])
+      News.where(company: @company, url: news['url']).first_or_create!(title: news['title'])
     end
   end
 end

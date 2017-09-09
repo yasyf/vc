@@ -106,7 +106,10 @@ class Competitor < ApplicationRecord
   end
 
   def self.from_crunchbase!(crunchbase_id, name)
-    where(crunchbase_id: crunchbase_id).first_or_create! do |competitor|
+    found = where(crunchbase_id: crunchbase_id).or(where(name: name)).first
+    found = create!(crunchbase_id: crunchbase_id, name: name) unless found.present?
+    found.tap do |competitor|
+      competitor.crunchbase_id = crunchbase_id
       competitor.name = name
     end
   end
