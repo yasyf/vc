@@ -16,6 +16,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
     rescue ActiveRecord::RecordInvalid => e
       raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
       DuplicateCompetitorJob.perform_later competitor.id
+      return
     end
 
     cb_fund = competitor.crunchbase_fund
