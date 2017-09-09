@@ -75,6 +75,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
   def add_cb_investors
     @cb_org.investors.each do |competitor|
+      next if competitor['type'] == 'Person'
       ignore_invalid do
         competitor = Competitor.from_crunchbase! competitor['properties']['permalink'], competitor['properties']['name']
         competitor.investments.where(company: @company).first_or_create!
@@ -85,9 +86,9 @@ class CompanyRelationshipsJob < ApplicationJob
       next unless funding_round['relationships'].present?
       funding_round['relationships']['investments'].each do |investment|
         investor = investment['relationships']['investors']
+        next if investor['type'] == 'Person'
         partner = investment['relationships']['partners'].first
-
-        competitor = Competitor.from_crunchbase! investor['properties']['properties'], investor['properties']['name']
+        competitor = Competitor.from_crunchbase! investor['properties']['permalink'], investor['properties']['name']
         cc = competitor.investments.where(company: @company).first_or_initialize
         cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
         cc.investor = Investor.from_crunchbase(partner['properties']['permalink']) if partner.present?
@@ -98,14 +99,18 @@ class CompanyRelationshipsJob < ApplicationJob
     @cb_org.board_members_and_advisors.each do |person|
       id = person['relationships']['person']['properties']['permalink']
       details = Http::Crunchbase::Person.new(id, TIMEOUT)
-      competitor = Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
+      competitor = begin
+        Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
+      rescue NoMethodError
+        next
+      end
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       cc.update! investor: Investor.from_crunchbase(id)
     end
 
     @cb_org.news.each do |news|
       body = begin
-        HTTParty.get(news['url']).body.encode('UTF-8')
+        HTTParty.get(news['url']).body.force_encoding('UTF-8')
       rescue
         next
       end
@@ -120,6 +125,7 @@ class CompanyRelationshipsJob < ApplicationJob
           end
         end
       end
+      News.where(company: @company, url: news['url']).first_or_create!(title: news['title'])
     end
   end
 end

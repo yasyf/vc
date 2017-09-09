@@ -72,8 +72,9 @@ class Investor < ApplicationRecord
       rescue ActiveRecord::RecordInvalid
         next
       end
+      body = news.page.to_s.force_encoding('UTF-8')
       self.competitor.companies.find_each do |company|
-        if news.page.to_s.include?(company.name)
+        if body.include?(company.name)
           news.update! company: company
           assign_company! company, no_replace: true
         end
@@ -84,7 +85,7 @@ class Investor < ApplicationRecord
   def crawl_homepage!
     return unless self.homepage.present?
     body = begin
-      HTTParty.get(self.homepage).body.encode('UTF-8')
+      HTTParty.get(self.homepage).body.force_encoding('UTF-8')
     rescue
       self.homepage = nil
       return
@@ -266,8 +267,13 @@ class Investor < ApplicationRecord
   end
 
   def recent_investments(n = 5)
-    mine = investments.order('funded_at DESC').limit(n).map(&:company)
-    mine.present? ? mine : competitor.recent_investments(n)
+    scope = investments.present? ? investments : competitor.investments
+    investments = scope
+      .joins(company: :news)
+      .group('companies_competitors.id', 'companies.capital_raised')
+      .order('companies.capital_raised DESC', 'count(companies_competitors.id) DESC', 'companies_competitors.funded_at DESC')
+      .limit(n)
+    investments.map(&:company)
   end
 
   def initials

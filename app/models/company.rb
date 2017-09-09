@@ -5,6 +5,7 @@ class Company < ActiveRecord::Base
 
   has_one :tweeter
   has_many :pitches
+  has_many :news
   has_many :cards
   has_many :calendar_events
   has_many :investments, class_name: 'CompaniesCompetitor', dependent: :destroy
@@ -196,17 +197,13 @@ class Company < ActiveRecord::Base
     return nil unless id.present?
     Company.where(crunchbase_id: id).first_or_initialize.tap do |company|
       company.domain = domain
+      company.send(:set_crunchbase_attributes!)
     end
   end
 
   def self.from_founder(founder)
     company = from_domain founder.domain
     company = Company.new(name: "#{founder.name} NewCo", domain: founder.domain) unless company.present?
-
-    if (org = company.crunchbase_org).found?
-      company.name = org.name
-      company.description = org.description
-    end
     company.save!
     company
   end
@@ -232,7 +229,8 @@ class Company < ActiveRecord::Base
 
   def set_crunchbase_attributes!(timeout: 5)
     org = crunchbase_org(timeout)
-    return unless org.permalink
+    return unless org.found?
+    self.name ||= org.name
     self.crunchbase_id = org.permalink
     self.domain = org.url
     self.description = org.description

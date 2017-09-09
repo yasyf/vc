@@ -16,7 +16,7 @@ module Http::Crunchbase
     end
 
     def bio
-      get_in 'properties', 'bio'
+      get_in('properties', 'bio').force_encoding('UTF-8')
     end
 
     def image

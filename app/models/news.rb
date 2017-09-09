@@ -2,7 +2,6 @@ class News < ApplicationRecord
   belongs_to :investor
   belongs_to :company
 
-  validates :investor, presence: true
   validates :url, presence: true, uniqueness: { scope: [:investor] }
   validates :title, presence: true
   validates :description, presence: true
@@ -11,7 +10,7 @@ class News < ApplicationRecord
 
   def page
     @page ||= MetaInspector.new(url, download_images: false)
-  rescue MetaInspector::TimeoutError
+  rescue MetaInspector::Error, Net::OpenTimeout
     raise ActiveRecord::RecordInvalid.new(self)
   end
 
