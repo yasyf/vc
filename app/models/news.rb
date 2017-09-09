@@ -2,7 +2,7 @@ class News < ApplicationRecord
   belongs_to :investor
   belongs_to :company
 
-  validates :url, presence: true, uniqueness: { scope: [:investor] }
+  validates :url, presence: true, uniqueness: { scope: [:investor, :company] }
   validates :title, presence: true
   validates :description, presence: true
 
