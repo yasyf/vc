@@ -125,7 +125,7 @@ class CompanyRelationshipsJob < ApplicationJob
           end
         end
       end
-      News.where(company: @company, url: news['url']).first_or_create!(title: news['title'])
+      News.where(company: @company, url: news['url']).first_or_create(title: news['title'])
     end
   end
 end

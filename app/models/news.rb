@@ -10,7 +10,7 @@ class News < ApplicationRecord
 
   def page
     @page ||= MetaInspector.new(url, download_images: false)
-  rescue MetaInspector::Error, Net::OpenTimeout
+  rescue MetaInspector::Error
     raise ActiveRecord::RecordInvalid.new(self)
   end
 
