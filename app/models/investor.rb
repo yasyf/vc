@@ -1,8 +1,9 @@
 class Investor < ApplicationRecord
+  extend Concerns::Ignorable
+
   include Concerns::AttributeSortable
   include Concerns::Cacheable
   include Concerns::Twitterable
-  include Concerns::Ignorable
 
   GENDERS = %w(unknown male female)
 
@@ -67,9 +68,9 @@ class Investor < ApplicationRecord
       assign_company! company
     end
 
-    Http::Fetch.get(@cb_org.news).each do |url, body|
+    Http::Fetch.get(person.news).each do |url, body|
       next unless body.present?
-      ignore_invalid { import_news(url, body) }
+      self.class.ignore_invalid { import_news(url, body) }
     end
   end
 
