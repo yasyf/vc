@@ -2,6 +2,7 @@ class Investor < ApplicationRecord
   include Concerns::AttributeSortable
   include Concerns::Cacheable
   include Concerns::Twitterable
+  include Concerns::Ignorable
 
   GENDERS = %w(unknown male female)
 
@@ -66,27 +67,26 @@ class Investor < ApplicationRecord
       assign_company! company
     end
 
-    person.news.each do |news|
-      news = begin
-        News.where(investor: self, url: news['url']).first_or_create!(title: news['title'])
-      rescue ActiveRecord::RecordInvalid
-        next
-      end
-      body = news.page.to_s.force_encoding('UTF-8')
-      self.competitor.companies.find_each do |company|
-        if body.include?(company.name)
-          news.update! company: company
-          assign_company! company, no_replace: true
-        end
+    Http::Fetch.get(@cb_org.news).each do |url, body|
+      next unless body.present?
+      ignore_invalid { import_news(url, body) }
+    end
+  end
+
+  def import_news(url, body)
+    news = News.create_with_body(url, body, investor: self)
+    self.competitor.companies.find_each do |company|
+      if body.include?(company.name)
+        news.update! company: company
+        assign_company! company, no_replace: true
       end
     end
   end
 
   def crawl_homepage!
     return unless self.homepage.present?
-    body = begin
-      HTTParty.get(self.homepage).body.force_encoding('UTF-8')
-    rescue
+    body = Http::Fetch.get_one self.homepage
+    unless body.present?
       self.homepage = nil
       return
     end
@@ -131,11 +131,7 @@ class Investor < ApplicationRecord
 
   def self.from_crunchbase(cb_id)
     return nil unless cb_id.present?
-    where(crunchbase_id: cb_id).first_or_create! do |investor|
-      investor.populate_from_cb!
-    end
-  rescue ActiveRecord::RecordInvalid
-    nil
+    ignore_invalid { retry_unique { where(crunchbase_id: cb_id).first_or_create! { |investor| investor.populate_from_cb! } } }
   end
 
   def self.from_angelist(al_id)

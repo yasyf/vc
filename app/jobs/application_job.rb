@@ -1,9 +1,20 @@
 class ApplicationJob < ActiveJob::Base
-  retry_on Net::OpenTimeout, wait: :exponentially_longer, attempts: 10
-  retry_on Http::AngelList::Errors::RateLimited, wait: :exponentially_longer, queue: :low, attempts: 10
-  retry_on Http::AngelList::Errors::Timeout, wait: :exponentially_longer, queue: :low, attempts: 10
-  retry_on Http::Crunchbase::Errors::RateLimited, wait: :exponentially_longer, queue: :low, attempts: 10
-  retry_on Http::Crunchbase::Errors::Timeout, wait: :exponentially_longer, queue: :low, attempts: 10
-  retry_on Net::OpenTimeout, wait: :exponentially_longer, queue: :low, attempts: 10
+  def self.retry_with_exp_backoff(ex, attempts: 10, queue: :low)
+    retry_on ex, wait: :exponentially_longer, queue: queue, attempts: attempts
+  end
+
+  # API Errors
+  retry_with_exp_backoff Http::AngelList::Errors::APIError
+  retry_with_exp_backoff Http::Crunchbase::Errors::APIError
+
+  # Timeouts
+  retry_with_exp_backoff Net::OpenTimeout
+
+  # Temporary Failures
+  retry_with_exp_backoff Redis::CommandError
+
+  # Irrecoverable
+  discard_on Http::Crunchbase::Errors::BadRequest
   discard_on ActiveRecord::RecordNotFound
+  discard_on PG::ForeignKeyViolation
 end

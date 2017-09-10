@@ -66,6 +66,7 @@ GEM
       safe_yaml (~> 1.0.0)
     css_parser (1.5.0)
       addressable
+    curb (0.9.4)
     dalli (2.7.6)
     declarative (0.0.9)
     declarative-option (0.1.0)
@@ -523,6 +524,7 @@ DEPENDENCIES
   clockwork
   coffee-rails
   connection_pool
+  curb
   dalli
   derailed
   devise

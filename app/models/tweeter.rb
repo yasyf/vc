@@ -5,7 +5,7 @@ class Tweeter < ApplicationRecord
   NEWSWORTHY_MIN = 10
 
   belongs_to :company
-  has_many :tweets
+  has_many :tweets, dependent: :destroy
   validates :username, presence: true, uniqueness: true
 
   def newsworthy_tweets(n = 5)

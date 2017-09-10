@@ -26,6 +26,10 @@ module Concerns
       ignore(unique_errors, &block)
     end
 
+    def retry_unique(&block)
+      retry_(unique_errors, &block)
+    end
+
     def ignore_invalid(&block)
       ignore(invalid_errors, &block)
     end
@@ -34,6 +38,7 @@ module Concerns
       yield
     rescue *Array.wrap(types) => e
       Rails.logger.info e
+      nil
     end
 
     def retry_(types)
@@ -42,6 +47,7 @@ module Concerns
     rescue *Array.wrap(types) => e
       retry unless (remaining -= 1).zero?
       Rails.logger.info e
+      nil
     end
   end
 end

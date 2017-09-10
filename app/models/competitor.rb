@@ -64,9 +64,9 @@ class Competitor < ApplicationRecord
   sort :location
 
   has_and_belongs_to_many :companies, -> { distinct }
-  has_many :investors
-  has_many :notes, as: :subject
-  has_many :investments, class_name: 'CompaniesCompetitor'
+  has_many :investors, dependent: :destroy
+  has_many :notes, as: :subject, dependent: :destroy
+  has_many :investments, class_name: 'CompaniesCompetitor', dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, uniqueness: { allow_nil: true }

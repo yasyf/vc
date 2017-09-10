@@ -24,7 +24,15 @@ class CompanyRelationshipsJob < ApplicationJob
                           .uniq if categories.present?
 
     @company.industry = (@company.industry || []) + @al_startup.markets
-    ignore_invalid { @company.save! } if @company.changed?
+
+    begin
+      ignore_invalid { @company.save! } if @company.changed?
+    rescue ActiveRecord::RecordNotUnique => e
+      raise unless e.record.errors.details.all? { |_,v| v.all? { |e| e[:error].to_sym == :taken } }
+      attrs = e.record.errors.details.map { |k,_| [k, @company.send(k)] }.to_h
+      DuplicateCompanyJob.perform_later(@company.id, attrs)
+      return
+    end
 
     if @cb_org.found?
       add_cb_founders
@@ -101,37 +109,37 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.board_members_and_advisors.each do |person|
-      id = person['relationships']['person']['properties']['permalink']
-      details = Http::Crunchbase::Person.new(id, TIMEOUT)
-      competitor = begin
-        Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
-      rescue NoMethodError
-        next
-      end
+      competitor = competitor_from_person(person)
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       cc.update! investor: Investor.from_crunchbase(id)
     end
 
-    @cb_org.news.each do |news|
-      body = begin
-        response = HTTParty.get(news['url'])
-        next unless response.code == 200
-        response.body.force_encoding('UTF-8')
-      rescue
-        next
-      end
-      @company.investments.where(investor_id: nil).includes(competitor: :investors).each do |cc|
-        cc.competitor.investors.each do |investor|
+    Http::Fetch.get(@cb_org.news).each do |url, body|
+      next unless body.present?
+      ignore_invalid { import_news(url, body) }
+    end
+  end
+
+  def competitor_from_person(person)
+    id = person['relationships']['person']['properties']['permalink']
+    details = Http::Crunchbase::Person.new(id, TIMEOUT)
+    Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
+  rescue NoMethodError
+    nil
+  end
+
+  def import_news(url, body)
+    @company.investments.where(investor_id: nil).includes(competitor: :investors).find_each do |cc|
+        cc.competitor.investors.find_each do |investor|
           if body.include?(investor.name)
             cc.update! investor: investor unless cc.investor.present?
-            news = News.where(investor: investor, url: news['url']).first_or_initialize(title: news['title'])
+            news = News.create_with_body(url, body, investor: investor)
             news.company = @company
             news.save! if news.changed?
             break
           end
         end
       end
-      News.where(company: @company, url: news['url']).first_or_create!(title: news['title'])
-    end
+    News.create_with_body(url, body, company: @company)
   end
 end

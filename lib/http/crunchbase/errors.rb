@@ -1,5 +1,11 @@
 module Http::Crunchbase::Errors
-  class APIError < StandardError
+  class Error < StandardError
+  end
+
+  class BadRequest < Error
+  end
+
+  class APIError < Error
   end
 
   class Timeout < APIError

@@ -90,6 +90,8 @@ module Http::Crunchbase
           nil
         when 401
           raise Errors::RateLimited.new(response.code)
+        when 400
+          raise Errors::BadRequest.new(response.body)
         else
           raise Errors::APIError.new("#{response.code}: #{response.body}")
       end

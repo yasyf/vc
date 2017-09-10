@@ -3,9 +3,9 @@ class Company < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include Concerns::AttributeSortable
 
-  has_one :tweeter
+  has_one :tweeter, dependent: :destroy
   has_many :pitches
-  has_many :news
+  has_many :news, dependent: :destroy
   has_many :cards
   has_many :calendar_events
   has_many :investments, class_name: 'CompaniesCompetitor', dependent: :destroy

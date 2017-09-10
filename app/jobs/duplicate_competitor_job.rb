@@ -18,7 +18,7 @@ class DuplicateCompetitorJob < ApplicationJob
       other.al_id ||= competitor.al_id
 
       competitor.investments.lock
-      competitor.investments.each do |cc|
+      competitor.investments.find_each do |cc|
         cc2 = CompaniesCompetitor.where(company: cc.company, competitor: other).first_or_create!
         cc2.funded_at ||= cc.funded_at
         cc2.save!
@@ -29,7 +29,7 @@ class DuplicateCompetitorJob < ApplicationJob
       competitor.investors.update_all competitor_id: other.id
 
       competitor.notes.lock
-      competitor.notes.each do |note|
+      competitor.notes.find_each do |note|
         note.update! subject: other
       end
 
