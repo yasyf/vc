@@ -4,6 +4,7 @@ class Investor < ApplicationRecord
   include Concerns::AttributeSortable
   include Concerns::Cacheable
   include Concerns::Twitterable
+  include Concerns::Ignorable
 
   GENDERS = %w(unknown male female)
 
@@ -70,7 +71,7 @@ class Investor < ApplicationRecord
 
     Http::Fetch.get(person.news).each do |url, body|
       next unless body.present?
-      self.class.ignore_invalid { import_news(url, body) }
+      ignore_invalid { import_news(url, body) }
     end
   end
 

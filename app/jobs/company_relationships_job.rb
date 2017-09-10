@@ -109,7 +109,8 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.board_members_and_advisors.each do |person|
-      competitor = competitor_from_person(person)
+      id = person['relationships']['person']['properties']['permalink']
+      competitor = competitor_from_person_id(id)
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       cc.update! investor: Investor.from_crunchbase(id)
     end
@@ -120,8 +121,7 @@ class CompanyRelationshipsJob < ApplicationJob
     end
   end
 
-  def competitor_from_person(person)
-    id = person['relationships']['person']['properties']['permalink']
+  def competitor_from_person_id(id)
     details = Http::Crunchbase::Person.new(id, TIMEOUT)
     Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
   rescue NoMethodError
