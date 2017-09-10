@@ -28,7 +28,7 @@ class DuplicateCompanyJob < ApplicationJob
       end
 
       other.save!
-      competitor.destroy!
+      company.destroy!
     end
   end
 end
