@@ -112,7 +112,7 @@ module Http::Crunchbase
         current = current[path.shift]
         return (multi ? [] : nil) if current.nil?
       end
-      multi ? current['items'] : current
+      multi ? (current['items'] || []) : current
     end
 
     def get_in(*path, multi: false)
