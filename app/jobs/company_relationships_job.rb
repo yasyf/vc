@@ -27,9 +27,8 @@ class CompanyRelationshipsJob < ApplicationJob
 
     begin
       ignore_invalid { @company.save! } if @company.changed?
-    rescue ActiveRecord::RecordNotUnique => e
-      raise unless e.record.errors.details.all? { |_,v| v.all? { |e| e[:error].to_sym == :taken } }
-      attrs = e.record.errors.details.map { |k,_| [k, @company.send(k)] }.to_h
+    rescue *unique_errors
+      attrs = @company.errors.details.map { |k,_| [k, @company.send(k)] }.to_h
       DuplicateCompanyJob.perform_later(@company.id, attrs)
       return
     end
