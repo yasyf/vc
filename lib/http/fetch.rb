@@ -17,8 +17,9 @@ class Http::Fetch
     remaining = urls - results.keys
     Curl::Multi.get(remaining, EASY_OPTIONS, MULTI_OPTIONS) do |resp|
       if resp.status == OK
-        results[resp.url] = resp.body_str
-        cache.write(resp.url, resp.body_str)
+        body = resp.body_str.encode('UTF-8')
+        results[resp.url] = body
+        cache.write(resp.url, body)
       else
         results[resp.url] = nil
       end
