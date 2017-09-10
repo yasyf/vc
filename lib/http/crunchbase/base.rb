@@ -41,7 +41,7 @@ module Http::Crunchbase
 
     def news
       news = get_in 'relationships', 'news', multi: true
-      news.map { |n| n['properties']['url'] }
+      news.select(&:present?).map { |n| n['properties']['url'] }
     end
 
     def self.find_id(query)
