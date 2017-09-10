@@ -2,7 +2,7 @@ class CacheWarmJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    Company.includes(:team, :users, :competitors).find_each do |company|
+    Company.find_each do |company|
       company.send(:crunchbase_org, 5)
       %w(stats).each do |method|
         company.pitch&.public_send(method)

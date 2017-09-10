@@ -128,7 +128,7 @@ class CompanyRelationshipsJob < ApplicationJob
   end
 
   def import_news(url, body)
-    @company.investments.where(investor_id: nil).includes(competitor: :investors).find_each do |cc|
+    @company.investments.where(investor_id: nil).find_each do |cc|
         cc.competitor.investors.find_each do |investor|
           if body.include?(investor.name)
             cc.update! investor: investor unless cc.investor.present?
