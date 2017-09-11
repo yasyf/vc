@@ -259,6 +259,7 @@ export default class Investor extends React.Component {
       twitter,
       linkedin,
       university,
+      average_response_time,
     } = this.state.investor;
 
     return (
@@ -270,6 +271,7 @@ export default class Investor extends React.Component {
         {this.renderIconLine('social-twitter', twitter, 'https://twitter.com')}
         {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
         {this.renderHomepage()}
+        {this.renderIconLine('clock', average_response_time && moment.duration(average_response_time, 'seconds').humanize())}
       </div>
     );
   }
