@@ -10,6 +10,7 @@ class ApplicationJob < ActiveJob::Base
 
   # Timeouts
   retry_with_exp_backoff Net::OpenTimeout
+  retry_with_exp_backoff Net::ReadTimeout
 
   # Temporary Failures
   retry_with_exp_backoff Redis::CommandError
