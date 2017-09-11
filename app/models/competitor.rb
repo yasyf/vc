@@ -18,6 +18,8 @@ class Competitor < ApplicationRecord
   INDUSTRIES = {
     consumer: 'Consumer',
     enterprise: 'Enterprise',
+    ecommerce: 'E-Commerce',
+    delivery: 'Delivery',
     saas: 'SaaS',
     ai: 'AI/ML',
     robotics: 'Robotics',
@@ -41,16 +43,18 @@ class Competitor < ApplicationRecord
     gaming: 'Gaming',
     space: 'Space',
     data: 'Data',
+    transportation: 'Transportation',
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
-    mobile: ['Mobile Devices', 'Telecommunications'],
+    transportation: ['Public Transportation', 'Ride Sharing'],
+    mobile: ['Mobile Devices', 'Telecommunications', 'Mobile Apps'],
     food: ['Food and Beverage', 'Food Delivery', 'Nutrition', 'Food'],
     social: ['Social', 'Messaging', 'Social Media'],
     ai: ['Machine Learning', 'Artificial Intelligence'],
     enterprise: ['Enterprise Software', 'B2B'],
     healthcare: ['Health Care', 'Medical'],
-    media: ['Entertainment'],
+    media: ['Entertainment', 'Music', 'Video'],
     finance: ['FinTech'],
     energy: ['Electric Vehicle', 'Energy Management'],
     data: ['Analytics'],
