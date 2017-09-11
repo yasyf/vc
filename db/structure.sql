@@ -22,6 +22,20 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
+-- Name: btree_gin; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS btree_gin WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION btree_gin; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -1482,6 +1496,13 @@ CREATE INDEX index_emails_on_intro_request_id ON emails USING btree (intro_reque
 
 
 --
+-- Name: index_emails_on_investor_founder_dir_ca; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_emails_on_investor_founder_dir_ca ON emails USING gin (investor_id, founder_id, direction, created_at);
+
+
+--
 -- Name: index_emails_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2254,6 +2275,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170908061548'),
 ('20170908062006'),
 ('20170909004347'),
-('20170910052629');
+('20170910052629'),
+('20170911231243'),
+('20170911231340');
 
 

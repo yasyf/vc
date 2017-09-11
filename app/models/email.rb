@@ -9,4 +9,6 @@ class Email < ApplicationRecord
   validates :founder, presence: true
 
   enum direction: %w(incoming outgoing) # from the founder's perspective
+
+  scope :after, Proc.new { |email| where('created_at > ?', email.created_at) }
 end

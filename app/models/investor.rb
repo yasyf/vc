@@ -17,6 +17,7 @@ class Investor < ApplicationRecord
   has_many :news
   has_many :person_entities, as: :person
   has_many :entities, through: :person_entities
+  has_many :emails
 
   validates :competitor, presence: true
   validates :first_name, presence: true, uniqueness: { scope: [:last_name, :competitor_id] }
@@ -182,7 +183,7 @@ class Investor < ApplicationRecord
         :location,
         :email,
       ],
-     methods: [:competitor, :recent_investments, :recent_news, :university, :notes]
+     methods: [:competitor, :recent_investments, :recent_news, :university, :average_response_time, :notes]
     )
   end
 
@@ -255,6 +256,22 @@ class Investor < ApplicationRecord
       :work_traveling
     else
       :pleasure_traveling
+    end
+  end
+
+  def average_response_time
+    cached do
+      average = Average.new
+      emails.distinct.pluck(:founder_id).each do |founder_id|
+        scope = emails.where(founder_id: founder_id).order(created_at: :asc)
+        outgoing = scope.outgoing.first
+        while outgoing.present? && (incoming = scope.after(outgoing).incoming.first).present? do
+          delta = incoming.created_at - outgoing.created_at
+          average.add(delta)
+          outgoing = scope.outgoing.after(incoming).first
+        end
+      end
+      (average.to_f / 1.minute).minutes
     end
   end
 
