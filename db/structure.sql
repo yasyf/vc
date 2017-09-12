@@ -933,7 +933,8 @@ CREATE TABLE users (
     team_id integer,
     access_token character varying,
     refresh_token character varying,
-    logged_in_at timestamp without time zone DEFAULT '2017-03-02 19:56:21.793001'::timestamp without time zone NOT NULL
+    logged_in_at timestamp without time zone DEFAULT '2017-03-02 19:56:21.793001'::timestamp without time zone NOT NULL,
+    ip_address inet
 );
 
 
@@ -2360,6 +2361,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170912081157'),
 ('20170912082106'),
 ('20170912215956'),
-('20170912222800');
+('20170912222800'),
+('20170912231818');
 
 
