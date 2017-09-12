@@ -9,8 +9,7 @@ class ApplicationJob < ActiveJob::Base
   retry_with_exp_backoff Twitter::Error::ServerError
 
   # Timeouts
-  retry_with_exp_backoff Net::OpenTimeout
-  retry_with_exp_backoff Net::ReadTimeout
+  retry_with_exp_backoff Timeout::Error
 
   # Temporary Failures
   retry_with_exp_backoff Redis::CommandError
