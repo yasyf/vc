@@ -18,7 +18,6 @@ class FounderEnhanceJob < ApplicationJob
     crawl_homepage! founder
 
     founder.save! if founder.changed?
-    # get entities, also get entities for Investor blog posts, then surface commonalities and tags, then import Alon, then get features
   end
 
   private
