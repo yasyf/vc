@@ -69,22 +69,21 @@ class Investor < ApplicationRecord
       scope = self.competitor.companies
       company = scope.where(crunchbase_id: company['permalink']).or(scope.where(name: company['name'])).first
       next unless company.present?
-      assign_company! company
+      assign_company! company, featured: true
     end
 
-    Http::Fetch.get(person.news).each do |url, body|
+    news = person.news.map { |n| [n['url'], n] }.to_h
+    Http::Fetch.get(news.keys).each do |url, body|
       next unless body.present?
-      ignore_invalid { import_news(url, body) }
+      ignore_invalid { import_news_with_body(url, body, news[url]['posted_on']) }
     end
   end
 
-  def import_news(url, body)
-    news = News.create_with_body(url, body, investor: self)
-    self.competitor.companies.find_each do |company|
-      if body.include?(company.name)
-        news.update! company: company
-        assign_company! company, no_replace: true
-      end
+  def fetch_news!
+    news = Http::Bing.news("#{name} + #{competitor.name}").map { |n| [n['url'], n] }.to_h
+    Http::Fetch.get(news.keys).each do |url, body|
+      meta = news[url]
+      import_news_with_attrs(url, body, title: meta['name'], description: meta['description'], published_at: meta['datePublished'])
     end
   end
 
@@ -103,7 +102,7 @@ class Investor < ApplicationRecord
     self.entities += Entity.from_html(body)
     self.competitor.companies.find_each do |company|
       if body.include?(company.name)
-        assign_company! company
+        assign_company! company, featured: true
       end
     end
   end
@@ -146,8 +145,8 @@ class Investor < ApplicationRecord
     end
   end
 
-  def assign_company!(company, no_replace: false)
-    CompaniesCompetitor.assign_to_investor(self, company, no_replace: no_replace)
+  def assign_company!(company, featured: false, no_replace: false)
+    CompaniesCompetitor.assign_to_investor(self, company, featured: featured, no_replace: no_replace)
   end
 
   def set_gender!
@@ -297,6 +296,26 @@ class Investor < ApplicationRecord
 
   private
 
+  def import_news_with_attrs(url, body, attrs)
+    news = News.where(investor: self, url: url).first_or_create!(attrs)
+    news.body = body
+    import_news news
+  end
+
+  def import_news_with_body(url, body, published_at)
+    news = News.create_with_body(url, body, investor: self, published_at: published_at)
+    import_news news
+  end
+
+  def import_news(news)
+    self.competitor.companies.find_each do |company|
+      if news.body.include?(company.name)
+        news.update! company: company
+        assign_company! company, no_replace: true
+      end
+    end
+  end
+
   def fetch_posts!
     return [] unless blog_url.present?
     body = Http::Fetch.get_one blog_url
@@ -312,7 +331,7 @@ class Investor < ApplicationRecord
   end
 
   def recent_news(n = 5)
-    news.order('created_at DESC').limit(n)
+    news.order('published_at DESC, created_at DESC').limit(n)
   end
 
   def popular_entities(n = 3)
@@ -338,7 +357,7 @@ class Investor < ApplicationRecord
     investments = scope
       .joins(company: :news)
       .group('companies_competitors.id', 'companies.capital_raised')
-      .order('companies.capital_raised DESC', 'count(companies_competitors.id) DESC', 'companies_competitors.funded_at DESC')
+      .order('companies_competitors.featured DESC, companies.capital_raised DESC', 'count(companies_competitors.id) DESC', 'companies_competitors.funded_at DESC')
       .limit(n)
     investments.map(&:company)
   end

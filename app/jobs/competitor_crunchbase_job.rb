@@ -55,7 +55,10 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
           cc = c.investments.where(competitor: competitor).first_or_initialize
           cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
-          cc.investor = partners.first if partners.present?
+          if partners.present?
+            cc.investor = partners.first
+            cc.featured = true
+          end
           cc.save! if cc.changed?
         end
       end

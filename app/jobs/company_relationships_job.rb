@@ -102,7 +102,10 @@ class CompanyRelationshipsJob < ApplicationJob
         competitor = Competitor.from_crunchbase! investor['properties']['permalink'], investor['properties']['name']
         cc = competitor.investments.where(company: @company).first_or_initialize
         cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
-        cc.investor = Investor.from_crunchbase(partner['properties']['permalink']) if partner.present?
+        if partner.present?
+          cc.investor = Investor.from_crunchbase(partner['properties']['permalink'])
+          cc.featured = true
+        end
         cc.save! if cc.changed?
       end
     end
@@ -111,12 +114,13 @@ class CompanyRelationshipsJob < ApplicationJob
       id = person['relationships']['person']['properties']['permalink']
       competitor = competitor_from_person_id(id)
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
-      cc.update! investor: Investor.from_crunchbase(id)
+      cc.update! investor: Investor.from_crunchbase(id), featured: true
     end
 
-    Http::Fetch.get(@cb_org.news).each do |url, body|
+    news = @cb_org.news.map { |n| [n['url'], n] }.to_h
+    Http::Fetch.get(news.keys).each do |url, body|
       next unless body.present?
-      ignore_invalid { import_news(url, body) }
+      ignore_invalid { import_news(url, body, news[url]['posted_on']) }
     end
   end
 
@@ -127,12 +131,12 @@ class CompanyRelationshipsJob < ApplicationJob
     nil
   end
 
-  def import_news(url, body)
+  def import_news(url, body, published_at)
     @company.investments.where(investor_id: nil).find_each do |cc|
         cc.competitor.investors.find_each do |investor|
           if body.include?(investor.name)
             cc.update! investor: investor unless cc.investor.present?
-            news = News.create_with_body(url, body, investor: investor)
+            news = News.create_with_body(url, body, investor: investor, published_at: published_at)
             news.company = @company
             news.save! if news.changed?
             break

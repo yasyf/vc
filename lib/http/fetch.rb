@@ -4,8 +4,22 @@ class Http::Fetch
   MULTI_OPTIONS = { pipeline: Curl::CURLPIPE_MULTIPLEX | Curl::CURLPIPE_HTTP1 }
   OK = '200 OK'
 
+  class Error < StandardError
+  end
+
   def self.cache
     @cache ||= ActiveSupport::Cache.lookup_store(:file_store, CACHE_DIR)
+  end
+
+  def self.get_advanced(url, headers)
+    resp = Curl::Easy.perform(url) do |curl|
+      curl.headers.merge!(headers)
+    end
+    if resp.status == OK
+      resp.body_str.force_encoding('UTF-8')
+    else
+      raise Error.new(resp.status)
+    end
   end
 
   def self.get_one(url)

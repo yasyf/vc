@@ -8,12 +8,10 @@ class News < ApplicationRecord
 
   before_validation :set_meta!, on: :create
 
-  def as_json(options = {})
-    super options.reverse_merge(only: [:title, :url, :description])
-  end
+  attr_accessor :body
 
-  def body=(body)
-    @body = body
+  def as_json(options = {})
+    super options.reverse_merge(only: [:title, :url, :description, :published_at])
   end
 
   def page

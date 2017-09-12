@@ -41,6 +41,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
+    awesome_print (1.8.0)
     bcrypt (3.1.11)
     benchmark-ips (2.7.2)
     bindex (0.5.0)
@@ -528,6 +529,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print
   byebug
   chronic
   clearbit

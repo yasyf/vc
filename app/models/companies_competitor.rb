@@ -3,9 +3,14 @@ class CompaniesCompetitor < ApplicationRecord
   belongs_to :competitor
   belongs_to :investor
 
-  def self.assign_to_investor(investor, company, no_replace: false)
+  def self.assign_to_investor(investor, company, featured: false, no_replace: false)
     scope = where(competitor: investor.competitor, company: company)
-    return if no_replace && scope.first.present? && scope.first.investor.present?
-    scope.update_all investor_id: investor.id
+    if (existing = scope.first).present?
+      existing.investor = investor unless no_replace
+      existing.featured = featured if featured
+      existing.tap(&:save!)
+    else
+      scope.first_or_create!(investor: investor, featured: featured)
+    end
   end
 end

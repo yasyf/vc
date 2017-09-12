@@ -146,7 +146,8 @@ CREATE TABLE companies_competitors (
     competitor_id integer NOT NULL,
     funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
     id bigint NOT NULL,
-    investor_id bigint
+    investor_id bigint,
+    featured boolean DEFAULT false
 );
 
 
@@ -573,7 +574,8 @@ CREATE TABLE news (
     title character varying,
     description text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    published_at timestamp without time zone
 );
 
 
@@ -2356,6 +2358,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170912072307'),
 ('20170912074351'),
 ('20170912081157'),
-('20170912082106');
+('20170912082106'),
+('20170912215956'),
+('20170912222800');
 
 
