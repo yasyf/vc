@@ -5,6 +5,7 @@ class Investor < ApplicationRecord
   include Concerns::Cacheable
   include Concerns::Twitterable
   include Concerns::Ignorable
+  include Concerns::TimeZonable
 
   GENDERS = %w(unknown male female)
 
@@ -18,6 +19,7 @@ class Investor < ApplicationRecord
   has_many :person_entities, as: :person
   has_many :entities, through: :person_entities
   has_many :emails
+  has_many :posts
 
   validates :competitor, presence: true
   validates :first_name, presence: true, uniqueness: { scope: [:last_name, :competitor_id] }
@@ -86,6 +88,11 @@ class Investor < ApplicationRecord
     end
   end
 
+  def set_timezone!
+    return unless self.location.present?
+    self.time_zone = Http::GoogleMaps.new.timezone(self.location).name
+  end
+
   def crawl_homepage!
     return unless self.homepage.present?
     body = Http::Fetch.get_one self.homepage
@@ -97,6 +104,23 @@ class Investor < ApplicationRecord
     self.competitor.companies.find_each do |company|
       if body.include?(company.name)
         assign_company! company
+      end
+    end
+  end
+
+  def crawl_posts!
+    new_posts = fetch_posts!
+    existing = Set.new Post.where(url: new_posts.map { |p| p[:url] }).pluck(:url)
+
+    new_posts.reject { |p| existing.include? p[:url] }.each do |meta|
+      body = meta[:content] || Http::Fetch.get_one(meta[:url])
+      next unless body.present?
+      post = posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published])
+      post.entities += Entity.from_html(body)
+      meta[:categories].each do |category|
+        entity = Entity.from_name(category)
+        next unless entity.present?
+        post.person_entities.where(entity: entity, person: self).first_or_create!(featured: true)
       end
     end
   end
@@ -182,8 +206,9 @@ class Investor < ApplicationRecord
         :homepage,
         :location,
         :email,
+        :time_zone,
       ],
-     methods: [:competitor, :recent_investments, :recent_news, :university, :average_response_time, :notes]
+     methods: [:competitor, :popular_entities, :recent_investments, :recent_news, :university, :average_response_time, :notes, :utc_offset]
     )
   end
 
@@ -220,22 +245,13 @@ class Investor < ApplicationRecord
   end
 
   def blog_url
-    @blog_url ||= cached do
+    @blog_url ||= cache_for_a_month do
       angelist_user(safe: true)&.blog || crunchbase_person&.blog || homepage || ("https://medium.com/@#{twitter}" if twitter.present?)
     end
   end
 
-  def posts
-    cache_for_a_day do
-      return [] unless blog_url.present?
-      url = MetaInspector.new(blog_url).feed
-      return [] unless url.present?
-      body = HTTParty.get(url).body
-      feed = Feedjira::Feed.parse body
-      feed.entries.first(3).map do |e|
-        e.to_h.with_indifferent_access.slice(:title, :url, :categories, :published)
-      end
-    end
+  def public_posts(n: 3)
+    posts.order(published_at: :desc).limit(3)
   end
 
   def tweets(n = 3)
@@ -275,10 +291,46 @@ class Investor < ApplicationRecord
     end
   end
 
+  def founder_overlap(founder)
+    founder.entities.where(id: popular_entities(50))
+  end
+
   private
+
+  def fetch_posts!
+    return [] unless blog_url.present?
+    body = Http::Fetch.get_one blog_url
+    return [] unless body.present?
+    feed_url = MetaInspector.new(blog_url, document: body).feed
+    return [] unless feed_url.present?
+    feed_body = Http::Fetch.get_one feed_url
+    return [] unless feed_body.present?
+    feed = Feedjira::Feed.parse feed_body
+    feed.entries.map do |e|
+      e.to_h.with_indifferent_access.slice(:title, :url, :categories, :published, :content)
+    end
+  end
 
   def recent_news(n = 5)
     news.order('created_at DESC').limit(n)
+  end
+
+  def popular_entities(n = 3)
+    popular = post_entities(n)
+    return popular unless (count = popular.count) < n
+    Entity.where(id: entities.order(person_entities_count: :desc).limit(n - count)).or(popular)
+  end
+
+  def post_entities(n = 3)
+    threshold = (posts.joins(:entities).count * 0.05).to_i
+    ids = posts
+      .joins(:entities)
+      .group('entities.id')
+      .order('count(*) DESC')
+      .having('count(*) >= ?', threshold)
+      .limit(n)
+      .select('entities.id')
+    Entity.where(id: ids)
   end
 
   def recent_investments(n = 5)

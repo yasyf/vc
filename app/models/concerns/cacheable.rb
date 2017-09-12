@@ -28,7 +28,12 @@ module Concerns
     end
 
     def jitter(value, period)
-      value.send(period) + (rand * value).send(period)
+      extra = begin
+        (rand * value).send(period)
+      rescue
+        0.0
+      end
+      value.send(period) + extra
     end
 
     def base_cache_key

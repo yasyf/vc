@@ -67,6 +67,8 @@ gem 'google-cloud-language'
 gem 'gender_detector'
 gem 'sidekiq-unique-jobs'
 gem 'curb'
+gem 'clearbit'
+gem 'googlemaps-services'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

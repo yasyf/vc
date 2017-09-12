@@ -297,7 +297,8 @@ CREATE TABLE entities (
     wiki character varying,
     mid character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    person_entities_count integer DEFAULT 0 NOT NULL
 );
 
 
@@ -336,7 +337,11 @@ CREATE TABLE founders (
     crunchbase_id character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    logged_in_at timestamp without time zone
+    logged_in_at timestamp without time zone,
+    ip_address inet,
+    city character varying,
+    time_zone character varying,
+    bio text
 );
 
 
@@ -430,7 +435,8 @@ CREATE TABLE investors (
     al_id integer,
     opted_in boolean,
     gender integer DEFAULT 0 NOT NULL,
-    university_id bigint
+    university_id bigint,
+    time_zone character varying
 );
 
 
@@ -634,7 +640,8 @@ CREATE TABLE person_entities (
     person_type character varying NOT NULL,
     person_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    featured boolean DEFAULT false
 );
 
 
@@ -693,6 +700,40 @@ CREATE SEQUENCE pitches_id_seq
 --
 
 ALTER SEQUENCE pitches_id_seq OWNED BY pitches.id;
+
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE posts (
+    id bigint NOT NULL,
+    investor_id bigint NOT NULL,
+    url character varying NOT NULL,
+    title character varying NOT NULL,
+    published_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE posts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE posts_id_seq OWNED BY posts.id;
 
 
 --
@@ -1065,6 +1106,13 @@ ALTER TABLE ONLY pitches ALTER COLUMN id SET DEFAULT nextval('pitches_id_seq'::r
 
 
 --
+-- Name: posts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY posts ALTER COLUMN id SET DEFAULT nextval('posts_id_seq'::regclass);
+
+
+--
 -- Name: target_investors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1255,6 +1303,14 @@ ALTER TABLE ONLY person_entities
 
 ALTER TABLE ONLY pitches
     ADD CONSTRAINT pitches_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
 
 
 --
@@ -1797,6 +1853,13 @@ CREATE UNIQUE INDEX index_pitches_on_snapshot ON pitches USING btree (snapshot);
 
 
 --
+-- Name: index_posts_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_posts_on_investor_id ON posts USING btree (investor_id);
+
+
+--
 -- Name: index_target_investors_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1974,6 +2037,14 @@ ALTER TABLE ONLY intro_requests
 
 ALTER TABLE ONLY knowledges
     ADD CONSTRAINT fk_rails_26ba4c0c3e FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: posts fk_rails_285bce5540; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY posts
+    ADD CONSTRAINT fk_rails_285bce5540 FOREIGN KEY (investor_id) REFERENCES investors(id);
 
 
 --
@@ -2277,6 +2348,14 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170909004347'),
 ('20170910052629'),
 ('20170911231243'),
-('20170911231340');
+('20170911231340'),
+('20170912003929'),
+('20170912004754'),
+('20170912004910'),
+('20170912004918'),
+('20170912072307'),
+('20170912074351'),
+('20170912081157'),
+('20170912082106');
 
 

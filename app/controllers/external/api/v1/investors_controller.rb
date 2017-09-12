@@ -13,7 +13,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def posts
-    render json: Investor.find(params[:id]).posts
+    render json: Investor.find(params[:id]).public_posts
   end
 
   def tweets

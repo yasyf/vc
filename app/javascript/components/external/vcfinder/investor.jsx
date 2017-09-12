@@ -82,7 +82,13 @@ export default class Investor extends React.Component {
   }
 
   renderIndustries() {
-    return <Industries industry={this.state.investor.industry}/>;
+    return (
+      <div>
+        <Industries industry={this.state.investor.industry} />
+        <br />
+        <Industries extraClass="success" industry={_.map(this.state.investor.popular_entities, 'name')} />
+      </div>
+    );
   }
 
   renderTweets() {
@@ -144,13 +150,13 @@ export default class Investor extends React.Component {
     }
     let posts = this.state.posts.map(post => {
       let industry = (post.categories || []).map(c =>
-        inflection.titleize(c.replace(/-/g, '_'))
+        inflection.titleize(c.name.replace(/-/g, '_'))
       );
       return (
         <div key={post.url}>
           <h6>
             <a href={post.url} target="_blank">{post.title}</a>
-            <span className="faded"> - {moment(post.published).fromNow()}</span>
+            <span className="faded"> - {moment(post.published_at).fromNow()}</span>
           </h6>
           <div>
             <Industries industry={industry} extraClass="small"/>

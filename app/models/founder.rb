@@ -1,4 +1,6 @@
 class Founder < ApplicationRecord
+  include Concerns::TimeZonable
+
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
   has_and_belongs_to_many :companies, -> { distinct }
@@ -6,10 +8,14 @@ class Founder < ApplicationRecord
   has_many :emails, dependent: :destroy
   has_many :intro_requests, dependent: :destroy
   has_many :target_investors, dependent: :destroy
+  has_many :person_entities, as: :person
+  has_many :entities, through: :person_entities
 
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
+
+  after_commit :start_enhance_job, on: :create
 
   devise
 
@@ -70,7 +76,7 @@ class Founder < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset])
   end
 
   def existing_target_investor_ids
@@ -96,5 +102,11 @@ class Founder < ApplicationRecord
       OFFSET #{offset};
     SQL
     Investor.find_by_sql query
+  end
+
+  private
+
+  def start_enhance_job
+    FounderEnhanceJob.perform_later(self.id)
   end
 end

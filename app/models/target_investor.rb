@@ -92,8 +92,13 @@ class TargetInvestor < ApplicationRecord
     founder.intro_requests.where(investor: investor).first
   end
 
+  def overlap
+    return [] unless investor.present?
+    investor.founder_overlap(founder)
+  end
+
   def as_json(options = {})
-    super options.reverse_merge(methods: [:investor, :has_email?, :intro_request])
+    super options.reverse_merge(methods: [:investor, :has_email?, :intro_request, :overlap])
   end
 
   private

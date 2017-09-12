@@ -4,8 +4,7 @@ import inflection from 'inflection';
 import {pronoun, wordJoin} from './utils';
 
 export default class TargetInvestor extends React.Component {
-  renderLastResponse(targetInvestor) {
-    let { last_responded, first_name, firm_name, intro_request, gender } = targetInvestor;
+  renderLastResponse({ last_responded, first_name, firm_name, intro_request, gender }) {
     if (last_responded) {
       return <span><b>{first_name}</b> last responded to you {moment(last_response).fromNow()}</span>
     } else {
@@ -14,8 +13,7 @@ export default class TargetInvestor extends React.Component {
     }
   }
 
-  renderClicks(targetInvestor) {
-    let { first_name, intro_request } = targetInvestor;
+  renderClicks({ first_name, intro_request }) {
     if (!intro_request.id) {
       return null;
     }
@@ -29,8 +27,7 @@ export default class TargetInvestor extends React.Component {
     return <span>{first_name} has checked out your <b>{wordJoin(clicks)}</b>.</span>;
   }
 
-  renderIntroRequest(targetInvestor) {
-    let { first_name, intro_request } = targetInvestor;
+  renderIntroRequest({ first_name, intro_request }) {
     if (!intro_request.id) {
       return null;
     } else if (intro_request.opened_at && !intro_request.accepted) {
@@ -45,8 +42,7 @@ export default class TargetInvestor extends React.Component {
     }
   }
 
-  renderLocation(targetInvestor) {
-    let { first_name, intro_request, gender } = targetInvestor;
+  renderLocation({ first_name, intro_request, gender }) {
     if (!intro_request.travel_status) {
       return null;
     } else if (intro_request.travel_status === 'pleasure_traveling') {
@@ -55,6 +51,26 @@ export default class TargetInvestor extends React.Component {
       return <span>As of {moment(intro_request.opened_at).fromNow()}, {first_name} is traveling for work in <b>{intro_request.open_city}</b>. {inflection.titleize(pronoun(gender, 'pos'))} responses might be delayed!</span>;
     } else {
       return <span>Last time we checked, {first_name} was working in <b>{intro_request.open_city}</b> (around {moment(intro_request.opened_at).fromNow()}).</span>;
+    }
+  }
+
+  renderOverlap({ first_name, overlap }) {
+    if (!overlap || !overlap.length) {
+      return null;
+    }
+    return <span>You and {first_name} should talk about <b>{_.sample(overlap).name}</b>!</span>;
+  }
+
+  renderTimezone({ first_name, investor }) {
+    if (!investor.time_zone) {
+      return null;
+    }
+    if (investor.utc_offset === gon.founder.utc_offset) {
+      return <span>You and {first_name} are in the same timezone!</span>;
+    } else if (investor.utc_offset > gon.founder.utc_offset) {
+      return <span>{first_name} is <b>{moment.duration(investor.utc_offset - gon.founder.utc_offset, 'seconds').humanize()} ahead of you</b>!</span>;
+    } else {
+      return <span>{first_name} is <b>{moment.duration(gon.founder.utc_offset - investor.utc_offset, 'seconds').humanize()} behind you</b>!</span>;
     }
   }
 
@@ -69,6 +85,8 @@ export default class TargetInvestor extends React.Component {
         <p>{this.renderClicks(targetInvestor)}</p>
         <p>{this.renderIntroRequest(targetInvestor)}</p>
         <p>{this.renderLocation(targetInvestor)}</p>
+        <p>{this.renderTimezone(targetInvestor)}</p>
+        <p>{this.renderOverlap(targetInvestor)}</p>
       </div>
     );
   }
