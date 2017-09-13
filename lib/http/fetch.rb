@@ -43,7 +43,7 @@ class Http::Fetch
     Curl::Multi.get(remaining, EASY_OPTIONS, MULTI_OPTIONS) do |resp|
       begin
         if safe_status(resp) == OK
-          body = resp.body_str.force_encoding('UTF-8')
+          body = resp.body_str.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
           results[resp.url] = body
           cache.write(resp.url, body)
         else
