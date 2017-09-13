@@ -1,6 +1,3 @@
-require 'csv'
-require 'open-uri'
-
 module Importers::External
   class InvestorEmails < Importers::Base
     HEADER_DEFAULTS = {

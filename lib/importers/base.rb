@@ -8,9 +8,13 @@ module Importers
       @headers = headers.with_indifferent_access.slice(*self.class::HEADER_DEFAULTS.keys).reverse_merge(self.class::HEADER_DEFAULTS)
     end
 
+    def preprocess(row)
+      @headers.map { |h,s| [h, row[s].try(:strip)] }.to_h.compact.with_indifferent_access
+    end
+
     def sync!
       ::CSV.foreach(@filename, headers: true) do |row|
-        parsed = @headers.map { |h,s| [h, row[s].try(:strip)] }.to_h.compact.with_indifferent_access
+        parsed = preprocess(row)
         ImportRowJob.perform_later(self.class.name, parsed)
       end
     end

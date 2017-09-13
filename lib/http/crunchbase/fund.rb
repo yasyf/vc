@@ -22,7 +22,8 @@ module Http::Crunchbase
     end
 
     def country
-      get_in('relationships', 'headquarters')['item']['properties']['country_code2']
+      hq = get_in('relationships', 'headquarters')
+      hq['item']['properties']['country_code2'] if hq.present?
     end
 
     def found?

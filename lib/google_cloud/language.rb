@@ -1,4 +1,4 @@
-require "google/cloud/language"
+require 'google/cloud/language'
 
 module GoogleCloud
   class Sentiment

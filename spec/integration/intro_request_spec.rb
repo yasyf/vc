@@ -3,7 +3,7 @@ require 'google/cloud/language'
 
 RSpec.describe 'intro request', type: :request do
   before do
-    allow(::Google::Cloud::Language).to receive_message_chain(:new, :document, :sentiment) { OpenStruct.new(score: -1, magnitude: 1) }
+    allow(GoogleCloud::Language).to receive_message_chain(:client, :document, :sentiment) { OpenStruct.new(score: -1, magnitude: 1) }
     allow_any_instance_of(IntroMailer).to receive(:set_mailgun_options!)
 
     @founder = FactoryGirl.create(:founder, :with_companies)

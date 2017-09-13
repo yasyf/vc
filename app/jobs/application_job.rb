@@ -10,6 +10,10 @@ class ApplicationJob < ActiveJob::Base
 
   # Timeouts
   retry_with_exp_backoff Timeout::Error
+  retry_with_exp_backoff HTTP::TimeoutError
+
+  # Retries
+  retry_on ActiveRecord::RecordNotUnique
 
   # Temporary Failures
   retry_with_exp_backoff Redis::CommandError
