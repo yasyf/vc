@@ -303,7 +303,9 @@ class Investor < ApplicationRecord
   end
 
   def import_news_with_body(url, body, published_at)
-    news = News.create_with_body(url, body, investor: self, published_at: published_at)
+    news = News.create_with_body(url, body, investor: self)
+    news.published_at ||= published_at
+    news.save! if news.changed?
     import_news news
   end
 

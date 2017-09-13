@@ -13,6 +13,8 @@ class Competitor < ApplicationRecord
     angel: 'Angel',
     venture: 'Venture',
     pe: 'Private Equity',
+    series_A: 'Series A',
+    series_B: 'Series B',
   }.with_indifferent_access.freeze
 
   INDUSTRIES = {
@@ -67,10 +69,10 @@ class Competitor < ApplicationRecord
   sort :fund_type
   sort :location
 
-  has_many :companies, through: :investments
   has_many :investors, dependent: :destroy
-  has_many :notes, as: :subject, dependent: :destroy
   has_many :investments, dependent: :destroy
+  has_many :companies, through: :investments
+  has_many :notes, as: :subject, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
   validates :crunchbase_id, uniqueness: { allow_nil: true }

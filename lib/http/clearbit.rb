@@ -1,4 +1,7 @@
 class Http::Clearbit
+  class Error < StandardError
+  end
+
   def initialize(person)
     @person = person
   end
@@ -9,5 +12,7 @@ class Http::Clearbit
                                             family_name: @person.last_name,
                                             ip_address: @person.ip_address,
                                             stream: true)
+  rescue Exception => e
+    raise Error.new(e)
   end
 end

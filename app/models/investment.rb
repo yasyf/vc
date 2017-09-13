@@ -13,4 +13,8 @@ class Investment < ApplicationRecord
       scope.first_or_create!(investor: investor, featured: featured)
     end
   end
+
+  def funding_types
+    [funding_type, series && "series_#{series}"].compact
+  end
 end

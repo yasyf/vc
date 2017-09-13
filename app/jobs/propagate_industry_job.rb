@@ -21,6 +21,11 @@ class PropagateIndustryJob < ApplicationJob
           fund_types[ft] += 1
         end if i.fund_type.present?
       end
+      c.investments.find_each do |i|
+        i.funding_types.each do |ft|
+          fund_types[ft] += 1
+        end
+      end
       next unless fund_types.present?
       total = c.investors.count
       fund_type = fund_types.keys.select { |ft| fund_types[ft] > FUND_TYPE_THRESHOLD * total }

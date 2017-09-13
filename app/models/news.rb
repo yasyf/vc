@@ -29,7 +29,7 @@ class News < ApplicationRecord
   end
 
   def self.create_with_body(url, body, attrs = {})
-    where(attrs.merge(url: url)).first_or_create! do |news|
+    where(attrs.merge(url: url)).first_or_create!.tap do |news|
       news.body = body
     end
   end
