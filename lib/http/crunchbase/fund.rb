@@ -15,6 +15,16 @@ module Http::Crunchbase
       get_in 'relationships', 'featured_team', multi: true
     end
 
+    def locations
+      offices = get_in 'relationships', 'offices', multi: true
+      return [] unless offices.present?
+      offices.map { |office| office['properties']['city'] }
+    end
+
+    def country
+      get_in('relationships', 'headquarters')['item']['properties']['country_code2']
+    end
+
     def found?
       @permalink.present? && super
     end

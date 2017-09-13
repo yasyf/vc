@@ -3,6 +3,7 @@ class Http::Fetch
   EASY_OPTIONS = { follow_location: true }
   MULTI_OPTIONS = { pipeline: Curl::CURLPIPE_MULTIPLEX | Curl::CURLPIPE_HTTP1 }
   OK = '200 OK'
+  DEFAULT_ERROR = 500
 
   class Error < StandardError
   end
@@ -11,14 +12,22 @@ class Http::Fetch
     @cache ||= ActiveSupport::Cache.lookup_store(:file_store, CACHE_DIR)
   end
 
+  def self.safe_status(resp)
+    begin
+      resp.status
+    rescue NoMethodError # taf2/curb#325
+      raise Error.new(DEFAULT_ERROR)
+    end
+  end
+
   def self.get_advanced(url, headers)
     resp = Curl::Easy.perform(url) do |curl|
       curl.headers.merge!(headers)
     end
-    if resp.status == OK
+    if (status = safe_status resp) == OK
       resp.body_str.force_encoding('UTF-8')
     else
-      raise Error.new(resp.status)
+      raise Error.new(status)
     end
   end
 
@@ -33,7 +42,7 @@ class Http::Fetch
     exception = nil
     Curl::Multi.get(remaining, EASY_OPTIONS, MULTI_OPTIONS) do |resp|
       begin
-        if resp.status == OK
+        if safe_status(resp) == OK
           body = resp.body_str.force_encoding('UTF-8')
           results[resp.url] = body
           cache.write(resp.url, body)

@@ -23,9 +23,8 @@ class CompetitorCrunchbaseJob < ApplicationJob
     al_fund = competitor.angellist_startup
 
     competitor.description ||= cb_fund.description || al_fund.description
-    if al_fund.locations.present?
-      competitor.location = (competitor.location || []) + al_fund.locations
-    end
+    competitor.location = (competitor.location || []) + (al_fund.locations || []) + (cb_fund.locations || [])
+    competitor.country = cb_fund.country
     competitor.save! if competitor.changed?
 
     if (team = cb_fund.team).present?

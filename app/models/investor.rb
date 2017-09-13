@@ -60,6 +60,7 @@ class Investor < ApplicationRecord
     self.description = person.bio
     self.photo = person.image
     self.location = person.location&.name
+    self.country = person.location&.country_code2
     self.gender = person.gender || self.gender
     self.university = University.from_name(person.university) if person.university.present?
 
@@ -114,13 +115,17 @@ class Investor < ApplicationRecord
     new_posts.reject { |p| existing.include? p[:url] }.each do |meta|
       body = meta[:content] || Http::Fetch.get_one(meta[:url])
       next unless body.present?
-      post = posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published])
+      post = begin
+        posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published])
+      rescue ActiveRecord::RecordInvalid
+        next
+      end
       post.entities += Entity.from_html(body)
       meta[:categories].each do |category|
         entity = Entity.from_name(category)
         next unless entity.present?
         post.person_entities.where(entity: entity, person: self).first_or_create!(featured: true)
-      end
+      end if meta[:categories].present?
     end
   end
 
@@ -326,7 +331,11 @@ class Investor < ApplicationRecord
     return [] unless feed_url.present?
     feed_body = Http::Fetch.get_one feed_url
     return [] unless feed_body.present?
-    feed = Feedjira::Feed.parse feed_body
+    feed = begin
+      Feedjira::Feed.parse feed_body
+    rescue Feedjira::NoParserAvailable
+      return []
+    end
     feed.entries.map do |e|
       e.to_h.with_indifferent_access.slice(:title, :url, :categories, :published, :content)
     end

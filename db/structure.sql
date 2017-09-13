@@ -191,7 +191,8 @@ CREATE TABLE competitors (
     city character varying,
     fund_type character varying[],
     al_id integer,
-    location character varying[]
+    location character varying[],
+    country character varying
 );
 
 
@@ -440,7 +441,8 @@ CREATE TABLE investors (
     opted_in boolean,
     gender integer DEFAULT 0 NOT NULL,
     university_id bigint,
-    time_zone character varying
+    time_zone character varying,
+    country character varying
 );
 
 
@@ -2367,6 +2369,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170912222800'),
 ('20170912231818'),
 ('20170913005350'),
-('20170913011915');
+('20170913011915'),
+('20170913023846'),
+('20170913023856');
 
 
