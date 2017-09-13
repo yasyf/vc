@@ -12,7 +12,6 @@ class Competitor < ApplicationRecord
     seed: 'Seed',
     angel: 'Angel',
     venture: 'Venture',
-    pe: 'Private Equity',
     series_A: 'Series A',
     series_B: 'Series B',
   }.with_indifferent_access.freeze
@@ -46,9 +45,12 @@ class Competitor < ApplicationRecord
     space: 'Space',
     data: 'Data',
     transportation: 'Transportation',
+    marketplace: 'Marketplace',
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
+    saas: ['Software as a Service'],
+    gaming: ['Video Games'],
     transportation: ['Public Transportation', 'Ride Sharing'],
     mobile: ['Mobile Devices', 'Telecommunications', 'Mobile Apps'],
     food: ['Food and Beverage', 'Food Delivery', 'Nutrition', 'Food'],

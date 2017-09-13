@@ -100,6 +100,9 @@ export let flash = (text) => toast(text);
 export let buildQuery = (row, fields = null) =>
   _.compact(_.map(fields || Object.keys(row), k => {
     let val = _.get(row, k);
+    if (_.isObjectLike(val)) {
+      val = JSON.stringify(val);
+    }
     return (nullOrUndef(val) || val === "") ? null : `${k}=${val}`;
   }));
 

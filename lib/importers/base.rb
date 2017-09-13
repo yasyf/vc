@@ -12,10 +12,14 @@ module Importers
       @headers.map { |h,s| [h, row[s].try(:strip)] }.to_h.compact.with_indifferent_access
     end
 
-    def sync!
+    def sync!(async: true)
       ::CSV.foreach(@filename, headers: true) do |row|
         parsed = preprocess(row)
-        ImportRowJob.perform_later(self.class.name, parsed)
+        if async
+          ImportRowJob.perform_later(self.class.name, parsed)
+        else
+          ImportRowJob.perform_now(self.class.name, parsed)
+        end
       end
     end
 

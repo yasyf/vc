@@ -188,7 +188,6 @@ CREATE TABLE competitors (
     updated_at timestamp without time zone NOT NULL,
     description text,
     industry character varying[],
-    city character varying,
     fund_type character varying[],
     al_id integer,
     location character varying[],
@@ -2371,6 +2370,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170913005350'),
 ('20170913011915'),
 ('20170913023846'),
-('20170913023856');
+('20170913023856'),
+('20170913203704');
 
 

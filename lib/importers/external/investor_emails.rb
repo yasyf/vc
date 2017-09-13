@@ -7,12 +7,14 @@ module Importers::External
     }
 
     def self.process!(row)
-      begin
-        row[:email] = Mail::Address.new(row[:email]).address
+      email = begin
+        Mail::Address.new(row[:email])
       rescue Mail::Field::FieldError
         return false
       end
-      row[:competitor] = Competitor.create_from_domain!( row[:email].split('@').last, row.delete(:fund))
+
+      row[:email] = email.address
+      row[:competitor] = Competitor.create_from_domain!( email.domain, row.delete(:fund))
     end
 
     def self.import!(row)

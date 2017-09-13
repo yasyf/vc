@@ -12,7 +12,6 @@ module ApplicationHelper
   end
 
   def split_name(name)
-    first, *rest = name.split(' ')
-    [first, rest.join(' ')]
+    Util.split_name(name)
   end
 end

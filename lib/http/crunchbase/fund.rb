@@ -41,7 +41,7 @@ module Http::Crunchbase
     private
 
     def self.base_cache_key
-      "http/crunchbase/fund"
+      'http/crunchbase/fund'
     end
 
     def search_for_data

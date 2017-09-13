@@ -5,9 +5,21 @@ class PropagateIndustryUpJob < ApplicationJob
 
   def perform(name)
     propagate_industry_up_to(name.constantize)
+    propagate_industry_down if name == 'Competitor'
   end
 
   private
+
+  def propagate_industry_down
+    query = <<-SQL
+      UPDATE investors AS i
+        SET industry = c.industry
+          FROM competitors AS c
+          WHERE i.competitor_id = c.id
+            AND (i.industry = '{}' OR i.industry IS NULL)
+    SQL
+    Investor.connection.update(query)
+  end
 
   def propagate_industry_up_to(klass)
     #TODO: do this in sql

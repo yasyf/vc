@@ -14,7 +14,7 @@ class Investment < ApplicationRecord
     end
   end
 
-  def funding_types
+  def fund_type
     [funding_type, series && "series_#{series}"].compact
   end
 end

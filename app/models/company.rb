@@ -187,6 +187,10 @@ class Company < ActiveRecord::Base
     [:name]
   end
 
+  def self.from_name(name)
+    where(name: name).first_or_create!
+  end
+
   def self.from_domain(domain)
     return nil unless domain.present?
 

@@ -78,6 +78,8 @@ export default class TargetInvestor extends React.Component {
     let targetInvestor = this.props.targetInvestor;
     if (!targetInvestor.intro_request)
       targetInvestor.intro_request = {};
+    if (!targetInvestor.investor)
+      targetInvestor.investor = {};
 
     return (
       <div className="card float-center investor">

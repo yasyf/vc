@@ -182,6 +182,10 @@ class Investor < ApplicationRecord
     from_angelist(Http::AngelList::User.find_id(name))
   end
 
+  def self.create_for_competitor!(competitor, first_name, last_name)
+    where(competitor: competitor, first_name: first_name, last_name: last_name).first_or_create!
+  end
+
   def self.searchable_columns
     [:first_name, :last_name]
   end
