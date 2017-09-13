@@ -138,39 +138,6 @@ CREATE TABLE companies (
 
 
 --
--- Name: companies_competitors; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE companies_competitors (
-    company_id integer NOT NULL,
-    competitor_id integer NOT NULL,
-    funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
-    id bigint NOT NULL,
-    investor_id bigint,
-    featured boolean DEFAULT false
-);
-
-
---
--- Name: companies_competitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE companies_competitors_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: companies_competitors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE companies_competitors_id_seq OWNED BY companies_competitors.id;
-
-
---
 -- Name: companies_founders; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -406,6 +373,39 @@ CREATE SEQUENCE intro_requests_id_seq
 --
 
 ALTER SEQUENCE intro_requests_id_seq OWNED BY intro_requests.id;
+
+
+--
+-- Name: investments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE investments (
+    company_id integer NOT NULL,
+    competitor_id integer NOT NULL,
+    funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
+    id bigint NOT NULL,
+    investor_id bigint,
+    featured boolean DEFAULT false
+);
+
+
+--
+-- Name: investments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE investments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: investments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE investments_id_seq OWNED BY investments.id;
 
 
 --
@@ -1011,13 +1011,6 @@ ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq
 
 
 --
--- Name: companies_competitors id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY companies_competitors ALTER COLUMN id SET DEFAULT nextval('companies_competitors_id_seq'::regclass);
-
-
---
 -- Name: competitors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1050,6 +1043,13 @@ ALTER TABLE ONLY founders ALTER COLUMN id SET DEFAULT nextval('founders_id_seq':
 --
 
 ALTER TABLE ONLY intro_requests ALTER COLUMN id SET DEFAULT nextval('intro_requests_id_seq'::regclass);
+
+
+--
+-- Name: investments id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY investments ALTER COLUMN id SET DEFAULT nextval('investments_id_seq'::regclass);
 
 
 --
@@ -1189,14 +1189,6 @@ ALTER TABLE ONLY cards
 
 
 --
--- Name: companies_competitors companies_competitors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY companies_competitors
-    ADD CONSTRAINT companies_competitors_pkey PRIMARY KEY (id);
-
-
---
 -- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1242,6 +1234,14 @@ ALTER TABLE ONLY founders
 
 ALTER TABLE ONLY intro_requests
     ADD CONSTRAINT intro_requests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: investments investments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY investments
+    ADD CONSTRAINT investments_pkey PRIMARY KEY (id);
 
 
 --
@@ -1412,27 +1412,6 @@ CREATE INDEX index_cards_on_list_id ON cards USING btree (list_id);
 --
 
 CREATE UNIQUE INDEX index_cards_on_trello_id ON cards USING btree (trello_id);
-
-
---
--- Name: index_companies_competitors_on_company_id_and_competitor_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_companies_competitors_on_company_id_and_competitor_id ON companies_competitors USING btree (company_id, competitor_id);
-
-
---
--- Name: index_companies_competitors_on_competitor_id_and_company_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_companies_competitors_on_competitor_id_and_company_id ON companies_competitors USING btree (competitor_id, company_id);
-
-
---
--- Name: index_companies_competitors_on_investor_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_companies_competitors_on_investor_id ON companies_competitors USING btree (investor_id);
 
 
 --
@@ -1650,6 +1629,27 @@ CREATE INDEX index_intro_requests_on_investor_id ON intro_requests USING btree (
 --
 
 CREATE UNIQUE INDEX index_intro_requests_on_token ON intro_requests USING btree (token);
+
+
+--
+-- Name: index_investments_on_company_id_and_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investments_on_company_id_and_competitor_id ON investments USING btree (company_id, competitor_id);
+
+
+--
+-- Name: index_investments_on_competitor_id_and_company_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investments_on_competitor_id_and_company_id ON investments USING btree (competitor_id, company_id);
+
+
+--
+-- Name: index_investments_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investments_on_investor_id ON investments USING btree (investor_id);
 
 
 --
@@ -2203,10 +2203,10 @@ ALTER TABLE ONLY news
 
 
 --
--- Name: companies_competitors fk_rails_e0aa7acb5f; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: investments fk_rails_e0aa7acb5f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY companies_competitors
+ALTER TABLE ONLY investments
     ADD CONSTRAINT fk_rails_e0aa7acb5f FOREIGN KEY (investor_id) REFERENCES investors(id);
 
 
@@ -2362,6 +2362,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170912082106'),
 ('20170912215956'),
 ('20170912222800'),
-('20170912231818');
+('20170912231818'),
+('20170913005350');
 
 

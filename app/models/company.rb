@@ -8,10 +8,10 @@ class Company < ActiveRecord::Base
   has_many :news, dependent: :destroy
   has_many :cards
   has_many :calendar_events
-  has_many :investments, class_name: 'CompaniesCompetitor', dependent: :destroy
+  has_many :investments, dependent: :destroy
   belongs_to :team
   has_and_belongs_to_many :users, -> { distinct }
-  has_and_belongs_to_many :competitors, -> { distinct }
+  has_many :competitors, through: :investments
   has_and_belongs_to_many :founders, -> { distinct }
 
   validates :name, presence: true

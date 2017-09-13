@@ -12,7 +12,7 @@ class Investor < ApplicationRecord
   belongs_to :competitor
   has_many :target_investors
   has_many :notes, as: :subject
-  has_many :investments, class_name: 'CompaniesCompetitor'
+  has_many :investments
   has_many :companies, through: :investments
   belongs_to :university
   has_many :news
@@ -146,7 +146,7 @@ class Investor < ApplicationRecord
   end
 
   def assign_company!(company, featured: false, no_replace: false)
-    CompaniesCompetitor.assign_to_investor(self, company, featured: featured, no_replace: no_replace)
+    Investment.assign_to_investor(self, company, featured: featured, no_replace: no_replace)
   end
 
   def set_gender!
@@ -356,8 +356,8 @@ class Investor < ApplicationRecord
     scope = investments.present? ? investments : competitor.investments
     investments = scope
       .joins(company: :news)
-      .group('companies_competitors.id', 'companies.capital_raised')
-      .order('companies_competitors.featured DESC, companies.capital_raised DESC', 'count(companies_competitors.id) DESC', 'companies_competitors.funded_at DESC')
+      .group('investments.id', 'companies.capital_raised')
+      .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC')
       .limit(n)
     investments.map(&:company)
   end

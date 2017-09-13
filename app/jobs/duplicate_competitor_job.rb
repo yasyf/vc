@@ -19,7 +19,7 @@ class DuplicateCompetitorJob < ApplicationJob
 
       competitor.investments.lock
       competitor.investments.find_each do |cc|
-        cc2 = CompaniesCompetitor.where(company: cc.company, competitor: other).first_or_create!
+        cc2 = Investment.where(company: cc.company, competitor: other).first_or_create!
         cc2.funded_at ||= cc.funded_at
         cc2.save!
         cc.destroy!

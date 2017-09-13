@@ -1,4 +1,4 @@
-class CompaniesCompetitor < ApplicationRecord
+class Investment < ApplicationRecord
   belongs_to :company
   belongs_to :competitor
   belongs_to :investor
