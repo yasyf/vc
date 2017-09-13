@@ -385,7 +385,10 @@ CREATE TABLE investments (
     funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
     id bigint NOT NULL,
     investor_id bigint,
-    featured boolean DEFAULT false
+    featured boolean DEFAULT false,
+    funding_type character varying,
+    series character varying,
+    round_size bigint
 );
 
 
@@ -2363,6 +2366,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170912215956'),
 ('20170912222800'),
 ('20170912231818'),
-('20170913005350');
+('20170913005350'),
+('20170913011915');
 
 

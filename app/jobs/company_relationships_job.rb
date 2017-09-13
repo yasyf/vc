@@ -102,6 +102,9 @@ class CompanyRelationshipsJob < ApplicationJob
         competitor = Competitor.from_crunchbase! investor['properties']['permalink'], investor['properties']['name']
         cc = competitor.investments.where(company: @company).first_or_initialize
         cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
+        cc.funding_type = funding_round['properties']['funding_type']
+        cc.series = funding_round['properties']['series']
+        cc.round_size = funding_round['properties']['money_raised_usd']
         if partner.present?
           cc.investor = Investor.from_crunchbase(partner['properties']['permalink'])
           cc.featured = true
