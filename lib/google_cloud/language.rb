@@ -55,8 +55,7 @@ module GoogleCloud
 
   class Language
     def initialize(text, format: :text)
-      @language = ::Google::Cloud::Language.new project: ENV['GC_PROJECT_ID']
-      @document = @language.document text, format: format
+      @document = self.class.client.document text, format: format
     end
 
     def sentiment
@@ -65,6 +64,10 @@ module GoogleCloud
 
     def entities
       Entities.new @document.entities
+    end
+
+    def self.client
+      @client ||= ::Google::Cloud::Language.new project: ENV['GC_PROJECT_ID']
     end
   end
 end
