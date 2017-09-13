@@ -49,6 +49,8 @@ class Http::Fetch
         else
           results[resp.url] = nil
         end
+      rescue HTTP::Fetch::Error
+        results[resp.url] = nil
       rescue Exception => e
         exception = e
       end
