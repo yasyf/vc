@@ -5,6 +5,7 @@ class ImportRowJob < ApplicationJob
 
   def perform(name, parsed)
     klass = name.constantize
+    parsed = parsed.dup
     unless klass.process!(parsed) == false
       Rails.logger.info parsed
       ignore_record_errors { klass.import! parsed }

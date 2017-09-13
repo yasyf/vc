@@ -38,7 +38,7 @@ module Importers::External
     end
 
     def self.import!(row)
-      row[:company].industry += row[:industry]
+      row[:company].industry = (row[:company].industry || []) + row[:industry]
       row[:company].save!
 
       row[:company].founders.each do |founder|
@@ -59,7 +59,7 @@ module Importers::External
       investment.funded_at = row[:funded_at]
       investment.funding_type = row[:series] == 'Seed' ? :seed : :venture
       investment.series = row[:series] == 'Seed' ? nil : row[:series]
-      investment.featured = parsed[:featured]
+      investment.featured = row[:featured]
       investment.save!
     end
   end
