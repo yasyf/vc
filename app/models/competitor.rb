@@ -106,8 +106,8 @@ class Competitor < ApplicationRecord
     end
   end
 
-  def self.create_from_domain!(domain)
-    crunchbase_id = Http::Crunchbase::Organization.find_domain_id(name)
+  def self.create_from_domain!(domain, name)
+    crunchbase_id = Http::Crunchbase::Organization.find_domain_id(domain)
     from_crunchbase! crunchbase_id, name if crunchbase_id.present?
   end
 
