@@ -32,7 +32,7 @@ module Importers::External
       end
 
       company_name = row.delete(:company_name)
-      row[:company] = row[:competitor].companies.where(name: company_name) || Company.from_name(company_name)
+      row[:company] = row[:competitor].companies.where(name: company_name).first || Company.from_name(company_name)
 
       row[:industry] = row.delete(:industries).map { |i| Competitor.closest_industry(i) }.compact.uniq
     end
