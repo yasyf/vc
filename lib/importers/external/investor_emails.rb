@@ -15,7 +15,7 @@ module Importers::External
     end
 
     def process!(row)
-      row[:email] = row[:email].downcase
+      row[:email] = Mail::Address.new(row[:email]).address rescue nil
       row[:competitor] = Competitor.create_from_domain!( row[:email].split('@').last, row.delete(:fund))
     end
 

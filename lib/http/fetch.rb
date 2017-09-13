@@ -36,6 +36,7 @@ class Http::Fetch
   end
 
   def self.get(urls)
+    urls.compact!
     results = cache.read_multi(*urls)
     remaining = urls - results.keys
 
