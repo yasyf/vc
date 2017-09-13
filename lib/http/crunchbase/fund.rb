@@ -23,7 +23,7 @@ module Http::Crunchbase
 
     def country
       hq = get_in('relationships', 'headquarters')
-      hq['item']['properties']['country_code2'] if hq.present?
+      hq['item']['properties']['country_code2'] if hq.present? && hq['item'].present?
     end
 
     def found?
