@@ -9,35 +9,19 @@ module Importers::External
       email: 'Email',
     }
 
-    def initialize(filename, headers = {})
-      @filename = url?(filename) ? save(filename) : filename
-      @headers = headers.with_indifferent_access.slice(*HEADER_DEFAULTS.keys).reverse_merge(HEADER_DEFAULTS)
-    end
-
-    def process!(row)
+    def self.process!(row)
       begin
         row[:email] = Mail::Address.new(row[:email]).address
       rescue Mail::Field::FieldError
-        row[:skip] = true
-        return
+        return false
       end
       row[:competitor] = Competitor.create_from_domain!( row[:email].split('@').last, row.delete(:fund))
     end
 
-    def import!(row)
-      Rails.logger.info row
-      return if row[:skip].true?
+    def self.import!(row)
       return unless row[:competitor].present?
       scope = Investor.where(row.except(:email).select {|k,v| v.present? })
       scope.update_all(email: row[:email]) if scope.count == 1
-    end
-
-    def sync!
-      ::CSV.foreach(@filename, headers: true) do |row|
-        parsed = @headers.map { |h,s| [h, row[s].try(:strip)] }.to_h.compact.with_indifferent_access
-        process! parsed
-        import! parsed
-      end
     end
   end
 end
