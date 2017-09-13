@@ -26,6 +26,7 @@ module Importers::External
 
     def import!(row)
       Rails.logger.info row
+      return if row[:skip].true?
       return unless row[:competitor].present?
       scope = Investor.where(row.except(:email).select {|k,v| v.present? })
       scope.update_all(email: row[:email]) if scope.count == 1

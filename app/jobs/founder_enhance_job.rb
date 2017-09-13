@@ -34,6 +34,6 @@ class FounderEnhanceJob < ApplicationJob
       founder.homepage = nil
       return
     end
-    founder.entities += Entity.from_html(body)
+    founder.entities.concat Entity.from_html(body)
   end
 end

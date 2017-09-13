@@ -100,7 +100,7 @@ class Investor < ApplicationRecord
       self.homepage = nil
       return
     end
-    self.entities += Entity.from_html(body)
+    self.entities.concat Entity.from_html(body)
     self.competitor.companies.find_each do |company|
       if body.include?(company.name)
         assign_company! company, featured: true
@@ -120,7 +120,7 @@ class Investor < ApplicationRecord
       rescue ActiveRecord::RecordInvalid
         next
       end
-      post.entities += Entity.from_html(body)
+      post.entities.concat Entity.from_html(body)
       meta[:categories].each do |category|
         entity = Entity.from_name(category)
         next unless entity.present?
