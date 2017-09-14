@@ -34,6 +34,7 @@ class Internal::CompaniesController < Internal::ApplicationController
     companies = companies
                   .includes(:users, :team, pitches: :votes, cards: :list)
                   .joins(:cards)
+                  .where('cards.archived = ?', false)
                   .where(team: team)
     return companies unless params[:filter].present?
 
