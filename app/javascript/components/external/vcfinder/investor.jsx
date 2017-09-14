@@ -155,7 +155,7 @@ export default class Investor extends React.Component {
       return (
         <div key={post.url}>
           <h6>
-            <a href={post.url} target="_blank">{post.title}</a>
+            <a href={post.url} target="_blank">{_.truncate(post.title, {length: 55})}</a>
             <span className="faded"> - {moment(post.published_at).fromNow()}</span>
           </h6>
           <div>
