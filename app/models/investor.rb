@@ -20,6 +20,7 @@ class Investor < ApplicationRecord
   has_many :entities, through: :person_entities
   has_many :emails
   has_many :posts
+  has_one :tweeter, as: :owner, dependent: :destroy
 
   validates :competitor, presence: true
   validates :first_name, presence: true, uniqueness: { scope: [:last_name, :competitor_id] }
@@ -262,15 +263,18 @@ class Investor < ApplicationRecord
     posts.order(published_at: :desc).limit(3)
   end
 
+  def tweeter
+    super || (create_tweeter(username: twitter) if twitter.present?)
+  end
+
   def tweets(n = 3)
-    return [] unless twitter.present?
-    cache_for_a_hour do
-      twitter_client.with_client([]) do |client|
-        client.user_timeline(twitter, count: n, include_rts: false, exclude_replies: true)
-      end.map do |t|
-        t.to_h.with_indifferent_access.slice(:text, :created_at, :id)
-      end
-    end
+    return [] unless tweeter.present?
+    tweeter.tweets.order(tweeted_at: :desc).limit(n)
+  end
+
+  def scrape_tweets!
+    return unless tweeter.present?
+    tweeter.latest_tweets
   end
 
   def travel_status(city)

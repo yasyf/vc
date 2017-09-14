@@ -18,7 +18,7 @@ module Http::AngelList
     end
 
     def bio
-      (@data['bio'] || '') + (@data['what_i_do'] || '').gsub("\u0000", '') if found?
+      Util.fix_encoding((@data['bio'] || '') + (@data['what_i_do'] || '')) if found?
     end
 
     def fund_types

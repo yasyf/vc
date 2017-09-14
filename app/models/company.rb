@@ -3,7 +3,7 @@ class Company < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
   include Concerns::AttributeSortable
 
-  has_one :tweeter, dependent: :destroy
+  has_one :tweeter, as: :owner, dependent: :destroy
   has_many :pitches
   has_many :news, dependent: :destroy
   has_many :cards

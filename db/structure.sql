@@ -831,9 +831,10 @@ ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 CREATE TABLE tweeters (
     id integer NOT NULL,
     username character varying NOT NULL,
-    company_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    owner_type character varying NOT NULL,
+    owner_id bigint NOT NULL
 );
 
 
@@ -866,7 +867,9 @@ CREATE TABLE tweets (
     tweeter_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    shared boolean DEFAULT false NOT NULL
+    shared boolean DEFAULT false NOT NULL,
+    tweeted_at timestamp without time zone,
+    text character varying
 );
 
 
@@ -1909,10 +1912,10 @@ CREATE UNIQUE INDEX index_teams_on_name ON teams USING btree (name);
 
 
 --
--- Name: index_tweeters_on_company_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_tweeters_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_tweeters_on_company_id ON tweeters USING btree (company_id);
+CREATE INDEX index_tweeters_on_owner_type_and_owner_id ON tweeters USING btree (owner_type, owner_id);
 
 
 --
@@ -2371,6 +2374,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170913011915'),
 ('20170913023846'),
 ('20170913023856'),
-('20170913203704');
+('20170913203704'),
+('20170914183606'),
+('20170914184723');
 
 

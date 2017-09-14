@@ -11,6 +11,8 @@ class Tweet < ApplicationRecord
     Array.wrap(yield).compact.map do |t|
       where(twitter_id: t.id).first_or_create! do |tweet|
         tweet.tweeter = tweeter
+        tweet.tweeted_at = t.created_at
+        tweet.text = t.text
       end
     end
   end
@@ -23,6 +25,10 @@ class Tweet < ApplicationRecord
     update! shared: true
     slack_send! ENV['NEWS_CHANNEL'], "#{tweeter.company.name} has a newsworthy tweet!\n#{url}"
     twitter_client.with_client { |c| c.retweet! raw_tweet }
+  end
+
+  def as_json(options = {})
+    super options.reverse_merge(only: [:twitter_id, :text, :tweeted_at])
   end
 
   private

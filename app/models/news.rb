@@ -39,5 +39,7 @@ class News < ApplicationRecord
   def set_meta!
     self.title ||= page.best_title
     self.description ||= page.best_description
+
+    self.title = CGI.unescapeHTML(self.title) if self.title.present?
   end
 end

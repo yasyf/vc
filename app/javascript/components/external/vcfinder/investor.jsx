@@ -11,8 +11,8 @@ import ReadMore from './shared/read_more';
 import Slider from 'react-slick';
 import Industries from './shared/industries';
 import Company from './company';
-import Linkify from 'linkifyjs/react';
 import News from './news';
+import Tweet from './tweet';
 
 const sliderSettings = {
   infinite: true,
@@ -24,21 +24,6 @@ const sliderSettings = {
   arrows: true,
   dots: true,
   adaptiveHeight: true
-};
-
-const linkifyOptions = {
-  formatHref: (href, type) => {
-    let val = href.substring(1);
-    switch (type) {
-    case 'hashtag':
-      return `https://twitter.com/hashtag/${val}`;
-    case 'mention':
-      return `https://twitter.com/${val}`;
-    default:
-      return href;
-    }
-  },
-  target: '_blank',
 };
 
 export default class Investor extends React.Component {
@@ -96,15 +81,7 @@ export default class Investor extends React.Component {
       return null;
     }
 
-    let tweets = this.state.tweets.map(tweet => {
-      return (
-        <div className="pad-top-less" key={tweet.id}>
-          <i className="line-icon fi-megaphone"/>
-          <Linkify options={linkifyOptions}>&ldquo;{tweet.text}&rdquo;</Linkify>
-          - <span className="faded">{moment(tweet.created_at).fromNow()}</span>
-        </div>
-      );
-    });
+    let tweets = this.state.tweets.map(tweet => <Tweet key={tweet.twitter_id} tweet={tweet} />);
 
     let settings = {
       ...sliderSettings,
@@ -115,7 +92,7 @@ export default class Investor extends React.Component {
 
     return (
       <Slider {...settings}>
-        {tweets}
+        {<div>{tweets}</div>}
       </Slider>
     );
   }
