@@ -2,8 +2,10 @@
 
 one:
   username: MyString
-  company_id: 1
+  owner_id: 1
+  owner_type: Company
 
 two:
   username: MyString2
-  company_id: 2
+  owner_id: 2
+  owner_type: Company
