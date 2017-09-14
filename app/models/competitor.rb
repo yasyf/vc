@@ -46,6 +46,7 @@ class Competitor < ApplicationRecord
     data: 'Data',
     transportation: 'Transportation',
     marketplace: 'Marketplace',
+    security: 'Security',
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
@@ -53,7 +54,7 @@ class Competitor < ApplicationRecord
     gaming: ['Video Games'],
     transportation: ['Public Transportation', 'Ride Sharing'],
     mobile: ['Mobile Devices', 'Telecommunications', 'Mobile Apps'],
-    food: ['Food and Beverage', 'Food Delivery', 'Nutrition', 'Food'],
+    food: ['Food and Beverage', 'Food Delivery', 'Nutrition', 'Food', 'Restaurants'],
     social: ['Social', 'Messaging', 'Social Media'],
     ai: ['Machine Learning', 'Artificial Intelligence'],
     enterprise: ['Enterprise Software', 'B2B'],
@@ -63,6 +64,7 @@ class Competitor < ApplicationRecord
     energy: ['Electric Vehicle', 'Energy Management'],
     data: ['Analytics'],
     iot: ['Internet of Things'],
+    security: ['Network Security', 'Cyber Security'],
   }.freeze
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
