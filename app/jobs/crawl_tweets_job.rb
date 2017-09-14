@@ -1,7 +1,7 @@
 class CrawlTweetsJob < ApplicationJob
   queue_as :default
 
-  MAX_DELAY = 30.minutes
+  MAX_DELAY = 12.hours
 
   def perform
     Investor.where.not(twitter: nil).find_each do |investor|

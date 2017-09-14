@@ -21,7 +21,7 @@ module Clockwork
   every(1.hours, 'user.calendar') { UserCalendarJob.perform_later }
 
   every(1.day, 'crawl.investors.posts', at: '01:00') { CrawlPostsJob.perform_later }
-  every(1.hour, 'crawl.investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }
+  every(1.day, 'crawl.investors.tweets', at: '02:00') { CrawlTweetsJob.perform_later }
   every(3.weeks, 'crawl.refresh', at: 'Monday 5:30') { RefreshJob.perform_later }
 
   every(1.day, 'vctool.industry', at: '00:00') { PropagateIndustryJob.perform_later }
