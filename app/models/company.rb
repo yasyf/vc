@@ -160,17 +160,15 @@ class Company < ActiveRecord::Base
   end
 
   def cb_slack_link
-    "<#{cb_url}|#{name}>"
+    "<#{cb_url}|#{name}>" if cb_url.present?
   end
 
   def cb_url
-    cached { crunchbase_org(1, raise_on_error: false).crunchbase_url }
-  rescue HTTP::Crunchbase::Errors::APIError
-    nil
+    "https://www.crunchbase.com/organization/#{crunchbase_id}" if crunchbase_id.present?
   end
 
-  def al_url
-    cached { angelist_startup.angellist_url }
+  def al_url(fetch: false)
+    fetch ? cached { angelist_startup.angellist_url } : get_cached
   rescue HTTP::AngelList::Errors::APIError
     nil
   end

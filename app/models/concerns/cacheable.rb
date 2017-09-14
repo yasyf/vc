@@ -14,6 +14,10 @@ module Concerns
       cache_fetch base_cache_key, options, &block
     end
 
+    def get_cached(options = {})
+      cache_get base_cache_key, options
+    end
+
     def key_cached(key_hash, options = {}, &block)
       key = "#{base_cache_key}/#{key_hash.sort.to_param.gsub('/', '%2F')}"
       cache_fetch key, options, &block
@@ -21,6 +25,10 @@ module Concerns
 
     def cache_fetch(key, options, &block)
       Rails.cache.fetch(key, options.reverse_merge(cache_options), &block)
+    end
+
+    def cache_get(key, options)
+      Rails.cache.fetch(key, options.reverse_merge(cache_options))
     end
 
     def cache_options

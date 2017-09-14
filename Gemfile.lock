@@ -70,6 +70,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    colorize (0.8.1)
     commonjs (0.2.7)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
@@ -213,6 +214,9 @@ GEM
     httparty (0.15.6)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
+    httplog (0.99.7)
+      colorize
+      rack
     i18n (0.8.6)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
@@ -556,6 +560,7 @@ DEPENDENCIES
   googlemaps-services
   guard-rspec
   httparty
+  httplog
   jbuilder (~> 2.0)
   jquery-rails
   jquery-turbolinks
