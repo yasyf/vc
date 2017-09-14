@@ -38,7 +38,8 @@ module Importers::External
     end
 
     def self.import!(row)
-      row[:company].industry = (row[:company].industry || []) + row[:industry]
+      row[:company].industry ||= []
+      row[:company].industry += row[:industry]
       row[:company].save!
 
       row[:company].founders.each do |founder|
@@ -51,6 +52,7 @@ module Importers::External
         row[:investor].save!
       end
 
+      row[:competitor].location ||= []
       row[:competitor].location << row[:location]
       row[:competitor].save!
 
