@@ -57,8 +57,8 @@ class CompetitorCrunchbaseJob < ApplicationJob
           cc.funding_type = funding_round['properties']['funding_type']
           cc.series = funding_round['properties']['series']
           cc.round_size = funding_round['properties']['money_raised_usd']
-          if partners.present?
-            cc.investor = partners.first
+          if partners.present? && (investor = partners.first).present?
+            cc.investor = investor
             cc.featured = true
           end
           cc.save! if cc.changed?

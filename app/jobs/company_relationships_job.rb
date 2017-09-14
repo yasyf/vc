@@ -105,8 +105,8 @@ class CompanyRelationshipsJob < ApplicationJob
         cc.funding_type = funding_round['properties']['funding_type']
         cc.series = funding_round['properties']['series']
         cc.round_size = funding_round['properties']['money_raised_usd']
-        if partner.present?
-          cc.investor = Investor.from_crunchbase(partner['properties']['permalink'])
+        if partner.present? && (investor = Investor.from_crunchbase(partner['properties']['permalink'])).present?
+          cc.investor = investor
           cc.featured = true
         end
         cc.save! if cc.changed?
@@ -117,7 +117,9 @@ class CompanyRelationshipsJob < ApplicationJob
       id = person['relationships']['person']['properties']['permalink']
       competitor = competitor_from_person_id(id)
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
-      cc.update! investor: Investor.from_crunchbase(id), featured: true
+      if (investor = Investor.from_crunchbase(id)).present?
+        cc.update! investor: investor, featured: true
+      end
     end
 
     news = @cb_org.news.map { |n| [n['url'], n] }.to_h
