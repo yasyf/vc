@@ -6,7 +6,7 @@ cache:
     - node_modules
   yarn: true
 rvm:
-  - 2.4.1
+  - 2.4.2
 services:
   - postgresql
   - memcached
