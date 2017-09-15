@@ -1,4 +1,4 @@
-Zhong.redis = Redis.new(url: ENV["HEROKU_REDIS_COPPER_URL"])
+Zhong.redis = Redis.new(url: ENV['HEROKU_REDIS_COPPER_URL'])
 
 Zhong.schedule do
   category 'sync' do
