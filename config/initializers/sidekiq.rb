@@ -4,7 +4,7 @@ CLIENT_SIZE = 5
 CONNECTION_LIMIT = 40 - CLIENT_SIZE - 2
 
 Sidekiq.configure_client do |config|
-  config.redis = { size: 5, namespace: 'sidekiq' }
+  config.redis = { size: CLIENT_SIZE, namespace: 'sidekiq' }
 end
 
 Sidekiq.configure_server do |config|
