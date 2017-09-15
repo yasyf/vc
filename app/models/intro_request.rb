@@ -1,6 +1,7 @@
 class IntroRequest < ApplicationRecord
-  TOKEN_MAGIC = "VCWIZ_INTRO_"
+  TOKEN_MAGIC = 'VCWIZ_INTRO_'
   DEVICE_TYPES = %w(desktop mobile tablet other unknown)
+  MAX_IN_FLIGHT = 5
 
   belongs_to :investor
   belongs_to :company
@@ -10,6 +11,8 @@ class IntroRequest < ApplicationRecord
   validates :company, presence: true
   validates :founder, presence: true
   validates :token, presence: true
+
+  validate :limit_outstanding_requests, on: :create
 
   enum open_device_type: DEVICE_TYPES
 
@@ -80,6 +83,12 @@ class IntroRequest < ApplicationRecord
   end
 
   private
+
+  def limit_outstanding_requests
+    if self.class.unscoped.where(founder: founder, accepted: nil).count > MAX_IN_FLIGHT - 1
+      errors.add(:base, 'too many outstanding requests')
+    end
+  end
 
   def send!
     if investor.opted_in == false
