@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'zhong/web'
 
 class TeamConstraint
   def initialize
@@ -135,5 +136,6 @@ Rails.application.routes.draw do
 
   authenticate :internal_user, lambda { |u| u.admin? } do
     mount Sidekiq::Web, at: '/sidekiq'
+    mount Zhong::Web, at: '/zhong'
   end
 end

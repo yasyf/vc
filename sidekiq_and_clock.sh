@@ -1,5 +1,5 @@
 #!/bin/bash
 
 bundle exec sidekiq -C config/sidekiq.yml &
-bundle exec clockwork config/clock.rb &
+bundle exec zhong config/zhong.rb &
 wait

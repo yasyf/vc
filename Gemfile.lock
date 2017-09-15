@@ -50,9 +50,6 @@ GEM
     chronic (0.10.2)
     clearbit (0.2.7)
       nestful (~> 1.1.0)
-    clockwork (2.0.2)
-      activesupport
-      tzinfo
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -260,6 +257,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.2.0)
     minitest (5.10.3)
+    msgpack (1.1.0)
     multi_json (1.12.2)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -456,6 +454,10 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    suo (0.3.2)
+      dalli
+      msgpack
+      redis
     textacular (5.0.1)
       activerecord (>= 3.0, < 5.2)
     therubyracer (0.12.3)
@@ -511,6 +513,11 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
     workers (0.6.0)
+    zhong (0.2.3)
+      activesupport
+      redis
+      suo
+      tzinfo
 
 PLATFORMS
   ruby
@@ -520,7 +527,6 @@ DEPENDENCIES
   byebug
   chronic
   clearbit
-  clockwork
   coffee-rails
   connection_pool
   curb
@@ -583,6 +589,7 @@ DEPENDENCIES
   webpacker
   webpacker-react (~> 0.3.1)
   workers
+  zhong
 
 RUBY VERSION
    ruby 2.4.2p198
