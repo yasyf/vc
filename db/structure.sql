@@ -441,7 +441,8 @@ CREATE TABLE investors (
     gender integer DEFAULT 0 NOT NULL,
     university_id bigint,
     time_zone character varying,
-    country character varying
+    country character varying,
+    al_url character varying
 );
 
 
@@ -2376,6 +2377,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170913023856'),
 ('20170913203704'),
 ('20170914183606'),
-('20170914184723');
+('20170914184723'),
+('20170915191458');
 
 

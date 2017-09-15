@@ -133,6 +133,8 @@ class Investor < ApplicationRecord
   def populate_from_al!
     return unless angelist_user.present? && angelist_user.found?
 
+    self.al_url = angelist_user.angellist_url
+
     name = angelist_user.name.split(' ')
     self.first_name ||= name.first
     self.last_name ||= name.drop(1).join(' ')
@@ -216,6 +218,7 @@ class Investor < ApplicationRecord
         :location,
         :email,
         :time_zone,
+        :al_url,
       ],
      methods: [:competitor, :popular_entities, :recent_investments, :recent_news, :university, :average_response_time, :notes, :utc_offset]
     )
