@@ -1,9 +1,10 @@
 require 'sidekiq'
 
-CONNECTION_LIMIT = Rails.env.development? ? 50 : 20
+CLIENT_SIZE = 5
+CONNECTION_LIMIT = 40 - CLIENT_SIZE - 2
 
 Sidekiq.configure_client do |config|
-  config.redis = { size: 1, namespace: 'sidekiq' }
+  config.redis = { size: 5, namespace: 'sidekiq' }
 end
 
 Sidekiq.configure_server do |config|
