@@ -1,3 +1,6 @@
+require_relative './boot'
+require_relative './environment'
+
 Zhong.redis = Redis.new(url: ENV['HEROKU_REDIS_COPPER_URL'])
 
 Zhong.schedule do
