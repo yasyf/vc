@@ -31,6 +31,10 @@ class Tweet < ApplicationRecord
     super options.reverse_merge(only: [:twitter_id, :text, :tweeted_at])
   end
 
+  def url
+    "https://twitter.com/#{tweeter.username}/status/#{twitter_id}"
+  end
+
   private
 
   def raw_tweet
