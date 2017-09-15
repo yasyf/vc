@@ -7,8 +7,8 @@ Raven.configure do |config|
   config.processors -= [Raven::Processor::Cookies]
 
   config.excluded_exceptions += %w(
-    HTTP::AngelList::Errors::APIError
-    HTTP::Crunchbase::Errors::APIError
+    HTTP::AngelList::Errors::RateLimited
+    HTTP::Crunchbase::Errors::RateLimited
     Sidekiq::Shutdown
     Timeout::Error
   )
