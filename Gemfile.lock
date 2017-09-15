@@ -320,6 +320,7 @@ GEM
       omniauth (~> 1.2)
     orm_adapter (0.5.0)
     os (0.9.6)
+    ox (2.6.0)
     pg (0.21.0)
     premailer (1.10.4)
       addressable
@@ -570,9 +571,9 @@ DEPENDENCIES
   lograge
   metainspector
   minitest (~> 5.10, != 5.10.2)
-  nokogiri
   omniauth
   omniauth-google-oauth2
+  ox (>= 2.1.2)
   pg
   premailer-rails
   puma
@@ -609,7 +610,7 @@ DEPENDENCIES
   workers
 
 RUBY VERSION
-   ruby 2.4.1p111
+   ruby 2.4.2p198
 
 BUNDLED WITH
-   1.14.6
+   1.15.4
