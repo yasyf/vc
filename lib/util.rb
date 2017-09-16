@@ -10,12 +10,20 @@ class Util
   end
 
   def self.fix_encoding(string, encoding = 'CP1252')
-    string.encode(encoding, fallback: {
+    clean_string(string.encode(encoding, fallback: {
       "\u0081" => "\x81".force_encoding(encoding),
       "\u008D" => "\x8D".force_encoding(encoding),
       "\u008F" => "\x8F".force_encoding(encoding),
       "\u0090" => "\x90".force_encoding(encoding),
       "\u009D" => "\x9D".force_encoding(encoding),
-    }).force_encoding('UTF-8').gsub("\u0000", '').squish
+    }).force_encoding('UTF-8'))
+  end
+
+  def self.tidy_utf8(string)
+    clean_string(string.force_encoding('UTF-8').mb_chars.tidy_bytes)
+  end
+
+  def self.clean_string(string)
+    string.gsub("\u0000", '').squish.to_s
   end
 end
