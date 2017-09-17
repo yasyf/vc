@@ -5,7 +5,11 @@ class CrawlPostsJob < ApplicationJob
 
   def perform
     Investor.all.find_each do |investor|
-      next unless investor.blog_url.present?
+      begin
+        next unless investor.blog_url.present?
+      rescue HTTP::Crunchbase::Errors::Error
+        next
+      end
       CrawlInvestorPostsJob.set(queue: :low, wait: MAX_DELAY * rand).perform_later investor.id
     end
   end
