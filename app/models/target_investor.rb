@@ -1,5 +1,6 @@
 class TargetInvestor < ApplicationRecord
   include Concerns::AttributeSortable
+  include Concerns::Eventable
 
   belongs_to :investor, counter_cache: true
   belongs_to :founder
@@ -35,10 +36,12 @@ class TargetInvestor < ApplicationRecord
   validates :founder, presence: true
   validates :stage, presence: true
 
-  before_save :check_stage_change, :check_investor
+  before_save :record_stage_change, :check_investor
 
   sort :industry
   sort :fund_type
+
+  action :state_changed
 
   scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
 
@@ -123,10 +126,9 @@ class TargetInvestor < ApplicationRecord
     self.investor = investors.first
   end
 
-  def check_stage_change
+  def record_stage_change
     return if stage == stage_was
-    LoggedEvent.log! :target_stage_changed, self,
-                     notify: 0, data: { from: stage_was, to: stage }
+    state_changed! stage_was, stage
     self.last_response = DateTime.now if stage.to_s == '3_respond' || stage_was.to_s == '2_waiting'
   end
 end

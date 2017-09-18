@@ -1,5 +1,6 @@
 class Founder < ApplicationRecord
   include Concerns::TimeZonable
+  include Concerns::Eventable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
@@ -16,6 +17,8 @@ class Founder < ApplicationRecord
   validates :email, uniqueness: { allow_nil: true }
 
   after_commit :start_enhance_job, on: :create
+
+  action :investor_clicked
 
   devise
 
@@ -102,6 +105,10 @@ class Founder < ApplicationRecord
       OFFSET #{offset};
     SQL
     Investor.find_by_sql query
+  end
+
+  def sparse_rating_vector(csv)
+    # TODO
   end
 
   private

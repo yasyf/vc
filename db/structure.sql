@@ -290,6 +290,42 @@ ALTER SEQUENCE entities_id_seq OWNED BY entities.id;
 
 
 --
+-- Name: events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE events (
+    id bigint NOT NULL,
+    subject_type character varying NOT NULL,
+    subject_id bigint NOT NULL,
+    action character varying NOT NULL,
+    arg1 character varying,
+    arg2 character varying,
+    arg3 character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE events_id_seq OWNED BY events.id;
+
+
+--
 -- Name: founders; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1040,6 +1076,13 @@ ALTER TABLE ONLY entities ALTER COLUMN id SET DEFAULT nextval('entities_id_seq':
 
 
 --
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+
+
+--
 -- Name: founders id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1226,6 +1269,14 @@ ALTER TABLE ONLY emails
 
 ALTER TABLE ONLY entities
     ADD CONSTRAINT entities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 
 --
@@ -1560,6 +1611,13 @@ CREATE INDEX index_emails_on_investor_id ON emails USING btree (investor_id);
 --
 
 CREATE UNIQUE INDEX index_entities_on_name ON entities USING btree (name);
+
+
+--
+-- Name: index_events_on_subject_type_and_subject_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_events_on_subject_type_and_subject_id ON events USING btree (subject_type, subject_id);
 
 
 --
@@ -2378,6 +2436,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170913203704'),
 ('20170914183606'),
 ('20170914184723'),
-('20170915191458');
+('20170915191458'),
+('20170915235927');
 
 

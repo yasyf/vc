@@ -6,6 +6,10 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
     render json: founder
   end
 
+  def click
+    founder.investor_clicked! click_params[:id]
+  end
+
   def update
     if founder_company_params[:company].present?
       founder.primary_company.update! founder_company_params[:company].merge(primary: true)
@@ -15,6 +19,10 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
   end
 
   private
+
+  def click_params
+    params.require(:investor).permit(:id)
+  end
 
   def founder_company_params
     params.require(:founder).permit(company: [:name, :description, :industry, :verified])

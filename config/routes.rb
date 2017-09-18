@@ -72,7 +72,9 @@ Rails.application.routes.draw do
           end
         end
 
-        resource :founder
+        resource :founder do
+          post 'click'
+        end
       end
     end
   end

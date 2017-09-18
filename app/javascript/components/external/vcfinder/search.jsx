@@ -2,10 +2,10 @@ import Handlebars from 'handlebars';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import Modal from 'react-modal';
-import { InvestorsFuzzySearchPath, InvestorsPath } from './constants.js.erb';
+import { InvestorsFuzzySearchPath, InvestorsPath, FounderClickPath } from './constants.js.erb';
 import SearchCreate from './search/create';
 import Investor from './investor';
-import {fullName} from './utils';
+import {fullName, ffetch} from './utils';
 import SearchFilters from './search/filters';
 import SearchResult from './search/result';
 
@@ -69,6 +69,7 @@ export default class Search extends React.Component {
   };
 
   onOpenInvestor = (investor) => {
+    ffetch(FounderClickPath, 'POST', {investor: {id: investor.id}});
     this.setState({modal: Modals.INVESTOR, investor});
   };
 
