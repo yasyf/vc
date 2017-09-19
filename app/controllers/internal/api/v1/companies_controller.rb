@@ -1,11 +1,12 @@
 class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controller
+  PER_PAGE = 100
   INCLUDES = [:team, competitors: :notes, users: :team, pitches: [:final_votes, :yes_votes_count, :no_votes_count, :team], cards: :list]
 
   before_action :authenticate_api_user!
 
   def index
     companies = params[:team].present? ? Company.where(team: team) : Company.where.not(team: nil)
-    render json: { companies: companies.includes(*INCLUDES).map(&:as_json_api) }
+    render json: { page: page, companies: companies.includes(*INCLUDES).limit(PER_PAGE).offset(page * PER_PAGE).map(&:as_json_api) }
   end
 
   def show
