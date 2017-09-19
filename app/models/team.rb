@@ -39,9 +39,7 @@ class Team < ApplicationRecord
   end
 
   def funded_lists
-    @funded_lists ||= config['lists']['funded'].map do |name|
-      List.where(trello_board_id: trello_board_ids, name: name).first!
-    end
+    @funded_lists ||= List.where(trello_board_id: trello_board_ids, name: config['lists']['funded'])
   end
 
   def time_zone

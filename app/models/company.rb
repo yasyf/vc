@@ -4,9 +4,9 @@ class Company < ActiveRecord::Base
   include Concerns::AttributeSortable
 
   has_one :tweeter, as: :owner, dependent: :destroy
-  has_many :pitches
+  has_many :pitches, -> { order(when: :desc ) }
   has_many :news, dependent: :destroy
-  has_many :cards
+  has_many :cards, -> { order(updated_at: :desc ).where(archived: false) }
   has_many :calendar_events
   has_many :investments, dependent: :destroy
   belongs_to :team
@@ -32,11 +32,11 @@ class Company < ActiveRecord::Base
   after_commit :start_relationships_job, on: :create
 
   def pitch
-    @pitch ||= pitches.order(when: :desc).first
+    @pitch ||= pitches.first
   end
 
   def card
-    @card ||= cards.where(archived: false).order(updated_at: :desc).first
+    @card ||= cards.first
   end
 
   def domain=(domain)
@@ -107,10 +107,10 @@ class Company < ActiveRecord::Base
     )
     key_cached(
       options.slice(:methods, :only, :except, :root, :include),
-      cache_unless_voting(expires_in: jitter(1, :day)),
+      expires_in: jitter(1, :day),
     ) do
       pitch_on = pitch.when.to_time.to_i if pitch.present?
-      super(options).merge(
+      as_json(options).merge(
         capital_raised: capital_raised(format: true),
         pitch_on: pitch_on,
         funded: funded?,
@@ -215,11 +215,6 @@ class Company < ActiveRecord::Base
   end
 
   private
-
-  def cache_unless_voting(options = {})
-    options[:force] = true if pitches.where(decision: nil).present?
-    options
-  end
 
   def start_relationships_job
     CompanyRelationshipsJob.perform_later(id)

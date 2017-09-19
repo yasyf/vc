@@ -71,6 +71,7 @@ gem 'clearbit'
 gem 'googlemaps-services'
 gem 'sinatra', '~>2.0', require: false
 gem 'rack-timeout'
+gem 'activerecord-precount'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

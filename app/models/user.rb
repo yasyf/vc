@@ -74,9 +74,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    slack_or_block :real_name do
-      trello_user.try(:full_name).present? ? trello_user.full_name : cached_name
-    end
+    cached_name || set_cached_name
   end
 
   def first_name
@@ -187,12 +185,19 @@ class User < ActiveRecord::Base
 
   private
 
+  def fetch_name
+    slack_or_block :real_name do
+      trello_user.try(:full_name).present? ? trello_user.full_name : self[:cached_name]
+    end
+  end
+
+
   def add_to_wit
     Http::Wit::Entity.new('slack_user').add_value("<@#{slack_id}>") if slack_id.present?
   end
 
   def set_cached_name
-    self.cached_name ||= name || username
+    self.cached_name ||= fetch_name || username
   end
 
   def set_slack_id

@@ -1,9 +1,9 @@
 <% title 'All Companies' %>
 
-<% @lists.each do |list, companies| %>
+<% @lists.each do |list_name, companies| %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h1><%= list.name %></h1>
+      <h1><%= list_name %></h1>
     </div>
     <div class="panel-body">
       <%= render partial: 'filter' %>

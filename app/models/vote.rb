@@ -24,8 +24,8 @@ class Vote < ActiveRecord::Base
 
   scope :final, -> { where(final: true) }
   scope :valid, Proc.new { |team, since| final.joins(:user).merge User.active(team, since) }
-  scope :yes, -> { final.where('overall > ?', 3) }
-  scope :no, -> { final.where('overall < ?', 3) }
+  scope :yes, -> { final.where('votes.overall > ?', 3) }
+  scope :no, -> { final.where('votes.overall < ?', 3) }
 
   def yes?
     overall.present? && overall > 3
@@ -39,8 +39,9 @@ class Vote < ActiveRecord::Base
     VoteMailer.email_and_slack!(:vote_warning_email, user, company, time_remaining.to_i)
   end
 
-  def self.metrics(votes, method: :average)
-    METRICS.map { |metric| [metric, votes.public_send(method, metric).to_f || 0.0] }.to_h
+  def self.metrics(votes)
+    size = votes.to_a.length.to_f || 1.0
+    METRICS.map { |metric| [metric, votes.map { |v| v.send(metric) }.sum / size] }.to_h
   end
 
   def skip_eligibility!

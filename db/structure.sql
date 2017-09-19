@@ -616,7 +616,9 @@ CREATE TABLE news (
     description text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    published_at timestamp without time zone
+    published_at timestamp without time zone,
+    sentiment_score double precision,
+    sentiment_magnitude double precision
 );
 
 
@@ -722,7 +724,8 @@ CREATE TABLE pitches (
     prevote_doc character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    card_id bigint
+    card_id bigint,
+    quorum integer NOT NULL
 );
 
 
@@ -2437,6 +2440,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170914183606'),
 ('20170914184723'),
 ('20170915191458'),
-('20170915235927');
+('20170915235927'),
+('20170919043157'),
+('20170919091817');
 
 

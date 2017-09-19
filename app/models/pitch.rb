@@ -7,13 +7,18 @@ class Pitch < ApplicationRecord
   belongs_to :card
   has_one :team, through: :company
   has_many :votes
+  has_many :yes_votes, -> { yes }, class_name: 'Vote', count_loader: true
+  has_many :no_votes, -> { no }, class_name: 'Vote', count_loader: true
+  has_many :final_votes, -> { final }, class_name: 'Vote'
 
   validates :company, presence: true
   validates :when, presence: true
   validates :snapshot, uniqueness: { allow_nil: true }
   validates :prevote_doc, uniqueness: { allow_nil: true }
+  validates :quorum, presence: true
 
   before_create :find_snapshot!
+  before_save :set_quorum!
 
   def when
     super&.in_time_zone(team.time_zone)
@@ -51,24 +56,12 @@ class Pitch < ApplicationRecord
     pitched? && (decision.present? || deadline < team.time_now)
   end
 
-  def funded?
-    cached(cache_unless_voting) { yes_votes > no_votes }
-  end
-
-  def yes_votes
-    votes.yes.count
-  end
-
-  def no_votes
-    votes.no.count
-  end
-
   def user_votes(user)
     votes.where(user: user).order(created_at: :desc)
   end
 
   def missing_vote_users
-    votes.where(final: false).map(&:user) - votes.final.map(&:user)
+    votes.where(final: false).map(&:user) - final_votes.map(&:user)
   end
 
   def missing_votes
@@ -82,10 +75,10 @@ class Pitch < ApplicationRecord
   def stats
     cached(cache_unless_voting) do
       {
-          yes_votes: yes_votes,
-          no_votes: no_votes,
-          required_votes: User.quorum(team, self.when),
-          averages: Vote.metrics(votes.final)
+          yes_votes: yes_votes_count,
+          no_votes: no_votes_count,
+          required_votes: quorum,
+          averages: Vote.metrics(final_votes)
       }.with_indifferent_access
     end
   end
@@ -116,6 +109,7 @@ class Pitch < ApplicationRecord
 
   def decide!(override: nil)
     update! decision: Time.current, funded: override || funded?
+    company.touch
   end
 
   private
@@ -137,6 +131,10 @@ class Pitch < ApplicationRecord
     end.web_view_link
   end
 
+  def set_quorum!
+    self.quorum ||= User.quorum(team, self.when)
+  end
+
   def find_snapshot!
     escaped_name = company.name.gsub(/['"]/, '')
     self.snapshot ||= begin
@@ -147,6 +145,7 @@ class Pitch < ApplicationRecord
   end
 
   def cache_unless_voting(options = {})
+    options[:expires_in] ||= 1.year
     options[:force] = true if decision.blank?
     options
   end

@@ -1,20 +1,19 @@
 class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controller
-  INCLUDES = %w(team users competitors cards)
-  PER_PAGE = 5
+  INCLUDES = [:team, competitors: :notes, users: :team, pitches: [:final_votes, :yes_votes_count, :no_votes_count, :team], cards: :list]
 
   before_action :authenticate_api_user!
 
   def index
-    companies = params[:team].present? ? Company.where(team: team) : Company.all
-    render json: { companies: companies.includes(*INCLUDES).limit(PER_PAGE).offset(page * PER_PAGE) }
+    companies = params[:team].present? ? Company.where(team: team) : Company.where.not(team: nil)
+    render json: { companies: companies.includes(*INCLUDES).map(&:as_json_api) }
   end
 
   def show
-    render json: { company: Company.includes(*INCLUDES).find(params[:id]) }
+    render json: { company: Company.includes(*INCLUDES).find(params[:id]).as_json_api }
   end
 
   def search
-    render json: { results: Company.includes(*INCLUDES).search(params[:q]) }
+    render json: { results: Company.includes(*INCLUDES).search(params[:q]).map(&:as_json_api) }
   end
 
   def voting_status
