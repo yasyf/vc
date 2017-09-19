@@ -17,7 +17,7 @@ module Http::Crunchbase
 
     def bio
       bio = get_in('properties', 'bio')
-      Util.fix_encoding(bio)
+      Util.fix_encoding(bio) if bio.present?
     end
 
     def image
