@@ -25,7 +25,7 @@ class Http::Fetch
       curl.headers.merge!(headers)
     end
     if (status = safe_status resp) == OK
-      Util.tidy_utf8 resp.body_str
+      Util.fix_encoding resp.body_str
     else
       raise Error.new(status)
     end
@@ -44,7 +44,7 @@ class Http::Fetch
     Curl::Multi.get(remaining, EASY_OPTIONS, MULTI_OPTIONS) do |resp|
       begin
         if safe_status(resp) == OK
-          body = Util.tidy_utf8 resp.body_str
+          body = Util.fix_encoding resp.body_str
           results[resp.url] = body
           cache.write(resp.url, body)
         else

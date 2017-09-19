@@ -18,7 +18,7 @@ class Pitch < ApplicationRecord
   validates :quorum, presence: true
 
   before_create :find_snapshot!
-  before_save :set_quorum!
+  before_validation :set_quorum!
 
   def when
     super&.in_time_zone(team.time_zone)

@@ -52,8 +52,12 @@ class Vote < ActiveRecord::Base
     {
       yes_votes: yes? ? 1 : 0,
       no_votes: no? ? 1 : 0,
-      averages: self.class.metrics(self, method: :public_send)
+      averages: metrics
     }.with_indifferent_access
+  end
+
+  def metrics
+    METRICS.map { |metric| [metric, public_send(metric] }.to_h
   end
 
   def as_json(options = {})
