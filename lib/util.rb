@@ -12,12 +12,12 @@ class Util
   def self.fix_encoding(string, fallback_encoding = 'CP1252')
     clean_string(tidy_utf8(string))
   rescue ArgumentError
-    clean_string(string.encode(encoding, fallback: {
-      "\u0081" => "\x81".force_encoding(encoding),
-      "\u008D" => "\x8D".force_encoding(encoding),
-      "\u008F" => "\x8F".force_encoding(encoding),
-      "\u0090" => "\x90".force_encoding(encoding),
-      "\u009D" => "\x9D".force_encoding(encoding),
+    clean_string(string.encode(fallback_encoding, fallback: {
+      "\u0081" => "\x81".force_encoding(fallback_encoding),
+      "\u008D" => "\x8D".force_encoding(fallback_encoding),
+      "\u008F" => "\x8F".force_encoding(fallback_encoding),
+      "\u0090" => "\x90".force_encoding(fallback_encoding),
+      "\u009D" => "\x9D".force_encoding(fallback_encoding),
     }).force_encoding('UTF-8'))
   end
 
