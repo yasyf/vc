@@ -57,7 +57,7 @@ class Vote < ActiveRecord::Base
   end
 
   def metrics
-    METRICS.map { |metric| [metric, public_send(metric] }.to_h
+    METRICS.map { |metric| [metric, public_send(metric)] }.to_h
   end
 
   def as_json(options = {})
