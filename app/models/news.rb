@@ -21,11 +21,16 @@ class News < ApplicationRecord
       else
         MetaInspector.new(url, download_images: false).tap do |page|
           raise ActiveRecord::RecordInvalid.new(self) unless page.response.status == 200
+          @body = page.to_s
         end
       end
     end
   rescue MetaInspector::Error
     raise ActiveRecord::RecordInvalid.new(self)
+  end
+
+  def sentiment
+    @sentiment ||= GoogleCloud::Language.new(body).sentiment if body.present?
   end
 
   def self.create_with_body(url, body, attrs = {})
@@ -39,6 +44,8 @@ class News < ApplicationRecord
   def set_meta!
     self.title ||= page.best_title
     self.description ||= page.best_description
+    self.sentiment_score ||= sentiment&.score
+    self.sentiment_magnitude ||= sentiment&.magnitude
 
     self.title = CGI.unescapeHTML(self.title) if self.title.present?
   end

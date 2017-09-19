@@ -46,6 +46,55 @@ class Founder < ApplicationRecord
     end
   end
 
+  def self.export_rating_data(filename)
+    added = Set.new
+    CSV.open(filename, 'wb') do |csv|
+      csv << %w(founder_id investor_id rating)
+
+      all
+        .joins(companies: :investments)
+        .includes(companies: :investments)
+        .where.not('investments.investor_id': nil)
+        .in_batches do |relation|
+          relation
+            .joins('LEFT OUTER JOIN news ON (investments.investor_id = news.investor_id AND companies.id = news.company_id)')
+            .group('founders.id', 'investments.investor_id')
+            .pluck('founders.id', 'investments.investor_id', '(1 + count(news)) * greatest(1, avg(coalesce(news.sentiment_score, 0) * coalesce(news.sentiment_magnitude, 0) * 10))')
+            .each do |(founder_id, investor_id, ranking)|
+              csv << [founder_id, investor_id, ranking]
+              added.add([founder_id, investor_id])
+          end
+      end
+
+      scope = all.joins(:target_investors).includes(:target_investors).where.not('target_investors.investor_id': nil)
+      scope = added.inject(scope) { |s, ids| s.where.not('founders.id = ? AND target_investors.investor_id = ?', *ids) }
+      scope.in_batches do |relation|
+        relation
+          .joins("LEFT OUTER JOIN events ON (founders.id = events.subject_id AND target_investors.investor_id = events.arg1::bigint AND subject_type = 'Founder' AND action = 'investor_clicked')")
+          .group('founders.id', 'target_investors.investor_id')
+          .pluck('founders.id', 'target_investors.investor_id', '1 + count(events) * 0.5')
+          .each do |(founder_id, investor_id, ranking)|
+            csv << [founder_id, investor_id, ranking]
+            added.add([founder_id, investor_id])
+        end
+      end
+
+      scope = all.joins(:intro_requests).includes(:intro_requests)
+      scope = added.inject(scope) { |s, ids| s.where.not('founders.id = ? AND intro_requests.investor_id = ?', *ids) }
+      scope.in_batches do |relation|
+        relation
+          .joins('LEFT OUTER JOIN emails ON (founders.id = emails.founder_id AND intro_requests.investor_id = emails.investor_id')
+          .group('founders.id', 'intro_request.investor_id')
+          .pluck('founders.id', 'intro_request.investor_id', '1 + count(emails) * greatest(1, avg(coalesce(emails.sentiment_score, 0) * coalesce(emails.sentiment_magnitude, 0) * 10))')
+          .each do |(founder_id, investor_id, ranking)|
+            csv << [founder_id, investor_id, ranking]
+            added.add([founder_id, investor_id])
+          end
+      end
+    end
+    added.count
+  end
+
   def create_target!(investor)
     TargetInvestor.from_investor! self, investor
   end
@@ -75,7 +124,7 @@ class Founder < ApplicationRecord
   end
 
   def primary_company
-    companies.where(primary: true).last || companies.last
+    @primary_company ||= companies.where(primary: true).last || companies.last
   end
 
   def as_json(options = {})
@@ -105,10 +154,6 @@ class Founder < ApplicationRecord
       OFFSET #{offset};
     SQL
     Investor.find_by_sql query
-  end
-
-  def sparse_rating_vector(csv)
-    # TODO
   end
 
   private
