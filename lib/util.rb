@@ -12,7 +12,7 @@ class Util
   def self.fix_encoding(string, fallback_encoding = 'CP1252')
     begin
       clean_string(tidy_utf8(string))
-    rescue ArgumentError
+    rescue ArgumentError, Encoding::UndefinedConversionError
       clean_string(string.encode(fallback_encoding, fallback: {
         "\u0081" => "\x81".force_encoding(fallback_encoding),
         "\u008D" => "\x8D".force_encoding(fallback_encoding),
@@ -21,7 +21,7 @@ class Util
         "\u009D" => "\x9D".force_encoding(fallback_encoding),
       }).force_encoding('UTF-8'))
     end
-  rescue ArgumentError
+  rescue ArgumentError, Encoding::UndefinedConversionError
     clean_string(string.encode('UTF-8',  invalid: :replace, undef: :replace, replace: ''))
   end
 
