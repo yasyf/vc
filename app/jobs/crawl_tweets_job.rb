@@ -1,11 +1,11 @@
 class CrawlTweetsJob < ApplicationJob
+  include Concerns::Batchable
   queue_as :default
 
   MAX_DELAY = 3.hours
+  LIMIT_FACTOR = 4
 
   def perform
-    Investor.where.not(twitter: nil).find_each do |investor|
-      CrawlInvestorTweetsJob.set(queue: :low, wait: MAX_DELAY * rand).perform_later investor.id
-    end
+    run_job_in_batches(Investor, CrawlInvestorTweetsJob)
   end
 end
