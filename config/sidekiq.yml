@@ -1,4 +1,4 @@
-:concurrency: 8
+:concurrency: 6
 :queues:
   - now
   - mailers
