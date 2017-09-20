@@ -13,8 +13,6 @@ class Entity < ApplicationRecord
 
   def self.from_html(body)
     from_cloud GoogleCloud::Language.new(body, format: :html).entities.proper
-  rescue Google::Cloud::InvalidArgumentError
-    []
   end
 
   def self.from_cloud(entities)

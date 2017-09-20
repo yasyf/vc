@@ -148,8 +148,8 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       direction: :outgoing,
       old_stage: target.stage,
       new_stage: stage,
-      sentiment_score: sentiment.score,
-      sentiment_magnitude: sentiment.magnitude,
+      sentiment_score: sentiment&.score,
+      sentiment_magnitude: sentiment&.magnitude,
       body: text,
     ) if target.investor.present?
 
@@ -163,7 +163,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def create_incoming(founder, from)
     stage =
-      if sentiment.negative? && PASS_PHRASES.any? { |p| p.in?(text.downcase) }
+      if sentiment&.negative? && PASS_PHRASES.any? { |p| p.in?(text.downcase) }
         TargetInvestor::RAW_STAGES.keys.index(:pass)
       else
         TargetInvestor::RAW_STAGES.keys.index(:respond)
@@ -178,8 +178,8 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       direction: :incoming,
       old_stage: target.stage,
       new_stage: stage,
-      sentiment_score: sentiment.score,
-      sentiment_magnitude: sentiment.magnitude,
+      sentiment_score: sentiment&.score,
+      sentiment_magnitude: sentiment&.magnitude,
       body: text,
     ) if target.investor.present?
 
@@ -198,7 +198,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def check_signature
     digest = OpenSSL::Digest::SHA256.new
-    signature = OpenSSL::HMAC.hexdigest(digest, ENV["MAILGUN_API_KEY"], [params[:timestamp], params[:token]].join)
+    signature = OpenSSL::HMAC.hexdigest(digest, ENV['MAILGUN_API_KEY'], [params[:timestamp], params[:token]].join)
     head :unauthorized unless params[:signature] == signature
   end
 end
