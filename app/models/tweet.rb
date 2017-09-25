@@ -37,7 +37,7 @@ class Tweet < ApplicationRecord
   end
 
   def prepare_for_writing!
-    self.class.twitter write: true
+    self.twitter_opts.merge!(write: true)
   end
 
   private

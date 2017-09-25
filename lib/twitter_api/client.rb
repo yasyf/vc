@@ -13,7 +13,7 @@ class TwitterApi::Client
 
   def initialize(write: false)
     @needs_token = write
-    @key_index = write ? 0 : rand(0..self.class.key_count)
+    @key_index = write ? 0 : rand(0...self.class.key_count)
   end
 
   def with_client(default = nil)

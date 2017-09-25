@@ -7,7 +7,7 @@ class ApplicationJob < ActiveJob::Base
   retry_with_exp_backoff Http::AngelList::Errors::APIError
   retry_with_exp_backoff Http::Crunchbase::Errors::APIError
   retry_with_exp_backoff Twitter::Error
-  
+
   # Timeouts
   retry_with_exp_backoff Timeout::Error
   retry_with_exp_backoff HTTP::TimeoutError
