@@ -13,8 +13,8 @@ class Entity < ApplicationRecord
 
   def self.from_html(body)
     cloud = GoogleCloud::Language.new(body, format: :html)
-    return [] unless cloud.present?
-    from_cloud cloud.entities&.proper
+    return [] unless cloud.present? && (entities = cloud.entities).present?
+    from_cloud entities.proper
   end
 
   def self.from_cloud(entities)

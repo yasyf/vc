@@ -59,13 +59,13 @@ module GoogleCloud
     end
 
     def sentiment
-      Sentiment.new @document.sentiment
+      @sentiment ||= Sentiment.new @document.sentiment
     rescue Google::Cloud::Error
       nil
     end
 
     def entities
-      Entities.new @document.entities
+      @entities ||= Entities.new @document.entities
     rescue Google::Cloud::Error
       nil
     end

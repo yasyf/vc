@@ -1,9 +1,7 @@
 class TwitterApi::Client
   def with_client(default = nil)
-    Retriable.retriable(on: Twitter::Error::TooManyRequests) do
-      yield client
-    end
-  rescue Twitter::Error::NotFound, Twitter::Error::TooManyRequests, Twitter::Error::Unauthorized
+    yield client
+  rescue Twitter::Error::NotFound
     default
   end
 
