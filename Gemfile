@@ -53,7 +53,7 @@ gem 'levenshtein-ffi', require: 'levenshtein'
 gem 'sentry-raven'
 gem 'roo'
 gem 'lograge'
-gem 'twitter'
+gem 'twitter', '~> 6.1.0'
 gem 'redis'
 gem 'redis-namespace'
 gem 'sidekiq'
@@ -96,19 +96,18 @@ end
 
 group :development do
   gem 'web-console', '>= 3.3.0'
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3.0'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'awesome_print'
+  gem 'guard-rspec', require: false
+  gem 'spring-commands-rspec'
 end
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.6'
   gem 'factory_girl_rails'
-  gem 'guard-rspec', require: false
-  gem 'rb-fsevent', '0.10.2'
-  gem 'spring-commands-rspec'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
