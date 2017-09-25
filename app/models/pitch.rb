@@ -108,7 +108,7 @@ class Pitch < ApplicationRecord
   end
 
   def decide!(override: nil)
-    update! decision: Time.current, funded: override || funded?
+    update! decision: Time.current, funded: override.nil? ? (yes_votes_count > no_votes_count) : override
     company.touch
   end
 
