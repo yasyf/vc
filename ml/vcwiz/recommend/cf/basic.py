@@ -9,5 +9,6 @@ def run_basic(filename, uid):
   top = rec.top_n(uid)
   print(top)
 
+
 if __name__ == '__main__':
   run_basic(sys.argv[1], sys.argv[2])
