@@ -18,7 +18,7 @@ class Tweet < ApplicationRecord
   end
 
   def method_missing(m, *args, &block)
-    raw_tweet.send(m, *args, &block)
+    raw_tweet&.send(m, *args, &block)
   end
 
   def share!
@@ -38,6 +38,6 @@ class Tweet < ApplicationRecord
   private
 
   def raw_tweet
-    @raw_tweet ||= cached { twitter_client.with_client { |c| c.status(twitter_id) } }
+    @raw_tweet ||= twitter_client.with_client { |c| c.status(twitter_id) }
   end
 end
