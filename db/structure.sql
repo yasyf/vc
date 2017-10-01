@@ -36,6 +36,20 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -604,6 +618,42 @@ ALTER SEQUENCE logged_events_id_seq OWNED BY logged_events.id;
 
 
 --
+-- Name: models; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE models (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    version integer NOT NULL,
+    data_generation bigint,
+    model_generation bigint,
+    last_trained timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    metrics hstore
+);
+
+
+--
+-- Name: models_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE models_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: models_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE models_id_seq OWNED BY models.id;
+
+
+--
 -- Name: news; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1135,6 +1185,13 @@ ALTER TABLE ONLY logged_events ALTER COLUMN id SET DEFAULT nextval('logged_event
 
 
 --
+-- Name: models id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY models ALTER COLUMN id SET DEFAULT nextval('models_id_seq'::regclass);
+
+
+--
 -- Name: news id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1336,6 +1393,14 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY logged_events
     ADD CONSTRAINT logged_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: models models_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY models
+    ADD CONSTRAINT models_pkey PRIMARY KEY (id);
 
 
 --
@@ -2442,6 +2507,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170915191458'),
 ('20170915235927'),
 ('20170919043157'),
-('20170919091817');
+('20170919091817'),
+('20170925203126'),
+('20170930070824'),
+('20170930070911');
 
 

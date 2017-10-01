@@ -63,6 +63,10 @@ Rails.application.routes.draw do
           post 'click'
         end
 
+        resource :pubsub, only: [] do
+          post 'generation'
+        end
+
         resource :intro, only: [:create]
 
         resources :target_investors do

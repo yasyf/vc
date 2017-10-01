@@ -1,12 +1,16 @@
 from surprise import Reader, Dataset, evaluate, print_perf
 from surprise.prediction_algorithms.algo_base import AlgoBase
+from surprise.dump import dump, load
 from operator import attrgetter
 from itertools import islice
 
-class Recommender(object):
-  def __init__(self, path: str, algo: AlgoBase, fmt='user item rating', sep=','):
+class SurpriseRecommender(object):
+  def __init__(self, algo: AlgoBase, path: str=None, fmt='user item rating', sep=','):
     self.algo = algo
-    self.data = Dataset.load_from_file(path, reader=Reader(line_format=fmt, sep=sep, skip_lines=1))
+    if path:
+      self.data = Dataset.load_from_file(path, reader=Reader(line_format=fmt, sep=sep, skip_lines=1))
+    else:
+      self.data = None
     self.trainset = None
 
     self.init()
@@ -15,8 +19,7 @@ class Recommender(object):
     self.data.split(n_folds=n)
 
   def evaluate(self):
-    perf = evaluate(self.algo, self.data, measures=['RMSE', 'MAE'])
-    print_perf(perf)
+    print_perf(self.metrics())
 
   def train(self):
     self.trainset = self.data.build_full_trainset()
@@ -39,3 +42,14 @@ class Recommender(object):
     sorted_predictions = sorted(predictions, key=attrgetter('est'), reverse=True)
     iids = map(attrgetter('iid'), sorted_predictions)
     return islice(iids, n)
+
+  def metrics(self):
+    return evaluate(self.algo, self.data)
+
+  def save(self, filename):
+    dump(filename, algo=self.algo)
+
+  @classmethod
+  def load(cls, filename):
+    _, algo = load(filename)
+    return cls(algo)
