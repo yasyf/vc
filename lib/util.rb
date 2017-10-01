@@ -22,7 +22,7 @@ class Util
       }).force_encoding('UTF-8'))
     end
   rescue ArgumentError, Encoding::UndefinedConversionError
-    clean_string(string.encode('UTF-8',  invalid: :replace, undef: :replace, replace: ''))
+    clean_string(string)
   end
 
   def self.tidy_utf8(string)
@@ -30,6 +30,6 @@ class Util
   end
 
   def self.clean_string(string)
-    string.gsub("\u0000", '').squish.to_s
+    string.gsub("\u0000", '').squish.to_s.encode('UTF-8',  invalid: :replace, undef: :replace, replace: '')
   end
 end
