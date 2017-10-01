@@ -278,6 +278,8 @@ class Investor < ApplicationRecord
   def scrape_tweets!
     return unless tweeter.present?
     tweeter.latest_tweets
+  rescue Twitter::Error::Unauthorized # private account
+    nil
   end
 
   def travel_status(city)
