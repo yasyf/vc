@@ -14,3 +14,7 @@ class Basic(Trainer):
 
   def _save(self, model, path):
     model.save(path)
+
+  def _metrics(self, model, measures={'rmse', 'mae'}):
+    metrics = model.metrics(measures)
+    return {k: sum(v) / float(len(v)) for k, v in metrics.items()}

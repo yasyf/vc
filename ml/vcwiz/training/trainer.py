@@ -19,10 +19,11 @@ class Trainer(ABC):
     self.model = self._train(filename)
 
   def remote_train(self, path):
-    file = tempfile.mkstemp(prefix=path, suffix='.csv')
+    fd, filename = tempfile.mkstemp(suffix='.csv')
     blob = self.bucket.blob(path)
-    blob.download_to_filename(file.name)
-    self.train(file.name)
+    blob.download_to_filename(filename)
+    self.train(filename)
+    os.close(fd)
 
   @abstractmethod
   def _save(self, model, path):
@@ -41,8 +42,9 @@ class Trainer(ABC):
     return blob.generation
 
   def remote_save(self, path):
-    file = tempfile.mkstemp(prefix=path, suffix='.model')
-    self.save(file.name)
+    fd, filename = tempfile.mkstemp(suffix='.model')
+    self.save(filename)
+    os.close(fd)
     return self.upload(path)
 
   @abstractmethod
@@ -52,6 +54,13 @@ class Trainer(ABC):
   def test(self, *args):
     assert self.model
     self._test(self.model, *args)
+
+  @abstractmethod
+  def _metrics(self, model, *args):
+    raise NotImplementedError
+
+  def metrics(self, *args):
+    return self._metrics(self.model, *args)
 
   @classmethod
   def _train_and_test(cls, filename, args):

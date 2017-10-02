@@ -43,8 +43,8 @@ class SurpriseRecommender(object):
     iids = map(attrgetter('iid'), sorted_predictions)
     return islice(iids, n)
 
-  def metrics(self):
-    return evaluate(self.algo, self.data)
+  def metrics(self, measures):
+    return evaluate(self.algo, self.data, measures=measures)
 
   def save(self, filename):
     dump(filename, algo=self.algo)

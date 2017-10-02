@@ -1,6 +1,7 @@
 import os, json
 from .pubsub import subscribe, push
 from importlib import import_module
+import vcwiz.training
 
 def get_trainer(model_name):
   mod = import_module('.{}'.format(model_name), 'vcwiz.training')

@@ -7,6 +7,7 @@ def subscribe(subscription, callback):
   subscriber.subscribe(path, callback=callback)
 
 def push(topic, message):
+  print(message)
   publisher = pubsub_v1.PublisherClient()
   path = publisher.topic_path(os.environ['GC_PROJECT_ID'], topic)
-  publisher.publish(path, message)
+  publisher.publish(path, message.encode('utf-8'))
