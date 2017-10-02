@@ -277,8 +277,10 @@ class Investor < ApplicationRecord
 
   def scrape_tweets!
     return unless tweeter.present?
+    return if tweeter.private?
     tweeter.latest_tweets
   rescue Twitter::Error::Unauthorized # private account
+    tweeter.update! private: true
     nil
   end
 

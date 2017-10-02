@@ -924,7 +924,8 @@ CREATE TABLE tweeters (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     owner_type character varying NOT NULL,
-    owner_id bigint NOT NULL
+    owner_id bigint NOT NULL,
+    private boolean DEFAULT false NOT NULL
 );
 
 
@@ -2510,6 +2511,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170919091817'),
 ('20170925203126'),
 ('20170930070824'),
-('20170930070911');
+('20170930070911'),
+('20171002023544');
 
 
