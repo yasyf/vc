@@ -317,8 +317,10 @@ class Investor < ApplicationRecord
   private
 
   def import_news_with_attrs(url, body, attrs)
-    news = News.where(investor: self, url: url).first_or_create!(attrs)
-    news.body = body
+    news = News.where(investor: self, url: url).first_or_initialize(attrs).tap do |news|
+      news.body = body
+      news.save!
+    end
     import_news news
   end
 

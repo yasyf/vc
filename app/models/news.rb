@@ -21,7 +21,7 @@ class News < ApplicationRecord
       else
         MetaInspector.new(url, download_images: false).tap do |page|
           raise ActiveRecord::RecordInvalid.new(self) unless page.response.status == 200
-          @body = page.to_s
+          @body = Util.fix_encoding(page.to_s)
         end
       end
     end
@@ -34,8 +34,9 @@ class News < ApplicationRecord
   end
 
   def self.create_with_body(url, body, attrs = {})
-    where(attrs.merge(url: url)).first_or_create!.tap do |news|
+    where(attrs.merge(url: url)).first_or_initialize.tap do |news|
       news.body = body
+      news.save!
     end
   end
 
