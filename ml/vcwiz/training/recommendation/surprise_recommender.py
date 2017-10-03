@@ -19,7 +19,7 @@ class SurpriseRecommender(object):
     self.data.split(n_folds=n)
 
   def evaluate(self):
-    print_perf(self.metrics())
+    print_perf(self.metrics(None))
 
   def train(self):
     self.trainset = self.data.build_full_trainset()
