@@ -55,6 +55,7 @@ module GoogleCloud
 
   class Language
     def initialize(text, format: :text)
+      text = Readability::Document.new(text).content if format == :html
       @document = self.class.client.document text, format: format
     end
 

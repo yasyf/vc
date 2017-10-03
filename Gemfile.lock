@@ -193,6 +193,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guess_html_encoding (0.0.11)
     hashdiff (0.3.6)
     hashie (3.5.6)
     htmlentities (4.3.4)
@@ -410,6 +411,9 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
+    ruby-readability (0.7.0)
+      guess_html_encoding (>= 0.0.4)
+      nokogiri (>= 1.6.0)
     ruby-trello (2.0.0)
       activemodel (>= 3.2.0)
       addressable (~> 2.3)
@@ -594,6 +598,7 @@ DEPENDENCIES
   retriable (~> 3.0)
   roo
   rspec-rails (~> 3.6)
+  ruby-readability
   ruby-trello
   sass-rails
   scout_apm (~> 3.0.x)
