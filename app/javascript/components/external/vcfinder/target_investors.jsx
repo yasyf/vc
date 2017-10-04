@@ -112,7 +112,7 @@ export default class TargetInvestors extends React.PureComponent {
 
     let query = buildQuery(row, autofillPaths);
     let newChanges = [[i, prop, newVal]];
-    ffetch(`${InvestorsSearchPath}?${query.join('&')}`).then(res => {
+    ffetch(`${InvestorsSearchPath}?${query}`).then(res => {
       if (!res.length) {
         this.hot.setDataAtRowProp(newChanges);
         return;

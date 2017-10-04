@@ -9,10 +9,8 @@ module External::ApplicationHelper
     a.map { |v| { value: v, label: v } }
   end
 
-  def login_stages
-    %w(start company profile suggest done).each_with_index.flat_map do |s, i|
-      [[s, i], [i, i]]
-    end.to_h
+  def records_to_options(a, key = 'name')
+    a.map { |v| v.merge({ value: v['id'], label: v[key] }) }
   end
 
   def foundation_flash_type(level)

@@ -95,6 +95,10 @@ class Company < ActiveRecord::Base
     super options.reverse_merge(only: [:id, :name, :description, :industry], methods: [:complete?, :cb_url, :al_url, :website])
   end
 
+  def as_json_search(options = {})
+    as_json options.reverse_merge(only: [:id, :name, :description, :industry, :domain], methods: [])
+  end
+
   def as_json_api(options = {})
     options.reverse_merge!(
       methods: [:competitors],

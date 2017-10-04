@@ -6,12 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= yield(:title) %> - Dorm Room Fund</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.2/css/foundation.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.2/css/foundation-float.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation-float.min.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
-  <%= stylesheet_link_tag    'external/application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'external/application', media: 'all', 'data-turbolinks-track' => true %>
   <link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">
 
   <% if content_for?(:styles) %>
@@ -58,10 +56,5 @@
     </div>
   <% end %>
   <%= yield %>
-  <footer>
-    <p class="faded">
-      <small>made with &#10084; by <a href="http://drf.vc">Dorm Room Fund</a></small>
-    </p>
-  </footer>
 </body>
 </html>

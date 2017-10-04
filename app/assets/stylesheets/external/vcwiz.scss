@@ -1,0 +1,90 @@
+$white: #FFFFFF;
+$black: #000000;
+$grey: #666666;
+
+#vcwiz {
+  font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
+}
+
+#top-bar {
+  height: 85px;
+  background-image: linear-gradient(-180deg, #2ADBC4 0%, #23CFB2 100%);
+
+  .title {
+    color: $white;
+    padding-left: 2vw;
+  }
+
+  .subtitle {
+    vertical-align: middle;
+  }
+
+  h3, h5 {
+    display: inline-block;
+  }
+
+  h3 {
+    display: inline-block;
+    padding-right: 0.5em;
+  }
+}
+
+.faded {
+  opacity: 0.8;
+}
+
+.filter-column {
+  padding-left: 0;
+  padding-right: 0;
+
+  .Select-placeholder {
+    color: $black;
+  }
+
+  .is-focused .Select-placeholder {
+    color: $grey;
+  }
+}
+
+.search-hero {
+  padding-top: 75px;
+  width: 70vw;
+  margin: 0 auto;
+
+  p {
+    color: $grey;
+  }
+
+  .filters {
+    padding-top: 25px;
+  }
+}
+
+.company-container {
+  img {
+    bottom: 2px;
+    position: relative;
+  }
+
+  mark {
+    font-weight: bold;
+    background-color: unset;
+  }
+
+  p {
+    margin-bottom: 0.25rem;
+  }
+}
+
+.labels {
+  bottom: 2px;
+  position: relative;
+
+  .label {
+    margin-right: 5px;
+  }
+
+  .small {
+    font-size: x-small;
+  }
+}

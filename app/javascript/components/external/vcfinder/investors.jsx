@@ -24,7 +24,7 @@ export default class Investors extends React.Component {
   }
 
   fetchInvestors(filters) {
-    ffetch(`${InvestorsFilterPath}?${buildQuery(filters).join('&')}`).then(investors => {
+    ffetch(`${InvestorsFilterPath}?${buildQuery(filters)}`).then(investors => {
       this.setState({investors, loading: false});
     });
   }

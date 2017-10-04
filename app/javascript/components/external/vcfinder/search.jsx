@@ -1,4 +1,3 @@
-import Handlebars from 'handlebars';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import Modal from 'react-modal';

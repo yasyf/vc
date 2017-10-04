@@ -123,10 +123,10 @@ export let lazyAutocomplete = function(path, fields, field, remoteField = null) 
     let row = this.getRow(selected[0]);
     _.set(row, field, q);
     let query = buildQuery(row, fields);
-    if (!query.length) {
+    if (!query) {
       return;
     }
-    ffetch(`${path}?${query.join('&')}&pluck=${remoteField}`).then(process);
+    ffetch(`${path}?${query}&pluck=${remoteField}`).then(process);
   };
   return {
     type: 'autocomplete',

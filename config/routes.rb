@@ -42,6 +42,17 @@ Rails.application.routes.draw do
       end
     end
 
+    scope :vcwiz, controller: 'vcwiz', as: :vcwiz do
+      root action: 'index'
+      get 'login'
+      get 'admin'
+
+      scope :intro do
+        get 'opt_in'
+        get 'decide'
+      end
+    end
+
     namespace :api, defaults: { format: :json } do
       namespace :v1 do
         resources :investors do
@@ -55,6 +66,12 @@ Rails.application.routes.draw do
             get 'fuzzy_search'
             get 'recommendations'
             get 'locations'
+          end
+        end
+
+        resources :companies, only: [:show] do
+          collection do
+            get 'search'
           end
         end
 

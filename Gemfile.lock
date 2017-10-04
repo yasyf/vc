@@ -611,7 +611,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
-  textacular
+  textacular (~> 5.0)
   therubyracer
   turbolinks
   twitter (~> 6.1.0)
