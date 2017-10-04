@@ -60,15 +60,15 @@ $grey: #666666;
   }
 }
 
+mark.highlighter {
+  font-weight: bold;
+  background-color: unset;
+}
+
 .company-container {
   img {
     bottom: 2px;
     position: relative;
-  }
-
-  mark {
-    font-weight: bold;
-    background-color: unset;
   }
 
   p {

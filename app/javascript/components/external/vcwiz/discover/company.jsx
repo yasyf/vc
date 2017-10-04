@@ -12,6 +12,7 @@ export default class Company extends React.Component {
           {image}
           {' '}
           <Highlighter
+            highlightClassName='highlighter'
             searchWords={[this.props.input]}
             textToHighlight={this.props.name}
           />

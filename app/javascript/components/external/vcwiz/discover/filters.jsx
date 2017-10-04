@@ -2,13 +2,14 @@ import React from 'react';
 import {extend, ffetch, storageKey, buildQuery} from '../global/utils';
 import {
   CompetitorIndustriesOptions,
-  CompetitorFundTypeOptions,
+  CompetitorFundTypesOptions,
   InvestorsLocationsPath,
   CompaniesSearchPath,
 } from '../global/constants.js.erb';
 import Select from '../global/fields/select';
 import Company from './company';
 import {Column, Row} from 'react-foundation';
+import Highlighter from 'react-highlight-words';
 
 const SessionStorageKey = storageKey('Filters');
 
@@ -23,7 +24,7 @@ export default class Filters extends React.Component {
   }
 
   onInputChange = (name, val) => {
-    let inputs = extend(this.state.filters, {[name]: val});
+    let inputs = extend(this.state.inputs, {[name]: val});
     this.setState({inputs});
   };
 
@@ -34,11 +35,18 @@ export default class Filters extends React.Component {
   };
 
   selectProps(name) {
+    let optionRenderer = o => <Highlighter
+      highlightClassName='highlighter'
+      searchWords={[this.state.inputs[name]]}
+      textToHighlight={o.label}
+    />;
     return {
       name: name,
       value: this.state.filters[name],
       placeholder: _.capitalize(name),
       multi: true,
+      optionRenderer,
+      onInputChange: v => this.onInputChange(name, v),
       onChange: this.onChange,
     };
   }
@@ -74,14 +82,15 @@ export default class Filters extends React.Component {
         return ffetch(`${path}?${buildQuery({q})}`).then(options => ({options}));
       }
     };
-    let renderer = OptionComponent ? o => <OptionComponent input={this.state.inputs[name]} {...o} /> : undefined;
+    let props = this.selectProps(name);
+    if (OptionComponent) {
+      props.optionRenderer = o => <OptionComponent input={this.state.inputs[name]} {...o} />;
+    }
     return (
       <Column large={size} className="filter-column">
         <Select
           loadOptions={load}
-          optionRenderer={renderer}
-          onInputChange={v => this.onInputChange(name, v)}
-          {...this.selectProps(name)}
+          {...props}
         />
       </Column>
     );
@@ -91,7 +100,7 @@ export default class Filters extends React.Component {
     return (
       <div className="float-center investor">
         <Row>
-          {this.renderSelect('fund_type', CompetitorFundTypeOptions, 2)}
+          {this.renderSelect('fund_type', CompetitorFundTypesOptions, 2)}
           {this.renderSelect('industry', CompetitorIndustriesOptions, 2)}
           {this.renderStaticRemoteSelect('location', InvestorsLocationsPath, 2)}
           {this.renderDynamicRemoteSelect('companies', CompaniesSearchPath, 6, Company)}
