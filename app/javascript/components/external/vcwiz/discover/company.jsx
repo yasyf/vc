@@ -2,6 +2,7 @@ import React from 'react';
 import Labels from '../global/labels';
 import {CompetitorIndustries} from '../global/constants.js.erb';
 import Highlighter from 'react-highlight-words';
+import Truncate from 'react-truncate';
 
 export default class Company extends React.Component {
   render() {
@@ -21,7 +22,9 @@ export default class Company extends React.Component {
           <Labels items={this.props.industry} extraClass="small" translate={CompetitorIndustries} />
         </p>
         <p>
-          {this.props.description}
+          <Truncate lines={2}>
+            {this.props.description}
+          </Truncate>
         </p>
       </div>
     );

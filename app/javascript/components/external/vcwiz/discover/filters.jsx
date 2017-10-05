@@ -102,8 +102,8 @@ export default class Filters extends React.Component {
         <Row>
           {this.renderSelect('fund_type', CompetitorFundTypesOptions, 2)}
           {this.renderSelect('industry', CompetitorIndustriesOptions, 2)}
-          {this.renderStaticRemoteSelect('location', InvestorsLocationsPath, 2)}
-          {this.renderDynamicRemoteSelect('companies', CompaniesSearchPath, 6, Company)}
+          {this.renderStaticRemoteSelect('location', InvestorsLocationsPath, 3)}
+          {this.renderDynamicRemoteSelect('companies', CompaniesSearchPath, 5, Company)}
         </Row>
       </div>
     );

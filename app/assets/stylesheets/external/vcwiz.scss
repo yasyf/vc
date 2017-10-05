@@ -58,6 +58,19 @@ $grey: #666666;
   .filters {
     padding-top: 25px;
   }
+
+  .Select-control {
+    height: 50px;
+  }
+
+  .Select--multi .Select-multi-value-wrapper {
+    padding-top: 2px;
+  }
+
+  .Select--multi .Select-value {
+    font-size: 1em;
+    padding: 3px;
+  }
 }
 
 mark.highlighter {
@@ -73,6 +86,7 @@ mark.highlighter {
 
   p {
     margin-bottom: 0.25rem;
+    font-size: small;
   }
 }
 
