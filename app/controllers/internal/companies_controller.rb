@@ -1,10 +1,13 @@
 class Internal::CompaniesController < Internal::ApplicationController
   INCLUDES = [:team, users: :team, pitches: [:votes, :team], cards: :list]
+  LIMIT = 100
 
   before_action :authenticate_internal_user!
 
   def all
-    companies = apply_filters Company.order(:name, :id)
+    flash_if_no_filter unless params[:filter].present?
+
+    companies = apply_filters Company.order(:name, :id).limit(LIMIT)
     lists = companies.joins(cards: :list).pluck('DISTINCT ON(companies.name, companies.id) companies.id, lists.id, lists.pos, lists.name')
     company_lists = lists.map { |l| l.first(2) }.to_h
     list_positions = lists.map { |l| l.drop(1).first(2) }.to_h
@@ -33,6 +36,10 @@ class Internal::CompaniesController < Internal::ApplicationController
   end
 
   private
+
+  def flash_if_no_filter
+    flash_warning 'Some results not shown! Please use the search bar'
+  end
 
   def page
     (params[:page] || 0).to_i
