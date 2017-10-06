@@ -6,7 +6,6 @@ class Internal::CompaniesController < Internal::ApplicationController
 
   def all
     flash_if_no_filter unless params[:filter].present?
-
     companies = apply_filters Company.order(:name, :id).limit(LIMIT)
     lists = companies.joins(cards: :list).pluck('DISTINCT ON(companies.name, companies.id) companies.id, lists.id, lists.pos, lists.name')
     company_lists = lists.map { |l| l.first(2) }.to_h
@@ -20,7 +19,8 @@ class Internal::CompaniesController < Internal::ApplicationController
   end
 
   def index
-    @companies = apply_filters Company.includes(*INCLUDES).pitched.order('pitches.when DESC')
+    flash_if_no_filter unless params[:filter].present?
+    @companies = apply_filters Company.includes(*INCLUDES).pitched.order('pitches.when DESC').limit(LIMIT)
     @heading = 'All Pitches'
   end
 
