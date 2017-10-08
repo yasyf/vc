@@ -2,10 +2,8 @@ class CompanyNewsJob < ApplicationJob
   queue_as :default
 
   def perform
-    Company.includes(tweeter: :tweets).portfolio.map(&:tweeter).compact.each do |tweeter|
-      tweet = tweeter.newsworthy_tweets.last
-      next unless tweet.present? && !tweet.shared?
-      tweet.share!
+    Tweeter.where(owner_type: 'Company', owner_id: Company.portfolio).pluck(:id).each do |tweeter_id|
+      TweeterNewsJob.perform_later(tweeter_id)
     end
   end
 end
