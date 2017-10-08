@@ -113,3 +113,5 @@ export let getDomain = (url) => {
 };
 
 export let storageKey = (key) => `${StoragePrefix}::${key}`;
+
+export let timestamp = () => Date.now();

@@ -44,8 +44,8 @@ Rails.application.routes.draw do
 
     scope :vcwiz, controller: 'vcwiz', as: :vcwiz do
       root action: 'index'
-      get 'login'
-      get 'admin'
+      get 'discover'
+      get 'filter'
 
       scope :intro do
         get 'opt_in'
@@ -72,6 +72,13 @@ Rails.application.routes.draw do
         resources :companies, only: [:show] do
           collection do
             get 'search'
+          end
+        end
+
+        resources :competitors, only: [:show] do
+          collection do
+            get 'filter'
+            get 'filter_count'
           end
         end
 

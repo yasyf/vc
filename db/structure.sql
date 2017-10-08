@@ -205,7 +205,8 @@ CREATE TABLE competitors (
     fund_type character varying[],
     al_id integer,
     location character varying[],
-    country character varying
+    country character varying,
+    photo character varying
 );
 
 
@@ -2512,6 +2513,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170925203126'),
 ('20170930070824'),
 ('20170930070911'),
-('20171002023544');
+('20171002023544'),
+('20171006234544');
 
 

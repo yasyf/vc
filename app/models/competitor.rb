@@ -74,6 +74,7 @@ class Competitor < ApplicationRecord
   sort :location
 
   has_many :investors, dependent: :destroy
+  has_many :target_investors, through: :investors
   has_many :investments, dependent: :destroy
   has_many :companies, through: :investments
   has_many :notes, as: :subject, dependent: :destroy
@@ -143,17 +144,41 @@ class Competitor < ApplicationRecord
     company.competitors.map(&:acronym).join(', ')
   end
 
+  def self._filtered(params)
+    competitors = all
+    %w(industry fund_type location).each do |param|
+      next unless params[param].present?
+      competitors = competitors.where("competitors.#{param} && ?", "{#{params[param]}}")
+    end
+    competitors = competitors.joins(:companies).where('companies.id': params[:companies].split(',')) if params[:companies].present?
+    competitors
+  end
+
+  def self.filtered(params)
+    filtered = _filtered(params)
+    filtered = filtered.left_outer_joins(:companies) unless params[:companies].present?
+    filtered
+      .left_outer_joins(:investors)
+      .group('competitors.id')
+      .order('count(investors.featured) DESC, count(investors.target_investors_count) DESC, count(companies.id) DESC')
+  end
+
+  def self.filtered_count(params)
+    _filtered(params).count
+  end
+
   def as_json(options = {})
     super options.reverse_merge(
       only: [
         :industry,
         :name,
-        :description,
-        :fund_type
+        :fund_type,
+        :location,
+        :photo,
       ],
       methods: [
         :acronym,
-        :notes,
+        :track_status
       ]
     )
   end
@@ -175,6 +200,10 @@ class Competitor < ApplicationRecord
   end
 
   private
+
+  def track_status
+    target_investors.order(updated_at: :desc).limit(1).pluck(:stage).first
+  end
 
   def start_crunchbase_job
     CompetitorCrunchbaseJob.perform_later(id)

@@ -1,4 +1,5 @@
 class Founder < ApplicationRecord
+  include Concerns::Cacheable
   include Concerns::TimeZonable
   include Concerns::Eventable
 
@@ -120,7 +121,7 @@ class Founder < ApplicationRecord
   end
 
   def drf?
-    companies.any?(&:funded?) || admin? || Rails.env.development?
+    cached { companies.any?(&:funded?) } || admin? || Rails.env.development?
   end
 
   def primary_company

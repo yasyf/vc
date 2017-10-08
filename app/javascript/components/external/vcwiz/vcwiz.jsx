@@ -1,13 +1,12 @@
 import React from 'react';
-import Header from './global/header';
-import SearchHero from './discover/search_hero';
+import Header from './global/shared/header';
 
 export default class VCWiz extends React.Component {
   render() {
     return (
-      <div id="vcwiz">
+      <div id="vcwiz" className='full-screen'>
         <Header />
-        <SearchHero />
+        {this.props.children}
       </div>
     )
   }

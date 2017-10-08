@@ -1,14 +1,22 @@
+/* eslint-disable global-require */
 /* eslint no-console:0 */
 
-import VCWiz from 'components/external/vcwiz/vcwiz';
+import 'react-toastify/dist/ReactToastify.min.css';
+import 'fixed-data-table-2/dist/fixed-data-table.css';
+import 'react-select-plus/dist/react-select-plus.css';
 import WebpackerReact from 'webpacker-react';
 
-import 'react-toastify/dist/ReactToastify.min.css';
+let toPath = (name) => `${name.toLowerCase()}/${name.toLowerCase()}`;
+let toComponent = (name) => require(`components/external/vcwiz/${toPath(name)}`).default;
 
-WebpackerReact.setup({VCWiz});
+const names = ['Discover', 'Filter'];
+
+let components = _.fromPairs(_.map(names, name => [name, toComponent(name)]));
+WebpackerReact.setup(components);
 
 if (module.hot) {
-  Object.entries({
-    VCWiz: 'components/external/vcwiz/vcwiz',
-  }).forEach(([comp, path]) => module.hot.accept(path, () => WebpackerReact.renderOnHMR(comp)));
+  names.forEach(name => module.hot.accept(
+    `components/external/vcwiz/${toPath(name)}`,
+    () => WebpackerReact.renderOnHMR(toComponent(name)))
+  );
 }

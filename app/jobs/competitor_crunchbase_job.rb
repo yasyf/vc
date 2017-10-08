@@ -25,6 +25,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor.description ||= cb_fund.description || al_fund.description
     competitor.location = (competitor.location || []) + (al_fund.locations || []) + (cb_fund.locations || [])
     competitor.country = cb_fund.country
+    competitor.photo = al_fund.logo || cb_fund.image
     competitor.save! if competitor.changed?
 
     if (team = cb_fund.team).present?

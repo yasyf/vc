@@ -1,16 +1,23 @@
 class External::VcwizController < External::ApplicationController
-  before_action :check_founder!, except: [:login, :opt_in, :decide]
+  layout 'vcwiz'
+  before_action :check_founder!, except: [:opt_in, :decide]
 
   def index
-    redirect_to action: :login unless stage == :done
+    redirect_to action: :discover
   end
 
-  def login
-    @stage = stage
+  def discover
+    title 'Discover'
+    component 'Discover'
+    render_default
   end
 
-  def admin
-    render status: :not_found unless current_external_founder.admin?
+  def filter
+    title 'Filter'
+    component 'Filter'
+    puts filter_params.to_s
+    props competitors: Competitor.filtered(filter_params).limit(10), count: Competitor.filtered_count(filter_params)
+    render_default
   end
 
   def opt_in
@@ -24,6 +31,22 @@ class External::VcwizController < External::ApplicationController
 
   private
 
+  def title(title)
+    @title = title
+  end
+
+  def component(name)
+    @component_name = name
+  end
+
+  def props(props)
+    @component_props = props
+  end
+
+  def render_default
+    render html: '', layout: 'vcwiz'
+  end
+
   def optin?
     params[:optin] == 'true'
   end
@@ -36,27 +59,7 @@ class External::VcwizController < External::ApplicationController
     @intro_request ||= IntroRequest.where(token: params[:token]).first!
   end
 
-  def stage
-    if !current_external_founder.present?
-      :start
-    elsif !company&.complete? || !company&.verified?
-      :company
-    elsif !target_investors&.present? && !recommendations_shown?
-      :suggest
-    else
-      :done
-    end
-  end
-
-  def recommendations_shown?
-    session[:recommendations_shown]
-  end
-
-  def target_investors
-    current_external_founder&.target_investors
-  end
-
-  def company
-    current_external_founder&.primary_company
+  def filter_params
+    params.permit(:industry, :location, :fund_type, :companies, :similar)
   end
 end

@@ -4,13 +4,12 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= yield(:title) %> - Dorm Room Fund</title>
+  <title><%= yield(:title) %></title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation-float.min.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css"/>
   <%= stylesheet_link_tag 'external/application', media: 'all', 'data-turbolinks-track' => true %>
-  <link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">
 
   <% if content_for?(:styles) %>
     <%= stylesheet_link_tag "external/#{yield(:styles)}", media: 'all', 'data-turbolinks-track' => true %>
@@ -55,6 +54,6 @@
       </button>
     </div>
   <% end %>
-  <%= yield %>
+  <%= content_for?(:content) ? yield(:content) : yield %>
 </body>
 </html>

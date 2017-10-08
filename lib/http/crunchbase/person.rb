@@ -20,10 +20,6 @@ module Http::Crunchbase
       Util.fix_encoding(bio) if bio.present?
     end
 
-    def image
-      get_in 'properties', 'profile_image_url'
-    end
-
     def gender
       gender = get_in('properties', 'gender')
       return nil unless gender.present?

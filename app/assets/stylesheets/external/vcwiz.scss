@@ -1,14 +1,33 @@
 $white: #FFFFFF;
 $black: #000000;
 $grey: #666666;
+$header-grey: #434D59;
+$light-grey: #E9E9E9;
+$success: #2ADBC4;
+$success-dark: #23CFB2;
+
+html, body, .full-screen {
+  height: 100%;
+  width: 100%;
+}
 
 #vcwiz {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
 
+.button.success {
+  background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
+  color: $white;
+
+  &:focus, &:hover {
+    background-image: linear-gradient(-180deg, $success-dark 0%, $success-dark 100%);
+    color: $white;
+  }
+}
+
 #top-bar {
   height: 85px;
-  background-image: linear-gradient(-180deg, #2ADBC4 0%, #23CFB2 100%);
+  background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
 
   .title {
     color: $white;
@@ -17,6 +36,7 @@ $grey: #666666;
 
   .subtitle {
     vertical-align: middle;
+    font-weight: bold;
   }
 
   h3, h5 {
@@ -61,15 +81,44 @@ $grey: #666666;
 
   .Select-control {
     height: 50px;
+    text-align: left;
   }
 
   .Select--multi .Select-multi-value-wrapper {
     padding-top: 2px;
   }
 
+  .Select--multi .Select-placeholder {
+    padding-top: 6px;
+  }
+
+  .Select--multi .Select-value-label {
+    padding: 2px;
+  }
+
   .Select--multi .Select-value {
     font-size: 1em;
     padding: 3px;
+    color: unset;
+    background-color: rgba(42, 219, 196, 0.24);
+  }
+
+  .Select--multi .Select-value-icon {
+    border-right: none;
+  }
+
+  .boxed {
+    height: 50px;
+    padding: 3px 5px;
+  }
+
+  .button.success {
+    font-size: 1em;
+    font-weight: bolder;
+    border-radius: 5%;
+    height: 100%;
+    width: 100%;
+    padding: 12px 0 0;
   }
 }
 
@@ -101,4 +150,70 @@ mark.highlighter {
   .small {
     font-size: x-small;
   }
+}
+
+.results-table {
+  width: 100%;
+  height: 100%;
+
+  .image-text {
+    display: inline-block;
+    vertical-align: 1.1em;
+    margin-left: 0.3em;
+    width: 100px;
+  }
+
+  .rounded-image {
+    display: inline-block;
+    background-color: $white;
+    height: 60px;
+    width: 60px;
+    overflow: hidden;
+    border: 1px solid $light-grey;
+    border-radius: 50%;
+
+    img {
+      height: 35px;
+      width: 35px;
+      margin: 12px;
+      object-fit: cover;
+    }
+  }
+
+  .header {
+    background: $header-grey;
+    color: $white;
+    text-transform: uppercase;
+  }
+
+  .table-main {
+    border-color: $header-grey;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .Select-control, .is-open > .Select-control {
+    border-radius: 40px;
+  }
+
+  .Select-placeholder, .Select--single > .Select-control .Select-value {
+    text-align: center;
+  }
+
+  .Select-placeholder {
+    font-weight: bold;
+    color: $white;
+    background-color: $success;
+    text-transform: uppercase;
+  }
+}
+
+// Hacks
+
+#vcwiz > div > div > div > div > div.fixedDataTableRowLayout_rowWrapper > div > div > div:nth-child(2) {
+  background-color: $header-grey;
+}
+
+.Select-menu-outer.track {
+  width: 110px;
 }

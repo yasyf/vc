@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactSelect from 'react-select';
+import ReactSelect from 'react-select-plus';
 import Input from './input';
 
 export default class Select extends Input {

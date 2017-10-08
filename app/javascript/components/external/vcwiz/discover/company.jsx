@@ -1,5 +1,5 @@
 import React from 'react';
-import Labels from '../global/labels';
+import Labels from '../global/shared/labels';
 import {CompetitorIndustries} from '../global/constants.js.erb';
 import Highlighter from 'react-highlight-words';
 import Truncate from 'react-truncate';
