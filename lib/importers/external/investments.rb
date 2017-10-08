@@ -47,15 +47,6 @@ module Importers::External
         founder.save!
       end
 
-      if row[:investor].present?
-        row[:investor].location ||= row[:location]
-        row[:investor].save!
-      end
-
-      row[:competitor].location ||= []
-      row[:competitor].location << row[:location]
-      row[:competitor].save!
-
       investment = Investment.where(row.slice(:company, :competitor)).first_or_initialize
       investment.investor ||= row[:investor] if row[:investor].present?
       investment.funded_at = row[:funded_at]
