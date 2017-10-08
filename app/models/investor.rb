@@ -194,10 +194,11 @@ class Investor < ApplicationRecord
     [:first_name, :last_name]
   end
 
-  def self.locations
-    Rails.cache.fetch('Investor/locations', { expires_in: 1.day }) do
-      where.not(location: nil).group('location').order('count(*) DESC').pluck('location')
-    end
+  def self.locations(query, limit = 5)
+    scope = where.not(location: nil).select('location, count(investors.id) as cnt').group('location')
+    scope = scope.fuzzy_search(location: query) if query.present?
+    scope.order('cnt DESC').limit(limit)
+    connection.select_values scope.to_sql
   end
 
   def as_json(options = {})

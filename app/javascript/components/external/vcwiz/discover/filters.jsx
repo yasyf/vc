@@ -35,7 +35,11 @@ export default class Filters extends React.Component {
   }
 
   fetchNumInvestors(filters) {
-    ffetch(`${CompetitorsFilterCountPath}?${this.queryString(filters)}`).then(resp => {
+    let query = this.queryString(filters);
+    if (!query) {
+      return;
+    }
+    ffetch(`${CompetitorsFilterCountPath}?${query}`).then(resp => {
       this.setState({numInvestors: resp.count})
     })
   }
@@ -93,9 +97,9 @@ export default class Filters extends React.Component {
   }
 
   renderDynamicRemoteSelect(name, path, size = 3, OptionComponent = null) {
-    let load = (q, cb) => {
+    let load = (q) => {
       if (!q) {
-        cb(null, {options: this.state.filters[name]});
+        return ffetch(`${path}`).then(options => ({options: (this.state.filters[name] || []).concat(options)}));
       } else {
         return ffetch(`${path}?${buildQuery({q})}`).then(options => ({options}));
       }
@@ -128,7 +132,7 @@ export default class Filters extends React.Component {
         <Row>
           {this.renderSelect('fund_type', CompetitorFundTypesOptions, 2)}
           {this.renderSelect('industry', CompetitorIndustriesOptions, 2)}
-          {this.renderStaticRemoteSelect('location', InvestorsLocationsPath, 3)}
+          {this.renderDynamicRemoteSelect('location', InvestorsLocationsPath, 3)}
           {this.renderDynamicRemoteSelect('companies', CompaniesSearchPath, 3, Company)}
           <Column large={2} className="filter-column">
             <div className="boxed">

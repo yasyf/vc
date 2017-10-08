@@ -25,7 +25,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def locations
-    render json: arr_to_options(Investor.locations)
+    render json: arr_to_options(Investor.locations(params[:q]))
   end
 
   def filter

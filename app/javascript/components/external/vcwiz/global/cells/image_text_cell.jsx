@@ -12,7 +12,7 @@ export default class ImageTextCell extends TextCell {
   };
 
   renderImage() {
-    let src = this.state.src ? this.state.src : `http://via.placeholder.com/40x40/000000/FFFFFF?text=${this.state.fallback}`;
+    let src = this.state.src ? this.state.src : `https://via.placeholder.com/40x40/000000/FFFFFF?text=${this.state.fallback}`;
     return <div className="rounded-image"><img src={src} /></div>;
   }
 
