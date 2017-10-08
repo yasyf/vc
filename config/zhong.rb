@@ -32,8 +32,8 @@ Zhong.schedule do
   end
 
   category 'crawl' do
-    every(1.day, 'investors.posts', at: '01:00') { CrawlPostsJob.perform_later }
-    every(6.hours, 'investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }
+    every(4.days, 'investors.posts', at: '01:00') { CrawlPostsJob.perform_later }
+    every(12.hours, 'investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }
     every((1.5).weeks, 'refresh', at: 'Monday 5:30') { RefreshJob.perform_later }
   end
 

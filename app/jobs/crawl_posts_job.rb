@@ -2,7 +2,7 @@ class CrawlPostsJob < ApplicationJob
   include Concerns::Batchable
   queue_as :default
 
-  MAX_DELAY = 12.hours
+  MAX_DELAY = 1.day
   LIMIT_FACTOR = 4
 
   def perform
