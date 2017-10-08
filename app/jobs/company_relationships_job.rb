@@ -138,16 +138,22 @@ class CompanyRelationshipsJob < ApplicationJob
 
   def import_news(url, body, published_at)
     @company.investments.where(investor_id: nil).find_each do |cc|
-        cc.competitor.investors.find_each do |investor|
-          if body.include?(investor.name)
-            cc.update! investor: investor unless cc.investor.present?
-            news = News.create_with_body(url, body, investor: investor, published_at: published_at)
-            news.company = @company
-            news.save! if news.changed?
-            break
-          end
+      destroy_invalid_investments!(cc.competitor_id) and next unless (competitor = cc.competitor).present?
+      competitor.investors.find_each do |investor|
+        if body.include?(investor.name)
+          cc.update! investor: investor unless cc.investor.present?
+          news = News.create_with_body(url, body, investor: investor, published_at: published_at)
+          news.company = @company
+          news.save! if news.changed?
+          break
         end
       end
+    end
     News.create_with_body(url, body, company: @company)
+  end
+
+  def destroy_invalid_investments!(competitor_id)
+    Rails.logger.error "[destroy_invalid_investments] #{competitor_id}"
+    Investment.where(competitor_id: competitor_id).destroy_all
   end
 end
