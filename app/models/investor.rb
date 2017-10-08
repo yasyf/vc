@@ -91,7 +91,8 @@ class Investor < ApplicationRecord
 
   def set_timezone!
     return unless self.location.present?
-    self.time_zone = Http::GoogleMaps.new.timezone(self.location).name
+    return unless (timezone = Http::GoogleMaps.new.timezone(self.location)).present?
+    self.time_zone = timezone.name
   end
 
   def crawl_homepage!
