@@ -16,7 +16,7 @@ class External::VcwizController < External::ApplicationController
     title 'Filter'
     component 'Filter'
     puts filter_params.to_s
-    props competitors: Competitor.filtered(filter_params).limit(10), count: Competitor.filtered_count(filter_params)
+    props competitors: Competitor.filtered(filter_params).limit(25), count: Competitor.filtered_count(filter_params)
     render_default
   end
 

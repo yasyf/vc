@@ -1,7 +1,7 @@
 class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
 
-  MAX_LIMIT = 10
+  MAX_LIMIT = 25
 
   before_action :authenticate_api_user!
 
