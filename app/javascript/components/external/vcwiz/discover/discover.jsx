@@ -5,7 +5,7 @@ import SearchHero from './search_hero';
 export default class Discovery extends React.Component {
   render() {
     return (
-      <VCWiz>
+      <VCWiz page="discover">
         <SearchHero />
       </VCWiz>
     )

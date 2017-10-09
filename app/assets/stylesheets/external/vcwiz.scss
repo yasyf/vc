@@ -2,6 +2,7 @@ $white: #FFFFFF;
 $black: #000000;
 $grey: #666666;
 $header-grey: #434D59;
+$mid-grey: #AAADAE;
 $light-grey: #E9E9E9;
 $success: #2ADBC4;
 $success-dark: #23CFB2;
@@ -77,6 +78,25 @@ html, body, .full-screen {
 
   .filters {
     padding-top: 25px;
+  }
+}
+
+.filter-page {
+  background-color: $light-grey;
+}
+
+.toplevel-filter-page {
+  .filters {
+    padding-top: 25px;
+    padding-bottom: 25px;
+  }
+}
+
+.filters {
+  h6 {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: $mid-grey;
   }
 
   .Select-control {
