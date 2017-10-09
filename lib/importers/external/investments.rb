@@ -40,6 +40,7 @@ module Importers::External
     def self.import!(row)
       row[:company].industry ||= []
       row[:company].industry += row[:industry]
+      row[:company].location = row[:location]
       row[:company].save!
 
       row[:company].founders.each do |founder|

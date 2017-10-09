@@ -6,12 +6,10 @@ import {
   CompetitorFundTypesOptions,
   CompetitorsLocationsPath,
   CompaniesSearchPath,
-  CompetitorsFilterCountPath,
-  FilterPath,
 } from '../global/constants.js.erb';
 import Select from '../global/fields/select';
 import Company from './company';
-import {Link, Column, Row, Colors} from 'react-foundation';
+import {Button, Column, Row, Colors} from 'react-foundation';
 import Highlighter from 'react-highlight-words';
 
 const SessionStorageKey = storageKey('Filters');
@@ -21,6 +19,7 @@ export default class Filters extends React.Component {
     showButton: true,
     showLabels: false,
     onChange: _.noop,
+    onButtonClick: _.noop,
   };
 
   constructor(props) {
@@ -39,19 +38,23 @@ export default class Filters extends React.Component {
     }
   }
 
-  queryString(filters) {
-    return buildQuery(flattenFilters(filters));
+  componentDidUpdate(prevProps, prevState) {
+    if (buildQuery(this.props.countSource.query) !== buildQuery(prevProps.countSource.query)) {
+      this.fetchNumInvestors(this.state.filters);
+    }
   }
 
   fetchNumInvestors(filters) {
-    let query = this.queryString(filters);
-    if (query) {
-      ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count}) => {
+    const {path, query} = this.props.countSource;
+    let flattened = flattenFilters(filters);
+    let built = buildQuery({...query, ...flattened});
+    if (built) {
+      ffetch(`${path}?${built}`).then(({count}) => {
         this.setState({numInvestors: count});
-        this.props.onChange(flattenFilters(filters), count);
+        this.props.onChange(flattened, count);
       });
     } else {
-      ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count}) => {
+      ffetch(path).then(({count}) => {
         this.setState({numInvestors: null});
         this.props.onChange({}, count);
       });
@@ -138,13 +141,12 @@ export default class Filters extends React.Component {
   }
 
   renderButton() {
-    let query = this.queryString(this.state.filters);
     return (
       <Column large={2} className="filter-column">
         <div className="boxed">
-          <Link color={Colors.SUCCESS} href={query ? `${FilterPath}?${query}` : null} isDisabled={!query}>
+          <Button color={Colors.SUCCESS} onClick={this.props.onButtonClick}>
             Find {this.numInvestors()} {inflection.inflect('Investors', this.state.numInvestors)}
-          </Link>
+          </Button>
         </div>
       </Column>
     );

@@ -50,6 +50,10 @@ module Http::Crunchbase
       get_in 'properties', 'total_funding_usd'
     end
 
+    def location
+      get_in 'relationships', 'headquarters', 'item', 'properties', 'city'
+    end
+
     def self.find_investor_id(name)
       find_id(name: name.gsub('&') { '\\&' }, organization_types: 'investor')
     end

@@ -1,6 +1,11 @@
 import React from 'react';
 
 export default class Input extends React.Component {
+  static defaultProps = {
+    wrap: true,
+    type: 'text',
+  };
+
   constructor(props) {
     super(props);
 
@@ -11,8 +16,9 @@ export default class Input extends React.Component {
   }
 
   inputProps() {
+    const {wrap, inputRef, ...props} = this.props;
     return {
-      ...this.props,
+      ...props,
       onChange: this.onChange,
       onBlur: this.onBlur,
       value: this.state.value,
@@ -22,18 +28,19 @@ export default class Input extends React.Component {
   renderInput() {
     return (
       <input
-        type="text"
+        ref={this.props.inputRef}
+        type={this.props.type}
         {...this.inputProps()}
       />
     );
   }
 
   submit = _.debounce(() => {
-    if (this.state.dirty && this.state.value) {
+    if (this.state.dirty) {
       this.props.onChange({[this.props.name]: this.state.value});
       this.setState({dirty: false});
     }
-  }, 500, {maxWait: 5000});
+  }, 200, {maxWait: 5000});
 
   onChange = (event) => {
     let value = event.target.value;
@@ -46,10 +53,14 @@ export default class Input extends React.Component {
   };
 
   render() {
-    return (
-      <form>
-        {this.renderInput()}
-      </form>
-    );
+    if (this.props.wrap) {
+      return (
+        <form>
+          {this.renderInput()}
+        </form>
+      );
+    } else {
+      return this.renderInput();
+    }
   }
 }

@@ -11,6 +11,7 @@ module Importers::External
       description: 'short_description',
       categories: 'category_list',
       capital_raised: 'funding_total_usd',
+      location: 'city',
     }
 
     def initialize(filename, headers = {})
@@ -28,6 +29,7 @@ module Importers::External
       company.crunchbase_id = row[:crunchbase_id]
       company.domain = row[:domain]
       company.name ||= row[:name]
+      company.location ||= row[:location]
       company.description ||= row[:description]
       company.capital_raised = row[:capital_raised].present? ? row[:capital_raised] : 0
       company.industry = (company.industry || []) + row[:industry]

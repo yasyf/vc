@@ -69,9 +69,7 @@ module Http::Crunchbase
     def location
       return nil unless found?
       @location ||= begin
-        loc = get_in 'relationships', 'primary_location'
-        loc = loc['item'] if loc.present?
-        loc = loc['properties'] if loc.present?
+        loc = get_in 'relationships', 'primary_location', 'item', 'properties'
         OpenStruct.new(loc) if loc.present?
       end
     end

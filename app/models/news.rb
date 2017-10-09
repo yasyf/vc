@@ -38,6 +38,8 @@ class News < ApplicationRecord
       news.body = body
       news.save!
     end
+  rescue ActiveRecord::RecordNotUnique
+    retry
   end
 
   private

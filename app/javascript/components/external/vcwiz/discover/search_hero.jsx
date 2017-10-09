@@ -1,7 +1,40 @@
 import React from 'react';
 import Filters from './filters';
+import Search from './search';
+import {FilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
+import {buildQuery} from '../global/utils';
 
 export default class SearchHero extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      filters: {},
+      search: null,
+    };
+  }
+
+  onFiltersChange = (filters) => {
+    this.setState({filters});
+  };
+
+  onSearchChange = (search) => {
+    this.setState({search});
+  };
+
+  queryParams() {
+    let { search, filters } = this.state;
+    return {search, ...filters};
+  }
+
+  query() {
+    return buildQuery(this.queryParams());
+  }
+
+  onButtonClick = () => {
+    window.location.href = `${FilterPath}?${this.query()}`;
+  };
+
   render() {
     return (
       <div className="text-center search-hero">
@@ -13,7 +46,14 @@ export default class SearchHero extends React.Component {
           </p>
         </div>
         <div className="float-center">
-          <Filters showButton={true} />
+          <Filters
+            showButton={!!this.query()}
+            onButtonClick={this.onButtonClick}
+            onChange={this.onFiltersChange}
+            countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
+          />
+          <p className="or">or</p>
+          <Search onChange={this.onSearchChange} />
         </div>
       </div>
     )

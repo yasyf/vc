@@ -235,6 +235,7 @@ class Company < ActiveRecord::Base
     self.crunchbase_id = org.permalink
     self.domain = org.url
     self.description = org.description
+    self.location = org.location
   end
 
   def set_angelist_attributes!(timeout: 5)
@@ -243,6 +244,7 @@ class Company < ActiveRecord::Base
     self.al_id = startup.id
     self.domain ||= startup.url
     self.description ||= startup.description
+    self.location ||= startup.locations.first
   end
 
   def set_competitors!

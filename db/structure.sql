@@ -147,7 +147,8 @@ CREATE TABLE companies (
     industry character varying[],
     verified boolean DEFAULT false NOT NULL,
     "primary" boolean DEFAULT false NOT NULL,
-    al_id integer
+    al_id integer,
+    location character varying
 );
 
 
@@ -2514,6 +2515,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170930070824'),
 ('20170930070911'),
 ('20171002023544'),
-('20171006234544');
+('20171006234544'),
+('20171009204716');
 
 

@@ -79,6 +79,35 @@ html, body, .full-screen {
   .filters {
     padding-top: 25px;
   }
+
+  .or {
+    padding-top: 20px;
+  }
+
+  .search {
+    input {
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+
+    .line {
+      border-bottom: 2px solid $light-grey;
+      width: 230px;
+    }
+
+    i {
+      padding-right: 6px;
+    }
+
+    i::before {
+      color: $success-dark;
+      -moz-transform: scaleX(-1);
+      -o-transform: scaleX(-1);
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+    }
+  }
 }
 
 .filter-page {
@@ -138,7 +167,7 @@ html, body, .full-screen {
     border-radius: 5%;
     height: 100%;
     width: 100%;
-    padding: 12px 0 0;
+    padding: 0;
   }
 }
 

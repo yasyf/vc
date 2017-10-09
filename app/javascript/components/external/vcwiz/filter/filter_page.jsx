@@ -1,7 +1,7 @@
 import React from 'react';
 import Filters from '../discover/filters';
 import Results from '../global/competitors/results';
-import {CompetitorsFilterPath} from '../global/constants.js.erb';
+import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import {flattenFilters, buildQuery} from '../global/utils';
 import createHistory from 'history/createBrowserHistory'
 
@@ -25,6 +25,11 @@ export default class FilterPage extends React.Component {
     }
   };
 
+  queryParams() {
+    let { filters } = this.state;
+    return {...filters};
+  }
+
   render() {
     let { competitors, count, filters } = this.state;
     let source = {path: CompetitorsFilterPath, query: filters};
@@ -36,6 +41,7 @@ export default class FilterPage extends React.Component {
           onChange={this.onFilterChange}
           initialFilters={this.props.filters}
           initialCount={this.props.count}
+          countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
         />
         <div className="filter-page full-screen">
           <Results count={count} competitors={competitors} source={source} />
