@@ -26,7 +26,7 @@ class Http::GoogleMaps
     tzinfo = key_cached(service: :timezone, location: location) do
       get(Timezone).query(location: location)
     end
-    return unless tzinfo.present?
+    return unless tzinfo.present? && tzinfo['timeZoneId'].present?
     ActiveSupport::TimeZone[tzinfo['timeZoneId']]
   end
 

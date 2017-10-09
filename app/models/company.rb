@@ -254,6 +254,7 @@ class Company < ActiveRecord::Base
   end
 
   def add_to_wit!
+    return unless team.present?
     Http::Wit::Entity.new('company').add_value name
   end
 end
