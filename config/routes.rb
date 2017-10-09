@@ -79,6 +79,7 @@ Rails.application.routes.draw do
           collection do
             get 'filter'
             get 'filter_count'
+            get 'locations'
           end
         end
 

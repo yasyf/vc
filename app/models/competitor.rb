@@ -169,6 +169,20 @@ class Competitor < ApplicationRecord
     _filtered(params).count
   end
 
+  def self.locations(query, limit = 5)
+    connection.select_values """
+      SELECT * from (
+        SELECT unnest(locations) from (
+          SELECT location from competitors WHERE location <> '{}' AND location IS NOT NULL
+        ) AS s(locations)
+      ) AS s(ulocations)
+      WHERE ulocations ILIKE '#{query.present? ? sanitize_sql_like(query) : ''}%'
+      GROUP BY ulocations
+      ORDER BY count(ulocations) DESC
+      LIMIT #{limit}
+    """
+  end
+
   def as_json(options = {})
     super options.reverse_merge(
       only: [

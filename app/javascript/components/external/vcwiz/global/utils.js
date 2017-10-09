@@ -115,3 +115,5 @@ export let getDomain = (url) => {
 export let storageKey = (key) => `${StoragePrefix}::${key}`;
 
 export let timestamp = () => Date.now();
+
+export let flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'value').join(','));

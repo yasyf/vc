@@ -1,7 +1,8 @@
 class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
+  include External::ApplicationHelper
 
-  MAX_LIMIT = 25
+  MAX_LIMIT = 20
 
   before_action :authenticate_api_user!
 
@@ -18,6 +19,10 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
 
   def filter_count
     render json: { count: Competitor.filtered_count(filter_params) }
+  end
+
+  def locations
+    render json: arr_to_options(Competitor.locations(params[:q]))
   end
 
   private

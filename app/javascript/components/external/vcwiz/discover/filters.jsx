@@ -1,10 +1,10 @@
 import React from 'react';
 import inflection from 'inflection';
-import {extend, ffetch, storageKey, buildQuery} from '../global/utils';
+import {extend, ffetch, storageKey, buildQuery, flattenFilters} from '../global/utils';
 import {
   CompetitorIndustriesOptions,
   CompetitorFundTypesOptions,
-  InvestorsLocationsPath,
+  CompetitorsLocationsPath,
   CompaniesSearchPath,
   CompetitorsFilterCountPath,
   FilterPath,
@@ -17,31 +17,45 @@ import Highlighter from 'react-highlight-words';
 const SessionStorageKey = storageKey('Filters');
 
 export default class Filters extends React.Component {
+  static defaultProps = {
+    showButton: true,
+    showLabels: false,
+    onChange: _.noop,
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      filters: JSON.parse(sessionStorage.getItem(SessionStorageKey)) || {},
+      numInvestors: this.props.initialCount,
+      filters: this.props.initialFilters || JSON.parse(sessionStorage.getItem(SessionStorageKey)) || {},
       inputs: {},
     };
   }
 
   componentDidMount() {
-    this.fetchNumInvestors(this.state.filters);
+    if (!this.state.numInvestors) {
+      this.fetchNumInvestors(this.state.filters);
+    }
   }
 
   queryString(filters) {
-    return buildQuery(_.mapValues(filters, f => _.map(f, 'value').join(',')));
+    return buildQuery(flattenFilters(filters));
   }
 
   fetchNumInvestors(filters) {
     let query = this.queryString(filters);
-    if (!query) {
-      return;
+    if (query) {
+      ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count}) => {
+        this.setState({numInvestors: count});
+        this.props.onChange(flattenFilters(filters), count);
+      });
+    } else {
+      ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count}) => {
+        this.setState({numInvestors: null});
+        this.props.onChange({}, count);
+      });
     }
-    ffetch(`${CompetitorsFilterCountPath}?${query}`).then(resp => {
-      this.setState({numInvestors: resp.count})
-    })
   }
 
   onInputChange = (name, val) => {
@@ -124,10 +138,11 @@ export default class Filters extends React.Component {
   }
 
   renderButton() {
+    let query = this.queryString(this.state.filters);
     return (
       <Column large={2} className="filter-column">
         <div className="boxed">
-          <Link color={Colors.SUCCESS} href={`${FilterPath}?${this.queryString(this.state.filters)}`}>
+          <Link color={Colors.SUCCESS} href={query ? `${FilterPath}?${query}` : null} isDisabled={!query}>
             Find {this.numInvestors()} {inflection.inflect('Investors', this.state.numInvestors)}
           </Link>
         </div>
@@ -142,7 +157,7 @@ export default class Filters extends React.Component {
         <Row>
           {this.renderSelect('fund_type', 'Stage', CompetitorFundTypesOptions, 2)}
           {this.renderSelect('industry', 'Industries', CompetitorIndustriesOptions, 2)}
-          {this.renderDynamicRemoteSelect('location', 'Cities', InvestorsLocationsPath, showButton ? 3 : 4)}
+          {this.renderDynamicRemoteSelect('location', 'Cities', CompetitorsLocationsPath, showButton ? 3 : 4)}
           {this.renderDynamicRemoteSelect('companies', 'Invested In', CompaniesSearchPath, showButton ? 3 : 4, Company)}
           {showButton ? this.renderButton() : null}
         </Row>

@@ -5,9 +5,12 @@ env:
   jquery: true
   node: true
 
+parser: babel-eslint
+
 parserOptions:
   sourceType: "module"
   ecmaFeatures:
+    classes: true
     jsx: true
     spread: true
     modules: true

@@ -1,19 +1,26 @@
-import {ffetch} from '../../vcfinder/utils';
+import {ffetch, buildQuery} from './utils';
 
 const noop = bucket => {};
+const defaultBucketSize = 20;
 
 export default class LazyArray {
-  constructor(initial, source, onUpdate = noop) {
-    this.buckets = new Map([[0, initial]]);
+  constructor(source, initial = null, onUpdate = noop) {
+    this.buckets = new Map();
     this.loading = new Set();
-    this.bucketSize = initial.length;
+    this.bucketSize = (initial && initial.length) || defaultBucketSize;
     this.source = source;
     this.onUpdate = onUpdate;
+
+    if (initial) {
+      this.buckets.set(0, initial);
+    }
   }
 
   fetchBucket(bucket) {
     this.loading.add(bucket);
-    return ffetch(`${this.source}?limit=${this.bucketSize}&page=${bucket}`).then(vals => {
+    let {path, query} = this.source;
+    query = {limit: this.bucketSize, page: bucket, ...(query || {})};
+    return ffetch(`${path}?${buildQuery(query)}`).then(vals => {
       this.buckets.set(bucket, vals);
       this.loading.delete(bucket);
       this.onUpdate(bucket);

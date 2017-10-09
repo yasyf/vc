@@ -13,10 +13,18 @@ class ResultsTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      array: new LazyArray(props.competitors, props.path, this.onArrayUpdate),
+    this.state = this.nextState(props);
+  }
+
+  nextState(props) {
+    return {
+      array: new LazyArray(props.source, props.competitors, this.onArrayUpdate),
       lastUpdate: timestamp(),
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.nextState(nextProps));
   }
 
   onArrayUpdate = () => {
