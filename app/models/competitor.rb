@@ -158,9 +158,11 @@ class Competitor < ApplicationRecord
     filtered = _filtered(params)
     filtered = filtered.left_outer_joins(:companies) unless params[:companies].present?
     filtered
-      .left_outer_joins(:investors)
       .group('competitors.id')
       .order('count(investors.featured) DESC, count(investors.target_investors_count) DESC, count(companies.id) DESC')
+      .joins('LEFT OUTER JOIN investors ON investors.competitor_id = competitors.id')
+      .joins('LEFT OUTER JOIN (SELECT target_investors.investor_id, target_investors.stage FROM target_investors ORDER BY target_investors.updated_at DESC LIMIT 1) AS stages ON stages.investor_id = investors.id')
+      .select('competitors.*, min(stages.stage) as track_status')
   end
 
   def self.filtered_count(params)
@@ -202,7 +204,11 @@ class Competitor < ApplicationRecord
   private
 
   def track_status
-    target_investors.order(updated_at: :desc).limit(1).pluck(:stage).first
+    if self.attributes.key?('track_status')
+      (self[:track_status] && TargetInvestor::STAGES.keys[self[:track_status]])
+    else
+      target_investors.order(updated_at: :desc).limit(1).pluck(:stage).first
+    end
   end
 
   def start_crunchbase_job

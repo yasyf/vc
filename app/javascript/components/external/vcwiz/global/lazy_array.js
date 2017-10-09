@@ -26,7 +26,7 @@ export default class LazyArray {
         clearInterval(interval);
         return cb(this.buckets.get(bucket)[bucketIndex]);
       }
-    }, 100);
+    }, 500);
   }
 
   getSync(index) {
