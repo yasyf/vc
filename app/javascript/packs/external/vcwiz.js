@@ -1,9 +1,9 @@
 /* eslint-disable global-require */
 /* eslint no-console:0 */
 
-import 'react-toastify/dist/ReactToastify.min.css';
 import 'fixed-data-table-2/dist/fixed-data-table.css';
 import 'react-select-plus/dist/react-select-plus.css';
+import "react-placeholder/lib/reactPlaceholder.css";
 import WebpackerReact from 'webpacker-react';
 
 let toPath = (name) => `${name.toLowerCase()}/${name.toLowerCase()}`;

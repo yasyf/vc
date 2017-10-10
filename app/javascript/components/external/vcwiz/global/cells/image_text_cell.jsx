@@ -11,6 +11,14 @@ export default class ImageTextCell extends TextCell {
     };
   };
 
+  placeholderProps() {
+    return {
+      ...super.placeholderProps(),
+      type: 'media',
+      rows: 2,
+    };
+  }
+
   renderImage() {
     let src = this.state.src ? this.state.src : `https://via.placeholder.com/40x40/000000/FFFFFF?text=${this.state.fallback}`;
     return <div className="rounded-image"><img src={src} /></div>;

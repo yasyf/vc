@@ -255,6 +255,17 @@ mark.highlighter {
     background-color: $success;
     text-transform: uppercase;
   }
+
+  .textfit-cell {
+    width: 95%;
+    height: 100%;
+    white-space: normal;
+  }
+
+  .text-block, .media-block {
+    margin-top: 15px;
+    margin-left: 10px;
+  }
 }
 
 // Hacks

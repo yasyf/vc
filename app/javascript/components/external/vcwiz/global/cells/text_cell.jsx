@@ -1,7 +1,7 @@
 import React from 'react';
-import { PulseLoader as Loader } from 'react-spinners';
 import {Cell} from 'fixed-data-table-2';
 import {Textfit} from 'react-textfit';
+import ReactPlaceholder from 'react-placeholder';
 
 let TextCellFactory = (superclass) => class extends superclass {
   constructor(props) {
@@ -38,15 +38,33 @@ let TextCellFactory = (superclass) => class extends superclass {
     if (!this.state.value) {
       return null;
     }
-    return <Textfit mode="single" min={12} max={18}>{this.state.value}</Textfit>;
+    return (
+      <Textfit mode="single" min={12} max={18}>
+        <div className="textfit-cell">
+          {this.state.value}
+        </div>
+      </Textfit>
+    );
+  }
+
+  placeholderProps() {
+    return {
+      ready: !this.state.loading,
+      type: 'text',
+      rows: 3,
+      style: {maxWidth: '90%'},
+      showLoadingAnimation: true,
+    };
   }
 
   render() {
     const { height, width, columnKey, rowIndex } = this.props;
     return (
-      <Cell {...{height, width, columnKey, rowIndex}}>
-        {this.state.loading ? <Loader color="#2ADBC4" /> : this.renderValue()}
-      </Cell>
+      <ReactPlaceholder {...this.placeholderProps()}>
+        <Cell {...{height, width, columnKey, rowIndex}}>
+          {this.renderValue()}
+        </Cell>
+      </ReactPlaceholder>
     )
   }
 };
