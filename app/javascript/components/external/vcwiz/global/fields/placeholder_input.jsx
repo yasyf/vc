@@ -7,7 +7,7 @@ export default class PlaceholderInput extends React.Component {
 
     this.state = {
       focused: false,
-      value: '',
+      value: this.props.value || '',
     };
   }
 
@@ -32,19 +32,24 @@ export default class PlaceholderInput extends React.Component {
 
   render() {
     let {onChange, placeholder, ...props} = this.props;
-    if (this.state.focused || this.state.value) {
-      return <Input
-        name="value"
-        wrap={false}
-        type=""
-        inputRef={input => { this.input = input }}
-        value={this.state.value}
-        onChange={this.onChange}
-        onBlur={this.onBlur}
-        {...props}
-      />;
-    } else {
-      return <span onClick={this.onClick}>{this.props.placeholder}</span>;
-    }
+    let showInput = this.state.focused || this.state.value;
+    return (
+      <span>
+        <Input
+          name="value"
+          wrap={false}
+          type=""
+          inputRef={input => { this.input = input }}
+          value={this.state.value}
+          onChange={this.onChange}
+          onBlur={this.onBlur}
+          style={showInput ? undefined : {display: 'none'}}
+          {...props}
+        />
+        <span onClick={this.onClick} style={showInput ? {display: 'none'} : undefined}>
+          {this.props.placeholder}
+        </span>
+      </span>
+    );
   }
 }

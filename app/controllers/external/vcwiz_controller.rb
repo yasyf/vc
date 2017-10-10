@@ -22,6 +22,7 @@ class External::VcwizController < External::ApplicationController
       competitors: Competitor.filtered(filter_params).limit(10),
       count: Competitor.filtered_count(filter_params),
       filters: full_filters,
+      search: filter_params[:search],
     )
     render_default
   end

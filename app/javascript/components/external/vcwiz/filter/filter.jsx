@@ -10,6 +10,7 @@ export default class Filter extends React.Component {
           count={this.props.count}
           competitors={this.props.competitors}
           filters={this.props.filters}
+          search={this.props.search}
         />
       </VCWiz>
     )

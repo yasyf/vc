@@ -82,8 +82,11 @@ html, body, .full-screen {
 
   .or {
     padding-top: 20px;
+    padding-bottom: 5px;
   }
+}
 
+.search-and-filters {
   .search {
     input {
       border: none;
@@ -111,7 +114,22 @@ html, body, .full-screen {
 }
 
 .filter-page {
-  background-color: $light-grey;
+  &-header {
+    .or {
+      margin-top: 60px;
+      color: $grey;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .search {
+      margin-top: 65px;
+    }
+  }
+
+  &-body {
+    background-color: $light-grey;
+  }
 }
 
 .toplevel-filter-page {

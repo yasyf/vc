@@ -11,7 +11,7 @@ export default class Input extends React.Component {
 
     this.state = {
       value: this.props.value || '',
-      dirty: false,
+      lastValue: null,
     };
   }
 
@@ -36,15 +36,15 @@ export default class Input extends React.Component {
   }
 
   submit = _.debounce(() => {
-    if (this.state.dirty) {
+    if (this.state.lastValue !== this.state.value) {
       this.props.onChange({[this.props.name]: this.state.value});
-      this.setState({dirty: false});
+      this.setState({lastValue: this.state.value});
     }
-  }, 200, {maxWait: 5000});
+  }, 300, {maxWait: 5000});
 
   onChange = (event) => {
     let value = event.target.value;
-    this.setState({value, dirty: true});
+    this.setState({value});
     this.submit();
   };
 

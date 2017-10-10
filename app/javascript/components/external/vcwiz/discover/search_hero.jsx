@@ -45,7 +45,7 @@ export default class SearchHero extends React.Component {
             Get introduced, track your conversations, and raise your seed round.
           </p>
         </div>
-        <div className="float-center">
+        <div className="search-and-filters float-center">
           <Filters
             showButton={!!this.query()}
             onButtonClick={this.onSubmit}
