@@ -33,13 +33,12 @@ class News < ApplicationRecord
     @sentiment ||= GoogleCloud::Language.new(body, format: :html).sentiment if body.present?
   end
 
-  def self.create_with_body(url, body, attrs = {})
-    where(attrs.merge(url: url)).first_or_initialize.tap do |news|
+  def self.create_with_body(url, body, investor: nil, company: nil, attrs: {})
+    where({ url: url, investor: investor, company: company }.compact).first_or_initialize.tap do |news|
+      news.assign_attributes(attrs)
       news.body = body
       news.save!
     end
-  rescue ActiveRecord::RecordNotUnique
-    retry
   end
 
   private

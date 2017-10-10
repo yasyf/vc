@@ -142,14 +142,12 @@ class CompanyRelationshipsJob < ApplicationJob
       competitor.investors.find_each do |investor|
         if body.include?(investor.name)
           cc.update! investor: investor unless cc.investor.present?
-          news = News.create_with_body(url, body, investor: investor, published_at: published_at)
-          news.company = @company
-          news.save! if news.changed?
+          News.create_with_body(url, body, investor: investor, company: @company, attrs: { published_at: published_at })
           break
         end
       end
     end
-    News.create_with_body(url, body, company: @company)
+    News.create_with_body(url, body, investor: nil, company: @company)
   end
 
   def destroy_invalid_investments!(competitor_id)
