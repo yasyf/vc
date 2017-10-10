@@ -201,7 +201,7 @@ class Competitor < ApplicationRecord
       .group('competitors.id')
       .order('count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC')
       .joins(stages_join)
-      .select('competitors.*, min(stages.stage)')
+      .select('competitors.*, min(stages.stage) as track_status')
   end
 
   def self.filtered_count(params)
