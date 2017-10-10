@@ -66,7 +66,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def filter_params
-    params.permit(:industry, :location, :fund_type, :companies, :similar)
+    params.permit(:industry, :location, :fund_type, :companies, :similar, :search)
   end
 
   def full_filters
@@ -75,7 +75,6 @@ class External::VcwizController < External::ApplicationController
       filters[:industry] = hash_to_options(Competitor::INDUSTRIES.slice(*filter_params[:industry].split(','))) if filter_params[:industry].present?
       filters[:location] = arr_to_options(filter_params[:location].split(',')) if filter_params[:location].present?
       filters[:companies] = records_to_options(Company.find(filter_params[:companies].split(',')).map(&:as_json_search)) if filter_params[:companies].present?
-      puts('FILTERS', filters.to_s)
     end
   end
 end

@@ -145,7 +145,14 @@ class Competitor < ApplicationRecord
   end
 
   def self._filtered(params)
-    competitors = all
+    competitors = if (search = params[:search]).present?
+      search = { name: search, investors: { first_name: search, last_name: search } }
+      search_query = Competitor.includes(:investors).references(:investors).fuzzy_search(search, false)
+      subquery = "SELECT searched.id from (#{search_query.to_sql}) AS searched"
+      where("competitors.id IN (#{subquery})")
+    else
+      all
+    end
     %w(industry fund_type location).each do |param|
       next unless params[param].present?
       competitors = competitors.where("competitors.#{param} && ?", "{#{params[param]}}")

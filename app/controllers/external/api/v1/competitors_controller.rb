@@ -36,6 +36,6 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def filter_params
-    params.permit(:industry, :location, :fund_type, :companies, :similar)
+    params.permit(:industry, :location, :fund_type, :companies, :search, :similar)
   end
 end
