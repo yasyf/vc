@@ -1,6 +1,3 @@
-require 'csv'
-require 'open-uri'
-
 module Importers::External
   class Companies < Importers::Base
     HEADER_DEFAULTS = {
@@ -13,11 +10,6 @@ module Importers::External
       capital_raised: 'funding_total_usd',
       location: 'city',
     }
-
-    def initialize(filename, headers = {})
-      @filename = url?(filename) ? save(filename) : filename
-      @headers = headers.with_indifferent_access.slice(*HEADER_DEFAULTS.keys).reverse_merge(HEADER_DEFAULTS)
-    end
 
     def self.process!(row)
       return false unless row.delete(:roles) == '{company}'

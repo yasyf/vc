@@ -9,6 +9,7 @@ class Competitor < ApplicationRecord
   }.with_indifferent_access.freeze
 
   FUND_TYPES = {
+    accelerator: 'Accelerator',
     seed: 'Seed',
     angel: 'Angel',
     venture: 'Venture',
