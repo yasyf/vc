@@ -31,6 +31,7 @@ export default class PlaceholderInput extends React.Component {
   };
 
   render() {
+    let {onChange, placeholder, ...props} = this.props;
     if (this.state.focused || this.state.value) {
       return <Input
         name="value"
@@ -40,6 +41,7 @@ export default class PlaceholderInput extends React.Component {
         value={this.state.value}
         onChange={this.onChange}
         onBlur={this.onBlur}
+        {...props}
       />;
     } else {
       return <span onClick={this.onClick}>{this.props.placeholder}</span>;

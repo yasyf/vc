@@ -31,7 +31,7 @@ export default class SearchHero extends React.Component {
     return buildQuery(this.queryParams());
   }
 
-  onButtonClick = () => {
+  onSubmit = () => {
     window.location.href = `${FilterPath}?${this.query()}`;
   };
 
@@ -48,12 +48,12 @@ export default class SearchHero extends React.Component {
         <div className="float-center">
           <Filters
             showButton={!!this.query()}
-            onButtonClick={this.onButtonClick}
+            onButtonClick={this.onSubmit}
             onChange={this.onFiltersChange}
             countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
           />
           <p className="or">or</p>
-          <Search onChange={this.onSearchChange} />
+          <Search onChange={this.onSearchChange} onSubmit={this.onSubmit} />
         </div>
       </div>
     )
