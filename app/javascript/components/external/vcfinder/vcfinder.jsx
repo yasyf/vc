@@ -1,5 +1,4 @@
 import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
 import Search from './search.jsx';
 import TargetInvestors from './target_investors';
 import {emplace, ffetch, remove, flash, fullName} from './utils';
@@ -88,7 +87,6 @@ export default class VCFinder extends React.Component {
           onDestroyTarget={this.onDestroyTarget}
           onStageChange={this.onStageChange}
         />
-        <ToastContainer position={toast.POSITION.BOTTOM_LEFT} autoClose={4000} />
       </div>
     );
   }

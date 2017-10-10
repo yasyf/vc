@@ -1,7 +1,6 @@
 import React from 'react';
 import 'whatwg-fetch';
 import update from 'immutability-helper';
-import { toast } from 'react-toastify';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
 
