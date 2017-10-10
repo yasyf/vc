@@ -1,6 +1,5 @@
 import 'whatwg-fetch';
 import update from 'immutability-helper';
-import { toast } from 'react-toastify';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
 
@@ -86,8 +85,6 @@ export let remove = function(items, item) {
   let index = _.findIndex(items, {id: item.id});
   return update(items, {$splice: [[index, 1]]});
 };
-
-export let flash = (text) => toast(text);
 
 export let buildQuery = (row, fields = null) =>
   _.compact(_.map(fields || Object.keys(row), k => {
