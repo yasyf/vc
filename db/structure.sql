@@ -1559,6 +1559,13 @@ CREATE UNIQUE INDEX index_companies_founders_on_founder_id_and_company_id ON com
 
 
 --
+-- Name: index_companies_on_al_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_companies_on_al_id ON companies USING btree (al_id);
+
+
+--
 -- Name: index_companies_on_crunchbase_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2133,6 +2140,13 @@ CREATE INDEX trgm_last_name_indx ON investors USING gist (last_name gist_trgm_op
 
 
 --
+-- Name: trgm_name_indx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX trgm_name_indx ON competitors USING gist (name gist_trgm_ops);
+
+
+--
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2516,6 +2530,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170930070911'),
 ('20171002023544'),
 ('20171006234544'),
-('20171009204716');
+('20171009204716'),
+('20171010012458');
 
 

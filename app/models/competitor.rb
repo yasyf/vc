@@ -146,10 +146,35 @@ class Competitor < ApplicationRecord
 
   def self._filtered(params)
     competitors = if (search = params[:search]).present?
-      search = { name: search, investors: { first_name: search, last_name: search } }
-      search_query = Competitor.includes(:investors).references(:investors).fuzzy_search(search, false)
-      subquery = "SELECT searched.id from (#{search_query.to_sql}) AS searched"
-      where("competitors.id IN (#{subquery})")
+      name = Util.escape_sql_argument(search)
+      first_name, last_name = Util.split_name(search).map(&Util.method(:escape_sql_argument))
+      last_name = first_name unless last_name.present?
+      competitors_subquery = """
+        SELECT
+          competitors.id as id,
+          COALESCE(similarity(competitors.name, '#{name}'), 0) AS rank
+        FROM competitors
+        WHERE competitors.name % '#{name}'
+        ORDER BY rank DESC
+      """
+      investors_subquery = """
+        SELECT
+          competitors.id as id,
+          COALESCE(similarity(investors.first_name, '#{first_name}'), 0) + COALESCE(similarity(investors.last_name, '#{last_name}'), 0) AS rank
+        FROM investors
+        INNER JOIN competitors on investors.competitor_id = competitors.id
+        WHERE
+          investors.first_name % '#{first_name}'
+          OR investors.last_name % '#{last_name}'
+        ORDER BY rank DESC
+      """
+      ids_subquery = """
+        SELECT COALESCE(csub.id, isub.id) AS id
+        FROM (#{competitors_subquery}) AS csub
+        FULL JOIN (#{investors_subquery}) AS isub USING (id)
+        ORDER BY csub.rank + isub.rank
+      """
+      joins("INNER JOIN (#{ids_subquery}) AS searched on competitors.id = searched.id")
     else
       all
     end
@@ -158,22 +183,29 @@ class Competitor < ApplicationRecord
       competitors = competitors.where("competitors.#{param} && ?", "{#{params[param]}}")
     end
     competitors = competitors.joins(:companies).where('companies.id': params[:companies].split(',')) if params[:companies].present?
-    competitors
+    competitors.joins(:investors)
   end
 
   def self.filtered(params)
-    filtered = _filtered(params)
-    filtered = filtered.left_outer_joins(:companies) unless params[:companies].present?
-    filtered
+    stages_join = '''
+      LEFT JOIN LATERAL (
+        SELECT target_investors.stage as stage
+        FROM investors
+        INNER JOIN target_investors ON target_investors.investor_id = investors.id
+        WHERE investors.competitor_id = competitors.id
+        ORDER BY target_investors.updated_at DESC
+        LIMIT 1
+      ) stages ON true
+    '''
+    _filtered(params)
       .group('competitors.id')
-      .order('count(investors.featured) DESC, count(investors.target_investors_count) DESC, count(companies.id) DESC')
-      .joins('LEFT OUTER JOIN investors ON investors.competitor_id = competitors.id')
-      .joins('LEFT OUTER JOIN (SELECT target_investors.investor_id, target_investors.stage FROM target_investors ORDER BY target_investors.updated_at DESC LIMIT 1) AS stages ON stages.investor_id = investors.id')
-      .select('competitors.*, min(stages.stage) as track_status')
+      .order('count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC')
+      .joins(stages_join)
+      .select('competitors.*, min(stages.stage)')
   end
 
   def self.filtered_count(params)
-    _filtered(params).count
+    _filtered(params).count('DISTINCT competitors.id')
   end
 
   def self.locations(query, limit = 5)

@@ -9,6 +9,10 @@ class Util
     [first, rest.join(' ')]
   end
 
+ def self.escape_sql_argument(arg)
+   arg.gsub(/\s(?![\&|\!|\|])/, '\\\\ ')
+ end
+
   def self.fix_encoding(string, fallback_encoding = 'CP1252')
     begin
       clean_string(tidy_utf8(string))
