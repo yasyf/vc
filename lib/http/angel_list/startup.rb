@@ -1,7 +1,9 @@
 module Http::AngelList
   class Startup < Base
     def logo
-      @data['logo_url'] if found?
+      return nil unless found?
+      return nil if @data['logo_url'] == 'https://angel.co/images/shared/nopic_startup.png'
+      @data['logo_url']
     end
 
     def url
