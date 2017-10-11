@@ -30,6 +30,7 @@ class Company < ActiveRecord::Base
 
   after_create :add_to_wit!
   after_commit :start_relationships_job, on: :create
+  before_validation :normalize_location
 
   def pitch
     @pitch ||= pitches.first
@@ -219,6 +220,10 @@ class Company < ActiveRecord::Base
   end
 
   private
+
+  def normalize_location
+    self.location = Util.normalize_city(self.location) if self.location.present?
+  end
 
   def start_relationships_job
     CompanyRelationshipsJob.perform_later(id)

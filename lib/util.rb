@@ -36,4 +36,14 @@ class Util
   def self.clean_string(string)
     string.gsub("\u0000", '').squish.to_s.encode('UTF-8',  invalid: :replace, undef: :replace, replace: '')
   end
+
+  def self.normalize_city(city)
+    if city.in?(['New York', 'New York City'])
+      'New York'
+    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park'])
+      'San Francisco'
+    else
+      city
+    end
+  end
 end

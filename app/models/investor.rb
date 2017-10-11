@@ -39,6 +39,7 @@ class Investor < ApplicationRecord
 
   before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
+  before_validation :normalize_location
 
   def name
     "#{first_name} #{last_name}"
@@ -317,6 +318,10 @@ class Investor < ApplicationRecord
   end
 
   private
+
+  def normalize_location
+    self.location = Util.normalize_city(self.location) if self.location.present?
+  end
 
   def import_news_with_attrs(url, body, attrs)
     news = News.where(investor: self, url: url).first_or_initialize(attrs).tap do |news|

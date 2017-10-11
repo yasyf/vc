@@ -85,6 +85,7 @@ class Competitor < ApplicationRecord
   validates :al_id, uniqueness: { allow_nil: true }
 
   after_commit :start_crunchbase_job, on: :create
+  before_validation :normalize_location
 
   def self.closest_industry(industry)
     distances = INDUSTRIES.flat_map do |k, friendly|
@@ -264,11 +265,15 @@ class Competitor < ApplicationRecord
     SQL
   end
 
-  def self.lists(founder, limit: 5)
-    CompetitorLists::Base.eligibles(founder).map do |list|
-      results = list.results(limit).map(&:as_list_json)
-      { competitors: results, count: list.result_count, title: list.title, name: list.to_param }
+  def self.lists(founder)
+    CompetitorLists::Base.get_eligibles(founder).map do |list|
+      list[:competitors] = list[:competitors].map(&:as_list_json)
+      list
     end
+  end
+
+  def self.list(founder, name)
+    CompetitorLists::Base.get_if_eligible(founder, name)
   end
 
   def as_json(options = {})
@@ -308,6 +313,10 @@ class Competitor < ApplicationRecord
   end
 
   private
+
+  def normalize_location
+    self.location = self.location.map(&Util.method(:normalize_city)) if self.location.present?
+  end
 
   def track_status
     if self.attributes.key?('track_status')
