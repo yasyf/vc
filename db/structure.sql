@@ -434,7 +434,7 @@ ALTER SEQUENCE intro_requests_id_seq OWNED BY intro_requests.id;
 CREATE TABLE investments (
     company_id integer NOT NULL,
     competitor_id integer NOT NULL,
-    funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
+    funded_at timestamp without time zone DEFAULT '2007-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
     id bigint NOT NULL,
     investor_id bigint,
     featured boolean DEFAULT false,

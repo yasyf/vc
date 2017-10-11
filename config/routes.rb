@@ -80,6 +80,7 @@ Rails.application.routes.draw do
             get 'filter'
             get 'filter_count'
             get 'locations'
+            get 'lists'
           end
         end
 

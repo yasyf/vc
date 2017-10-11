@@ -26,6 +26,10 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
     render json: arr_to_options(Competitor.locations(params[:q]))
   end
 
+  def lists
+    render json: Competitor.lists(current_external_founder)
+  end
+
   private
 
   def page

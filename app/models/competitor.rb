@@ -264,6 +264,13 @@ class Competitor < ApplicationRecord
     SQL
   end
 
+  def self.lists(founder, limit: 5)
+    CompetitorLists::Base.eligibles(founder).map do |list|
+      results = list.results(limit).map(&:as_list_json)
+      { competitors: results, count: list.result_count, title: list.title, name: list.to_param }
+    end
+  end
+
   def as_json(options = {})
     super options.reverse_merge(
       only: [
@@ -278,6 +285,10 @@ class Competitor < ApplicationRecord
         :track_status
       ]
     )
+  end
+
+  def as_list_json
+    as_json(only: [:photo, :id], methods: [:acronym])
   end
 
   def as_search_json

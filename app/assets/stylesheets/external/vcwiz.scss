@@ -26,6 +26,24 @@ html, body, .full-screen {
   }
 }
 
+.rounded-image {
+  background-color: $white;
+  overflow: hidden;
+  border: 1px solid $light-grey;
+  border-radius: 50%;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 2px 2px 4px;
+  }
+
+  .fallback {
+    font-size: 12px;
+    text-align: center;
+  }
+}
+
 #top-bar {
   height: 85px;
   background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
@@ -148,10 +166,58 @@ html, body, .full-screen {
     .wide-row {
       max-width: 95%;
     }
+
+    .filters {
+      .Select--multi .Select-multi-value-wrapper {
+        padding-top: 2px;
+      }
+    }
   }
 
   &-body {
     background-color: $light-grey;
+  }
+}
+
+.discover-page {
+  &-header {
+    margin-bottom: 50px;
+  }
+
+  &-body {
+    background-color: $light-grey;
+
+    .inline-image {
+      display: inline-block;
+    }
+
+    h6 {
+      text-transform: uppercase;
+      color: $mid-grey;
+    }
+
+    .loading {
+      padding-top: 15%;
+      width: 200px;
+      margin: auto;
+    }
+
+    .cards {
+      padding-top: 50px;
+      margin: auto;
+      width: 85%;
+    }
+
+    .card {
+      height: 150px;
+      width: 350px;
+      margin: auto;
+
+      .title {
+        font-weight: bold;
+        font-size: large;
+      }
+    }
   }
 }
 
@@ -166,10 +232,6 @@ html, body, .full-screen {
   .Select-control {
     height: 50px;
     text-align: left;
-  }
-
-  .Select--multi .Select-multi-value-wrapper {
-    padding-top: 2px;
   }
 
   .Select--multi .Select-placeholder {
@@ -249,22 +311,6 @@ mark.highlighter {
   .floating-image {
     position: absolute;
     top: 20px;
-  }
-
-  .rounded-image {
-    background-color: $white;
-    height: 60px;
-    width: 60px;
-    overflow: hidden;
-    border: 1px solid $light-grey;
-    border-radius: 50%;
-
-    img {
-      height: 35px;
-      width: 35px;
-      margin: 12px;
-      object-fit: cover;
-    }
   }
 
   .header {
