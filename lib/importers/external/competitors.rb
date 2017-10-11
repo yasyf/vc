@@ -6,7 +6,7 @@ module Importers::External
       crunchbase_id: 'cb_url',
       type: 'investor_type',
       location: 'city',
-      country: 'country',
+      country: 'country_code',
     }
 
     TYPES = {
