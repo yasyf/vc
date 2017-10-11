@@ -250,10 +250,12 @@ class Competitor < ApplicationRecord
 
   def self.locations(query, limit = 5)
     connection.select_values <<-SQL
-      SELECT * from (
-        SELECT unnest(locations) from (
-          SELECT location from competitors WHERE location <> '{}' AND location IS NOT NULL
-        ) AS s(locations)
+      SELECT ulocations FROM (
+        SELECT unnest(location)
+        FROM competitors
+        WHERE
+          location <> '{}'
+          AND location IS NOT NULL
       ) AS s(ulocations)
       WHERE ulocations ILIKE '#{query.present? ? sanitize_sql_like(query) : ''}%'
       GROUP BY ulocations
