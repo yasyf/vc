@@ -24,7 +24,9 @@ class ResultsTable extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.nextState(nextProps));
+    if (nextProps.resultsId !== this.props.resultsId) {
+      this.setState(this.nextState(nextProps));
+    }
   }
 
   onArrayUpdate = () => {

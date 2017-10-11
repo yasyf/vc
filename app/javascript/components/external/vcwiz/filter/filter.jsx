@@ -6,12 +6,7 @@ export default class Filter extends React.Component {
   render() {
     return (
       <VCWiz page="filter">
-        <FilterPage
-          count={this.props.count}
-          competitors={this.props.competitors}
-          filters={this.props.filters}
-          search={this.props.search}
-        />
+        <FilterPage {...this.props} />
       </VCWiz>
     )
   }

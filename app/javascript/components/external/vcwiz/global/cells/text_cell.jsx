@@ -39,7 +39,7 @@ let TextCellFactory = (superclass) => class extends superclass {
       return null;
     }
     return (
-      <Textfit mode="single" min={12} max={18}>
+      <Textfit mode="single" min={12} max={20}>
         <div className="textfit-cell">
           {this.state.value}
         </div>

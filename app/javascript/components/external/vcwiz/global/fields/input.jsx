@@ -4,6 +4,7 @@ export default class Input extends React.Component {
   static defaultProps = {
     wrap: true,
     type: 'text',
+    onBlur: _.noop,
   };
 
   constructor(props) {
@@ -22,16 +23,13 @@ export default class Input extends React.Component {
       onChange: this.onChange,
       onBlur: this.onBlur,
       value: this.state.value,
+      ref: inputRef,
     }
   }
 
   renderInput() {
     return (
-      <input
-        ref={this.props.inputRef}
-        type={this.props.type}
-        {...this.inputProps()}
-      />
+      <input {...this.inputProps()} />
     );
   }
 
@@ -50,6 +48,7 @@ export default class Input extends React.Component {
 
   onBlur = () => {
     this.submit.flush();
+    this.props.onBlur();
   };
 
   render() {

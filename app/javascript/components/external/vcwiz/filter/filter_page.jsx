@@ -2,10 +2,11 @@ import React from 'react';
 import Filters from '../discover/filters';
 import Results from '../global/competitors/results';
 import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
-import {flattenFilters, buildQuery} from '../global/utils';
+import {flattenFilters, buildQuery, extend, timestamp} from '../global/utils';
 import createHistory from 'history/createBrowserHistory'
 import Search from '../discover/search';
 import {Row, Column} from 'react-foundation';
+import Switch from '../global/fields/switch';
 
 export default class FilterPage extends React.Component {
   constructor(props) {
@@ -16,14 +17,16 @@ export default class FilterPage extends React.Component {
       count: props.count,
       filters: flattenFilters(props.filters),
       search: props.search,
+      options: props.options,
+      resultsId: timestamp(),
     };
 
     this.history = createHistory();
   }
 
   queryParams() {
-    let { search, filters } = this.state;
-    return {search, ...filters};
+    let { search, filters, options } = this.state;
+    return {search, ...filters, ...options};
   }
 
   query() {
@@ -35,7 +38,7 @@ export default class FilterPage extends React.Component {
   };
 
   onFiltersChange = (filters, count) => {
-    this.setState({filters, count, competitors: null});
+    this.setState({filters, count, resultsId: timestamp(), competitors: null});
     this.pushState();
   };
 
@@ -43,11 +46,16 @@ export default class FilterPage extends React.Component {
     this.setState({search});
   };
 
+  onOptionChange = name => update => {
+    let options = extend(this.state.options, update);
+    this.setState({options});
+  };
+
   renderSearchAndFilters() {
     return (
       <div className="search-and-filters">
         <Row>
-          <Column large={8}>
+          <Column large={9}>
             <Filters
               showButton={false}
               showLabels={true}
@@ -56,9 +64,6 @@ export default class FilterPage extends React.Component {
               initialCount={this.props.count}
               countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
             />
-          </Column>
-          <Column large={1}>
-            <p className="or">or</p>
           </Column>
           <Column large={3}>
             <Search
@@ -71,16 +76,58 @@ export default class FilterPage extends React.Component {
     );
   }
 
+  renderSwitch(name, label) {
+    return (
+      <Switch
+        name={name}
+        value={this.state.options[name] || false}
+        onChange={this.onOptionChange('name')}
+        label={label}
+      />
+    );
+  }
+
+  renderSwitches() {
+    return (
+      <div className="option-switches">
+        <Row>
+          <Column large={4}>
+            {this.renderSwitch('us_only', 'US Only')}
+          </Column>
+          <Column large={4}>
+            {this.renderSwitch('related', 'Related')}
+          </Column>
+          <Column large={4}>
+            {this.renderSwitch('company_cities', '💵 Cities')}
+          </Column>
+        </Row>
+      </div>
+    )
+  }
+
+  renderFilterRow() {
+    return (
+      <Row className="wide-row">
+        <Column large={9}>
+          {this.renderSearchAndFilters()}
+        </Column>
+        <Column large={3}>
+          {this.renderSwitches()}
+        </Column>
+      </Row>
+    );
+  }
+
   render() {
-    let { competitors, count, filters } = this.state;
+    let { competitors, count, filters, resultsId } = this.state;
     let source = {path: CompetitorsFilterPath, query: filters};
     return (
       <div className="full-screen filter-page">
         <div className="filter-page-header">
-          {this.renderSearchAndFilters()}
+          {this.renderFilterRow()}
         </div>
         <div className="filter-page-body full-screen">
-          <Results count={count} competitors={competitors} source={source} />
+          <Results count={count} competitors={competitors} source={source} resultsId={resultsId} />
         </div>
       </div>
     )

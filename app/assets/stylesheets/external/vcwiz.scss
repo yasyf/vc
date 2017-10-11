@@ -115,15 +115,38 @@ html, body, .full-screen {
 
 .filter-page {
   &-header {
+    h6 {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: $mid-grey;
+    }
+
+    .option-switches {
+      margin-top: 25px;
+
+      .switch {
+        padding-top: 10px;
+      }
+    }
+
     .or {
-      margin-top: 60px;
       color: $grey;
       font-weight: bold;
       text-align: center;
+      margin-top: 60px;
+    }
+    .search-and-filters {
+      .search {
+        margin-top: 65px;
+      }
+
+      .line {
+        width: 220px;
+      }
     }
 
-    .search {
-      margin-top: 65px;
+    .wide-row {
+      max-width: 95%;
     }
   }
 
@@ -140,12 +163,6 @@ html, body, .full-screen {
 }
 
 .filters {
-  h6 {
-    text-transform: uppercase;
-    font-weight: bold;
-    color: $mid-grey;
-  }
-
   .Select-control {
     height: 50px;
     text-align: left;
@@ -168,6 +185,7 @@ html, body, .full-screen {
     padding: 3px;
     color: unset;
     background-color: rgba(42, 219, 196, 0.24);
+    margin-top: 7px;
   }
 
   .Select--multi .Select-value-icon {
@@ -224,14 +242,16 @@ mark.highlighter {
   height: 100%;
 
   .image-text {
-    display: inline-block;
-    vertical-align: 1.1em;
-    margin-left: 0.3em;
-    width: 100px;
+    margin-left: 80px;
+    width: calc(95% - 60px - 1rem);
+  }
+
+  .floating-image {
+    position: absolute;
+    top: 20px;
   }
 
   .rounded-image {
-    display: inline-block;
     background-color: $white;
     height: 60px;
     width: 60px;

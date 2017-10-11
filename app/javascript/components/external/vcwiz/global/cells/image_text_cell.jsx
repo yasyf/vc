@@ -1,6 +1,7 @@
 import React from 'react';
 import TextCell from './text_cell';
 import {Textfit} from 'react-textfit';
+import {Row, Column} from 'react-foundation';
 
 export default class ImageTextCell extends TextCell {
   processRow(props, row) {
@@ -21,16 +22,19 @@ export default class ImageTextCell extends TextCell {
 
   renderImage() {
     let src = this.state.src ? this.state.src : `https://via.placeholder.com/40x40/000000/FFFFFF?text=${this.state.fallback}`;
-    return <div className="rounded-image"><img src={src} /></div>;
+    return <div className="rounded-image floating-image"><img src={src} /></div>;
   }
 
   renderValue() {
     return (
       <div>
-        <Textfit mode="single" min={12} max={20}>
-          {this.renderImage()}
-          <div className="image-text large">{this.state.value}</div>
-        </Textfit>
+        {this.renderImage()}
+        <div className="image-text">
+          <Textfit mode="single" min={12} max={20}>
+            <div className="textfit-cell">
+              {this.state.value}</div>
+          </Textfit>
+        </div>
       </div>
     )
   }

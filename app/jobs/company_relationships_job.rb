@@ -97,6 +97,7 @@ class CompanyRelationshipsJob < ApplicationJob
       next unless funding_round['relationships'].present?
       funding_round['relationships']['investments'].each do |investment|
         investor = investment['relationships']['investors']
+        next unless investor.present?
         next if investor['type'] == 'Person'
         partner = investment['relationships']['partners'].first
         competitor = Competitor.from_crunchbase! investor['properties']['permalink'], investor['properties']['name']

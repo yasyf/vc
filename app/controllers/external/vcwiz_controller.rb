@@ -1,4 +1,5 @@
 class External::VcwizController < External::ApplicationController
+  include External::Concerns::Filterable
   include External::ApplicationHelper
 
   layout 'vcwiz'
@@ -17,11 +18,11 @@ class External::VcwizController < External::ApplicationController
   def filter
     title 'Filter'
     component 'Filter'
-    puts filter_params.to_s
     props(
-      competitors: Competitor.filtered(filter_params).limit(10),
-      count: Competitor.filtered_count(filter_params),
+      competitors: filtered.limit(20),
+      count: filtered_count,
       filters: full_filters,
+      options: options_params.to_h,
       search: filter_params[:search],
     )
     render_default
@@ -64,10 +65,6 @@ class External::VcwizController < External::ApplicationController
 
   def intro_request
     @intro_request ||= IntroRequest.where(token: params[:token]).first!
-  end
-
-  def filter_params
-    params.permit(:industry, :location, :fund_type, :companies, :similar, :search)
   end
 
   def full_filters
