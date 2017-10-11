@@ -23,7 +23,7 @@ export default class Lists extends React.Component {
   profileImageProps() {
     return {
       className: 'inline-image',
-      size: 45,
+      size: 40,
     };
   }
 
