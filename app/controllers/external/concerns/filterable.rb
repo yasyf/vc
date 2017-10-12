@@ -16,12 +16,20 @@ module External::Concerns
       filter_params.to_h.merge(options_params.to_h)
     end
 
+    def list_params
+      params.permit(:list)
+    end
+
     def filtered
       Competitor.filtered(competitor_params)
     end
 
     def filtered_count
       Competitor.filtered_count(competitor_params)
+    end
+
+    def list_from_name
+      @list ||= Competitor.list(current_external_founder, list_params[:list]) or not_found
     end
   end
 end

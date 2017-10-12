@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       root action: 'index'
       get 'discover'
       get 'filter'
+      get 'list/:list', action: :list, as: :list
 
       scope :intro do
         get 'opt_in'
@@ -81,6 +82,7 @@ Rails.application.routes.draw do
             get 'filter_count'
             get 'locations'
             get 'lists'
+            get 'list/:list', action: :list, as: :list
           end
         end
 

@@ -9,7 +9,7 @@ import WebpackerReact from 'webpacker-react';
 let toPath = (name) => `${name.toLowerCase()}/${name.toLowerCase()}`;
 let toComponent = (name) => require(`components/external/vcwiz/${toPath(name)}`).default;
 
-const names = ['Discover', 'Filter'];
+const names = ['Discover', 'Filter', 'List'];
 
 let components = _.fromPairs(_.map(names, name => [name, toComponent(name)]));
 WebpackerReact.setup(components);

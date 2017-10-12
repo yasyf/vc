@@ -1,6 +1,6 @@
 import React from 'react';
 import { RingLoader as Loader } from 'react-spinners';
-import { CompetitorsListsPath } from '../global/constants.js.erb'
+import { CompetitorsListsPath, ListPath } from '../global/constants.js.erb'
 import { ffetch } from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
 
@@ -27,6 +27,10 @@ export default class Lists extends React.Component {
     };
   }
 
+  onListClick = name => () => {
+    window.location.href = `${ListPath.id(name)}`;
+  };
+
   renderLoading() {
     return (
       <div className="text-center loading">
@@ -52,12 +56,12 @@ export default class Lists extends React.Component {
 
   renderList = ({title, name, competitors, count}) => {
     return (
-      <div className="card" key={name}>
+      <div className="card" key={name} onClick={this.onListClick(name)}>
         <div className="card-section">
           <p className="title">{title}</p>
           <h6>Investors</h6>
           {competitors.map(this.renderCompetitor)}
-          {this.renderCount(count)}
+          {this.renderCount(count - competitors.length)}
         </div>
       </div>
     );

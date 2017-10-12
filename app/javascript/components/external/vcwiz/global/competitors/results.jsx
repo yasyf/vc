@@ -1,12 +1,16 @@
 import React from 'react';
 import Dimensions from 'react-dimensions';
+import inflection from 'inflection';
+import {timestamp} from '../utils';
 import {CompetitorFundTypes, CompetitorIndustries} from '../constants.js.erb';
 import LazyArray from '../lazy_array';
 import {Table, Column, Cell} from 'fixed-data-table-2';
 import ImageTextCell from '../cells/image_text_cell';
 import TextArrayCell from '../cells/text_array_cell';
 import TrackCell from '../cells/track_cell';
-import {timestamp} from '../utils';
+import TextCell from '../cells/text_cell';
+import DatetimeCell from '../cells/datetime_cell';
+import CompanyCell from '../cells/company_cell';
 
 @Dimensions()
 class ResultsTable extends React.Component {
@@ -33,6 +37,59 @@ class ResultsTable extends React.Component {
     this.setState({lastUpdate: timestamp()});
   };
 
+  defaultMiddleColumns() {
+    return [
+      { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
+      { type: 'text_array', key: 'location', name: 'Locations'},
+      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries},
+    ]
+  }
+
+  renderColumn(key, name, cell, width = 50) {
+    return (
+      <Column
+        key={key}
+        columnKey={key}
+        header={<Cell className="header">{name}</Cell>}
+        cell={cell}
+        flexGrow={1}
+        width={50}
+      />
+    );
+  }
+
+  middleColumns() {
+    let cols = this.props.columns || this.defaultMiddleColumns();
+    return cols.map(({type, key, name, ...args}) => {
+      let method = this[`render${inflection.camelize(type)}Column`];
+      return method(`meta.${key}`, name, args);
+    });
+  }
+
+  renderTextArrayColumn = (key, name, { translate }) => {
+    return this.renderColumn(key, name, <TextArrayCell data={this.state.array} translate={translate} />);
+  };
+
+  renderImageTextColumn = (key, name, { imageKey, fallbackKey }) => {
+    return this.renderColumn(key, name, <ImageTextCell data={this.state.array} imageKey={imageKey} fallbackKey={fallbackKey} />);
+  };
+
+  renderTextColumn = (key, name) => {
+    return this.renderColumn(key, name, <TextCell data={this.state.array} />);
+  };
+
+  renderDatetimeColumn = (key, name) => {
+    return this.renderColumn(key, name, <DatetimeCell data={this.state.array} />);
+  };
+
+  renderCompanyColumn = (key, name) => {
+    return this.renderColumn(key, name, <CompanyCell data={this.state.array} />);
+  };
+
+  renderTrackColumn = (key, name) => {
+    return this.renderColumn(key, name, <TrackCell data={this.state.array} />, 150);
+  };
+
   render() {
     return (
       <Table
@@ -45,40 +102,9 @@ class ResultsTable extends React.Component {
         showScrollbarY={false}
         className="table-main"
       >
-        <Column
-          columnKey="name"
-          header={<Cell className="header">Firm</Cell>}
-          cell={<ImageTextCell data={this.state.array} imageKey="photo" fallbackKey="acronym" />}
-          flexGrow={1}
-          width={50}
-        />
-        <Column
-          columnKey="fund_type"
-          header={<Cell className="header">Types</Cell>}
-          cell={<TextArrayCell data={this.state.array} translate={CompetitorFundTypes} />}
-          flexGrow={1}
-          width={50}
-        />
-        <Column
-          columnKey="location"
-          header={<Cell className="header">Locations</Cell>}
-          cell={<TextArrayCell data={this.state.array} />}
-          flexGrow={1}
-          width={50}
-        />
-        <Column
-          columnKey="industry"
-          header={<Cell className="header">Industries</Cell>}
-          cell={<TextArrayCell data={this.state.array} translate={CompetitorIndustries} />}
-          flexGrow={1}
-          width={50}
-        />
-        <Column
-          columnKey="track"
-          header={<Cell className="header">Track</Cell>}
-          cell={<TrackCell data={this.state.array} />}
-          width={150}
-        />
+        {this.renderImageTextColumn('name', 'Firm', { imageKey: 'photo', fallbackKey: 'acronym' })}
+        {this.middleColumns()}
+        {this.renderTrackColumn('track', 'Track')}
       </Table>
     );
   }

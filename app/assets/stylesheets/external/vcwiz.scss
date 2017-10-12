@@ -179,6 +179,22 @@ html, body, .full-screen {
   }
 }
 
+.list-page {
+  padding-top: 30px;
+
+  &-header {
+    .title {
+      font-size: large;
+      font-weight: bold;
+      padding-left: 1em;
+    }
+  }
+
+  &-body {
+    background-color: $light-grey;
+  }
+}
+
 .discover-page {
   &-header {
     margin-bottom: 50px;
@@ -212,6 +228,7 @@ html, body, .full-screen {
       height: 150px;
       width: 350px;
       margin: auto;
+      cursor: pointer;
 
       .title {
         font-weight: bold;
@@ -349,6 +366,12 @@ mark.highlighter {
   .text-block, .media-block {
     margin-top: 15px;
     margin-left: 10px;
+  }
+
+  .company-cell {
+    .company-name {
+      font-size: larger;
+    }
   }
 }
 

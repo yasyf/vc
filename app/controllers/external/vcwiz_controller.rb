@@ -28,6 +28,13 @@ class External::VcwizController < External::ApplicationController
     render_default
   end
 
+  def list
+    title list_from_name.title
+    component 'List'
+    props list: list_from_name.as_json(limit: 10, meta: true)
+    render_default
+  end
+
   def opt_in
     intro_request.investor.update! opted_in: optin?
     intro_request.decide! accept?

@@ -48,4 +48,8 @@ class ApplicationController < ActionController::Base
   def external?
     request.subdomain == ENV['EXTERNAL_SUBDOMAIN']
   end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
 end

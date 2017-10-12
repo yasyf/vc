@@ -5,11 +5,16 @@ import Highlighter from 'react-highlight-words';
 import Truncate from 'react-truncate';
 
 export default class Company extends React.Component {
+  static defaultProps = {
+    lines: 2,
+    imgSize: 25,
+  };
+
   render() {
-    let image = this.props.domain && <img src={`//logo.clearbit.com/${this.props.domain}?size=25`} />;
+    let image = this.props.domain && <img src={`//logo.clearbit.com/${this.props.domain}?size=${this.props.imgSize}`} />;
     return (
       <div className="company-container">
-        <p>
+        <p className="company-name">
           {image}
           {' '}
           <Highlighter
@@ -22,7 +27,7 @@ export default class Company extends React.Component {
           <Labels items={this.props.industry} extraClass="small" translate={CompetitorIndustries} />
         </p>
         <p>
-          <Truncate lines={2}>
+          <Truncate lines={this.props.lines}>
             {this.props.description}
           </Truncate>
         </p>

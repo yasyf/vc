@@ -228,20 +228,10 @@ class Competitor < ApplicationRecord
   end
 
   def self.filtered(params)
-    stages_join = <<-SQL
-      LEFT JOIN LATERAL (
-        SELECT target_investors.stage as stage
-        FROM investors
-        INNER JOIN target_investors ON target_investors.investor_id = investors.id
-        WHERE investors.competitor_id = competitors.id
-        ORDER BY target_investors.updated_at DESC
-        LIMIT 1
-      ) stages ON true
-    SQL
     _filtered(params)
       .group('competitors.id')
       .order('count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC')
-      .joins(stages_join)
+      .joins(CompetitorLists::Base.track_status_sql)
       .select('competitors.*, min(stages.stage) as track_status')
   end
 
@@ -266,14 +256,11 @@ class Competitor < ApplicationRecord
   end
 
   def self.lists(founder)
-    CompetitorLists::Base.get_eligibles(founder).map do |list|
-      list[:competitors] = list[:competitors].map(&:as_list_json)
-      list
-    end
+    CompetitorLists::Base.get_eligibles(founder).map { |l| l.new(founder).as_json(json: :list) }
   end
 
   def self.list(founder, name)
-    CompetitorLists::Base.get_if_eligible(founder, name)
+    CompetitorLists::Base.get_if_eligible(founder, name)&.new(founder)
   end
 
   def as_json(options = {})
@@ -284,6 +271,21 @@ class Competitor < ApplicationRecord
         :fund_type,
         :location,
         :photo,
+      ],
+      methods: [
+        :acronym,
+        :track_status
+      ]
+    )
+  end
+
+  def as_meta_json
+    as_json(
+      only: [
+        :name,
+        :location,
+        :photo,
+        :meta,
       ],
       methods: [
         :acronym,

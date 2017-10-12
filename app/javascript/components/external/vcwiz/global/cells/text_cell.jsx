@@ -14,7 +14,7 @@ let TextCellFactory = (superclass) => class extends superclass {
   }
 
   processRow(props, row) {
-    return {value: row[props.columnKey]};
+    return {value: _.get(row, props.columnKey)};
   };
 
   updateValue(props) {

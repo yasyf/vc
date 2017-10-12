@@ -52,6 +52,7 @@ export const CompetitorsFilterPath = '<%= filter_external_api_v1_competitors_pat
 export const CompetitorsFilterCountPath = '<%= filter_count_external_api_v1_competitors_path %>';
 export const CompetitorsLocationsPath = '<%= locations_external_api_v1_competitors_path %>';
 export const CompetitorsListsPath = '<%= lists_external_api_v1_competitors_path %>';
+export const CompetitorsListPath = idPath('<%= list_external_api_v1_competitors_path(list: 'ID') %>');
 export const CompaniesSearchPath = '<%= search_external_api_v1_companies_path %>';
 export const InvestorsFuzzySearchPath = '<%= fuzzy_search_external_api_v1_investors_path(q: 'QUERY') %>';
 export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path %>';
@@ -71,3 +72,4 @@ export const FounderClickPath = '<%= click_external_api_v1_founder_path %>';
 
 export const DiscoverPath = '<%= external_vcwiz_discover_path %>';
 export const FilterPath = '<%= external_vcwiz_filter_path %>';
+export const ListPath = idPath('<%= external_vcwiz_list_path(list: 'ID') %>');
