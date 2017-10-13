@@ -15,7 +15,7 @@ module Importers::External
     def self.process!(row)
       return false unless row.delete(:roles) == '{company}'
       row[:industry] = row.delete(:categories).split(',').map { |c| Competitor.closest_industry(c) }.compact.uniq
-      row[:country] = Country.find_country_by_alpha3(row[:country]).alpha2 if row[:country].present?
+      row[:country] = Country.find_country_by_alpha3(row[:country])&.alpha2 if row[:country].present?
     end
 
     def self.import!(row)

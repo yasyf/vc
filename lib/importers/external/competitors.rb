@@ -22,7 +22,7 @@ module Importers::External
       return false unless row[:type].present?
       row[:fund_type] = row.delete(:type)[1...-1].split(',').map { |t| TYPES[t.to_sym] }.compact
       return false unless row[:fund_type].present?
-      row[:country] = Country.find_country_by_alpha3(row[:country]).alpha2 if row[:country].present?
+      row[:country] = Country.find_country_by_alpha3(row[:country])&.alpha2 if row[:country].present?
       row[:crunchbase_id] = row[:crunchbase_id][26..-1]
     end
 
