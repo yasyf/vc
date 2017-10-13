@@ -86,6 +86,8 @@ module CompetitorLists
   end
 
   module Results
+    GET_LIMIT = 5
+
     def count_sql
       <<-SQL
         SELECT COUNT(DISTINCT subquery.id)
@@ -121,8 +123,6 @@ module CompetitorLists
     extend ClassSql
     extend ClassBulk
     include Results
-
-    GET_LIMIT = 5
 
     def initialize(founder)
       @founder = founder

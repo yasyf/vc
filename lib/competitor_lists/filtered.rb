@@ -90,11 +90,23 @@ class CompetitorLists::Filtered < CompetitorLists::Base
     competitors.left_outer_joins(:investors)
   end
 
-  def order
-    'count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC'
+  def sort
+    <<-SQL
+      count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC
+    SQL
+  end
+
+  def order_sql
+    <<-SQL
+      row_number() OVER (ORDER BY #{sort}) AS rn
+    SQL
   end
 
   def sql
-    _filtered.group('competitors.id').order(order).to_sql
+    _filtered.group('competitors.id').select("competitors.*, #{order_sql}").to_sql
+  end
+
+  def order
+    :rn
   end
 end
