@@ -74,7 +74,7 @@ class Competitor < ApplicationRecord
   sort :fund_type
   sort :location
 
-  has_many :investors, dependent: :destroy
+  has_many :investors
   has_many :target_investors, through: :investors
   has_many :investments, dependent: :destroy
   has_many :companies, through: :investments
