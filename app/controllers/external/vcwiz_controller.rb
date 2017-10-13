@@ -19,7 +19,7 @@ class External::VcwizController < External::ApplicationController
     title 'Filter'
     component 'Filter'
     props(
-      competitors: filtered.limit(20),
+      competitors: filtered(limit: 20),
       count: filtered_count,
       filters: full_filters,
       options: options_params.to_h,

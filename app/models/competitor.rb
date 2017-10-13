@@ -146,97 +146,13 @@ class Competitor < ApplicationRecord
     company.competitors.map(&:acronym).join(', ')
   end
 
-  def self._filtered_by_search_subquery(search)
-    name = Util.escape_sql_argument(search)
-    first_name, last_name = Util.split_name(search).map(&Util.method(:escape_sql_argument))
-    last_name = first_name unless last_name.present?
-    competitors_subquery = <<-SQL
-      SELECT
-        competitors.id as id,
-        COALESCE(similarity(competitors.name, '#{name}'), 0) AS rank
-      FROM competitors
-      WHERE competitors.name % '#{name}'
-      ORDER BY rank DESC
-    SQL
-    investors_subquery = <<-SQL
-      SELECT
-        competitors.id as id,
-        COALESCE(similarity(investors.first_name, '#{first_name}'), 0) + COALESCE(similarity(investors.last_name, '#{last_name}'), 0) AS rank
-      FROM investors
-      INNER JOIN competitors on investors.competitor_id = competitors.id
-      WHERE
-        investors.first_name % '#{first_name}'
-        OR investors.last_name % '#{last_name}'
-      ORDER BY rank DESC
-    SQL
-    <<-SQL
-      SELECT COALESCE(csub.id, isub.id) AS id
-      FROM (#{competitors_subquery}) AS csub
-      FULL JOIN (#{investors_subquery}) AS isub USING (id)
-      ORDER BY csub.rank + isub.rank
-    SQL
-  end
 
-  def self._filtered_by_related_subquery(ids_string)
-    industry_subquery = <<-SQL
-      SELECT array_agg(related_industries)
-      FROM (
-        SELECT DISTINCT unnest(companies.industry)
-        FROM companies
-        WHERE companies.id IN (#{Util.escape_sql_argument(ids_string)})
-      ) AS t(related_industries)
-    SQL
-    <<-SQL
-      SELECT companies.id
-      FROM companies
-      WHERE
-        companies.industry <> '{}'
-        AND companies.industry IS NOT NULL
-        AND companies.industry <@ (#{industry_subquery})
-    SQL
-  end
-
-  def self._filtered(params)
-    competitors = if (search = params[:search]).present?
-      search_subquery = self._filtered_by_search_subquery(search)
-      joins("INNER JOIN (#{search_subquery}) AS searched ON competitors.id = searched.id")
-    else
-      all
-    end
-    %w(industry fund_type).each do |param|
-      next unless params[param].present?
-      competitors = competitors.where("competitors.#{param} && ?", "{#{params[param]}}")
-    end
-    if params[:location].present?
-      competitors = if params[:company_cities]
-        competitors.joins(:companies).where('companies.location IN (?)', params[:location])
-      else
-        competitors.where('competitors.location && ?', "{#{params[:location]}}")
-      end
-    end
-    if params[:companies].present?
-      competitors = competitors.joins(:companies)
-      competitors = if params[:related]
-        related_subquery = self._filtered_by_related_subquery(params[:companies])
-        competitors.joins("INNER JOIN (#{related_subquery}) AS related_companies ON companies.id = related_companies.id")
-      else
-        competitors.where('companies.id': params[:companies].split(','))
-      end
-    end
-    competitors = competitors.where(country: 'US') if params[:us_only]
-    competitors.left_outer_joins(:investors)
-  end
-
-  def self.filtered(params)
-    _filtered(params)
-      .group('competitors.id')
-      .order('count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC')
-      .joins(CompetitorLists::Base.track_status_sql)
-      .select('competitors.*, min(stages.stage) as track_status')
+  def self.filtered(params, opts = {})
+    CompetitorLists::Filtered.new(params).results(**opts)
   end
 
   def self.filtered_count(params)
-    _filtered(params).count('DISTINCT competitors.id')
+    CompetitorLists::Filtered.new(params).result_count
   end
 
   def self.locations(query, limit = 5)

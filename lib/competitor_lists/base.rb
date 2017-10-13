@@ -50,13 +50,21 @@ class CompetitorLists::Base
     SQL
   end
 
+  def self._meta_select(meta_sql)
+    meta_sql.present? ? ', row_to_json(meta_row.*) AS meta' : ''
+  end
+
+  def self._meta_join(meta_sql)
+    meta_sql.present? ? "LEFT JOIN LATERAL (#{meta_sql}) meta_row ON true" : ''
+  end
+
   def self._base_sql(sql, meta_sql, limit, offset)
     <<-SQL
-      SELECT DISTINCT ON (subquery.id) subquery.*, stages.stage as track_status, row_to_json(meta_row.*) AS meta
+      SELECT DISTINCT ON (subquery.id) subquery.*, stages.stage AS track_status #{_meta_select(meta_sql)}
       FROM (#{sql}) AS subquery
       LEFT OUTER JOIN investors ON investors.competitor_id = subquery.id
       #{track_status_sql('subquery')}
-      LEFT JOIN LATERAL (#{meta_sql}) meta_row ON true
+      #{_meta_join(meta_sql)}
       OFFSET #{offset}
       LIMIT #{limit}
     SQL
@@ -100,10 +108,11 @@ class CompetitorLists::Base
   end
 
   def meta_sql
-    raise 'must implement meta_sql'
+    nil
   end
+
   def meta_cols
-    raise 'must implement meta_cols'
+    nil
   end
 
   def title

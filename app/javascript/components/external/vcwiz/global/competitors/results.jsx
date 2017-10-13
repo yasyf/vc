@@ -59,10 +59,11 @@ class ResultsTable extends React.Component {
   }
 
   middleColumns() {
-    let cols = this.props.columns || this.defaultMiddleColumns();
+    const cols = this.props.columns || this.defaultMiddleColumns();
+    const prefix = this.props.columns ? 'meta.' : '';
     return cols.map(({type, key, name, ...args}) => {
       let method = this[`render${inflection.camelize(type)}Column`];
-      return method(`meta.${key}`, name, args);
+      return method(`${prefix}${key}`, name, args);
     });
   }
 

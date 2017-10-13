@@ -20,8 +20,8 @@ module External::Concerns
       params.permit(:list)
     end
 
-    def filtered
-      Competitor.filtered(competitor_params)
+    def filtered(opts = {})
+      Competitor.filtered(competitor_params, opts)
     end
 
     def filtered_count
