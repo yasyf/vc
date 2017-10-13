@@ -1,4 +1,5 @@
 class DuplicateCompetitorJob < ApplicationJob
+  include Concerns::Ignorable
   queue_as :default
 
   def perform(competitor_id)
@@ -26,7 +27,9 @@ class DuplicateCompetitorJob < ApplicationJob
       end
 
       competitor.investors.lock
-      competitor.investors.update_all competitor_id: other.id
+      competitor.investors.find_each do |investor|
+        ignore_unique { investor.update! competitor_id: other.id }
+      end
 
       competitor.notes.lock
       competitor.notes.find_each do |note|
