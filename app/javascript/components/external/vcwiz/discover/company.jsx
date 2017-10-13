@@ -22,8 +22,7 @@ export default class Company extends React.Component {
             searchWords={[this.props.input]}
             textToHighlight={this.props.name}
           />
-        </p>
-        <p>
+          {' '}
           <Labels items={this.props.industry} extraClass="small" translate={CompetitorIndustries} />
         </p>
         <p>

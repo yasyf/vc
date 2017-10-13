@@ -11,7 +11,7 @@ const StyleCopier = ({children, width, style, className}) => {
 
 const DropdownOverlay = elt => ({children}) => (
   <Overlay show rootClose={false} target={elt} placement="bottom">
-    <StyleCopier width={elt().offsetWidth}>{children}</StyleCopier>
+    <StyleCopier width={elt() && elt().offsetWidth}>{children}</StyleCopier>
   </Overlay>
 );
 

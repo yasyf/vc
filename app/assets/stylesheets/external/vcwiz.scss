@@ -252,7 +252,7 @@ html, body, .full-screen {
     text-align: left;
   }
 
-  .Select--multi .Select-placeholder {
+  .Select--multi .Select-placeholder, .Select--multi .Select-input {
     padding-top: 6px;
   }
 
@@ -302,6 +302,16 @@ mark.highlighter {
     margin-bottom: 0.25rem;
     font-size: small;
   }
+
+  .company-name {
+    font-size: medium;
+  }
+
+  .labels {
+    .small {
+      font-size: xx-small;
+    }
+  }
 }
 
 .labels {
@@ -309,7 +319,7 @@ mark.highlighter {
   position: relative;
 
   .label {
-    margin-right: 5px;
+    margin-left: 5px;
   }
 
   .small {
@@ -372,6 +382,12 @@ mark.highlighter {
   .company-cell {
     .company-name {
       font-size: larger;
+    }
+
+    .labels {
+      .small {
+        font-size: small;
+      }
     }
   }
 }
