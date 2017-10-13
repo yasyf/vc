@@ -5,8 +5,8 @@ class CompetitorLists::MostRecent < CompetitorLists::Base
     <<-SQL
       investments.funded_at DESC,
       investments.featured DESC,
-      count(nullif(investors.featured, false)) DESC,
-      sum(investors.target_investors_count) DESC
+      COUNT(NULLIF(investors.featured, false)) DESC,
+      COALESCE(SUM(investors.target_investors_count), 0) DESC
     SQL
   end
 
@@ -18,12 +18,19 @@ class CompetitorLists::MostRecent < CompetitorLists::Base
   end
 
   def distinct_sql
-    uniqued_on_company = <<-SQL
-      SELECT DISTINCT ON(company_id) investments.id
+    limited = <<-SQL
+      SELECT investments.id
       FROM investments
+      ORDER BY funded_at DESC
+      LIMIT 100
+    SQL
+    uniqued_on_company = <<-SQL
+      SELECT DISTINCT ON(investments.company_id) investments.id
+      FROM investments
+      INNER JOIN (#{limited}) AS limited ON limited.id = investments.id
       #{join}
       GROUP BY investments.id
-      ORDER BY company_id DESC, #{sort}
+      ORDER BY investments.company_id DESC, #{sort}
     SQL
     uniqued = <<-SQL
       SELECT DISTINCT ON(competitors.id) investments.id

@@ -219,7 +219,7 @@ class Competitor < ApplicationRecord
   end
 
   def acronym
-    name.split('').select { |l| /[[:upper:]]/.match l }.join
+    name.split('').select { |l| /[[:upper:]]|\d/.match l }.join
   end
 
   def crunchbase_fund

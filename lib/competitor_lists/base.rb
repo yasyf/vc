@@ -124,6 +124,8 @@ module CompetitorLists
     extend ClassBulk
     include Results
 
+    attr_reader :founder
+
     def initialize(founder)
       @founder = founder
     end

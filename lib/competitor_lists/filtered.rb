@@ -92,7 +92,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base
 
   def sort
     <<-SQL
-      count(nullif(investors.featured, false)) DESC, sum(investors.target_investors_count) DESC
+      COUNT(NULLIF(investors.featured, false)) DESC, COALESCE(SUM(investors.target_investors_count), 0) DESC
     SQL
   end
 
