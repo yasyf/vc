@@ -11,6 +11,7 @@ import Select from '../global/fields/select';
 import Company from './company';
 import {Button, Column, Row, Colors} from 'react-foundation';
 import Highlighter from 'react-highlight-words';
+import DropdownOverlay from '../global/shared/dropdown_overlay';
 
 const SessionStorageKey = storageKey('Filters');
 
@@ -79,6 +80,7 @@ export default class Filters extends React.Component {
       searchWords={[this.state.inputs[name]]}
       textToHighlight={o.label}
     />;
+    let ref;
     return {
       name: name,
       value: this.state.filters[name],
@@ -87,6 +89,8 @@ export default class Filters extends React.Component {
       optionRenderer,
       onInputChange: v => this.onInputChange(name, v),
       onChange: this.onChange,
+      formRef: select => { ref = select; },
+      dropdownComponent: DropdownOverlay(() => ref),
     };
   }
 

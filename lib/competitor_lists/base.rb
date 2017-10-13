@@ -120,7 +120,7 @@ class CompetitorLists::Base
   end
 
   def to_param
-    self.class.title
+    self.class.name.demodulize.underscore.to_sym
   end
 
   def as_json(opts = {})

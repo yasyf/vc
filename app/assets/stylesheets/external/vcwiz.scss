@@ -51,6 +51,7 @@ html, body, .full-screen {
   .title {
     color: $white;
     padding-left: 2vw;
+    cursor: pointer;
   }
 
   .subtitle {
@@ -379,8 +380,4 @@ mark.highlighter {
 
 #vcwiz > div > div > div > div > div.fixedDataTableRowLayout_rowWrapper > div > div > div:nth-child(2) {
   background-color: $header-grey;
-}
-
-.Select-menu-outer.track {
-  width: 110px;
 }

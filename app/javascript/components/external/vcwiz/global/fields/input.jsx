@@ -17,7 +17,7 @@ export default class Input extends React.Component {
   }
 
   inputProps() {
-    const {wrap, inputRef, ...props} = this.props;
+    const {wrap, inputRef, formRef, ...props} = this.props;
     return {
       ...props,
       onChange: this.onChange,
@@ -54,7 +54,7 @@ export default class Input extends React.Component {
   render() {
     if (this.props.wrap) {
       return (
-        <form>
+        <form ref={this.props.formRef}>
           {this.renderInput()}
         </form>
       );

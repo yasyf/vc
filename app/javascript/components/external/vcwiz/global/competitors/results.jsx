@@ -45,15 +45,15 @@ class ResultsTable extends React.Component {
     ]
   }
 
-  renderColumn(key, name, cell, width = 50) {
+  renderColumn(key, name, cell, width = 50, flex = 1) {
     return (
       <Column
         key={key}
         columnKey={key}
         header={<Cell className="header">{name}</Cell>}
         cell={cell}
-        flexGrow={1}
-        width={50}
+        flexGrow={flex || undefined}
+        width={width}
       />
     );
   }
@@ -88,7 +88,7 @@ class ResultsTable extends React.Component {
   };
 
   renderTrackColumn = (key, name) => {
-    return this.renderColumn(key, name, <TrackCell data={this.state.array} />, 150);
+    return this.renderColumn(key, name, <TrackCell data={this.state.array} />, 150, null);
   };
 
   render() {
