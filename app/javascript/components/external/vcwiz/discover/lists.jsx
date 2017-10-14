@@ -3,6 +3,7 @@ import { RingLoader as Loader } from 'react-spinners';
 import { CompetitorsListsPath, ListPath } from '../global/constants.js.erb'
 import { ffetch } from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
+import {Row, Column} from 'react-foundation';
 
 export default class Lists extends React.Component {
   constructor(props) {
@@ -24,6 +25,8 @@ export default class Lists extends React.Component {
     return {
       className: 'inline-image',
       size: 40,
+      background: 'FFFFFF',
+      foreground: '000000',
     };
   }
 
@@ -54,23 +57,35 @@ export default class Lists extends React.Component {
     );
   };
 
-  renderList = ({title, name, competitors, count}) => {
+  renderList = ({title, name, competitors, count}, i, arr) => {
     return (
-      <div className="card" key={name} onClick={this.onListClick(name)}>
-        <div className="card-section">
-          <p className="title">{title}</p>
-          <h6>Investors</h6>
-          {competitors.map(this.renderCompetitor)}
-          {this.renderCount(count - competitors.length)}
+      <Column large={4} key={name} isLast={i === arr.length - 1}>
+        <div className="card" onClick={this.onListClick(name)}>
+          <div className="card-section">
+            <p className="title">{title}</p>
+            <div className="body">
+              <h6>Investors</h6>
+              {competitors.map(this.renderCompetitor)}
+              {this.renderCount(count - competitors.length)}
+            </div>
+          </div>
         </div>
-      </div>
+      </Column>
+    );
+  };
+
+  renderListGroup = (group, i) => {
+    return (
+      <Row key={i}>
+        {group.map(this.renderList)}
+      </Row>
     );
   };
 
   renderLists() {
     return (
       <div className="cards">
-        {this.state.lists.map(this.renderList)}
+        {_.chunk(this.state.lists, 3).map(this.renderListGroup)}
       </div>
     );
   }

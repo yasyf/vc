@@ -29,7 +29,7 @@ html, body, .full-screen {
 .rounded-image {
   background-color: $white;
   overflow: hidden;
-  border: 1px solid $light-grey;
+  border: 1px solid $mid-grey;
   border-radius: 50%;
 
   img {
@@ -206,11 +206,14 @@ html, body, .full-screen {
 
     .inline-image {
       display: inline-block;
+      margin-left: 5px;
     }
 
     h6 {
       text-transform: uppercase;
       color: $mid-grey;
+      font-size: 0.9rem;
+      font-weight: bold;
     }
 
     .loading {
@@ -226,14 +229,24 @@ html, body, .full-screen {
     }
 
     .card {
-      height: 150px;
+      height: 165px;
       width: 350px;
       margin: auto;
       cursor: pointer;
 
+      .card-section {
+        position: relative;;
+      }
+
+      .body {
+        position: absolute;
+        bottom: 10px;
+      }
+
       .title {
         font-weight: bold;
-        font-size: large;
+        font-size: 1.05em;
+        line-height: 1.3em;
       }
     }
   }
