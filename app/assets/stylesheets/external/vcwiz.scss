@@ -206,7 +206,10 @@ html, body, .full-screen {
 
     .inline-image {
       display: inline-block;
-      margin-left: 5px;
+
+      &:not(:first-child) {
+        margin-left: 8px;
+      }
     }
 
     h6 {

@@ -65,8 +65,10 @@ export default class Lists extends React.Component {
             <p className="title">{title}</p>
             <div className="body">
               <h6>Investors</h6>
-              {competitors.map(this.renderCompetitor)}
-              {this.renderCount(count - competitors.length)}
+              <div>
+                {competitors.map(this.renderCompetitor)}
+                {this.renderCount(count - competitors.length)}
+              </div>
             </div>
           </div>
         </div>
