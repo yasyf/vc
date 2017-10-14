@@ -1,5 +1,6 @@
 class PropagateIndustryUpJob < ApplicationJob
-  NUM_INDUSTRIES = 3
+  INDUSTRY_THRESHOLD = 0.05
+  MAX_INDUSTRIES = 10
 
   queue_as :low
 
@@ -27,7 +28,7 @@ class PropagateIndustryUpJob < ApplicationJob
     table = "#{name}s"
 
     query = <<-SQL
-      SELECT #{table}.id, array_agg(c_t.ind_t) as industries
+      SELECT #{table}.id, array_agg(c_t.ind_t) as industries, COUNT(c_t.id) as c_count
       FROM
        (
         SELECT id, industry, unnest(industry) as ind_t
@@ -44,7 +45,10 @@ class PropagateIndustryUpJob < ApplicationJob
         frequencies = industries.each_with_object(Hash.new(0)) do |i, h|
           h[i] += 1
         end
-        top = industries.sort { |i| frequencies[i] }.first(NUM_INDUSTRIES)
+        top = industries
+          .uniq
+          .select { |i| frequencies[i] > INDUSTRY_THRESHOLD * result['c_count'] }
+          .sort { |i| frequencies[i] }.first(MAX_INDUSTRIES)
         klass.update(result['id'], industry: top)
       end
     end

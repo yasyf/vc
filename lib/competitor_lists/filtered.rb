@@ -67,9 +67,12 @@ class CompetitorLists::Filtered < CompetitorLists::Base
     else
       Competitor.all
     end
-    %w(industry fund_type).each do |param|
+    %w(fund_type).each do |param|
       next unless params[param].present?
       competitors = competitors.where("competitors.#{param} && ?", "{#{params[param]}}")
+    end
+    if params[:industry].present?
+      competitors = competitors.where('competitors.industry @> ?', "{#{params[:industry]}}")
     end
     if params[:location].present?
       competitors = if params[:company_cities]
