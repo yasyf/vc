@@ -22,7 +22,10 @@ module Http::Crunchbase
     end
 
     def country
-      get_in('relationships', 'headquarters', 'item', 'properties', 'country_code2')
+      code = get_in('relationships', 'headquarters', 'item', 'properties', 'country_code2')
+      return code if code.present?
+      name = get_in('relationships', 'headquarters', 'item', 'properties', 'country')
+      Country.find_country_by_name(name)&.alpha2 if name.present?
     end
 
     def found?
