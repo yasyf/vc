@@ -1,5 +1,5 @@
 import React from 'react';
-import Select from 'react-select-plus';
+import Select from 'react-select';
 import Modal from 'react-modal';
 import {ffetch} from './utils';
 import update from 'immutability-helper';

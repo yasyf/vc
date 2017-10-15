@@ -1,5 +1,5 @@
 import React from 'react';
-import Select from 'react-select-plus';
+import Select from 'react-select';
 import SavedText from './saved_text';
 import classNames from 'classnames';
 

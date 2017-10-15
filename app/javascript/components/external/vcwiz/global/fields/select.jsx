@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactSelect, { Async } from 'react-select-plus';
+import ReactSelect  from 'react-select';
 import TetherComponent from 'react-tether';
 import Input from './input';
 
