@@ -4,6 +4,40 @@ import {CompetitorIndustries} from '../global/constants.js.erb';
 import Highlighter from 'react-highlight-words';
 import Truncate from 'react-truncate';
 
+class CompanyImage extends React.Component {
+  static defaultProps = {
+    fallback: 'https://angel.co/images/shared/nopic_startup.png',
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      errored: false,
+    };
+  }
+
+  onError  = () => {
+    this.setState({errored: true});
+  };
+
+  render() {
+    const { domain, size, fallback } = this.props;
+    const style = { height: size, width: size };
+
+    if (this.state.errored || !domain) {
+      return <img src={fallback} style={style} />;
+    }
+    return (
+      <img
+        src={`//logo.clearbit.com/${domain}?size=${size}`}
+        onError={this.onError}
+        style={style}
+      />
+    );
+  }
+}
+
 export default class Company extends React.Component {
   static defaultProps = {
     lines: 2,
@@ -11,11 +45,10 @@ export default class Company extends React.Component {
   };
 
   render() {
-    let image = this.props.domain && <img src={`//logo.clearbit.com/${this.props.domain}?size=${this.props.imgSize}`} />;
     return (
       <div className="company-container">
         <p className="company-name">
-          {image}
+          {<CompanyImage domain={this.props.domain} size={this.props.imgSize} />}
           {' '}
           <Highlighter
             highlightClassName='highlighter'
