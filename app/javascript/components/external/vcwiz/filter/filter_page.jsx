@@ -91,14 +91,18 @@ export default class FilterPage extends React.Component {
     return (
       <div className="option-switches">
         <Row>
-          <Column large={4}>
+          <Column large={2}  offsetOnLarge={1}>
             {this.renderSwitch('us_only', 'US Only')}
           </Column>
-          <Column large={4}>
+          <Column large={2}>
             {this.renderSwitch('related', 'Related')}
           </Column>
-          <Column large={4}>
+          <Column large={2}>
             {this.renderSwitch('company_cities', '💵 Cities')}
+          </Column>
+          <Column large={5}>
+            <p className="tight">"Related" finds investors who invested in similar companies, instead of exact matches.</p>
+            <p className="tight">"💵 Cities" finds investors who made investments in the given locations, instead of ones based there.</p>
           </Column>
         </Row>
       </div>
@@ -107,14 +111,14 @@ export default class FilterPage extends React.Component {
 
   renderFilterRow() {
     return (
-      <Row className="wide-row">
-        <Column large={9}>
+      <div>
+        <Row className="wide-row">
           {this.renderSearchAndFilters()}
-        </Column>
-        <Column large={3}>
+        </Row>
+        <Row className="wide-row">
           {this.renderSwitches()}
-        </Column>
-      </Row>
+        </Row>
+      </div>
     );
   }
 

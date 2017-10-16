@@ -16,6 +16,10 @@ html, body, .full-screen {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
 
+p.tight {
+  margin-bottom: 5px;
+}
+
 .button.success {
   background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
   color: $white;
@@ -169,10 +173,10 @@ html, body, .full-screen {
     }
 
     .option-switches {
-      margin-top: 25px;
+      margin-bottom: 15px;
 
-      .switch {
-        padding-top: 10px;
+      p {
+        font-size: smaller;
       }
     }
 
