@@ -34,6 +34,10 @@ let TextCellFactory = (superclass) => class extends superclass {
     this.updateValue(nextProps);
   }
 
+  onClick = e => {
+    this.props.onClick(e, this.props.rowIndex);
+  };
+
   renderValue() {
     if (!this.state.value) {
       return null;
@@ -62,7 +66,9 @@ let TextCellFactory = (superclass) => class extends superclass {
     return (
       <ReactPlaceholder {...this.placeholderProps()}>
         <Cell {...{height, width, columnKey, rowIndex}}>
-          {this.renderValue()}
+          <div className="cell-wrapper" onClick={this.onClick}>
+            {this.renderValue()}
+          </div>
         </Cell>
       </ReactPlaceholder>
     )

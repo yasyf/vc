@@ -12,7 +12,7 @@ html, body, .full-screen {
   width: 100%;
 }
 
-#vcwiz {
+#vcwiz, h1, h2, h3, h4, h5, h6 {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
 
@@ -42,6 +42,34 @@ html, body, .full-screen {
     font-size: 11px;
     text-align: center;
   }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.modal-content {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  border: 1px solid $light-grey;
+  background: $white;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+}
+
+.modal-overlay, .modal-content {
+  z-index: 1;
 }
 
 #top-bar {
@@ -393,6 +421,10 @@ mark.highlighter {
   .text-block, .media-block {
     margin-top: 15px;
     margin-left: 10px;
+  }
+
+  .cell-wrapper {
+    cursor: pointer;
   }
 
   .company-cell {

@@ -32,7 +32,7 @@ export default class ImageTextCell extends TextCell {
 
   renderValue() {
     return (
-      <div>
+      <div className="image-text-cell">
         {this.renderImage()}
         <div className="image-text">
           <Textfit mode="single" min={12} max={20}>

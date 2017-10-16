@@ -2,7 +2,7 @@
 /* eslint no-console:0 */
 
 import 'fixed-data-table-2/dist/fixed-data-table.css';
-import 'react-select-plus/dist/react-select-plus.css';
+import 'react-select/dist/react-select.css';
 import "react-placeholder/lib/reactPlaceholder.css";
 import WebpackerReact from 'webpacker-react';
 
