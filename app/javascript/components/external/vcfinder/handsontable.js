@@ -1,5 +1,5 @@
-import Handsontable from 'handsontable-pro';
-import 'handsontable-pro/dist/handsontable.full.css';
+import Handsontable from 'handsontable';
+import 'handsontable/dist/handsontable.full.css';
 import {buildQuery, ffetch, flash, fullName} from './utils';
 
 const IntroRequested = "<span class='faded'>Intro Requested</span>";

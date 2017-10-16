@@ -1100,12 +1100,6 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bessel@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/bessel/-/bessel-0.2.0.tgz#13cb39cd29233219ec2da725e0ba0c66fb46b6f2"
-  dependencies:
-    voc ""
-
 big.js@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.1.3.tgz#4cada2193652eb3ca9ec8e55c9015669c9806978"
@@ -2548,14 +2542,6 @@ form-data@~2.1.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
-"formulajs@github:handsontable/formula.js#1.2.1":
-  version "1.2.1"
-  resolved "https://codeload.github.com/handsontable/formula.js/tar.gz/84f410606b9e279bffcd1328d975ec463671a199"
-  dependencies:
-    bessel "^0.2.0"
-    jStat "^1.7.0"
-    numbro "^1.11.0"
-
 forwarded@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.0.tgz#19ef9874c4ae1c297bcf078fde63a09b66a84363"
@@ -2760,17 +2746,15 @@ handle-thing@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-1.2.5.tgz#fd7aad726bf1a5fd16dfc29b2f7a6601d27139c4"
 
-"handsontable-pro@git+ssh://git@git.handsontable.com/handsontable/handsontable-pro.git":
-  version "1.12.0"
-  resolved "git+ssh://git@git.handsontable.com/handsontable/handsontable-pro.git#492d7dfe2f8e70a46577efc644b779a060313349"
+handsontable@0.34.5:
+  version "0.34.5"
+  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-0.34.5.tgz#9cb1a85f6b497902a094c5715595b2de51ede00c"
   dependencies:
-    handsontable "0.33.0"
-    hot-formula-parser "^2.0.3"
     moment "2.18.1"
     numbro "1.11.0"
     pikaday "1.5.1"
 
-handsontable@0.33.0, handsontable@^0.33.0:
+handsontable@^0.33.0:
   version "0.33.0"
   resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-0.33.0.tgz#3df41804fd00a878b3904a478bf7ef54f2bc6d95"
   dependencies:
@@ -2877,13 +2861,6 @@ home-or-tmp@^2.0.0:
 hosted-git-info@^2.1.4:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.5.0.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
-
-hot-formula-parser@^2.0.3:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/hot-formula-parser/-/hot-formula-parser-2.2.0.tgz#c79b8ac4f26be289fb7360f22d1b72c08ca4ae2c"
-  dependencies:
-    formulajs "github:handsontable/formula.js#1.2.1"
-    tiny-emitter "^2.0.1"
 
 hpack.js@^2.1.6:
   version "2.1.6"
@@ -3267,10 +3244,6 @@ isomorphic-fetch@^2.1.1:
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
-
-jStat@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/jStat/-/jStat-1.7.0.tgz#31c49f93b5ae051e7ed67e7a40f6d8a20f85c334"
 
 javascript-natural-sort@0.7.1:
   version "0.7.1"
@@ -4016,7 +3989,7 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-numbro@1.11.0, numbro@^1.11.0, numbro@^1.9.3:
+numbro@1.11.0, numbro@^1.9.3:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/numbro/-/numbro-1.11.0.tgz#39aa17b358b4682aec8ca0d5755f35c5d9ce8f9e"
 
@@ -5999,10 +5972,6 @@ tiny-emitter@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.0.0.tgz#bad327adb1804b42a231afa741532bd884cd09ad"
 
-tiny-emitter@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.0.1.tgz#e65919d91e488e2a78f7ebe827a56c6b188d51af"
-
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -6244,10 +6213,6 @@ vm-browserify@0.0.4:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
-
-voc@:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/voc/-/voc-1.0.0.tgz#5465c0ce11d0881f7d8e36d8ca587043f33a25ae"
 
 warning@^3.0.0:
   version "3.0.0"

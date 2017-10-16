@@ -21,7 +21,7 @@
     "fixed-data-table-2": "0.8.1",
     "foundation-sites": "^6.4.1",
     "glob": "^7.1.2",
-    "handsontable-pro": "git+ssh://git@git.handsontable.com/handsontable/handsontable-pro.git",
+    "handsontable": "0.34.5",
     "history": "4.7.2",
     "immutability-helper": "^2.3.0",
     "inflection": "^1.12.0",
