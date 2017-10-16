@@ -13,16 +13,18 @@ export default class TrackCell extends UnpureTextCell {
 
   renderValue() {
     return (
-      <Select
-        name="track"
-        value={this.state.value}
-        placeholder="Add"
-        multi={false}
-        searchable={false}
-        onChange={this.onChange}
-        options={TargetInvestorStagesOptions}
-        arrowRenderer={this.state.value ? undefined : nullRenderer}
-      />
+      <div className='track-cell'>
+        <Select
+          name="track"
+          value={this.state.value}
+          placeholder="Add"
+          multi={false}
+          searchable={false}
+          onChange={this.onChange}
+          options={TargetInvestorStagesOptions}
+          arrowRenderer={this.state.value ? undefined : nullRenderer}
+        />
+      </div>
     )
   }
 }

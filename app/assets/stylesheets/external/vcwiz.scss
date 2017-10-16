@@ -442,6 +442,12 @@ mark.highlighter {
       }
     }
   }
+
+  .track-cell {
+    .Select-control {
+      cursor: pointer;
+    }
+  }
 }
 
 // Hacks

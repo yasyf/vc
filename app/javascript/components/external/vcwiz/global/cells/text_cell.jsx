@@ -4,6 +4,10 @@ import {Textfit} from 'react-textfit';
 import ReactPlaceholder from 'react-placeholder';
 
 let TextCellFactory = (superclass) => class extends superclass {
+  static defaultProps = {
+    onClick: _.noop,
+  };
+
   constructor(props) {
     super(props);
 
