@@ -123,8 +123,8 @@ export default class FilterPage extends React.Component {
   }
 
   render() {
-    let { competitors, count, filters, resultsId } = this.state;
-    let source = {path: CompetitorsFilterPath, query: filters};
+    let { competitors, count, resultsId } = this.state;
+    let source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
       <div className="full-screen filter-page">
         <div className="filter-page-header">
