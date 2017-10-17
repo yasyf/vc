@@ -40,8 +40,8 @@ module CompetitorLists
         GROUP BY investors.id
         ORDER BY
           MAX(investments.funded_at) DESC NULLS LAST,
-          COUNT(investments.id) DESC
-          investors.featured DESC,
+          COUNT(investments.id) DESC,
+          investors.featured DESC
       SQL
       <<-SQL
         LEFT JOIN LATERAL (
