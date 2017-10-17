@@ -11,7 +11,7 @@ class News < ApplicationRecord
   attr_accessor :body
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:title, :url, :description, :published_at])
+    super options.reverse_merge(only: [:id, :title, :url, :description, :published_at])
   end
 
   def page

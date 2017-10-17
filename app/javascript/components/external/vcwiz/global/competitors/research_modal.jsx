@@ -3,6 +3,10 @@ import Modal from 'react-modal';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {fullName} from '../utils';
+import PartnerTab from './partner_tab';
+import IconLine from '../shared/icon_line';
 
 const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
 const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
@@ -49,7 +53,7 @@ export default class ResearchModal extends React.Component {
     let investments = recent_investments.map(c =>
       <span key={c.id}>{this.renderCompany(c)}</span>
     );
-    return <p><b>Investments</b>: {withDots(investments)}</p>
+    return <p><b>Recent Investments</b>: {withDots(investments)}</p>
   }
 
   renderCompetitorInfo() {
@@ -65,13 +69,7 @@ export default class ResearchModal extends React.Component {
   }
 
   renderIconLine(icon, line, link = null, text = null) {
-    if (!line && !text) {
-      return null;
-    }
-    let inner = text || line;
-    let href = text ? link : `${link}/${line}`;
-    let body = link ? <a href={href} target="_blank">{inner}</a> : inner;
-    return <p className="icon"><i className={`line-icon fi-${icon}`}/>{body}</p>
+    return <IconLine icon={icon} line={line} link={link} text={text}/>;
   }
 
   renderCompetitorSocial() {
@@ -87,18 +85,37 @@ export default class ResearchModal extends React.Component {
     )
   };
 
+  renderPartners() {
+    let { partners } = this.props;
+    return (
+      <Tabs selectedTabPanelClassName="tab-panel">
+        <div className="tab-list-wrapper">
+          <TabList className="tab-list">
+            {partners.map(p => <Tab key={p.id}>{fullName(p)}</Tab>)}
+          </TabList>
+        </div>
+        {partners.map(p => <TabPanel key={p.id}><PartnerTab {...p} /></TabPanel>)}
+      </Tabs>
+    );
+  }
+
   renderModal() {
     return (
       <div className="research-modal">
-        <Row>
-          <Column large={9}>
-            {this.renderHeading()}
-            {this.renderCompetitorInfo()}
-          </Column>
-          <Column large={2} offsetOnLarge={1}>
-            {this.renderCompetitorSocial()}
-          </Column>
-        </Row>
+        <div className="research-modal-top">
+          <Row>
+            <Column large={9}>
+              {this.renderHeading()}
+              {this.renderCompetitorInfo()}
+            </Column>
+            <Column large={2} offsetOnLarge={1}>
+              {this.renderCompetitorSocial()}
+            </Column>
+          </Row>
+        </div>
+        <div className="research-modal-bottom">
+          {this.renderPartners()}
+        </div>
       </div>
     )
   }

@@ -170,7 +170,7 @@ class Competitor < ApplicationRecord
       ) AS s(ulocations)
       WHERE ulocations ILIKE '#{query.present? ? sanitize_sql_like(query) : ''}%'
       GROUP BY ulocations
-      ORDER BY count(ulocations) DESC
+      ORDER BY COUNT(ulocations) DESC
       LIMIT #{limit}
     SQL
   end
@@ -191,6 +191,8 @@ class Competitor < ApplicationRecord
         :fund_type,
         :location,
         :photo,
+        :facebook,
+        :twitter,
       ],
       methods: [
         :acronym,
@@ -211,6 +213,7 @@ class Competitor < ApplicationRecord
         :domain,
         :facebook,
         :twitter,
+        :partners,
       ],
       methods: [
         :hq,

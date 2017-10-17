@@ -4,6 +4,7 @@
 import 'fixed-data-table-2/dist/fixed-data-table.css';
 import 'react-select/dist/react-select.css';
 import "react-placeholder/lib/reactPlaceholder.css";
+import 'react-tabs/style/react-tabs.css';
 import WebpackerReact from 'webpacker-react';
 
 let toPath = (name) => `${name.toLowerCase()}/${name.toLowerCase()}`;

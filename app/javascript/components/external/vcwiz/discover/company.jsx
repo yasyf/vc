@@ -26,7 +26,7 @@ class CompanyImage extends React.Component {
     const style = { height: size, width: size };
 
     if (this.state.errored || !domain) {
-      return <img src={fallback} style={style} />;
+      return fallback ? <img src={fallback} style={style} /> : null;
     }
     return (
       <img
@@ -45,20 +45,22 @@ export default class Company extends React.Component {
   };
 
   render() {
+    const highlighted = (<Highlighter
+      highlightClassName='highlighter'
+      searchWords={[this.props.input]}
+      textToHighlight={this.props.name}
+    />);
+
     return (
       <div className="company-container">
         <p className="company-name">
-          {<CompanyImage domain={this.props.domain} size={this.props.imgSize} />}
+          {<CompanyImage fallback={this.props.fallback} domain={this.props.domain} size={this.props.imgSize} />}
           {' '}
-          <Highlighter
-            highlightClassName='highlighter'
-            searchWords={[this.props.input]}
-            textToHighlight={this.props.name}
-          />
+          {this.props.website ? <a href={this.props.website} target="_blank">{highlighted}</a> : highlighted}
           {' '}
           <Labels items={this.props.industry} extraClass="small" translate={CompetitorIndustries} />
         </p>
-        <p>
+        <p className="company-description">
           <Truncate lines={this.props.lines}>
             {this.props.description}
           </Truncate>

@@ -219,11 +219,20 @@ class Investor < ApplicationRecord
         :linkedin,
         :homepage,
         :location,
-        :email,
         :time_zone,
         :al_url,
       ],
-     methods: [:competitor, :popular_entities, :recent_investments, :recent_news, :university, :average_response_time, :notes, :utc_offset]
+     methods: [
+       :competitor,
+       :popular_entities,
+       :recent_investments,
+       :recent_news,
+       :university,
+       :average_response_time,
+       :tweets,
+       :public_posts,
+       :utc_offset
+     ]
     )
   end
 
@@ -266,7 +275,7 @@ class Investor < ApplicationRecord
   end
 
   def public_posts(n: 3)
-    posts.order(published_at: :desc).limit(3)
+    posts.order(published_at: :desc).limit(n)
   end
 
   def tweeter
@@ -385,14 +394,12 @@ class Investor < ApplicationRecord
     Entity.where(id: ids)
   end
 
-  def recent_investments(n = 5)
-    scope = investments.present? ? investments : competitor.investments
-    investments = scope
-      .joins(company: :news)
-      .group('investments.id', 'companies.capital_raised')
+  def recent_investments(n = 3)
+    companies
+      .group('companies.id', 'investments.featured', 'investments.funded_at')
+      .joins(:investments)
       .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC')
       .limit(n)
-    investments.map(&:company)
   end
 
   def initials

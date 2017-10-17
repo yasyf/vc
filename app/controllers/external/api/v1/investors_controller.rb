@@ -12,14 +12,6 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored Investor.order(updated_at: :asc).limit(LIMIT).offset(page * LIMIT)
   end
 
-  def posts
-    render json: Investor.find(params[:id]).public_posts
-  end
-
-  def tweets
-    render json: Investor.find(params[:id]).tweets
-  end
-
   def show
     render_censored  Investor.find(params[:id])
   end

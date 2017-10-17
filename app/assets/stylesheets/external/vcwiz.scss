@@ -4,6 +4,7 @@ $grey: #666666;
 $header-grey: #434D59;
 $mid-grey: #AAADAE;
 $light-grey: #E9E9E9;
+$lightest-grey: #F5F6F7;
 $success: #2ADBC4;
 $success-dark: #23CFB2;
 
@@ -69,7 +70,6 @@ p.tight {
   -webkit-overflow-scrolling: touch;
   border-radius: 4px;
   outline: none;
-  padding: 40px;
 }
 
 .modal-overlay, .modal-content {
@@ -450,7 +450,86 @@ mark.highlighter {
   }
 }
 
+.partner-tab {
+  .loading {
+    margin: auto;
+    width: 200px;
+  }
+
+  .line-icon {
+    margin-right: 10px;
+  }
+
+  h5 {
+    color: $grey;
+  }
+
+  .company-name, .post-name {
+    font-weight: bold;
+    font-size: medium;
+
+    a {
+      color: black;
+    }
+  }
+
+  .company-description, .post-description {
+    color: $grey;
+    font-size: small;
+    margin-bottom: 15px;
+  }
+}
+
 .research-modal {
+  .tab-list-wrapper {
+    overflow: scroll;
+    white-space: nowrap;
+    height: 40px;
+    width: calc(100% - 10px);
+  }
+
+  ul.tab-list {
+    margin-bottom: 0;
+    margin-left: 0;
+    border: unset;
+  }
+
+  .tab-panel {
+    border: 1px solid $grey;
+    border-top: 0;
+    border-radius: 0 10px 10px 10px;
+    padding: 20px;
+    display: block;
+    background-color: $white;
+  }
+
+  .react-tabs__tab {
+    border-bottom: 1px solid $grey;
+  }
+
+  .react-tabs__tab--selected {
+    border-color: $grey;
+    border-bottom: 1px solid $white;
+  }
+
+  .research-modal-top {
+    padding: 40px 40px 0;
+
+    .inline-image {
+      border-radius: 0;
+
+      img {
+        border-radius: 0;
+      }
+    }
+  }
+
+  .research-modal-bottom {
+    margin-top: 75px;
+    background-color: $lightest-grey;
+    padding: 10px 40px 40px;
+  }
+
   p {
     margin-bottom: 0;
   }
@@ -499,11 +578,6 @@ mark.highlighter {
 
   .inline-image {
     display: inline-block;
-    border-radius: 0;
-
-    img {
-      border-radius: 0;
-    }
   }
 
   .row {

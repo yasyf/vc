@@ -38,6 +38,10 @@ export let fullName = function(founder) {
   return `${founder.first_name} ${founder.last_name}`;
 };
 
+export let initials = function(founder) {
+  return `${_.first(founder.first_name)}${_.first(founder.last_name)}`;
+};
+
 export let wordJoin = function(words) {
   if (words.length === 1) {
     return words[0];

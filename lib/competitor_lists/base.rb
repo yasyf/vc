@@ -21,13 +21,33 @@ module CompetitorLists
     def track_status_sql(competitors_table = 'competitors')
       <<-SQL
         LEFT JOIN LATERAL (
-          SELECT target_investors.stage as stage
+          SELECT target_investors.stage AS stage
           FROM investors
           INNER JOIN target_investors ON target_investors.investor_id = investors.id
           WHERE investors.competitor_id = #{competitors_table}.id
           ORDER BY target_investors.updated_at DESC
           LIMIT 1
         ) AS stages ON true
+      SQL
+    end
+
+    def partners_sql(competitors_table = 'competitors')
+      partners_sql = <<-SQL
+        SELECT investors.id, investors.first_name, investors.last_name
+        FROM investors
+        LEFT OUTER JOIN investments ON investments.investor_id = investors.id
+        WHERE investors.competitor_id = #{competitors_table}.id
+        GROUP BY investors.id
+        ORDER BY
+          MAX(investments.funded_at) DESC NULLS LAST,
+          investors.featured DESC,
+          COUNT(investments.id) DESC
+      SQL
+      <<-SQL
+        LEFT JOIN LATERAL (
+          SELECT array_agg(partners) AS partners_arr
+          FROM (#{partners_sql}) AS partners
+        ) AS partners ON true
       SQL
     end
 
@@ -39,10 +59,10 @@ module CompetitorLists
         WHERE investments.competitor_id = #{competitors_table}.id
         GROUP BY companies.id
         ORDER BY
+          MAX(investments.funded_at) DESC NULLS LAST,
           COUNT(NULLIF(investments.featured, false)) DESC,
           companies.capital_raised DESC,
-          COUNT(investments.id) DESC,
-          MAX(investments.funded_at) DESC
+          COUNT(investments.id) DESC
         LIMIT 5
       SQL
       <<-SQL
@@ -70,12 +90,14 @@ module CompetitorLists
         SELECT DISTINCT ON (subquery.id)
           subquery.*,
           stages.stage AS track_status,
+          array_to_json(partners.partners_arr) AS partners,
           array_to_json(ri.ri_arr) AS recent_investments
           #{_meta_select(meta_sql)}
         FROM (#{sql}) AS subquery
         LEFT OUTER JOIN investors ON investors.competitor_id = subquery.id
         #{track_status_sql('subquery')}
         #{recent_investments_sql('subquery')}
+        #{partners_sql('subquery')}
         #{_meta_join(meta_sql)}
       SQL
     end

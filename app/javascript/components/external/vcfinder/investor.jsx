@@ -8,7 +8,6 @@ import moment from 'moment';
 import {fullName, ffetch, getDomain} from './utils';
 import {InvestorsPath} from './constants.js.erb';
 import ReadMore from './shared/read_more';
-import Slider from 'react-slick';
 import Industries from './shared/industries';
 import Company from './company';
 import News from './news';
