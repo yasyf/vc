@@ -39,6 +39,10 @@ module CompetitorLists
         WHERE investors.competitor_id = #{competitors_table}.id
         GROUP BY investors.id
         ORDER BY
+          CASE
+            WHEN investors.role IN (#{CompetitorCrunchbaseJob::INVESTOR_TITLE.map { |t| "'#{t}'" }.join(', ')}) THEN 1
+            ELSE 0
+          END DESC,
           MAX(investments.funded_at) DESC NULLS LAST,
           COUNT(investments.id) DESC,
           investors.featured DESC
