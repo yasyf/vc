@@ -1,5 +1,6 @@
 class Competitor < ApplicationRecord
   include Concerns::AttributeSortable
+  include Concerns::Domainable
 
   COMPETITORS = {
     'Rough Draft Ventures': Http::Rdv,
@@ -10,11 +11,11 @@ class Competitor < ApplicationRecord
 
   FUND_TYPES = {
     accelerator: 'Accelerator',
-    seed: 'Seed',
     angel: 'Angel',
-    venture: 'Venture',
+    seed: 'Seed',
     series_A: 'Series A',
     series_B: 'Series B',
+    venture: 'Venture',
   }.with_indifferent_access.freeze
 
   INDUSTRIES = {
@@ -114,11 +115,14 @@ class Competitor < ApplicationRecord
   end
 
   def self.create_from_domain!(domain, name)
-    crunchbase_id = Http::Crunchbase::Organization.find_domain_id(domain)
-    from_crunchbase! crunchbase_id, name if crunchbase_id.present?
+    where(domain: domain).first_or_initialize.tap do |i|
+      i.crunchbase_id ||= Http::Crunchbase::Organization.find_domain_id(domain)
+      i.name = name
+      i.save!
+    end
   end
 
-  def self.from_crunchbase!(crunchbase_id, name)
+  def self.from_crunchbase!(crunchbase_id, name, domain = nil)
     found = where(crunchbase_id: crunchbase_id).or(where(name: name)).first
     found = create!(crunchbase_id: crunchbase_id, name: name) unless found.present?
     found.tap do |competitor|
@@ -190,7 +194,6 @@ class Competitor < ApplicationRecord
       ],
       methods: [
         :acronym,
-        :track_status
       ]
     )
   end
@@ -202,12 +205,26 @@ class Competitor < ApplicationRecord
         :location,
         :photo,
         :meta,
+        :description,
+        :industry,
+        :fund_type,
+        :domain,
+        :facebook,
+        :twitter,
       ],
       methods: [
+        :hq,
         :acronym,
-        :track_status
+        :track_status,
+        :recent_investments,
+        :cb_url,
+        :al_url,
       ]
     )
+  end
+
+  def hq
+    super || location&.first
   end
 
   def as_list_json
@@ -230,10 +247,30 @@ class Competitor < ApplicationRecord
     @angellist_startup ||= Http::AngelList::Startup.new(al_id)
   end
 
+  def cb_url
+    "https://www.crunchbase.com/organization/#{crunchbase_id}" if crunchbase_id.present?
+  end
+
+  def al_url
+    "https://angel.co/startups/#{al_id}" if al_id.present?
+  end
+
   private
 
   def normalize_location
     self.location = self.location.map(&Util.method(:normalize_city)) if self.location.present?
+  end
+
+  def recent_investments
+    if self.attributes.key?('recent_investments')
+      self[:recent_investments]
+    else
+      companies
+        .group('companies.id', 'investments.featured', 'investments.funded_at')
+        .joins(:investments)
+        .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC')
+        .limit(5)
+    end
   end
 
   def track_status

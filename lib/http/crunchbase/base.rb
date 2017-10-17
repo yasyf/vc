@@ -21,6 +21,10 @@ module Http::Crunchbase
       "https://www.crunchbase.com/#{path}" if path.present?
     end
 
+    def url
+      get_in 'properties', 'homepage_url'
+    end
+
     def image
       get_in 'properties', 'profile_image_url'
     end

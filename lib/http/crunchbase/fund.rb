@@ -21,6 +21,10 @@ module Http::Crunchbase
       offices.map { |office| office['properties']['city'] }
     end
 
+    def hq
+      get_in('relationships', 'headquarters', 'item', 'properties', 'city')
+    end
+
     def country
       code = get_in('relationships', 'headquarters', 'item', 'properties', 'country_code2')
       return code if code.present?

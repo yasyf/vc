@@ -18,10 +18,6 @@ module Http::Crunchbase
       get_in 'properties', 'short_description'
     end
 
-    def url
-      get_in 'properties', 'homepage_url'
-    end
-
     def investors
       get_in 'relationships', 'investors', multi: true
     end

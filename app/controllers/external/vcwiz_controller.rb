@@ -19,11 +19,12 @@ class External::VcwizController < External::ApplicationController
     title 'Filter'
     component 'Filter'
     props(
-      competitors: filtered(limit: 20),
+      competitors: filtered(limit: 20, meta: true),
       count: filtered_count,
       filters: full_filters,
       options: options_params.to_h,
       search: filter_params[:search],
+      advanced: advanced?
     )
     render_default
   end
@@ -60,6 +61,10 @@ class External::VcwizController < External::ApplicationController
 
   def render_default
     render html: '', layout: 'vcwiz'
+  end
+
+  def advanced?
+    params[:advanced] == 'true'
   end
 
   def optin?

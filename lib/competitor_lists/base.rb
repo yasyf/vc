@@ -31,6 +31,28 @@ module CompetitorLists
       SQL
     end
 
+    def recent_investments_sql(competitors_table = 'competitors')
+      investments_sql = <<-SQL
+        SELECT companies.id, companies.name, companies.domain, companies.crunchbase_id
+        FROM companies
+        INNER JOIN investments ON investments.company_id = companies.id
+        WHERE investments.competitor_id = #{competitors_table}.id
+        GROUP BY companies.id
+        ORDER BY
+          COUNT(NULLIF(investments.featured, false)) DESC,
+          companies.capital_raised DESC,
+          COUNT(investments.id) DESC,
+          MAX(investments.funded_at) DESC
+        LIMIT 5
+      SQL
+      <<-SQL
+        LEFT JOIN LATERAL (
+          SELECT array_agg(recent_investments) AS ri_arr
+          FROM (#{investments_sql}) AS recent_investments
+        ) AS ri ON true
+      SQL
+    end
+
     def _meta_select(meta_sql)
       meta_sql.present? ? ', row_to_json(metaquery.*) AS meta' : ''
     end
@@ -45,10 +67,15 @@ module CompetitorLists
 
     def _results_sql(sql, meta_sql)
       <<-SQL
-        SELECT DISTINCT ON (subquery.id) subquery.*, stages.stage AS track_status #{_meta_select(meta_sql)}
+        SELECT DISTINCT ON (subquery.id)
+          subquery.*,
+          stages.stage AS track_status,
+          array_to_json(ri.ri_arr) AS recent_investments
+          #{_meta_select(meta_sql)}
         FROM (#{sql}) AS subquery
         LEFT OUTER JOIN investors ON investors.competitor_id = subquery.id
         #{track_status_sql('subquery')}
+        #{recent_investments_sql('subquery')}
         #{_meta_join(meta_sql)}
       SQL
     end

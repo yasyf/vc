@@ -88,6 +88,9 @@ export default class FilterPage extends React.Component {
   }
 
   renderSwitches() {
+    if (!this.props.advanced) {
+      return null;
+    }
     return (
       <div className="option-switches">
         <Row>

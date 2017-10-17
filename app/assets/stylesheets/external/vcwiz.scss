@@ -12,7 +12,7 @@ html, body, .full-screen {
   width: 100%;
 }
 
-#vcwiz, h1, h2, h3, h4, h5, h6 {
+html, body, .full-screen, #vcwiz, h1, h2, h3, h4, h5, h6 {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
 
@@ -69,7 +69,7 @@ p.tight {
   -webkit-overflow-scrolling: touch;
   border-radius: 4px;
   outline: none;
-  padding: 20px;
+  padding: 40px;
 }
 
 .modal-overlay, .modal-content {
@@ -447,6 +447,69 @@ mark.highlighter {
     .Select-control {
       cursor: pointer;
     }
+  }
+}
+
+.research-modal {
+  p {
+    margin-bottom: 0;
+  }
+
+  a {
+    font-weight: 500;
+    color: $success-dark;
+  }
+
+  .competitor-social {
+    .line-icon {
+      padding-right: 10px;
+      vertical-align: -1px;
+    }
+  }
+
+  .competitor-info {
+    .description {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .heading {
+    position: absolute;
+    padding-left: 10px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  .subheading {
+    position: relative;
+    left: 51px;
+    top: -31px;
+    color: grey;
+
+    span {
+      margin-left: 10px;
+    }
+  }
+
+  span.dot {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+
+  .inline-image {
+    display: inline-block;
+    border-radius: 0;
+
+    img {
+      border-radius: 0;
+    }
+  }
+
+  .row {
+    max-width: unset;
+    margin-right: unset;
+    margin-left: unset;
   }
 }
 

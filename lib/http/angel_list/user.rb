@@ -5,7 +5,7 @@ module Http::AngelList
     ROLES = {
       'seed funds' => :seed,
       'angels' => :angel,
-      'vc' => :vc,
+      'vc' => :venture,
     }
 
     def image

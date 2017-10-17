@@ -207,7 +207,11 @@ CREATE TABLE competitors (
     al_id integer,
     location character varying[],
     country character varying,
-    photo character varying
+    photo character varying,
+    hq character varying,
+    twitter character varying,
+    facebook character varying,
+    domain character varying
 );
 
 
@@ -2539,6 +2543,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171006234544'),
 ('20171009204716'),
 ('20171010012458'),
-('20171013124510');
+('20171013124510'),
+('20171016193127'),
+('20171017065951'),
+('20171017073841');
 
 

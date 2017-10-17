@@ -2,6 +2,7 @@ class Company < ActiveRecord::Base
   include Concerns::Cacheable
   include ActionView::Helpers::NumberHelper
   include Concerns::AttributeSortable
+  include Concerns::Domainable
 
   has_one :tweeter, as: :owner, dependent: :destroy
   has_many :pitches, -> { order(when: :desc ) }
@@ -38,16 +39,6 @@ class Company < ActiveRecord::Base
 
   def card
     @card ||= cards.first
-  end
-
-  def domain=(domain)
-    parsed = begin
-      URI.parse(domain).host
-    rescue URI::InvalidURIError => _
-    end || domain
-
-    parsed = parsed[4..-1] if parsed&.starts_with?('www.')
-    super parsed
   end
 
   def in_list?(list)
@@ -172,14 +163,8 @@ class Company < ActiveRecord::Base
     "https://www.crunchbase.com/organization/#{crunchbase_id}" if crunchbase_id.present?
   end
 
-  def al_url(fetch: false)
-    fetch ? cached { angelist_startup.angellist_url } : get_cached
-  rescue HTTP::AngelList::Errors::APIError
-    nil
-  end
-
-  def website
-    "http://#{domain}" if domain.present?
+  def al_url
+    "https://angel.co/startups/#{al_id}" if al_id.present?
   end
 
   def tweeter
