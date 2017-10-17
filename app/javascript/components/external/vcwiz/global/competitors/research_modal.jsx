@@ -7,11 +7,18 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {fullName} from '../utils';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
+import showdown from 'showdown';
 
 const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
 const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
 
 export default class ResearchModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.converter = new showdown.Converter();
+  }
+
+
   renderHeading() {
     const { name, photo, hq, fund_type } = this.props;
     return (
@@ -61,7 +68,7 @@ export default class ResearchModal extends React.Component {
 
     return (
       <div className="competitor-info">
-        <p className="description">{description}</p>
+        <p className="description" dangerouslySetInnerHTML={{ __html: this.converter.makeHtml(description) }} />
         {this.renderIndustries()}
         {this.renderInvestments()}
       </div>

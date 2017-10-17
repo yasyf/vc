@@ -14,7 +14,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def filter
-    competitors = filtered(limit: limit, offset: page * limit)
+    competitors = filtered(limit: limit, offset: page * limit, meta: true)
     render json: competitors
   end
 
