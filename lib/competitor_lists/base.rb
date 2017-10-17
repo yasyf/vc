@@ -39,8 +39,8 @@ module CompetitorLists
         WHERE investors.competitor_id = #{competitors_table}.id
         GROUP BY investors.id
         ORDER BY
-          MAX(investments.funded_at) DESC NULLS LAST,
           investors.featured DESC,
+          MAX(investments.funded_at) DESC NULLS LAST,
           COUNT(investments.id) DESC
       SQL
       <<-SQL

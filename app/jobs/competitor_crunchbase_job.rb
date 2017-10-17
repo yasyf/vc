@@ -30,6 +30,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor.facebook = al_fund.facebook || cb_fund.facebook
     competitor.twitter = al_fund.twitter || cb_fund.twitter
     competitor.domain = al_fund.url || cb_fund.url
+    competitor.al_url = al_fund.angellist_url
     competitor.save! if competitor.changed?
 
     if (team = cb_fund.team).present?

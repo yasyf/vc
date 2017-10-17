@@ -73,11 +73,11 @@ export default class ResearchModal extends React.Component {
   }
 
   renderCompetitorSocial() {
-    let { al_url, cb_url, facebook, twitter, domain } = this.props;
+    let { al_url, cb_url, crunchbase_id, facebook, twitter, domain } = this.props;
     return (
       <div className="competitor-social">
         {this.renderIconLine('list', '', al_url, 'angel.co')}
-        {this.renderIconLine('info', '', cb_url, 'crunchbase')}
+        {this.renderIconLine('info', '', cb_url, crunchbase_id)}
         {this.renderIconLine('web', domain, 'http://')}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
         {this.renderIconLine('social-twitter', `@${twitter}`, 'https://twitter.com')}
@@ -87,6 +87,9 @@ export default class ResearchModal extends React.Component {
 
   renderPartners() {
     let { partners } = this.props;
+    if (!partners) {
+      return null;
+    }
     return (
       <Tabs selectedTabPanelClassName="tab-panel">
         <div className="tab-list-wrapper">

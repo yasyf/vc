@@ -214,6 +214,8 @@ class Competitor < ApplicationRecord
         :facebook,
         :twitter,
         :partners,
+        :al_url,
+        :crunchbase_id,
       ],
       methods: [
         :hq,
@@ -221,7 +223,6 @@ class Competitor < ApplicationRecord
         :track_status,
         :recent_investments,
         :cb_url,
-        :al_url,
       ]
     )
   end
@@ -252,10 +253,6 @@ class Competitor < ApplicationRecord
 
   def cb_url
     "https://www.crunchbase.com/organization/#{crunchbase_id}" if crunchbase_id.present?
-  end
-
-  def al_url
-    "https://angel.co/startups/#{al_id}" if al_id.present?
   end
 
   private

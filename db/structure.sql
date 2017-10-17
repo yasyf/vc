@@ -211,7 +211,8 @@ CREATE TABLE competitors (
     hq character varying,
     twitter character varying,
     facebook character varying,
-    domain character varying
+    domain character varying,
+    al_url character varying
 );
 
 
@@ -2546,6 +2547,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171013124510'),
 ('20171016193127'),
 ('20171017065951'),
-('20171017073841');
+('20171017073841'),
+('20171017114659');
 
 

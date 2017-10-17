@@ -118,7 +118,7 @@ export default class PartnerTab extends React.Component {
 
   renderRecentPostsAndNews() {
     let { recent_news, public_posts } = this.state.investor;
-    let sorted =_.take(_.sortBy(_.concat(recent_news, public_posts), ['published_at']), 3);
+    let sorted =_.take(_.orderBy(_.concat(recent_news, public_posts), p => p.published_at || '', ['desc']), 3);
 
     return (
       <div>
@@ -131,8 +131,8 @@ export default class PartnerTab extends React.Component {
   renderDetails() {
     return (
       <Row>
-        <Column large={2}>{this.renderSocial()}</Column>
-        <Column large={5}>{this.renderRecentInvestments()}</Column>
+        <Column large={3}>{this.renderSocial()}</Column>
+        <Column large={4}>{this.renderRecentInvestments()}</Column>
         <Column large={5}>{this.renderRecentPostsAndNews()}</Column>
       </Row>
     );
