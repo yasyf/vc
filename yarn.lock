@@ -5037,8 +5037,8 @@ react-textfit@1.0.1:
     prop-types "^15.5.10"
 
 react-truncate@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/react-truncate/-/react-truncate-2.1.5.tgz#c33c1bf7053c2800d4012fefab09a18013019721"
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-truncate/-/react-truncate-2.2.2.tgz#c13e420df82cf6d0385bb2a6eb10212743085550"
 
 react@15, react@>=0.14.0, react@^15.6.1:
   version "15.6.1"
