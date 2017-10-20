@@ -417,21 +417,6 @@ mark.highlighter {
     border-top-right-radius: 10px;
   }
 
-  .Select-control, .is-open > .Select-control {
-    border-radius: 40px;
-  }
-
-  .Select-placeholder, .Select--single > .Select-control .Select-value {
-    text-align: center;
-  }
-
-  .Select-placeholder {
-    font-weight: bold;
-    color: $white;
-    background-color: $success;
-    text-transform: uppercase;
-  }
-
   .textfit-cell {
     width: 95%;
     height: 100%;
@@ -458,11 +443,26 @@ mark.highlighter {
       }
     }
   }
+}
 
-  .track-cell {
-    .Select-control {
-      cursor: pointer;
-    }
+.track-button {
+  .Select-control {
+    cursor: pointer;
+  }
+
+  .Select-control, .is-open > .Select-control {
+    border-radius: 40px;
+  }
+
+  .Select-placeholder, .Select--single > .Select-control .Select-value {
+    text-align: center;
+  }
+
+  .Select-placeholder {
+    font-weight: bold;
+    color: $white;
+    background-color: $success;
+    text-transform: uppercase;
   }
 }
 
@@ -493,6 +493,14 @@ mark.highlighter {
     color: $grey;
     font-size: small;
     margin-bottom: 15px;
+  }
+
+  .tweet {
+    margin-bottom: 0.5em;
+
+    .line-icon {
+      margin-right: 5px;
+    }
   }
 }
 
@@ -580,7 +588,7 @@ mark.highlighter {
     position: relative;
     left: 51px;
     top: -31px;
-    color: grey;
+    color: $grey;
 
     span {
       margin-left: 10px;

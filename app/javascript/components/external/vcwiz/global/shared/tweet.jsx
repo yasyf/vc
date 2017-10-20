@@ -21,7 +21,7 @@ export default class Tweet extends React.Component {
   render() {
     return (
       <div className="tweet">
-        <i className="line-icon fi-megaphone"/>
+        <i className="line-icon fi-social-twitter"/>
         <Linkify options={linkifyOptions}>&ldquo;{this.props.tweet.text}&rdquo;</Linkify>
         <span className="dot">-</span>
         <span className="faded">{moment(this.props.tweet.tweeted_at).fromNow()}</span>

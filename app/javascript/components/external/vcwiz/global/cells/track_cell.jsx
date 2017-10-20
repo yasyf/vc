@@ -1,9 +1,6 @@
 import React from 'react';
 import {UnpureTextCell} from './text_cell';
-import Select from '../fields/select';
-import {TargetInvestorStagesOptions} from '../constants.js.erb'
-
-const nullRenderer = () => null;
+import Track from '../fields/track';
 
 export default class TrackCell extends UnpureTextCell {
   onChange = change => {
@@ -14,16 +11,7 @@ export default class TrackCell extends UnpureTextCell {
   renderValue() {
     return (
       <div className='track-cell'>
-        <Select
-          name="track"
-          value={this.state.value}
-          placeholder="Add"
-          multi={false}
-          searchable={false}
-          onChange={this.onChange}
-          options={TargetInvestorStagesOptions}
-          arrowRenderer={this.state.value ? undefined : nullRenderer}
-        />
+        <Track value={this.state.value} onChange={this.onChange} />
       </div>
     )
   }

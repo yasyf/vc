@@ -10,6 +10,8 @@ import moment from 'moment';
 import Company from '../../discover/company';
 import Labels from '../shared/labels';
 import Truncate from 'react-truncate';
+import Tweet from '../shared/tweet';
+import Track from '../fields/track';
 
 export default class PartnerTab extends React.Component {
   constructor(props) {
@@ -38,11 +40,18 @@ export default class PartnerTab extends React.Component {
     const { photo, role, competitor } = this.state.investor;
     return (
       <div>
-        <ProfileImage fallback={initials(this.state.investor)} src={photo} size={50} className="inline-image" />
-        <div className="heading">{fullName(this.state.investor)}</div>
-        <div className="subheading">
-          <span>{role ? `${role}, ${competitor.name}` : competitor.name}</span>
-        </div>
+        <Row>
+          <Column large={3}>
+            <ProfileImage fallback={initials(this.state.investor)} src={photo} size={50} className="inline-image" />
+            <div className="heading">{fullName(this.state.investor)}</div>
+            <div className="subheading">
+              <span>{role ? `${role}, ${competitor.name}` : competitor.name}</span>
+            </div>
+          </Column>
+          <Column offsetOnLarge={7} large={1}>
+            <Track />
+          </Column>
+        </Row>
       </div>
     );
   }
@@ -128,14 +137,40 @@ export default class PartnerTab extends React.Component {
     );
   }
 
+  maybeRenderRecentInvestments() {
+    let { recent_investments } = this.state.investor;
+    if (!recent_investments.length) {
+      return null;
+    } else {
+      return <Column large={4}>{this.renderRecentInvestments()}</Column>;
+    }
+  }
+
+  maybeRenderRecentPostsAndNews() {
+    let { recent_news, public_posts } = this.state.investor;
+    if (!recent_news.length && !public_posts.length) {
+      return null;
+    } else {
+      return <Column large={5}>{this.renderRecentPostsAndNews()}</Column>;
+    }
+  }
+
   renderDetails() {
     return (
       <Row>
         <Column large={3}>{this.renderSocial()}</Column>
-        <Column large={4}>{this.renderRecentInvestments()}</Column>
-        <Column large={5}>{this.renderRecentPostsAndNews()}</Column>
+        {this.maybeRenderRecentInvestments()}
+        {this.maybeRenderRecentPostsAndNews()}
       </Row>
     );
+  }
+
+  renderTweet() {
+    let { tweets } = this.state.investor;
+    if (!tweets.length) {
+      return null;
+    }
+    return <Tweet tweet={_.sample(tweets)} />;
   }
 
   renderBody() {
@@ -148,6 +183,7 @@ export default class PartnerTab extends React.Component {
     return (
       <div>
         {this.renderHeading()}
+        {this.renderTweet()}
         <p><ReadMore>{description}</ReadMore></p>
         <hr />
         {this.renderDetails()}
