@@ -216,6 +216,7 @@ class Competitor < ApplicationRecord
         :partners,
         :al_url,
         :crunchbase_id,
+        :matches,
       ],
       methods: [
         :hq,

@@ -25,7 +25,8 @@ class CompetitorLists::Filtered < CompetitorLists::Base
     SQL
     investors_subquery = <<-SQL
       SELECT
-        competitors.id as id,
+        competitors.id AS id,
+        investors.id AS match_id,
         COALESCE(similarity(investors.first_name, '#{first_name}'), 0) + COALESCE(similarity(investors.last_name, '#{last_name}'), 0) AS rank
       FROM investors
       INNER JOIN competitors on investors.competitor_id = competitors.id
@@ -35,7 +36,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base
       ORDER BY rank DESC
     SQL
     <<-SQL
-      SELECT COALESCE(csub.id, isub.id) AS id
+      SELECT COALESCE(csub.id, isub.id) AS id, isub.match_id
       FROM (#{competitors_subquery}) AS csub
       FULL JOIN (#{investors_subquery}) AS isub USING (id)
       ORDER BY csub.rank + isub.rank
@@ -101,12 +102,16 @@ class CompetitorLists::Filtered < CompetitorLists::Base
 
   def order_sql
     <<-SQL
-      row_number() OVER (ORDER BY #{sort}) AS rn
+      , row_number() OVER (ORDER BY #{sort}) AS rn
     SQL
   end
 
+  def match_sql
+    params[:search].present? ? ', array_agg(DISTINCT searched.match_id) AS matches' : ''
+  end
+
   def sql
-    _filtered.group('competitors.id').select("competitors.*, #{order_sql}").to_sql
+    _filtered.group('competitors.id').select("competitors.*#{match_sql}#{order_sql}").to_sql
   end
 
   def order

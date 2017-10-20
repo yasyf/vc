@@ -38,7 +38,7 @@ export default class Input extends React.Component {
       this.props.onChange({[this.props.name]: this.state.value});
       this.setState({lastValue: this.state.value});
     }
-  }, 300, {maxWait: 5000});
+  }, 150, {maxWait: 5000});
 
   onChange = (event) => {
     let value = event.target.value;

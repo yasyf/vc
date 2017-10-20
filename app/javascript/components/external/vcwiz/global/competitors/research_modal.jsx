@@ -90,12 +90,16 @@ export default class ResearchModal extends React.Component {
   };
 
   renderPartners() {
-    let { partners } = this.props;
+    let { partners, matches } = this.props;
     if (!partners) {
       return null;
     }
+    let defaultIndex = _.findIndex(partners, {id: _.first(matches)});
+    if (defaultIndex === -1) {
+      defaultIndex = undefined;
+    }
     return (
-      <Tabs selectedTabPanelClassName="tab-panel">
+      <Tabs selectedTabPanelClassName="tab-panel" defaultIndex={defaultIndex}>
         <div className="tab-list-wrapper">
           <TabList className="tab-list">
             {partners.map(p => <Tab key={p.id}>{fullName(p)}</Tab>)}

@@ -91,8 +91,8 @@ module CompetitorLists
 
     def _base_sql(sql, meta_sql, order, limit, offset)
       distinct_sql = <<-SQL
-        SELECT DISTINCT ON (subquery.id) subquery.*
-        FROM (#{sql}) AS subquery
+        SELECT DISTINCT ON (fullquery.id) fullquery.*
+        FROM (#{sql}) AS fullquery
       SQL
       limited_sql = <<-SQL
         SELECT distincted.*
@@ -103,15 +103,15 @@ module CompetitorLists
       SQL
       <<-SQL
         SELECT
-          limited.*,
+          subquery.*,
           stages.stage AS track_status,
           array_to_json(partners.partners_arr) AS partners,
           array_to_json(ri.ri_arr) AS recent_investments
           #{_meta_select(meta_sql)}
-        FROM (#{limited_sql}) AS limited
-        #{track_status_sql('limited')}
-        #{recent_investments_sql('limited')}
-        #{partners_sql('limited')}
+        FROM (#{limited_sql}) AS subquery
+        #{track_status_sql('subquery')}
+        #{recent_investments_sql('subquery')}
+        #{partners_sql('subquery')}
         #{_meta_join(meta_sql)}
       SQL
     end
