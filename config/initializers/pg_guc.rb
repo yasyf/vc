@@ -12,4 +12,4 @@ module ApplyPgGuc
   end
 end
 
-ActiveRecord::ConnectionAdapters::ConnectionPool.prepend ApplyPgGuc
+ActiveRecord::ConnectionAdapters::ConnectionPool.prepend ApplyPgGuc unless Rails.env.test?
