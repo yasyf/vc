@@ -398,7 +398,8 @@ class Investor < ApplicationRecord
     companies
       .group('companies.id', 'investments.featured', 'investments.funded_at')
       .joins(:investments)
-      .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC')
+      .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC NULLS LAST')
+      .select('companies.*', 'investments.funded_at')
       .limit(n)
   end
 

@@ -3,6 +3,7 @@ import Labels from '../global/shared/labels';
 import {CompetitorIndustries} from '../global/constants.js.erb';
 import Highlighter from 'react-highlight-words';
 import Truncate from 'react-truncate';
+import moment from 'moment';
 
 class CompanyImage extends React.Component {
   static defaultProps = {
@@ -53,18 +54,21 @@ export default class Company extends React.Component {
 
     return (
       <div className="company-container">
-        <p className="company-name">
+        <div className="company-name">
           {<CompanyImage fallback={this.props.fallback} domain={this.props.domain} size={this.props.imgSize} />}
           {' '}
           {this.props.website ? <a href={this.props.website} target="_blank">{highlighted}</a> : highlighted}
           {' '}
           <Labels items={this.props.industry} extraClass="small" translate={CompetitorIndustries} />
-        </p>
-        <p className="company-description">
-          <Truncate lines={this.props.lines}>
-            {this.props.description}
-          </Truncate>
-        </p>
+        </div>
+        <div className="company-description">
+          <div>
+            {this.props.funded_at && moment(this.props.funded_at).fromNow()}
+          </div>
+          <div className="company-description-text">
+            <Truncate lines={this.props.lines}>{this.props.description}</Truncate>
+          </div>
+        </div>
       </div>
     );
   }

@@ -3,7 +3,7 @@ class CompetitorLists::MostRecent < CompetitorLists::Base
 
   def sort
     <<-SQL
-      investments.funded_at DESC,
+      investments.funded_at DESC NULLS LAST,
       investments.featured DESC,
       COUNT(NULLIF(investors.featured, false)) DESC,
       COALESCE(SUM(investors.target_investors_count), 0) DESC
@@ -21,7 +21,7 @@ class CompetitorLists::MostRecent < CompetitorLists::Base
     limited = <<-SQL
       SELECT investments.id
       FROM investments
-      ORDER BY funded_at DESC
+      ORDER BY funded_at DESC NULLS LAST
       LIMIT 100
     SQL
     uniqued_on_company = <<-SQL

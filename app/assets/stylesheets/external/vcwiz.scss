@@ -360,18 +360,34 @@ mark.highlighter {
       font-size: xx-small;
     }
   }
+
+  .company-description-text {
+    margin-top: 0.3em;
+  }
 }
 
 .labels {
   bottom: 2px;
   position: relative;
+  text-transform: capitalize;
 
   .label {
     margin-left: 5px;
+    background: $success-dark;
   }
 
   .small {
     font-size: x-small;
+  }
+}
+
+.labels-plain {
+  margin-top: 5px;
+  display: block;
+
+  span {
+    font-weight: bold;
+    text-transform: capitalize;
   }
 }
 

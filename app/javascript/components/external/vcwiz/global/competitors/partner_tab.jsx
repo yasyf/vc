@@ -101,7 +101,7 @@ export default class PartnerTab extends React.Component {
     if (description) {
       context = <Truncate lines={2}>{description}</Truncate>;
     } else {
-      context = <Labels items={_.map(categories, 'name')} extraClass="small" />;
+      context = <Labels items={_.map(categories, 'name')} extraClass="small" plain={true} />;
     }
     return (
       <div key={id}>

@@ -4,13 +4,10 @@ import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import {fullName} from '../utils';
+import {fullName, withDots} from '../utils';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
-
-const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
-const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
 
 export default class ResearchModal extends React.Component {
   constructor(props) {

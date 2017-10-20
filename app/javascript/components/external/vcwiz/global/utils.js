@@ -1,9 +1,10 @@
+import React from 'react';
 import 'whatwg-fetch';
 import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
 
-export let ffetch = function(path, method = 'GET', data = null, form = false) {
+export const ffetch = function(path, method = 'GET', data = null, form = false) {
   let opts = {
     credentials: 'same-origin',
     headers: {
@@ -26,23 +27,23 @@ export let ffetch = function(path, method = 'GET', data = null, form = false) {
   return fetch(path, opts).then(resp => resp.json());
 };
 
-export let isDRF = function() {
+export const isDRF = function() {
   return gon.founder['drf?'];
 };
 
-export let isMe = function(founder) {
+export const isMe = function(founder) {
   return gon.founder.id === founder.id;
 };
 
-export let fullName = function(founder) {
+export const fullName = function(founder) {
   return `${founder.first_name} ${founder.last_name}`;
 };
 
-export let initials = function(founder) {
+export const initials = function(founder) {
   return `${_.first(founder.first_name)}${_.first(founder.last_name)}`;
 };
 
-export let wordJoin = function(words) {
+export const wordJoin = function(words) {
   if (words.length === 1) {
     return words[0];
   } else if (words.length === 2) {
@@ -52,7 +53,7 @@ export let wordJoin = function(words) {
   }
 };
 
-export let pronoun = function(gender, tense = null) {
+export const pronoun = function(gender, tense = null) {
   if (gender === 'male') {
     return (tense === 'pos') ? 'his' : (tense === 'past') ? 'him' : 'he';
   } else if (gender === 'female') {
@@ -72,25 +73,25 @@ let _extend = function(dest, src, overwrite = true) {
   return ret;
 };
 
-export let extend = (dest, src) => _extend(dest, src, true);
-export let merge = (dest, src) => _extend(dest, src, false);
+export const extend = (dest, src) => _extend(dest, src, true);
+export const merge = (dest, src) => _extend(dest, src, false);
 
-export let emplace = function(items, item) {
+export const emplace = function(items, item) {
   let index = _.findIndex(items, {id: item.id});
   return [update(items, {[index]: {$set: item}}), index];
 };
 
-export let extract = function(items, item) {
+export const extract = function(items, item) {
   let index = _.findIndex(items, {id: item.id});
   return update(items, {$unset: [index]});
 };
 
-export let remove = function(items, item) {
+export const remove = function(items, item) {
   let index = _.findIndex(items, {id: item.id});
   return update(items, {$splice: [[index, 1]]});
 };
 
-export let buildQuery = (row, fields = null) =>
+export const buildQuery = (row, fields = null) =>
   _.compact(_.map(fields || Object.keys(row), k => {
     let val = _.get(row, k);
     if (_.isObjectLike(val)) {
@@ -99,9 +100,9 @@ export let buildQuery = (row, fields = null) =>
     return (nullOrUndef(val) || val === "") ? null : `${k}=${val}`;
   })).join('&');
 
-export let nullOrUndef = (val) => val === undefined || val === null;
+export const nullOrUndef = (val) => val === undefined || val === null;
 
-export let getDomain = (url) => {
+export const getDomain = (url) => {
   if (!url) {
     return null;
   }
@@ -113,8 +114,8 @@ export let getDomain = (url) => {
   }
 };
 
-export let storageKey = (key) => `${StoragePrefix}::${key}`;
-
-export let timestamp = () => Date.now();
-
-export let flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'value').join(','));
+export const storageKey = (key) => `${StoragePrefix}::${key}`;
+export const timestamp = () => Date.now();
+export const flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'value').join(','));
+export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
+export const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));

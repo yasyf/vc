@@ -439,7 +439,7 @@ ALTER SEQUENCE intro_requests_id_seq OWNED BY intro_requests.id;
 CREATE TABLE investments (
     company_id integer NOT NULL,
     competitor_id integer NOT NULL,
-    funded_at timestamp without time zone DEFAULT '2017-08-14 23:04:13.325445'::timestamp without time zone NOT NULL,
+    funded_at timestamp without time zone,
     id bigint NOT NULL,
     investor_id bigint,
     featured boolean DEFAULT false,
@@ -2548,6 +2548,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171016193127'),
 ('20171017065951'),
 ('20171017073841'),
-('20171017114659');
+('20171017114659'),
+('20171020212520');
 
 
