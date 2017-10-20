@@ -28,6 +28,10 @@ export default class PartnerTab extends React.Component {
     });
   }
 
+  onTrackChange = (change) => {
+    console.log(change);
+  };
+
   renderLoading() {
     return (
       <div className="text-center loading">
@@ -49,7 +53,7 @@ export default class PartnerTab extends React.Component {
             </div>
           </Column>
           <Column offsetOnLarge={7} large={1}>
-            <Track />
+            <Track onChange={this.onTrackChange} />
           </Column>
         </Row>
       </div>
