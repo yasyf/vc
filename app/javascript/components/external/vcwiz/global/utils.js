@@ -4,15 +4,7 @@ import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
 
-export const ffetch = function(path, method = 'GET', data = null, form = false) {
-  let opts = {
-    credentials: 'same-origin',
-    headers: {
-      'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
-    },
-    method,
-  };
-
+export const _ffetch = function(path, opts, data, form) {
   if (form) {
     let formData = new FormData();
     Object.entries(data || {}).forEach(([k, v]) => {
@@ -25,6 +17,22 @@ export const ffetch = function(path, method = 'GET', data = null, form = false) 
   }
 
   return fetch(path, opts).then(resp => resp.json());
+};
+
+export const ffetch = function(path, method = 'GET', data = null, form = false) {
+  const opts = {
+    credentials: 'same-origin',
+    headers: {
+      'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
+    },
+    method,
+  };
+  return _ffetch(path, opts, data, form);
+};
+
+export const ffetchPublic = function(path, method = 'GET', data = null, form = false) {
+  const opts = {method};
+  return _ffetch(path, opts, data, form);
 };
 
 export const isDRF = function() {

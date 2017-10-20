@@ -1,8 +1,8 @@
 import React from 'react';
 import { RingLoader as Loader } from 'react-spinners';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
-import {fullName, ffetch, getDomain, initials} from '../utils';
+import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
+import {fullName, ffetch, ffetchPublic, getDomain, initials} from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
 import IconLine from '../shared/icon_line';
@@ -19,6 +19,8 @@ export default class PartnerTab extends React.Component {
 
     this.state = {
       investor: null,
+      fetchedReview: false,
+      review: null,
     };
   }
 
@@ -177,8 +179,36 @@ export default class PartnerTab extends React.Component {
     return <Tweet tweet={_.sample(tweets)} />;
   }
 
+  onTruncate = isTruncated => {
+    if (isTruncated || this.state.fetchedReview) {
+      return;
+    }
+    this.setState({fetchedReview: true});
+    ffetchPublic(`${ReviewAPI}?name=${fullName(this.state.investor)}`).then(({errors, review}) => {
+      if (errors.length || !review.published || review.overall < 4) {
+        return;
+      }
+      this.setState({review: review.comment});
+    })
+  };
+
+  renderReview() {
+    const { review } = this.state;
+    if (!review) {
+      return null;
+    }
+    return (
+      <div>
+        <br />
+        <em>{review}</em>
+        <span className="dot">-</span>
+        <a href="https://knowyourvc.com/" target="_blank">Founder @ KnowYourVC</a>
+      </div>
+    )
+  }
+
   renderBody() {
-    const { investor } = this.state;
+    const { investor, review } = this.state;
     if (!investor) {
       return this.renderLoading();
     }
@@ -188,7 +218,12 @@ export default class PartnerTab extends React.Component {
       <div>
         {this.renderHeading()}
         {this.renderTweet()}
-        <p><ReadMore>{description}</ReadMore></p>
+        <div>
+          <ReadMore onTruncate={this.onTruncate}>
+            {description}
+            {this.renderReview()}
+          </ReadMore>
+        </div>
         <hr />
         {this.renderDetails()}
       </div>

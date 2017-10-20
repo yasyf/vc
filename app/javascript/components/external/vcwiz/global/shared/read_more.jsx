@@ -2,6 +2,10 @@ import React  from 'react';
 import Truncate from 'react-truncate';
 
 export default class ReadMore extends React.Component {
+  static defaultProps = {
+    onTruncate: _.noop,
+  };
+
   constructor(props) {
     super(props);
 
@@ -14,6 +18,7 @@ export default class ReadMore extends React.Component {
     if (this.state.truncated !== truncated) {
       this.setState({truncated});
     }
+    this.props.onTruncate(truncated);
   };
 
   toggleLines = (event) => {
