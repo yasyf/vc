@@ -21,9 +21,9 @@ module Drfvote
       g.test_framework :rspec
     end
 
-    %w(teams overrides).each do |name|
+    %w(teams overrides pg_guc).each do |name|
       result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)
-      config.send("#{name}=", result)
+      config.send("#{name}=", result.with_indifferent_access)
     end
   end
 end

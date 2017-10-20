@@ -1,6 +1,6 @@
 Raven.configure do |config|
   config.async = lambda { |event|
-    SentryJob.perform_later(event.to_hash)
+    SentryJob.perform_later(event.to_hash, ENV['SENTRY_DSN'])
   }
 
   config.processors -= [Raven::Processor::PostData]

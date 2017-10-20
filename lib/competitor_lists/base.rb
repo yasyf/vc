@@ -89,29 +89,30 @@ module CompetitorLists
       order.present? ? "ORDER BY #{order}" : ''
     end
 
-    def _results_sql(sql, meta_sql)
+    def _base_sql(sql, meta_sql, order, limit, offset)
+      distinct_sql = <<-SQL
+        SELECT DISTINCT ON (subquery.id) subquery.*
+        FROM (#{sql}) AS subquery
+      SQL
+      limited_sql = <<-SQL
+        SELECT distincted.*
+        FROM (#{distinct_sql}) AS distincted
+        #{_order_clause(order)}
+        OFFSET #{offset}
+        LIMIT #{limit}
+      SQL
       <<-SQL
-        SELECT DISTINCT ON (subquery.id)
-          subquery.*,
+        SELECT
+          limited.*,
           stages.stage AS track_status,
           array_to_json(partners.partners_arr) AS partners,
           array_to_json(ri.ri_arr) AS recent_investments
           #{_meta_select(meta_sql)}
-        FROM (#{sql}) AS subquery
-        LEFT OUTER JOIN investors ON investors.competitor_id = subquery.id
-        #{track_status_sql('subquery')}
-        #{recent_investments_sql('subquery')}
-        #{partners_sql('subquery')}
+        FROM (#{limited_sql}) AS limited
+        #{track_status_sql('limited')}
+        #{recent_investments_sql('limited')}
+        #{partners_sql('limited')}
         #{_meta_join(meta_sql)}
-      SQL
-    end
-
-    def _base_sql(sql, meta_sql, order, limit, offset)
-      <<-SQL
-        SELECT * FROM (#{_results_sql(sql, meta_sql)}) AS results
-        #{_order_clause(order)}
-        OFFSET #{offset}
-        LIMIT #{limit}
       SQL
     end
   end
