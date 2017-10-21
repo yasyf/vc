@@ -6,7 +6,6 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CompressionPlugin = require('compression-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const ClosureCompilerPlugin = require('webpack-closure-compiler');
 const sharedConfig = require('./shared.js');
 
 module.exports = merge(sharedConfig, {
@@ -17,12 +16,24 @@ module.exports = merge(sharedConfig, {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new ClosureCompilerPlugin({
-      compiler: {
-        compilation_level: 'ADVANCED',
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      sourceMap: true,
+      compress: {
+        warnings: false,
+        unused: true,
+        dead_code: true,
+        drop_debugger: true,
+        drop_console: true,
+        conditionals: true,
+        comparisons: true,
+        sequences: true,
+        booleans: true
       },
-      concurrency: 3,
-      exclude: [/\.min\.js$/gi],
+      output: {
+        comments: false
+      },
+      exclude: [/\.min\.js$/gi]
     }),
     new CompressionPlugin({
       asset: '[path].gz[query]',
