@@ -1,5 +1,0 @@
-modelVersion: 4.0.0
-groupId: com.yasyf.vc
-artifactId: vote-collector
-version: 0.0.1
-name: 'VoteCollector'
