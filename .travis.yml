@@ -25,7 +25,7 @@ before_script:
   - npm rebuild node-sass
   - psql -c 'create database drfvote_test;' -U postgres
 script:
-  - RAILS_ENV=test travis_wait bundle exec rake assets:precompile
+  - RAILS_ENV=test travis_wait bundle exec rake assets:precompile --trace
   - RAILS_ENV=test bundle exec rake db:test:prepare
   - RAILS_ENV=test bundle exec rspec
   - RAILS_ENV=test bundle exec rake test
