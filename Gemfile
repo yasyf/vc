@@ -75,7 +75,7 @@ gem 'sinatra', '~>2.0', require: false
 gem 'rack-timeout'
 gem 'activerecord-precount'
 gem 'ruby-readability'
-gem 'countries', :require => 'countries/global'
+gem 'countries', '~> 2.1', :require => 'countries/global'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'
