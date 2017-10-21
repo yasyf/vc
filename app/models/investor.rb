@@ -326,6 +326,15 @@ class Investor < ApplicationRecord
     founder.entities.where(id: popular_entities(50))
   end
 
+  def review
+    cached do
+      url = URI.escape "http://ec2-18-216-2-35.us-east-2.compute.amazonaws.com/api/investors/search?name=#{name}"
+      response = JSON.parse(HTTP::Fetch.get_one(url)).with_indifferent_access
+      return nil if response[:errors].present? || !response[:review][:published] || response[:review][:overall] < 4
+      response[:review][:comment]
+    end
+  end
+
   private
 
   def normalize_location

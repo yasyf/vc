@@ -30,7 +30,6 @@ let idPath = function(path){
 // Misc
 
 export const StoragePrefix = '<%= Rails.application.class.parent_name %>::vcwiz';
-export const ReviewAPI = 'http://ec2-18-216-2-35.us-east-2.compute.amazonaws.com/api/investors/search';
 
 // Hashes
 
@@ -60,7 +59,7 @@ export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path %>
 export const InvestorsFilterPath = '<%= filter_external_api_v1_investors_path %>';
 export const InvestorsRecommendationsPath = '<%= recommendations_external_api_v1_investors_path %>';
 export const InvestorsLocationsPath = '<%= locations_external_api_v1_investors_path %>';
-export const InvestorsPath = idPath('<%= external_api_v1_investor_path(id: 'ID ') %>');
+export const InvestorsPath = idPath('<%= external_api_v1_investor_path(id: 'ID') %>');
 export const TargetInvestorsPath = idPath('<%= external_api_v1_target_investor_path(id: 'ID') %>');
 export const TargetInvestorsImportPath = '<%= import_external_api_v1_target_investors_path %>';
 export const TargetInvestorsBulkImportPath = '<%= bulk_import_external_api_v1_target_investors_path %>';

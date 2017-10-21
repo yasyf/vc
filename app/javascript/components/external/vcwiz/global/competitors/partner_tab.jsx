@@ -184,11 +184,8 @@ export default class PartnerTab extends React.Component {
       return;
     }
     this.setState({fetchedReview: true});
-    ffetchPublic(`${ReviewAPI}?name=${fullName(this.state.investor)}`).then(({errors, review}) => {
-      if (errors.length || !review.published || review.overall < 4) {
-        return;
-      }
-      this.setState({review: review.comment});
+    ffetch(InvestorsPath.resource(this.props.id, 'review')).then(({review}) => {
+      this.setState({review});
     })
   };
 

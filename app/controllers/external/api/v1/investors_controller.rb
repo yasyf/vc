@@ -16,6 +16,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored  Investor.find(params[:id])
   end
 
+  def review
+    render json: { review: Investor.find(params[:id]).review }
+  end
+
   def locations
     render json: arr_to_options(Investor.locations(params[:q]))
   end
