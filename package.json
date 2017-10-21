@@ -76,5 +76,6 @@
   "engines": {
     "node": "8.6.x",
     "yarn": "1.1.0"
-  }
+  },
+  "license": "UNLICENSED"
 }
