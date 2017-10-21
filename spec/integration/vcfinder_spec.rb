@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'vcfinder request', type: :request do
   before do
-    @company = FactoryGirl.create(:company, :verified, :with_external)
-    @founder = FactoryGirl.create(:founder, companies: [@company])
-    @target_investor = FactoryGirl.create(:target_investor, founder: @founder)
+    @company = FactoryBot.create(:company, :verified, :with_external)
+    @founder = FactoryBot.create(:founder, companies: [@company])
+    @target_investor = FactoryBot.create(:target_investor, founder: @founder)
 
     sign_in @founder
   end

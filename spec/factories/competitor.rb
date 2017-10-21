@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :competitor do
     name "VC Fund"
     trait :with_companies do

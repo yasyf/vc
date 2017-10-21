@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :target_investor do
     investor
     founder

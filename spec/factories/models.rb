@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :model do
     name "MyString"
     version 1

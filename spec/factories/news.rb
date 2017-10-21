@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :news do
     investor nil
     company nil
