@@ -1,6 +1,8 @@
 /* eslint-disable global-require */
 /* eslint no-console:0 */
 
+import 'foundation-sites/dist/css/foundation.css';
+import 'foundation-sites/dist/css/foundation-float.css';
 import 'fixed-data-table-2/dist/fixed-data-table.css';
 import 'react-select/dist/react-select.css';
 import "react-placeholder/lib/reactPlaceholder.css";

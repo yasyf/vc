@@ -6,13 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= yield(:title) %></title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation-float.min.css"/>
+  <%= include_gon(camel_case: true, init: true) %>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css"/>
-  <%= stylesheet_link_tag 'external/application', media: 'all', 'data-turbolinks-track' => true %>
+
+  <%= stylesheet_link_tag 'external/application', media: 'all' %>
+
+  <% if content_for?(:pack) %>
+    <%= stylesheet_pack_tag "external/#{yield(:pack)}" %>
+  <% end %>
 
   <% if content_for?(:styles) %>
-    <%= stylesheet_link_tag "external/#{yield(:styles)}", media: 'all', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag "external/#{yield(:styles)}", media: 'all' %>
   <% end %>
 
   <!--[if lt IE 9]>
@@ -26,21 +31,18 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
-  <%= include_gon(camel_case: true, init: true) %>
-
   <% if Rails.env.production? && content_for?(:logrocket) %>
     <%= logrocket_key(yield(:logrocket)) %>
   <% end %>
+
+  <%= javascript_include_tag 'external/application' %>
 
   <%= javascript_pack_tag 'shared' %>
   <%= javascript_pack_tag 'external/shared' %>
 
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}" %>
-    <%= stylesheet_pack_tag "external/#{yield(:pack)}" %>
   <% end %>
-
-  <%= javascript_include_tag 'external/application', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= favicon_link_tag %>

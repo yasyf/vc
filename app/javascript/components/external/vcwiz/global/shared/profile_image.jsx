@@ -25,8 +25,8 @@ export default class ProfileImage extends React.Component {
   }
 
   renderImage() {
-    let { src } = this.props;
-    return <img src={src} style={this.sizeStyle()} />
+    let { src, size } = this.props;
+    return <img width={size} height={size} src={src} style={this.sizeStyle()} />
   }
 
   render() {
