@@ -6,8 +6,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :set_raven_context
+  before_action :set_csrf_token
 
   private
+
+  def set_csrf_token
+    gon.csrf_token = form_authenticity_token
+  end
 
   def set_raven_context
     context = {

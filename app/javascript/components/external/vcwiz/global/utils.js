@@ -23,7 +23,7 @@ export const ffetch = function(path, method = 'GET', data = null, form = false) 
   const opts = {
     credentials: 'same-origin',
     headers: {
-      'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
+      'X-CSRF-Token': window.gon.csrfToken,
     },
     method,
   };
