@@ -1,6 +1,10 @@
 module External::ReactServerHelper
   def react_server_component(name, props, options = {})
-    react_server_component_div(name, props, options) + react_server_component_script(name)
+    if Rails.env.development?
+      react_client_component_div(name, props, options)
+    else
+      react_server_component_div(name, props, options) + react_server_component_script(name)
+    end
   end
 
   private
@@ -16,5 +20,9 @@ module External::ReactServerHelper
   def react_server_component_div(name, props, options)
     body = ServerSideRendering::Render.render name, props
     Webpacker::React::Component.new(name).hydrate(body, props, options.reverse_merge(id: 'react-root-component'))
+  end
+
+  def react_client_component_div(name, props, options)
+    Webpacker::React::Component.new(name).render(props, options)
   end
 end
