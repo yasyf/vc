@@ -11,10 +11,17 @@ module External::ReactServerHelper
 
   def react_server_component_script(name)
     code = <<-JS
-      window.addEventListener('DOMContentLoaded', function() {
-        var root = document.getElementById('react-root-component');
-        WebpackerReact.render(root, WebpackerReact.registeredComponents["#{name}"]);
-      });
+      (function(){
+        function hydrateComponent() {
+          var root = document.getElementById('react-root-component');
+          WebpackerReact.render(root, WebpackerReact.registeredComponents["#{name}"]);      
+        }
+        if (document.readyState === "loading") {
+          window.addEventListener('DOMContentLoaded', hydrateComponent);
+        } else {
+          hydrateComponent();
+        }
+      })();
     JS
     javascript_tag code
   end
