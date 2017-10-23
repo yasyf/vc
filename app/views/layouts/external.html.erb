@@ -35,12 +35,12 @@
     <%= logrocket_key(yield(:logrocket)) %>
   <% end %>
 
-  <%= javascript_include_tag 'external/application' %>
+  <%= javascript_include_tag 'external/application', defer: true %>
 
-  <%= javascript_pack_tag 'shared' %>
+  <%= javascript_pack_tag 'shared', defer: true %>
 
   <% if content_for?(:pack) %>
-    <%= javascript_pack_tag "external/#{yield(:pack)}" %>
+    <%= javascript_pack_tag "external/#{yield(:pack)}", defer: true %>
   <% end %>
 
   <%= csrf_meta_tags %>
