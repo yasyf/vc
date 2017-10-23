@@ -21,6 +21,13 @@ Rails.application.routes.draw do
     end
   end
 
+  def admin_dashboards(scope)
+    authenticate scope, lambda { |u| u.admin? } do
+      mount Sidekiq::Web, at: '/sidekiq'
+      mount Zhong::Web, at: '/zhong'
+    end
+  end
+
   root 'welcome#index'
 
   subdomain_or_prefix(ENV['EXTERNAL_SUBDOMAIN'], :external) do
@@ -109,6 +116,8 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    admin_dashboards :external_founder
   end
 
   subdomain_or_prefix(ENV['INTERNAL_SUBDOMAIN'], :internal) do
@@ -162,14 +171,11 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    admin_dashboards :internal_user
   end
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: '/emails'
-  end
-
-  authenticate :internal_user, lambda { |u| u.admin? } do
-    mount Sidekiq::Web, at: '/sidekiq'
-    mount Zhong::Web, at: '/zhong'
   end
 end
