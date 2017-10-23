@@ -56,7 +56,7 @@ export default class Select extends Input {
   renderInput() {
     let Component = this.props.loadOptions ? TetheredSelectWrap.Async : TetheredSelectWrap;
     return (
-      <Component joinValues={true} clearable={false} {...this.inputProps()} />
+      <Component joinValues={true} clearable={false} instanceId={this.props.name} {...this.inputProps()} />
     );
   }
 }

@@ -14,8 +14,7 @@ module External::ReactServerHelper
   end
 
   def react_server_component_div(name, props, options)
-    server_pack = ServerSideRendering::WebpackerManifestContainer.new.find_asset('server_side_render.js')
-    body = ServerSideRendering::ExecJs.new(server_pack).render name, props
+    body = ServerSideRendering::Render.render name, props
     Webpacker::React::Component.new(name).hydrate(body, props, options.reverse_merge(id: 'react-root-component'))
   end
 end
