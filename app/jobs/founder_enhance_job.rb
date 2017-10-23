@@ -1,14 +1,15 @@
 class FounderEnhanceJob < ApplicationJob
   queue_as :now
 
-  def perform(founder_id)
+  def perform(founder_id, augment: false)
     founder = Founder.find(founder_id)
 
-    augment_with_clearbit founder
+    augment_with_clearbit founder if augment
 
     founder.city ||= Http::Freegeoip.new(founder.ip_address).locate['city'] if founder.ip_address.present?
     founder.time_zone ||= Http::GoogleMaps.new.timezone(founder.city).name if founder.city.present?
-    crawl_homepage! founder
+
+    crawl_homepage! founder if augment
 
     founder.save! if founder.changed?
   end

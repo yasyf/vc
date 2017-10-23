@@ -17,7 +17,8 @@ class Founder < ApplicationRecord
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
 
-  after_commit :start_enhance_job, on: :create
+  after_commit :start_augment_job, on: :create
+  after_commit :start_enhance_job, on: :update
 
   action :investor_clicked
 
@@ -162,7 +163,11 @@ class Founder < ApplicationRecord
 
   private
 
+  def start_augment_job
+    FounderEnhanceJob.perform_later(self.id, augment: true)
+  end
+
   def start_enhance_job
-    FounderEnhanceJob.perform_later(self.id)
+    FounderEnhanceJob.perform_later(self.id, augment: false) if ip_address_changed?
   end
 end
