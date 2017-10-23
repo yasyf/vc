@@ -7,6 +7,7 @@ import {
   CompetitorsLocationsPath,
   CompaniesSearchPath,
 } from '../global/constants.js.erb';
+import Storage from '../global/storage';
 import Select from '../global/fields/select';
 import Company from './company';
 import {Button, Column, Row, Colors} from 'react-foundation';
@@ -27,14 +28,22 @@ export default class Filters extends React.Component {
 
     this.state = {
       numInvestors: this.props.initialCount,
-      filters: this.props.initialFilters || JSON.parse(sessionStorage.getItem(SessionStorageKey)) || {},
+      filters: this.props.initialFilters || {},
       inputs: {},
     };
   }
 
   componentDidMount() {
+    let filters = this.state.filters;
+
+    let storedFilters = Storage.get(SessionStorageKey);
+    if (!_.isEmpty(storedFilters)) {
+      filters = storedFilters;
+      this.setState({filters});
+    }
+
     if (!this.state.numInvestors) {
-      this.fetchNumInvestors(this.state.filters);
+      this.fetchNumInvestors(filters);
     }
   }
 
@@ -68,7 +77,7 @@ export default class Filters extends React.Component {
 
   onChange = (update) => {
     let filters = extend(this.state.filters, update);
-    sessionStorage.setItem(SessionStorageKey, JSON.stringify(filters));
+    Storage.set(SessionStorageKey, filters);
     this.setState({filters});
     this.fetchNumInvestors(filters);
   };

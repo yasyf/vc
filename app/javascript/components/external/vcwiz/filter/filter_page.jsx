@@ -7,6 +7,7 @@ import createHistory from 'history/createBrowserHistory'
 import Search from '../discover/search';
 import {Row, Column} from 'react-foundation';
 import Switch from '../global/fields/switch';
+import { canUseDOM } from 'exenv';
 
 export default class FilterPage extends React.Component {
   constructor(props) {
@@ -21,7 +22,9 @@ export default class FilterPage extends React.Component {
       resultsId: timestamp(),
     };
 
-    this.history = createHistory();
+    if (canUseDOM) {
+      this.history = createHistory();
+    }
   }
 
   queryParams() {
@@ -34,7 +37,9 @@ export default class FilterPage extends React.Component {
   }
 
   pushState = () => {
-    this.history.push({search: `?${this.query()}`});
+    if (this.history) {
+      this.history.push({search: `?${this.query()}`});
+    }
   };
 
   onFiltersChange = (filters, count) => {

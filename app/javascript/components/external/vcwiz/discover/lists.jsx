@@ -1,9 +1,9 @@
 import React from 'react';
-import { RingLoader as Loader } from 'react-spinners';
 import { CompetitorsListsPath, ListPath } from '../global/constants.js.erb'
 import { ffetch } from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
 import {Row, Column} from 'react-foundation';
+import Loader from '../global/shared/loader';
 
 export default class Lists extends React.Component {
   constructor(props) {

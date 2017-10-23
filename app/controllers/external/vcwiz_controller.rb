@@ -1,6 +1,7 @@
 class External::VcwizController < External::ApplicationController
   include External::Concerns::Filterable
   include External::ApplicationHelper
+  include External::ReactServerHelper
 
   layout 'vcwiz'
   before_action :check_founder!, except: [:opt_in, :decide]

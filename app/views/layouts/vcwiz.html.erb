@@ -4,7 +4,7 @@
 <% content_for :logrocket, 'r4gq3r/vcwiz-prod' %>
 
 <% content_for :content do %>
-  <%= react_component(@component_name, @component_props, class: 'full-screen') %>
+  <%= react_server_component(@component_name, @component_props || {}, class: 'full-screen') %>
 <% end %>
 
 <%= render template: 'layouts/external' %>

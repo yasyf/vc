@@ -9,13 +9,12 @@ gem 'pg'
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer', platforms: :ruby
+gem 'mini_racer', platforms: :ruby
 
 gem 'webpacker'
-gem 'webpacker-react', '~> 0.3.1'
+gem 'webpacker-react', '~> 0.3.2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -76,6 +75,7 @@ gem 'rack-timeout'
 gem 'activerecord-precount'
 gem 'ruby-readability'
 gem 'countries', '~> 2.1', :require => 'countries/global'
+gem 'execjs'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

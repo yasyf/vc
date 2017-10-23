@@ -16,6 +16,12 @@ export default class Input extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.value && nextProps.value !== this.props.value) {
+      this.setState({value: nextProps.value});
+    }
+  }
+
   inputProps() {
     const {wrap, inputRef, formRef, ...props} = this.props;
     return {

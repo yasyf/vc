@@ -1,0 +1,9 @@
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+
+<%= External::PackHelper.common_js %>
+
+// This is purposely not defined yet. See the exec_js_renderer.rb
+execJsGlobal.React = React;
+execJsGlobal.ReactDOMServer = ReactDOMServer;
+execJsGlobal.Components = Components;

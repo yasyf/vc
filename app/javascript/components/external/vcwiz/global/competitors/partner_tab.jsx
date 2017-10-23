@@ -1,8 +1,7 @@
 import React from 'react';
-import { RingLoader as Loader } from 'react-spinners';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
-import {fullName, ffetch, ffetchPublic, getDomain, initials} from '../utils';
+import {fullName, ffetch, getDomain, initials} from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
 import IconLine from '../shared/icon_line';
@@ -11,6 +10,7 @@ import Company from '../../discover/company';
 import Labels from '../shared/labels';
 import Truncate from 'react-truncate';
 import Tweet from '../shared/tweet';
+import Loader from '../shared/loader';
 import Track from '../fields/track';
 
 export default class PartnerTab extends React.Component {

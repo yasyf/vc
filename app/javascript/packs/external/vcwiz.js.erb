@@ -9,17 +9,12 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import 'react-tabs/style/react-tabs.css';
 import WebpackerReact from 'webpacker-react';
 
-let toPath = (name) => `${name.toLowerCase()}/${name.toLowerCase()}`;
-let toComponent = (name) => require(`components/external/vcwiz/${toPath(name)}`).default;
-
-const names = ['Discover', 'Filter', 'List'];
-
-let components = _.fromPairs(_.map(names, name => [name, toComponent(name)]));
-WebpackerReact.setup(components);
+<%= External::PackHelper.common_js %>
+WebpackerReact.setup(Components);
 
 if (module.hot) {
-  names.forEach(name => module.hot.accept(
+  ComponentNames.forEach(name => module.hot.accept(
     `components/external/vcwiz/${toPath(name)}`,
-    () => WebpackerReact.renderOnHMR(toComponent(name)))
-  );
+    () => WebpackerReact.renderOnHMR(toComponent(name))
+  ));
 }

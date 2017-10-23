@@ -1,9 +1,9 @@
 // Note: You must restart bin/webpack-dev-server for changes to take effect
 
-const merge = require('webpack-merge')
-const sharedConfig = require('./shared.js')
-const configureHotModuleReplacement = require('webpacker-react/configure-hot-module-replacement')
-const { settings, output } = require('./configuration.js')
+const merge = require('webpack-merge');
+const sharedConfig = require('./shared.js');
+const configureHotModuleReplacement = require('webpacker-react/configure-hot-module-replacement');
+const { settings, output } = require('./configuration.js');
 
 module.exports = merge(configureHotModuleReplacement(sharedConfig), {
   devtool: 'eval',
@@ -28,6 +28,6 @@ module.exports = merge(configureHotModuleReplacement(sharedConfig), {
     historyApiFallback: true,
     watchOptions: {
       ignored: /node_modules/
-    }
+    },
   }
-})
+});
