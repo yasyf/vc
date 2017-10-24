@@ -13,11 +13,15 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
     Competitor.connection.select_value(sql) > 0
   end
 
+  def self.cache_key_attrs
+    [:city]
+  end
+
   def self._sql(founder)
     by_location = Competitor.where('competitors.location && ?', "{#{founder.city}}").select('competitors.id').limit(10).to_sql
     by_company = Competitor.joins(:companies).where('companies.location = ?', founder.city).select('competitors.id').limit(10).to_sql
     <<-SQL
-      (#{by_location}) UNION (#{by_company})
+      (#{by_location}) UNION (#{by_company}) LIMIT 10
     SQL
   end
 

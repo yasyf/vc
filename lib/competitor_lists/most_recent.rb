@@ -1,6 +1,10 @@
 class CompetitorLists::MostRecent < CompetitorLists::Base
   TITLE = 'Firms that recently made investments'
 
+  def self.cache_key_attrs
+    true
+  end
+
   def sort
     <<-SQL
       investments.funded_at DESC NULLS LAST,

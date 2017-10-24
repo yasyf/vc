@@ -15,6 +15,10 @@ module CompetitorLists
     def self.extended(base)
       base.init
     end
+
+    def lists
+      @lists
+    end
   end
 
   module ClassSql
@@ -130,6 +134,17 @@ module CompetitorLists
       true
     end
 
+    def cache_key_attrs
+      nil
+    end
+
+    def cache_key(founder, name)
+      return nil unless cache_key_attrs.present?
+      keys = ['competitor_lists', to_param, name]
+      keys += cache_key_attrs.sort.map { |a| founder.send(a).to_s } if cache_key_attrs.is_a?(Array)
+      keys.join('/')
+    end
+
     def title
       self::TITLE
     end
@@ -141,6 +156,14 @@ module CompetitorLists
 
   module Results
     GET_LIMIT = 5
+
+    def cache_key(name)
+      self.class.cache_key(@founder, name)
+    end
+
+    def cached?
+      !Rails.env.development? && self.class.cache_key_attrs.present?
+    end
 
     def count_sql
       <<-SQL
@@ -157,11 +180,19 @@ module CompetitorLists
       self.class._base_sql(sql, meta_sql, order, limit, offset)
     end
 
-    def result_count
+    def fetch_result_count
       Competitor.connection.select_value count_sql
     end
 
-    def results(limit: GET_LIMIT, offset: 0, meta: false, json: nil)
+    def result_count
+      if cached?
+        Rails.cache.fetch(cache_key('count')) || 0
+      else
+        fetch_result_count
+      end
+    end
+
+    def fetch_results(limit, offset, meta, json)
       if meta
         mapper = json.present? ? "as_#{json}_json".to_sym : :as_meta_json
         Competitor.find_by_sql(find_with_meta_sql(limit, offset: offset)).map(&mapper)
@@ -169,6 +200,23 @@ module CompetitorLists
         mapper = json.present? ? "as_#{json}_json".to_sym : :as_json
         Competitor.find_by_sql(find_sql(limit, offset: offset)).map(&mapper)
       end
+    end
+
+    def fetch_result_ids(limit, offset)
+      Competitor.connection.execute(find_sql(limit, offset: offset)).pluck('id')
+    end
+
+    def results(limit: GET_LIMIT, offset: 0, meta: false, json: nil)
+      if cached?
+        Competitor.find((Rails.cache.fetch(cache_key('ids')) || []).drop(offset).first(limit))
+      else
+        fetch_results(limit, offset, meta, json)
+      end
+    end
+
+    def cache!(limit: GET_LIMIT * 2, offset: 0)
+      Rails.cache.write(cache_key('ids'), (ids = fetch_result_ids(limit, offset)))
+      Rails.cache.write(cache_key('count'), ids.count)
     end
   end
 
