@@ -7,14 +7,17 @@ import 'fixed-data-table-2/dist/fixed-data-table.css';
 import 'react-select/dist/react-select.css';
 import "react-placeholder/lib/reactPlaceholder.css";
 import 'react-tabs/style/react-tabs.css';
-import WebpackerReact from 'webpacker-react';
+import 'emoji-mart/css/emoji-mart.css';
 
+import WebpackerReact from 'webpacker-react/hmr';
 <%= External::PackHelper.common_js %>
-WebpackerReact.setup(Components);
+
+if (Object.keys(WebpackerReact.registeredComponents).length) {
+  ComponentNames.forEach(name => WebpackerReact.renderOnHMR(Components[name]));
+} else {
+  WebpackerReact.setup(Components);
+}
 
 if (module.hot) {
-  ComponentNames.forEach(name => module.hot.accept(
-    `components/external/vcwiz/${toPath(name)}`,
-    () => WebpackerReact.renderOnHMR(toComponent(name))
-  ));
+  module.hot.accept();
 }

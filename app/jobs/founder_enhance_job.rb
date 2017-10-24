@@ -4,17 +4,26 @@ class FounderEnhanceJob < ApplicationJob
   def perform(founder_id, augment: false)
     founder = Founder.find(founder_id)
 
-    augment_with_clearbit founder if augment
+    if augment
+      update_location_info founder
+      founder.save! if founder.changed?
 
-    founder.city ||= Http::Freegeoip.new(founder.ip_address).locate['city'] if founder.ip_address.present?
-    founder.time_zone ||= Http::GoogleMaps.new.timezone(founder.city).name if founder.city.present?
-
-    crawl_homepage! founder if augment
+      augment_with_clearbit founder
+      update_location_info founder
+      crawl_homepage! founder
+    else
+      update_location_info founder
+    end
 
     founder.save! if founder.changed?
   end
 
   private
+
+  def update_location_info(founder)
+    founder.city ||= Http::Freegeoip.new(founder.ip_address).locate['city'] if founder.ip_address.present?
+    founder.time_zone ||= Http::GoogleMaps.new.timezone(founder.city).name if founder.city.present?
+  end
 
   def augment_with_clearbit(founder)
     response = Http::Clearbit.new(founder).enhance

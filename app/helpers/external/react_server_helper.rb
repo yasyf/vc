@@ -14,7 +14,7 @@ module External::ReactServerHelper
       (function(){
         function hydrateComponent() {
           var root = document.getElementById('react-root-component');
-          WebpackerReact.render(root, WebpackerReact.registeredComponents["#{name}"]);      
+          window.WebpackerReact.render(root, window.WebpackerReact.registeredComponents["#{name}"]);      
         }
         if (document.readyState === "loading") {
           window.addEventListener('DOMContentLoaded', hydrateComponent);

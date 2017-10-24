@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSelect  from 'react-select';
-import TetherComponent from 'react-tether';
 import Input from './input';
+import Tether from '../shared/tether';
 
 export class TetheredSelectWrap extends ReactSelect {
   constructor(props) {
@@ -15,22 +15,7 @@ export class TetheredSelectWrap extends ReactSelect {
       return;
     }
     const selectWidth = this.wrapper ? this.wrapper.offsetWidth : null;
-    return (
-      <TetherComponent
-        renderElementTo="body"
-        attachment="top left"
-        targetAttachment="top left"
-        constraints={[{
-          to: 'window',
-          attachment: 'together',
-          pin: ['top']
-        }]}
-        optimizations={{ gpu: false }}
-      >
-        <div></div>
-        <div style={{position: 'static', width: selectWidth}}>{menu}</div>
-      </TetherComponent>
-    );
+    return <Tether width={selectWidth}>{menu}</Tether>;
   }
 }
 

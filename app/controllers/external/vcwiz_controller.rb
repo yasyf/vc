@@ -37,6 +37,17 @@ class External::VcwizController < External::ApplicationController
     render_default
   end
 
+  def outreach
+    title 'Outreach'
+    component 'Outreach'
+    props(
+      targets: current_external_founder.target_investors.limit(10).as_json,
+      count: current_external_founder.target_investors.count,
+    )
+    render_default
+  end
+
+
   def opt_in
     intro_request.investor.update! opted_in: optin?
     intro_request.decide! accept?

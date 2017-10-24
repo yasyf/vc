@@ -4,8 +4,8 @@ import inflection from 'inflection';
 import {pronoun, wordJoin} from './utils';
 
 export default class TargetInvestor extends React.Component {
-  renderLastResponse({ last_responded, first_name, firm_name, intro_request, gender }) {
-    if (last_responded) {
+  renderLastResponse({ last_response, first_name, firm_name, intro_request, gender }) {
+    if (last_response) {
       return <span><b>{first_name}</b> last responded to you {moment(last_response).fromNow()}</span>
     } else {
       let busy = intro_request['traveling?'] ? null : <span>{inflection.titleize(pronoun(gender, 'pos'))} job at {firm_name} must be keeping {pronoun(gender, 'past')} busy!</span>;

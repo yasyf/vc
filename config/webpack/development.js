@@ -29,5 +29,7 @@ module.exports = merge(configureHotModuleReplacement(sharedConfig), {
     watchOptions: {
       ignored: /node_modules/
     },
+    hot: true,
+    inline: true,
   }
 });

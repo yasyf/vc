@@ -3,6 +3,7 @@ import 'whatwg-fetch';
 import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
+import Dimensions from 'react-dimensions';
 
 export const _ffetch = function(path, opts, data, form) {
   if (form) {
@@ -127,3 +128,5 @@ export const timestamp = () => Date.now();
 export const flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'value').join(','));
 export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
 export const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
+
+export const withDims = klass => Dimensions()(klass);

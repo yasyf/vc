@@ -93,7 +93,7 @@ export default class PartnerTab extends React.Component {
         {this.renderIconLine('home', location)}
         {this.renderIconLine('list', '', al_url, 'angel.co')}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
-        {this.renderIconLine('social-twitter', twitter, 'https://twitter.com')}
+        {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}
         {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
         {this.renderIconLine('web', '', homepage, getDomain(homepage))}
         {this.renderIconLine('clock', average_response_time && moment.duration(average_response_time, 'seconds').humanize())}

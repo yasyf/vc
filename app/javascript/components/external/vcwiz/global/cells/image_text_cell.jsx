@@ -6,9 +6,10 @@ import ProfileImage from '../shared/profile_image';
 export default class ImageTextCell extends TextCell {
   processRow(props, row) {
     return {
-      value: row[props.columnKey],
-      src: row[props.imageKey],
-      fallback: row[props.fallbackKey],
+      value: _.get(row, props.columnKey),
+      subValue: _.get(row, props.subKey),
+      src: _.get(row, props.imageKey),
+      fallback: props.fallbackFn ? props.fallbackFn(row) : row[props.fallbackKey],
     };
   };
 
@@ -25,6 +26,7 @@ export default class ImageTextCell extends TextCell {
       <ProfileImage
         src={this.state.src}
         fallback={this.state.fallback}
+        size={this.props.size}
         className="floating-image"
       />
     );
@@ -35,9 +37,11 @@ export default class ImageTextCell extends TextCell {
       <div className="image-text-cell">
         {this.renderImage()}
         <div className="image-text">
-          <Textfit mode="single" min={12} max={20}>
+          <Textfit mode="single" min={this.props.min} max={this.props.max}>
             <div className="textfit-cell">
-              {this.state.value}</div>
+              {this.state.value}
+              <div className="subheading">{this.state.subValue}</div>
+            </div>
           </Textfit>
         </div>
       </div>

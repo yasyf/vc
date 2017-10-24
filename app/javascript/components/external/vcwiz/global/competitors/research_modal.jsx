@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from 'react-modal';
+import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
@@ -9,7 +9,7 @@ import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
 
-export default class ResearchModal extends React.Component {
+export default class ResearchModal extends OverlayModal {
   constructor(props) {
     super(props);
     this.converter = new showdown.Converter();
@@ -84,7 +84,7 @@ export default class ResearchModal extends React.Component {
         {this.renderIconLine('info', '', cb_url, crunchbase_id)}
         {this.renderIconLine('web', domain, 'http://')}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
-        {this.renderIconLine('social-twitter', `@${twitter}`, 'https://twitter.com')}
+        {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}
       </div>
     )
   };
@@ -128,21 +128,6 @@ export default class ResearchModal extends React.Component {
           {this.renderPartners()}
         </div>
       </div>
-    )
-  }
-
-  render() {
-    const { name, onClose } = this.props;
-    return (
-      <Modal
-        isOpen={true}
-        onRequestClose={onClose}
-        contentLabel={name}
-        overlayClassName="modal-overlay"
-        className="modal-content"
-      >
-        {this.renderModal()}
-      </Modal>
     )
   }
 }

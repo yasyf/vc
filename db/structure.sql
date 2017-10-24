@@ -867,7 +867,8 @@ CREATE TABLE target_investors (
     role character varying,
     industry character varying[],
     email character varying,
-    fund_type character varying[]
+    fund_type character varying[],
+    priority character varying
 );
 
 
@@ -2549,6 +2550,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171017065951'),
 ('20171017073841'),
 ('20171017114659'),
-('20171020212520');
+('20171020212520'),
+('20171023230210');
 
 

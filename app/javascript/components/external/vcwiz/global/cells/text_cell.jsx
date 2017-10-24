@@ -6,6 +6,8 @@ import ReactPlaceholder from 'react-placeholder';
 let TextCellFactory = (superclass) => class extends superclass {
   static defaultProps = {
     onClick: _.noop,
+    min: 12,
+    max: 20,
   };
 
   constructor(props) {
@@ -47,7 +49,7 @@ let TextCellFactory = (superclass) => class extends superclass {
       return null;
     }
     return (
-      <Textfit mode="single" min={12} max={20}>
+      <Textfit mode="single" min={this.props.min} max={this.props.max}>
         <div className="textfit-cell">
           {this.state.value}
         </div>
