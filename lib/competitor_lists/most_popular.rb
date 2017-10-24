@@ -17,7 +17,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
     by_location = Competitor.where('competitors.location && ?', "{#{founder.city}}").select('competitors.id').limit(10).to_sql
     by_company = Competitor.joins(:companies).where('companies.location = ?', founder.city).select('competitors.id').limit(10).to_sql
     <<-SQL
-      #{by_location} UNION #{by_company}
+      (#{by_location}) UNION (#{by_company})
     SQL
   end
 

@@ -16,13 +16,11 @@ module External::ReactServerHelper
           var root = document.getElementById('react-root-component');
           WebpackerReact.render(root, WebpackerReact.registeredComponents["#{name}"]);      
         }
-        window.addEventListener('load', function() {
-          if (WebpackerReact) {
-            hydrateComponent();
-          } else {
-            WebpackerReactQueue.push(hydrateComponent); 
-          }
-        });
+        if (window.WebpackerReact) {
+          hydrateComponent();
+        } else {
+          WebpackerReactQueue.push(hydrateComponent); 
+        }
       })();
     JS
     javascript_tag code
