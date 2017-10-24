@@ -16,6 +16,7 @@ if (Object.keys(WebpackerReact.registeredComponents).length) {
   ComponentNames.forEach(name => WebpackerReact.renderOnHMR(Components[name]));
 } else {
   WebpackerReact.setup(Components);
+  WebpackerReactQueue.forEach(f => f());
 }
 
 if (module.hot) {
