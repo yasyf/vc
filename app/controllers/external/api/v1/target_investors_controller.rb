@@ -6,9 +6,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   filter %w(investor.email investor.comments investor.competitor.comments)
 
   def index
-    if current_external_founder.target_investors.count == 0
-      current_external_founder.target_investors.create! TargetInvestor::DUMMY_ATTRS
-    end
+    current_external_founder.ensure_target_investors!
     render_censored  current_external_founder.target_investors
                                        .includes(investor: [:notes, competitor: :notes])
                                        .order(:stage, :id)

@@ -38,6 +38,8 @@ class External::VcwizController < External::ApplicationController
   end
 
   def outreach
+    current_external_founder.ensure_target_investors!
+
     title 'Outreach'
     component 'Outreach'
     props(

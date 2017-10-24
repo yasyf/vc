@@ -66,9 +66,10 @@ class TargetInvestor < ApplicationRecord
 
   def load_from_investor!
     return unless investor.present?
-    %w(first_name last_name role industry fund_type email).each do |attr|
+    %w(first_name last_name role industry fund_type).each do |attr|
       self[attr] = investor[attr]
     end
+    self.email = investor.email if founder.drf?
     self.firm_name = investor.competitor.name
     save!
   end

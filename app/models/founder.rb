@@ -137,6 +137,10 @@ class Founder < ApplicationRecord
     target_investors.where.not(investor_id: nil).select('investor_id')
   end
 
+  def ensure_target_investors!
+    target_investors.create! TargetInvestor::DUMMY_ATTRS if target_investors.count == 0
+  end
+
   def recommended_investors(limit: 5, offset: 0)
     query = <<-SQL
       SELECT DISTINCT ON (i.featured, i_ind.cnt, count(companies.id), i.target_investors_count, i.competitor_id)

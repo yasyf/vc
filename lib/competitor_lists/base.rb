@@ -162,7 +162,7 @@ module CompetitorLists
     end
 
     def cached?
-      !Rails.env.development? && self.class.cache_key_attrs.present?
+      self.class.cache_key_attrs.present?
     end
 
     def count_sql
@@ -181,7 +181,7 @@ module CompetitorLists
     end
 
     def fetch_result_count
-      Competitor.connection.select_value count_sql
+      Competitor.count_by_sql count_sql
     end
 
     def result_count
@@ -192,7 +192,7 @@ module CompetitorLists
       end
     end
 
-    def fetch_results(limit, offset, meta, json)
+    def fetch_results(limit, offset, meta, json: nil)
       if meta
         mapper = json.present? ? "as_#{json}_json".to_sym : :as_meta_json
         Competitor.find_by_sql(find_with_meta_sql(limit, offset: offset)).map(&mapper)
@@ -202,21 +202,17 @@ module CompetitorLists
       end
     end
 
-    def fetch_result_ids(limit, offset)
-      Competitor.connection.execute(find_sql(limit, offset: offset)).pluck('id')
-    end
-
     def results(limit: GET_LIMIT, offset: 0, meta: false, json: nil)
-      if cached?
-        Competitor.find((Rails.cache.fetch(cache_key('ids')) || []).drop(offset).first(limit))
+      if cached? && !json
+        Rails.cache.fetch(cache_key('results'))
       else
         fetch_results(limit, offset, meta, json)
       end
     end
 
     def cache!(limit: GET_LIMIT * 2, offset: 0)
-      Rails.cache.write(cache_key('ids'), (ids = fetch_result_ids(limit, offset)))
-      Rails.cache.write(cache_key('count'), ids.count)
+      Rails.cache.write(cache_key('results'), (results = fetch_results(limit, offset, true)))
+      Rails.cache.write(cache_key('count'), results.count)
     end
   end
 

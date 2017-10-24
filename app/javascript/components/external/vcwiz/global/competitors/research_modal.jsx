@@ -40,7 +40,7 @@ export default class ResearchModal extends OverlayModal {
 
   renderIndustries() {
     const { industry } = this.props;
-    if (!industry) {
+    if (!industry || !industry.length) {
       return null;
     }
     let industries = industry.map(i =>
@@ -51,7 +51,7 @@ export default class ResearchModal extends OverlayModal {
 
   renderInvestments() {
     const { recent_investments } = this.props;
-    if (!recent_investments) {
+    if (!recent_investments || !recent_investments.length) {
       return null;
     }
     let investments = recent_investments.map(c =>
@@ -91,9 +91,6 @@ export default class ResearchModal extends OverlayModal {
 
   renderPartners() {
     let { partners, matches } = this.props;
-    if (!partners) {
-      return null;
-    }
     let defaultIndex = _.findIndex(partners, {id: _.first(matches)});
     if (defaultIndex === -1) {
       defaultIndex = undefined;
@@ -107,6 +104,17 @@ export default class ResearchModal extends OverlayModal {
         </div>
         {partners.map(p => <TabPanel key={p.id}><PartnerTab {...p} /></TabPanel>)}
       </Tabs>
+    );
+  }
+
+  renderBottom() {
+    if (!this.props.partners) {
+      return null;
+    }
+    return (
+      <div className="research-modal-bottom">
+        {this.renderPartners()}
+      </div>
     );
   }
 
@@ -124,9 +132,7 @@ export default class ResearchModal extends OverlayModal {
             </Column>
           </Row>
         </div>
-        <div className="research-modal-bottom">
-          {this.renderPartners()}
-        </div>
+        {this.renderBottom()}
       </div>
     )
   }

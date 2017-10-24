@@ -8,6 +8,7 @@ export default class WrappedTable extends React.Component {
 
     this.state = {
       currentModal: null,
+      scrollToRow: null,
       ...this.state = this.nextState(props),
     };
   }
@@ -34,7 +35,7 @@ export default class WrappedTable extends React.Component {
   };
 
   onCellClick = (i, key) => {
-    this.setState({currentModal: [i, key]});
+    this.setState({currentModal: [i, key], scrollToRow: i});
   };
 
   getModal(key) {
@@ -72,13 +73,18 @@ export default class WrappedTable extends React.Component {
   }
 
   render() {
-    const { array } = this.state;
+    const { array, scrollToRow } = this.state;
     const { table, modal, ...props } = this.props;
     const BackingTable = withDims(table);
     return (
       <div className="full-screen">
         {this.renderCurrentModal()}
-        <BackingTable onCellClick={this.onCellClick} array={array} {...props} />
+        <BackingTable
+          onCellClick={this.onCellClick}
+          scrollToRow={scrollToRow}
+          array={array}
+          {...props}
+        />
       </div>
     )
   }

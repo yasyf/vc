@@ -52,7 +52,7 @@ export default class FixedTable extends React.Component {
   };
 
   renderIntroColumn = (key, name, props) => {
-    return this.renderColumn(key, name, IntroCell, props, 150, null);
+    return this.renderColumn(key, name, IntroCell, props, 200, null);
   };
 
   renderEmojiColumn = (key, name, props) => {
@@ -70,6 +70,7 @@ export default class FixedTable extends React.Component {
           height={this.props.containerHeight}
           showScrollbarX={false}
           showScrollbarY={false}
+          scrollToRow={this.props.scrollToRow}
           className="table-main"
         >
           {this.renderColumns()}
