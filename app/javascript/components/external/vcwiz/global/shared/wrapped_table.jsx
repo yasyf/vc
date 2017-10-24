@@ -42,7 +42,7 @@ export default class WrappedTable extends React.Component {
     if (!modal) {
       return null;
     }
-    if (_.isObject(modal)) {
+    if (_.isObject(modal) && !_.isFunction(modal)) {
       return modal[key];
     } else if (modal.prototype.isReactComponent) {
       return modal;
