@@ -91,8 +91,24 @@ p.tight {
 
   .title {
     color: $white;
-    padding-left: 2vw;
     cursor: pointer;
+
+    &.left {
+      padding-left: 2vw;
+    }
+
+    &.right {
+      padding-right: 2vw;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .line-icon {
+      margin-left: 10px;
+      vertical-align: -2px;
+    }
   }
 
   .subtitle {
@@ -217,14 +233,17 @@ p.tight {
   }
 
   &-body {
+    padding: 50px 50px 0;
     background-color: $light-grey;
   }
 }
 
 .list-page {
-  padding-top: 30px;
+  padding: 30px 50px 0;
 
   &-header {
+    margin-bottom: 10px;
+
     .title {
       font-size: large;
       font-weight: bold;
@@ -297,9 +316,19 @@ p.tight {
 }
 
 .outreach-page {
-  padding-top: 30px;
+  padding: 30px 50px 0;
 
   &-header {
+    margin-bottom: 10px;
+
+    .title {
+      font-size: large;
+      font-weight: bold;
+    }
+
+    .row {
+      max-width: unset;
+    }
   }
 
   &-body {

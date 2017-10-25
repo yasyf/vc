@@ -4,6 +4,7 @@ import ResearchModal from '../global/competitors/research_modal';
 import EmojiModal from './emoji_modal';
 import FixedTable from '../global/shared/fixed_table';
 import {initials} from '../global/utils';
+import {TargetInvestorsPath} from '../global/constants.js.erb';
 
 class ConversationsTable extends FixedTable {
   renderColumns() {
@@ -29,6 +30,7 @@ export default class Conversations extends React.Component {
           priority: EmojiModal,
         }}
         table={ConversationsTable}
+        source={{path: TargetInvestorsPath, query: {}}}
         {...props}
       />
     );

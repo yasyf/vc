@@ -1,4 +1,6 @@
 class Internal::CompaniesController < Internal::ApplicationController
+  include External::Concerns::Pageable
+
   INCLUDES = [:team, users: :team, pitches: [:votes, :team], cards: :list]
   LIMIT = 100
 
@@ -39,10 +41,6 @@ class Internal::CompaniesController < Internal::ApplicationController
 
   def flash_if_no_filter
     flash_warning 'Some results not shown! Please use the search bar'
-  end
-
-  def page
-    (params[:page] || 0).to_i
   end
 
   def apply_filters(companies)

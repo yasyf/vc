@@ -1,6 +1,7 @@
 class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
   include External::ApplicationHelper
+  include External::Concerns::Pageable
 
   LIMIT = 10
 
@@ -127,10 +128,6 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def recommendations_shown!
     session[:recommendations_shown] = true
-  end
-
-  def page
-    (params[:page] || 0).to_i
   end
 
   def filter_params

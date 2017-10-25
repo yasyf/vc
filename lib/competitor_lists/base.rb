@@ -206,7 +206,7 @@ module CompetitorLists
       if cached? && !json
         Rails.cache.fetch(cache_key('results'))
       else
-        fetch_results(limit, offset, meta, json)
+        fetch_results(limit, offset, meta, json: json)
       end
     end
 

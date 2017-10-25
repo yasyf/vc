@@ -1,5 +1,8 @@
 class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
+  include External::Concerns::Pageable
+
+  INCLUDES = [investor: [:entities, :university, :tweeter], founder: [:intro_requests, :entities]]
 
   before_action :authenticate_api_user!
 
@@ -7,9 +10,14 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
 
   def index
     current_external_founder.ensure_target_investors!
-    render_censored  current_external_founder.target_investors
-                                       .includes(investor: [:notes, competitor: :notes])
-                                       .order(:stage, :id)
+    targets = current_external_founder
+      .target_investors
+      .includes(*INCLUDES)
+      .order(:stage, :id)
+      .limit(limit)
+      .offset(page * limit)
+      .as_json
+    render_censored  targets
   end
 
   def import
@@ -73,7 +81,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   end
 
   def ti_params
-    params.require(:target_investor).permit(:firm_name, :first_name, :last_name, :stage, :role, :note, :email, industry: [], fund_type: [])
+    params.require(:target_investor).permit(:firm_name, :first_name, :last_name, :stage, :role, :note, :email, :priority)
   end
 
   def ti_investor_params

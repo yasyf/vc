@@ -129,8 +129,12 @@ class Founder < ApplicationRecord
     @primary_company ||= companies.where(primary: true).last || companies.last
   end
 
+  def conversation_count
+    target_investors.count
+  end
+
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversation_count])
   end
 
   def existing_target_investor_ids

@@ -8,8 +8,7 @@ export default class EmojiModal extends OverlayModal {
   };
 
   onEmoji = emoji => {
-    console.log(emoji);
-    this.props.onClose();
+    this.props.onResult({[this.props.rowKey]: emoji.colons});
   };
 
   renderModal() {
@@ -18,8 +17,9 @@ export default class EmojiModal extends OverlayModal {
         <Picker
           set="twitter"
           color="#2ADBC4"
-          emoji="exclamation"
+          emoji={this.props[this.props.rowKey] || 'exclamation'}
           title="Pick Emoji"
+          sheetSize={32}
           emojiSize={32}
           perLine={10}
           showPreview={true}

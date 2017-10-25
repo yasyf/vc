@@ -26,12 +26,23 @@ export default class WrappedTable extends React.Component {
     }
   }
 
+  onRowUpdate = (i, update) => {
+    this.setState({array: this.state.array.dup().set(i, update)});
+  };
+
   onArrayUpdate = () => {
     this.setState({lastUpdate: timestamp()});
   };
 
   onModalClose = () => {
     this.setState({currentModal: null});
+  };
+
+  onModalResult = i => result => {
+    this.onModalClose();
+    if (result) {
+      this.onRowUpdate(i, result);
+    }
   };
 
   onCellClick = (i, key) => {
@@ -67,6 +78,8 @@ export default class WrappedTable extends React.Component {
     return (
       <Modal
         onClose={this.onModalClose}
+        onResult={this.onModalResult(i)}
+        rowKey={key}
         {...array.getSync(i)}
       />
     );
@@ -81,6 +94,7 @@ export default class WrappedTable extends React.Component {
         {this.renderCurrentModal()}
         <BackingTable
           onCellClick={this.onCellClick}
+          onRowUpdate={this.onRowUpdate}
           scrollToRow={scrollToRow}
           array={array}
           {...props}

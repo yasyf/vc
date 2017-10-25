@@ -14,13 +14,19 @@ export default class FixedTable extends React.Component {
     this.props.onCellClick(row, name);
   };
 
-  renderColumn(key, name, CellComponent, props = {}, width = 50, flex = 1) {
+  renderColumn(key, name, CellComponent, props = {}, width = 50, flex = 1, trackClicks = true) {
     return (
       <Column
         key={key}
         columnKey={key}
         header={<Cell className="header">{name}</Cell>}
-        cell={<CellComponent data={this.props.array} onClick={this.onCellClick(key)} {...props} />}
+        cell={
+          <CellComponent
+            data={this.props.array}
+            onClick={(trackClicks && this.onCellClick(key)) || undefined}
+            {...props}
+          />
+        }
         flexGrow={flex || undefined}
         width={width}
       />
@@ -48,7 +54,7 @@ export default class FixedTable extends React.Component {
   };
 
   renderTrackColumn = (key, name) => {
-    return this.renderColumn(key, name, TrackCell, {}, 150, null);
+    return this.renderColumn(key, name, TrackCell, {onChange: this.props.onRowUpdate}, 150, null, false);
   };
 
   renderIntroColumn = (key, name, props) => {

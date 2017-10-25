@@ -19,6 +19,13 @@ let TextCellFactory = (superclass) => class extends superclass {
     };
   }
 
+  onChange = change => {
+    let key = this.props.columnKey;
+    let value = change[key].value;
+    this.setState({value});
+    this.props.onChange(this.props.rowIndex, {[key]: value});
+  };
+
   processRow(props, row) {
     return {value: _.get(row, props.columnKey)};
   };

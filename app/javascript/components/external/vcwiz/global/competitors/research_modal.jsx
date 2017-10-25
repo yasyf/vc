@@ -51,7 +51,7 @@ export default class ResearchModal extends OverlayModal {
 
   renderInvestments() {
     const { recent_investments } = this.props;
-    if (!recent_investments || !recent_investments.length) {
+    if (!!recent_investments.length) {
       return null;
     }
     let investments = recent_investments.map(c =>

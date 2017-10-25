@@ -40,10 +40,17 @@ class External::VcwizController < External::ApplicationController
   def outreach
     current_external_founder.ensure_target_investors!
 
+    targets = current_external_founder
+      .target_investors
+      .includes(*External::Api::V1::TargetInvestorsController::INCLUDES)
+      .order(:stage, :id)
+      .limit(10)
+      .as_json
+
     title 'Outreach'
     component 'Outreach'
     props(
-      targets: current_external_founder.target_investors.limit(10).as_json,
+      targets: targets,
       count: current_external_founder.target_investors.count,
     )
     render_default

@@ -16,11 +16,33 @@ export default class LazyArray {
     }
   }
 
+  bucketFromIndex(index) {
+    const bucket = Math.floor(index / this.bucketSize);
+    const bucketIndex = index - bucket * this.bucketSize;
+    return [bucket, bucketIndex];
+  }
+
+  url(args = {}) {
+    let {path, query} = this.source;
+    query = {...args, ...(query || {})};
+    return `${path}?${buildQuery(query)}`;
+  }
+
+  urlWithId(id) {
+    const {path, query} = this.source;
+    return `${path.id(id)}?${buildQuery(query || {})}`;
+  }
+
+  dup() {
+    const la = new LazyArray(this.source, null, this.onUpdate);
+    la.buckets = _.clone(this.buckets);
+    la.bucketSize = this.bucketSize;
+    return la;
+  }
+
   fetchBucket(bucket) {
     this.loading.add(bucket);
-    let {path, query} = this.source;
-    query = {limit: this.bucketSize, page: bucket, ...(query || {})};
-    return ffetch(`${path}?${buildQuery(query)}`).then(vals => {
+    return ffetch(this.url({limit: this.bucketSize, page: bucket})).then(vals => {
       this.buckets.set(bucket, vals);
       this.loading.delete(bucket);
       this.onUpdate(bucket);
@@ -37,8 +59,7 @@ export default class LazyArray {
   }
 
   getSync(index) {
-    let bucket = Math.floor(index / this.bucketSize);
-    let bucketIndex = index - bucket * this.bucketSize;
+    const [bucket, bucketIndex] = this.bucketFromIndex(index);
 
     if (this.buckets.has(bucket)) {
       return this.buckets.get(bucket)[bucketIndex];
@@ -51,8 +72,7 @@ export default class LazyArray {
   }
 
   get(index) {
-    let bucket = Math.floor(index / this.bucketSize);
-    let bucketIndex = index - bucket * this.bucketSize;
+    const [bucket, bucketIndex] = this.bucketFromIndex(index);
 
     if (this.buckets.has(bucket)) {
       return new Promise(cb => cb(this.buckets.get(bucket)[bucketIndex]));
@@ -61,5 +81,18 @@ export default class LazyArray {
     } else {
       this.fetchBucket(bucket).then(() => this.buckets.get(bucket)[bucketIndex]);
     }
+  }
+
+  set(index, update, id = 'id') {
+    const [bucket, bucketIndex] = this.bucketFromIndex(index);
+    if (!this.buckets.has(bucket)) {
+      throw `missing bucket ${bucket}!`;
+    }
+    const row = this.buckets.get(bucket)[bucketIndex];
+    ffetch(this.urlWithId(row[id]), 'PATCH', update);
+    Object.entries(update).forEach(([k, v]) => {
+      _.set(row, k, v);
+    });
+    return this;
   }
 }

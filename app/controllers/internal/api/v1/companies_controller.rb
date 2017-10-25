@@ -1,4 +1,6 @@
 class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controller
+  include External::Concerns::Pageable
+
   PER_PAGE = 100
   INCLUDES = [:team, competitors: :notes, users: :team, pitches: [:final_votes, :yes_votes_count, :no_votes_count, :team], cards: :list]
 
@@ -61,11 +63,5 @@ class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controlle
     company.move_to_rejected_list!
 
     head :ok
-  end
-
-  private
-
-  def page
-    (params[:page] || 0).to_i
   end
 end

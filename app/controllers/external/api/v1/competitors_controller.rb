@@ -1,9 +1,8 @@
 class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
   include External::Concerns::Filterable
+  include External::Concerns::Pageable
   include External::ApplicationHelper
-
-  MAX_LIMIT = 20
 
   before_action :authenticate_api_user!
 
@@ -33,15 +32,5 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
 
   def lists
     render json: Competitor.lists(current_external_founder)
-  end
-
-  private
-
-  def page
-    (params[:page] || 0).to_i
-  end
-
-  def limit
-    [(params[:limit] || MAX_LIMIT).to_i, MAX_LIMIT].min
   end
 end
