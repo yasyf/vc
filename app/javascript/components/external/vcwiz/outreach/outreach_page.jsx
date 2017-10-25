@@ -13,7 +13,7 @@ export default class OutreachPage extends React.Component {
             </Column>
             <Column offsetOnLarge={6} large={3}>
               <div className="text-right">
-                <a>Add investor</a>
+                <a>+ Add investor</a>
               </div>
             </Column>
           </Row>

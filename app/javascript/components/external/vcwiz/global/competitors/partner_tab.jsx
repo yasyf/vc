@@ -25,14 +25,14 @@ export default class PartnerTab extends React.Component {
   }
 
   componentDidMount() {
-    ffetch(InvestorsPath.id(this.props.id)).then(investor => {
-      this.setState({investor});
-    });
+    if (this.props.investor.id) {
+      ffetch(InvestorsPath.id(this.props.investor.id)).then(investor => {
+        this.setState({investor});
+      });
+    } else {
+      this.setState({investor: this.props.investor});
+    }
   }
-
-  onTrackChange = (change) => {
-    console.log(change);
-  };
 
   renderLoading() {
     return (
@@ -40,6 +40,11 @@ export default class PartnerTab extends React.Component {
         <Loader color="#2ADBC4" size={200} />
       </div>
     );
+  }
+
+  renderTrack() {
+    let stage = this.state.investor.target_investor && this.state.investor.target_investor.stage;
+    return <Track onChange={this.props.onTrackChange} value={stage} />;
   }
 
   renderHeading() {
@@ -54,8 +59,8 @@ export default class PartnerTab extends React.Component {
               <span>{role ? `${role}, ${competitor.name}` : competitor.name}</span>
             </div>
           </Column>
-          <Column offsetOnLarge={7} large={1}>
-            <Track onChange={this.onTrackChange} />
+          <Column offsetOnLarge={6} large={2}>
+            {this.renderTrack()}
           </Column>
         </Row>
       </div>
@@ -84,6 +89,19 @@ export default class PartnerTab extends React.Component {
     }
     if (twitter === competitor.twitter) {
       twitter = null;
+    }
+
+    if (!_.compact([
+      location,
+      facebook,
+      twitter,
+      linkedin,
+      university,
+      homepage,
+      average_response_time,
+      al_url,
+    ]).length) {
+      return null;
     }
 
     return (
@@ -145,7 +163,7 @@ export default class PartnerTab extends React.Component {
 
   maybeRenderRecentInvestments() {
     let { recent_investments } = this.state.investor;
-    if (!recent_investments.length) {
+    if (!recent_investments || !recent_investments.length) {
       return null;
     } else {
       return <Column large={4}>{this.renderRecentInvestments()}</Column>;
@@ -154,7 +172,7 @@ export default class PartnerTab extends React.Component {
 
   maybeRenderRecentPostsAndNews() {
     let { recent_news, public_posts } = this.state.investor;
-    if (!recent_news.length && !public_posts.length) {
+    if ((!recent_news || !recent_news.length) && (!public_posts || !public_posts.length)) {
       return null;
     } else {
       return <Column large={5}>{this.renderRecentPostsAndNews()}</Column>;
@@ -173,10 +191,10 @@ export default class PartnerTab extends React.Component {
 
   renderTweet() {
     let { tweets } = this.state.investor;
-    if (!tweets.length) {
+    if (!tweets || !tweets.length) {
       return null;
     }
-    return <Tweet tweet={_.sample(tweets)} />;
+    return <Row isColumn><Tweet tweet={_.sample(tweets)} /></Row>;
   }
 
   onTruncate = isTruncated => {
@@ -184,7 +202,7 @@ export default class PartnerTab extends React.Component {
       return;
     }
     this.setState({fetchedReview: true});
-    ffetch(InvestorsPath.resource(this.props.id, 'review')).then(({review}) => {
+    ffetch(InvestorsPath.resource(this.props.investor.id, 'review')).then(({review}) => {
       this.setState({review});
     })
   };
@@ -215,12 +233,12 @@ export default class PartnerTab extends React.Component {
       <div>
         {this.renderHeading()}
         {this.renderTweet()}
-        <div>
-          <ReadMore onTruncate={this.onTruncate}>
+        <Row isColumn>
+          <ReadMore onTruncate={this.onTruncate} lines={3}>
             {description}
             {this.renderReview()}
           </ReadMore>
-        </div>
+        </Row>
         <hr />
         {this.renderDetails()}
       </div>

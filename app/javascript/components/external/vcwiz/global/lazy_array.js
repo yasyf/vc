@@ -89,9 +89,12 @@ export default class LazyArray {
       throw `missing bucket ${bucket}!`;
     }
     const row = this.buckets.get(bucket)[bucketIndex];
-    ffetch(this.urlWithId(row[id]), 'PATCH', update);
     Object.entries(update).forEach(([k, v]) => {
       _.set(row, k, v);
+    });
+    ffetch(this.urlWithId(row[id]), 'PATCH', update).then(resp => {
+      this.buckets.get(bucket)[bucketIndex] = resp;
+      this.onUpdate(bucket);
     });
     return this;
   }

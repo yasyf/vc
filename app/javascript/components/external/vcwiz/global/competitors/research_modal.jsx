@@ -1,10 +1,10 @@
 import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorFundTypes, CompetitorIndustries} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, TargetInvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import {fullName, withDots} from '../utils';
+import {ffetch, fullName, withDots} from '../utils';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
@@ -15,9 +15,12 @@ export default class ResearchModal extends OverlayModal {
     this.converter = new showdown.Converter();
   }
 
+  onTrackChange = id => update => {
+    ffetch(TargetInvestorsPath.id(id), 'POST', {stage: update.track.value});
+  };
 
   renderHeading() {
-    const { name, photo, hq, fund_type } = this.props;
+    const { name, photo, hq, fund_type } = this.props.item;
     return (
       <div>
         <ProfileImage src={photo} size={50} className="inline-image" />
@@ -39,7 +42,7 @@ export default class ResearchModal extends OverlayModal {
   }
 
   renderIndustries() {
-    const { industry } = this.props;
+    const { industry } = this.props.item;
     if (!industry || !industry.length) {
       return null;
     }
@@ -50,8 +53,8 @@ export default class ResearchModal extends OverlayModal {
   }
 
   renderInvestments() {
-    const { recent_investments } = this.props;
-    if (!!recent_investments.length) {
+    const { recent_investments } = this.props.item;
+    if (!recent_investments || !recent_investments.length) {
       return null;
     }
     let investments = recent_investments.map(c =>
@@ -61,7 +64,7 @@ export default class ResearchModal extends OverlayModal {
   }
 
   renderCompetitorInfo() {
-    const { description } = this.props;
+    const { description } = this.props.item;
 
     return (
       <div className="competitor-info">
@@ -77,7 +80,7 @@ export default class ResearchModal extends OverlayModal {
   }
 
   renderCompetitorSocial() {
-    let { al_url, cb_url, crunchbase_id, facebook, twitter, domain } = this.props;
+    let { al_url, cb_url, crunchbase_id, facebook, twitter, domain } = this.props.item;
     return (
       <div className="competitor-social">
         {this.renderIconLine('list', '', al_url, 'angel.co')}
@@ -89,12 +92,18 @@ export default class ResearchModal extends OverlayModal {
     )
   };
 
-  renderPartners() {
-    let { partners, matches } = this.props;
+  renderBottom() {
+    let { partners, matches } = this.props.item;
+
+    if (!partners || !partners.length) {
+      return null;
+    }
+
     let defaultIndex = _.findIndex(partners, {id: _.first(matches)});
     if (defaultIndex === -1) {
       defaultIndex = undefined;
     }
+
     return (
       <Tabs selectedTabPanelClassName="tab-panel" defaultIndex={defaultIndex}>
         <div className="tab-list-wrapper">
@@ -102,38 +111,26 @@ export default class ResearchModal extends OverlayModal {
             {partners.map(p => <Tab key={p.id}>{fullName(p)}</Tab>)}
           </TabList>
         </div>
-        {partners.map(p => <TabPanel key={p.id}><PartnerTab {...p} /></TabPanel>)}
+        {partners.map(p =>
+          <TabPanel key={p.id}>
+            <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />
+          </TabPanel>
+        )}
       </Tabs>
     );
   }
 
-  renderBottom() {
-    if (!this.props.partners) {
-      return null;
-    }
+  renderTop() {
     return (
-      <div className="research-modal-bottom">
-        {this.renderPartners()}
-      </div>
+      <Row>
+        <Column large={9}>
+          {this.renderHeading()}
+          {this.renderCompetitorInfo()}
+        </Column>
+        <Column large={2} offsetOnLarge={1}>
+          {this.renderCompetitorSocial()}
+        </Column>
+      </Row>
     );
-  }
-
-  renderModal() {
-    return (
-      <div className="research-modal">
-        <div className="research-modal-top">
-          <Row>
-            <Column large={9}>
-              {this.renderHeading()}
-              {this.renderCompetitorInfo()}
-            </Column>
-            <Column large={2} offsetOnLarge={1}>
-              {this.renderCompetitorSocial()}
-            </Column>
-          </Row>
-        </div>
-        {this.renderBottom()}
-      </div>
-    )
   }
 }

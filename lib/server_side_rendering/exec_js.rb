@@ -14,7 +14,7 @@ class ServerSideRendering::ExecJs
   end
 
   def self.prelude
-    JS_TEMPLATE + polyfills
+    JS_TEMPLATE + polyfills + Gon::Base.render_data(camel_case: true, init: true, need_tag: false)
   end
 
   def initialize(js_code)

@@ -12,12 +12,12 @@ export default class Header extends React.Component {
   };
 
   renderCount() {
-    if (!gon.founder.conversation_count) {
+    if (!window.gon.founder.conversation_count) {
       return null;
     }
     return (
       <span>
-        ({gon.founder.conversation_count})
+        ({window.gon.founder.conversation_count})
         <i className="line-icon fi-widget"/>
       </span>
     );

@@ -1,6 +1,7 @@
 class Competitor < ApplicationRecord
   include Concerns::AttributeSortable
   include Concerns::Domainable
+  include Concerns::Targetable
 
   COMPETITORS = {
     'Rough Draft Ventures': Http::Rdv,
@@ -200,9 +201,10 @@ class Competitor < ApplicationRecord
     )
   end
 
-  def as_meta_json
+  def as_meta_json(with_target: true)
     as_json(
       only: [
+        :id,
         :name,
         :location,
         :photo,
@@ -221,11 +223,15 @@ class Competitor < ApplicationRecord
       methods: [
         :hq,
         :acronym,
-        :track_status,
+        with_target ? :target_investor : nil,
         :recent_investments,
         :cb_url,
-      ]
+      ].compact
     )
+  end
+
+  def as_cached_meta_json
+    as_meta_json(with_target: false)
   end
 
   def hq
@@ -271,14 +277,6 @@ class Competitor < ApplicationRecord
         .joins(:investments)
         .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC NULLS LAST')
         .limit(5)
-    end
-  end
-
-  def track_status
-    if self.attributes.key?('track_status')
-      (self[:track_status] && TargetInvestor::STAGES.keys[self[:track_status]])
-    else
-      target_investors.order(updated_at: :desc).limit(1).pluck(:stage).first
     end
   end
 

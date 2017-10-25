@@ -6,6 +6,7 @@ class Investor < ApplicationRecord
   include Concerns::Twitterable
   include Concerns::Ignorable
   include Concerns::TimeZonable
+  include Concerns::Targetable
 
   GENDERS = %w(unknown male female)
 
@@ -231,7 +232,8 @@ class Investor < ApplicationRecord
        :average_response_time,
        :tweets,
        :public_posts,
-       :utc_offset
+       :utc_offset,
+       :target_investor,
      ]
     )
   end

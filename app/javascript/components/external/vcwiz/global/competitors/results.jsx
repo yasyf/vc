@@ -27,7 +27,7 @@ class ResultsTable extends FixedTable {
     return [
       this.renderImageTextColumn('name', 'Firm', { imageKey: 'photo', fallbackKey: 'acronym' }),
       this.middleColumns(),
-      this.renderTrackColumn('track', 'Track'),
+      this.renderTrackColumn('target_investor.stage', 'Track'),
     ];
   }
 }
@@ -38,7 +38,7 @@ export default class Results extends React.Component {
     return (
       <WrappedTable
         items={competitors}
-        modal={key => key !== 'track' && ResearchModal}
+        modal={key => key !== 'track_status' && ResearchModal}
         table={ResultsTable}
         {...props}
       />

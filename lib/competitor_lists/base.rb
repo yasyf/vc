@@ -22,16 +22,16 @@ module CompetitorLists
   end
 
   module ClassSql
-    def track_status_sql(competitors_table = 'competitors')
+    def target_investor_sql(founder, competitors_table = 'competitors')
       <<-SQL
         LEFT JOIN LATERAL (
-          SELECT target_investors.stage AS stage
+          SELECT target_investors.stage, target_investors.id
           FROM investors
-          INNER JOIN target_investors ON target_investors.investor_id = investors.id
+          INNER JOIN target_investors ON target_investors.investor_id = investors.id AND target_investors.founder_id = #{founder.id}
           WHERE investors.competitor_id = #{competitors_table}.id
           ORDER BY target_investors.updated_at DESC
           LIMIT 1
-        ) AS stages ON true
+        ) AS ti ON true
       SQL
     end
 
@@ -93,7 +93,7 @@ module CompetitorLists
       order.present? ? "ORDER BY #{order}" : ''
     end
 
-    def _base_sql(sql, meta_sql, order, limit, offset)
+    def _base_sql(founder, sql, meta_sql, order, limit, offset)
       distinct_sql = <<-SQL
         SELECT DISTINCT ON (fullquery.id) fullquery.*
         FROM (#{sql}) AS fullquery
@@ -108,12 +108,12 @@ module CompetitorLists
       <<-SQL
         SELECT
           subquery.*,
-          stages.stage AS track_status,
+          #{'row_to_json(ti) AS target_investor,' unless cache_key_attrs.present?}
           array_to_json(partners.partners_arr) AS partners,
           array_to_json(ri.ri_arr) AS recent_investments
           #{_meta_select(meta_sql)}
         FROM (#{limited_sql}) AS subquery
-        #{track_status_sql('subquery')}
+        #{target_investor_sql(founder, 'subquery') unless cache_key_attrs.present?}
         #{recent_investments_sql('subquery')}
         #{partners_sql('subquery')}
         #{_meta_join(meta_sql)}
@@ -173,11 +173,11 @@ module CompetitorLists
     end
 
     def find_sql(limit, offset: 0)
-      self.class._base_sql(sql, '', order, limit, offset)
+      self.class._base_sql(@founder, sql, '', order, limit, offset)
     end
 
     def find_with_meta_sql(limit, offset: 0)
-      self.class._base_sql(sql, meta_sql, order, limit, offset)
+      self.class._base_sql(@founder, sql, meta_sql, order, limit, offset)
     end
 
     def fetch_result_count
@@ -202,16 +202,38 @@ module CompetitorLists
       end
     end
 
+    def fetch_cached_results
+      results = Rails.cache.fetch(cache_key('results'))
+      sql = <<-SQL
+        SELECT results.id AS competitor_id, ti.*
+        FROM (
+          SELECT competitors.id FROM competitors
+          WHERE competitors.id IN (#{results.map { |r| r['id'] }.join(',')})
+        ) AS results
+        #{self.class.target_investor_sql(@founder, 'results')}
+      SQL
+      targets = Competitor.connection.execute(sql).group_by { |r| r['competitor_id'] }
+      results.each do |competitor|
+        meta = targets[competitor['id']].first
+        competitor['target_investor'] = if meta['id'].present?
+          competitor = { id: meta['id'], stage: TargetInvestor.stages.invert[meta['stage']] }
+        else
+          nil
+        end
+      end
+    end
+
     def results(limit: GET_LIMIT, offset: 0, meta: false, json: nil)
       if cached? && !json
-        Rails.cache.fetch(cache_key('results'))
+        fetch_cached_results
       else
         fetch_results(limit, offset, meta, json: json)
       end
     end
 
     def cache!(limit: GET_LIMIT * 2, offset: 0)
-      Rails.cache.write(cache_key('results'), (results = fetch_results(limit, offset, true)))
+      results = fetch_results(limit, offset, true, json: 'cached_meta')
+      Rails.cache.write(cache_key('results'), results)
       Rails.cache.write(cache_key('count'), results.count)
     end
   end

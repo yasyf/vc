@@ -38,8 +38,10 @@ export default class WrappedTable extends React.Component {
     this.setState({currentModal: null});
   };
 
-  onModalResult = i => result => {
-    this.onModalClose();
+  onModalResult = i => (result, keepOpen) => {
+    if (!keepOpen) {
+      this.onModalClose();
+    }
     if (result) {
       this.onRowUpdate(i, result);
     }
@@ -80,7 +82,7 @@ export default class WrappedTable extends React.Component {
         onClose={this.onModalClose}
         onResult={this.onModalResult(i)}
         rowKey={key}
-        {...array.getSync(i)}
+        item={array.getSync(i)}
       />
     );
   }

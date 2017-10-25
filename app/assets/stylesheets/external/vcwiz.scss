@@ -11,6 +11,7 @@ $success: #2ADBC4;
 $success-dark: #23CFB2;
 $green: #34BF20;
 $blue: #0D71E9;
+$red: #E8441E;
 
 html, body, .full-screen {
   height: 100%;
@@ -19,6 +20,10 @@ html, body, .full-screen {
 
 html, body, .full-screen, #vcwiz, h1, h2, h3, h4, h5, h6 {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
+}
+
+body.ReactModal__Body--open {
+  overflow: hidden;
 }
 
 p.tight {
@@ -326,6 +331,10 @@ p.tight {
       font-weight: bold;
     }
 
+    a {
+      font-weight: bold;
+    }
+
     .row {
       max-width: unset;
     }
@@ -531,7 +540,6 @@ mark.highlighter {
     font-family: emoji, monospace;
     text-align: center;
     font-size: 1.5em;
-    color: red;
     font-weight: bold;
   }
 }
@@ -605,40 +613,10 @@ mark.highlighter {
   }
 }
 
-.research-modal {
-  .tab-list-wrapper {
-    overflow: scroll;
-    white-space: nowrap;
-    height: 40px;
-    width: calc(100% - 10px);
-  }
-
-  ul.tab-list {
-    margin-bottom: 0;
-    margin-left: 0;
-    border: unset;
-  }
-
-  .tab-panel {
-    border: 1px solid $grey;
-    border-top: 0;
-    border-radius: 0 10px 10px 10px;
-    padding: 20px;
-    display: block;
-    background-color: $white;
-  }
-
-  .react-tabs__tab {
-    border-bottom: 1px solid $grey;
-  }
-
-  .react-tabs__tab--selected {
-    border-color: $grey;
-    border-bottom: 1px solid $white;
-  }
-
-  .research-modal-top {
+.overlay-modal {
+  &-top {
     padding: 40px 40px 0;
+    margin-bottom: 40px;
 
     .inline-image {
       border-radius: 0;
@@ -649,10 +627,9 @@ mark.highlighter {
     }
   }
 
-  .research-modal-bottom {
-    margin-top: 75px;
+  &-bottom {
     background-color: $lightest-grey;
-    padding: 10px 40px 40px;
+    padding: 40px;
   }
 
   p {
@@ -664,17 +641,8 @@ mark.highlighter {
     color: $success-dark;
   }
 
-  .competitor-social {
-    .line-icon {
-      padding-right: 10px;
-      vertical-align: -1px;
-    }
-  }
-
-  .competitor-info {
-    .description {
-      margin-bottom: 1rem;
-    }
+  .title {
+    text-align: center;
   }
 
   .heading {
@@ -709,6 +677,56 @@ mark.highlighter {
     max-width: unset;
     margin-right: unset;
     margin-left: unset;
+  }
+}
+
+.research-modal {
+  &-bottom {
+    padding: 10px 40px 40px;
+  }
+
+  .tab-list-wrapper {
+    overflow: scroll;
+    white-space: nowrap;
+    height: 40px;
+    width: calc(100% - 10px);
+  }
+
+  ul.tab-list {
+    margin-bottom: 0;
+    margin-left: 0;
+    border: unset;
+  }
+
+  .tab-panel {
+    border: 1px solid $grey;
+    border-top: 0;
+    border-radius: 0 10px 10px 10px;
+    padding: 20px;
+    display: block;
+    background-color: $white;
+  }
+
+  .react-tabs__tab {
+    border-bottom: 1px solid $grey;
+  }
+
+  .react-tabs__tab--selected {
+    border-color: $grey;
+    border-bottom: 1px solid $white;
+  }
+
+  .competitor-social {
+    .line-icon {
+      padding-right: 10px;
+      vertical-align: -1px;
+    }
+  }
+
+  .competitor-info {
+    .description {
+      margin-bottom: 1rem;
+    }
   }
 }
 

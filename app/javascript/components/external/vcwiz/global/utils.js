@@ -37,11 +37,11 @@ export const ffetchPublic = function(path, method = 'GET', data = null, form = f
 };
 
 export const isDRF = function() {
-  return gon.founder['drf?'];
+  return window.gon.founder['drf?'];
 };
 
 export const isMe = function(founder) {
-  return gon.founder.id === founder.id;
+  return window.gon.founder.id === founder.id;
 };
 
 export const fullName = function(founder) {

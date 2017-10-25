@@ -1,7 +1,7 @@
 import React from 'react';
 import WrappedTable from '../global/shared/wrapped_table';
-import ResearchModal from '../global/competitors/research_modal';
 import EmojiModal from './emoji_modal';
+import PartnerModal from './partner_modal';
 import FixedTable from '../global/shared/fixed_table';
 import {initials} from '../global/utils';
 import {TargetInvestorsPath} from '../global/constants.js.erb';
@@ -26,7 +26,7 @@ export default class Conversations extends React.Component {
       <WrappedTable
         items={targets}
         modal={{
-          name: ResearchModal,
+          name: PartnerModal,
           priority: EmojiModal,
         }}
         table={ConversationsTable}

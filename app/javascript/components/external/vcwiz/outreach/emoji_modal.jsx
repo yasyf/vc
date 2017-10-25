@@ -17,7 +17,7 @@ export default class EmojiModal extends OverlayModal {
         <Picker
           set="twitter"
           color="#2ADBC4"
-          emoji={this.props[this.props.rowKey] || 'exclamation'}
+          emoji={this.props.item[this.props.rowKey] || 'exclamation'}
           title="Pick Emoji"
           sheetSize={32}
           emojiSize={32}
