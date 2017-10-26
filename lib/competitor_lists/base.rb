@@ -105,15 +105,16 @@ module CompetitorLists
         OFFSET #{offset}
         LIMIT #{limit}
       SQL
+      fetch_target_investors = cache_key_attrs.blank? && @founder.present?
       <<-SQL
         SELECT
           subquery.*,
-          #{'row_to_json(ti) AS target_investor,' unless cache_key_attrs.present?}
+          #{'row_to_json(ti) AS target_investor,' if fetch_target_investors}
           array_to_json(partners.partners_arr) AS partners,
           array_to_json(ri.ri_arr) AS recent_investments
           #{_meta_select(meta_sql)}
         FROM (#{limited_sql}) AS subquery
-        #{target_investor_sql(founder, 'subquery') unless cache_key_attrs.present?}
+        #{target_investor_sql(founder, 'subquery') if fetch_target_investors}
         #{recent_investments_sql('subquery')}
         #{partners_sql('subquery')}
         #{_meta_join(meta_sql)}
