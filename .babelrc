@@ -15,10 +15,10 @@
     "stage-2"
   ],
   "plugins": [
-    "transform-runtime",
-    "transform-decorators-legacy",
-    "emotion",
     "add-react-displayname",
+    "transform-runtime",
+    "emotion",
+    "transform-decorators-legacy",
     "syntax-dynamic-import",
     [
       "transform-class-properties",
