@@ -112,6 +112,10 @@ class Pitch < ApplicationRecord
     company.touch
   end
 
+  def has_quorum?
+    votes.final.count >= quorum
+  end
+
   private
 
   def google_drive
