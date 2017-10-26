@@ -58,7 +58,7 @@ export default class LazyArray {
     }, 500);
   }
 
-  getSync(index) {
+  getSync(index, fetch = true) {
     const [bucket, bucketIndex] = this.bucketFromIndex(index);
 
     if (this.buckets.has(bucket)) {
@@ -66,7 +66,8 @@ export default class LazyArray {
     } else if (this.loading.has(bucket)) {
       return null;
     } else {
-      this.fetchBucket(bucket);
+      if (fetch)
+        this.fetchBucket(bucket);
       return null;
     }
   }

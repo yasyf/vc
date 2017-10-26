@@ -1,7 +1,7 @@
 import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorFundTypes, CompetitorIndustries, TargetInvestorsPath} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {ffetch, fullName, withDots} from '../utils';
@@ -16,7 +16,7 @@ export default class ResearchModal extends OverlayModal {
   }
 
   onTrackChange = id => update => {
-    ffetch(TargetInvestorsPath.id(id), 'POST', {stage: update.track.value});
+    ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}});
   };
 
   renderHeading() {

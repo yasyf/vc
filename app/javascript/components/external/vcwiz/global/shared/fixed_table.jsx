@@ -8,6 +8,7 @@ import DatetimeCell from '../cells/datetime_cell';
 import CompanyCell from '../cells/company_cell';
 import IntroCell from '../cells/intro_cell';
 import EmojiCell from '../cells/emoji_cell';
+import CompetitorTrackCell from '../cells/competitor_track_cell';
 
 export default class FixedTable extends React.Component {
   onCellClick = name => (e, row) => {
@@ -55,6 +56,11 @@ export default class FixedTable extends React.Component {
 
   renderTrackColumn = (key, name) => {
     return this.renderColumn(key, name, TrackCell, {onChange: this.props.onRowUpdate}, 150, null, false);
+  };
+
+  renderCompetitorTrackColumn = (key, onChange, name) => {
+    let props = {onChange, onButtonClick: this.onCellClick(key)};
+    return this.renderColumn(key, name, CompetitorTrackCell, props, 150, null, false);
   };
 
   renderIntroColumn = (key, name, props) => {

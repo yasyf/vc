@@ -23,7 +23,7 @@ let TextCellFactory = (superclass) => class extends superclass {
     let key = this.props.columnKey;
     let value = change[key].value;
     this.setState({value});
-    this.props.onChange(this.props.rowIndex, {[key]: value});
+    this.props.onChange(this.props.rowIndex, _.set({}, key, value));
   };
 
   processRow(props, row) {
