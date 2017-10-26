@@ -225,7 +225,7 @@ module CompetitorLists
     end
 
     def results(limit: GET_LIMIT, offset: 0, meta: false, json: nil)
-      if cached? && !json
+      if cached?
         fetch_cached_results
       else
         fetch_results(limit, offset, meta, json: json)
