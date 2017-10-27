@@ -4,22 +4,20 @@ import Results from '../global/competitors/results';
 import {CompetitorsListPath} from '../global/constants.js.erb';
 
 export default class ListPage extends React.Component {
-  renderHeader() {
-    let { title } = this.props;
-    return <p className="title">{title}</p>;
-  }
-
   renderBody() {
-    let { columns, competitors, count, name } = this.props;
+    let { columns, competitors, count, name, title } = this.props;
 
     return (
-      <Results
-        count={count}
-        competitors={competitors}
-        columns={columns}
-        source={{path: CompetitorsListPath.id(name), query: {}}}
-        resultsId={1}
-      />
+      <div className="full-screen">
+        <p className="title">{title}</p>
+        <Results
+          count={count}
+          competitors={competitors}
+          columns={columns}
+          source={{path: CompetitorsListPath.id(name), query: {}}}
+          resultsId={1}
+        />
+      </div>
     );
   }
 
@@ -27,7 +25,6 @@ export default class ListPage extends React.Component {
     return (
       <VCWiz
         page="list"
-        header={this.renderHeader()}
         body={this.renderBody()}
       />
     );

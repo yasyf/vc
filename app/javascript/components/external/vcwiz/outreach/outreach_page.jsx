@@ -49,7 +49,7 @@ export default class OutreachPage extends React.Component {
     return (
       <Row>
         <Column large={3}>
-          <span className="title">Your Conversations</span>
+          <div className="title">Your Conversations</div>
         </Column>
         <Column offsetOnLarge={6} large={3}>
           <div className="text-right">
@@ -64,11 +64,14 @@ export default class OutreachPage extends React.Component {
     let { targets, ...props } = this.props;
     targets = this.state.targets;
     return (
-      <Conversations
-        resultsId={this.state.resultsId}
-        targets={targets}
-        {...props}
-      />
+      <div className="full-screen">
+        {this.renderHeader()}
+        <Conversations
+          resultsId={this.state.resultsId}
+          targets={targets}
+          {...props}
+        />
+      </div>
     )
   }
 
@@ -76,7 +79,6 @@ export default class OutreachPage extends React.Component {
     return (
       <VCWiz
         page="outreach"
-        header={this.renderHeader()}
         body={this.renderBody()}
         modal={this.renderModal()}
       />
