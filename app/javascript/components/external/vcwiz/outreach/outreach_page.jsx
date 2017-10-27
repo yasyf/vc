@@ -1,4 +1,5 @@
 import React from 'react';
+import VCWiz from '../vcwiz';
 import Conversations from './conversations';
 import {Column, Row} from 'react-foundation';
 import AddInvestorModal from './add_investor_modal';
@@ -43,32 +44,42 @@ export default class OutreachPage extends React.Component {
       />
     );
   }
-  render() {
+
+  renderHeader() {
+    return (
+      <Row>
+        <Column large={3}>
+          <span className="title">Your Conversations</span>
+        </Column>
+        <Column offsetOnLarge={6} large={3}>
+          <div className="text-right">
+            <a onClick={this.openModal}>+ Add investor</a>
+          </div>
+        </Column>
+      </Row>
+    );
+  }
+
+  renderBody() {
     let { targets, ...props } = this.props;
     targets = this.state.targets;
     return (
-      <div className="outreach-page full-screen">
-        <div className="outreach-page-header">
-          <Row>
-            <Column large={3}>
-              <span className="title">Your Conversations</span>
-            </Column>
-            <Column offsetOnLarge={6} large={3}>
-              <div className="text-right">
-                <a onClick={this.openModal}>+ Add investor</a>
-              </div>
-            </Column>
-          </Row>
-        </div>
-        <div className="outreach-page-body full-screen">
-          <Conversations
-            resultsId={this.state.resultsId}
-            targets={targets}
-            {...props}
-          />
-        </div>
-        {this.renderModal()}
-      </div>
+      <Conversations
+        resultsId={this.state.resultsId}
+        targets={targets}
+        {...props}
+      />
+    )
+  }
+
+  render() {
+    return (
+      <VCWiz
+        page="outreach"
+        header={this.renderHeader()}
+        body={this.renderBody()}
+        modal={this.renderModal()}
+      />
     );
   }
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import VCWiz from '../vcwiz';
 import OutreachPage from './outreach_page';
 import { Emoji } from 'emoji-mart'
 import { canUseDOM } from 'exenv';
@@ -28,9 +27,7 @@ export default class Outreach extends React.Component {
 
   render() {
     return (
-      <VCWiz page="outreach">
-        <OutreachPage {...this.props} />
-      </VCWiz>
+      <OutreachPage {...this.props} />
     )
   }
 }

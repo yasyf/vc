@@ -6,14 +6,11 @@ import Lists from './lists';
 export default class Discovery extends React.Component {
   render() {
     return (
-      <VCWiz page="discover">
-        <div className="discover-page-header">
-          <SearchHero />
-        </div>
-        <div className="discover-page-body full-screen">
-          <Lists />
-        </div>
-      </VCWiz>
-    )
+      <VCWiz
+        page="discover"
+        header={<SearchHero />}
+        body={<Lists />}
+      />
+    );
   }
 }

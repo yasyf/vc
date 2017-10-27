@@ -1,4 +1,5 @@
 import React from 'react';
+import VCWiz from '../vcwiz';
 import Filters from '../discover/filters';
 import Results from '../global/competitors/results';
 import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
@@ -130,18 +131,30 @@ export default class FilterPage extends React.Component {
     );
   }
 
-  render() {
-    let { competitors, count, resultsId } = this.state;
-    let source = {path: CompetitorsFilterPath, query: this.queryParams()};
+  renderHeader() {
+    return this.renderFilterRow();
+  }
+
+  renderBody() {
+    const { competitors, count, resultsId } = this.state;
+    const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
-      <div className="full-screen filter-page">
-        <div className="filter-page-header">
-          {this.renderFilterRow()}
-        </div>
-        <div className="filter-page-body full-screen">
-          <Results count={count} competitors={competitors} source={source} resultsId={resultsId} />
-        </div>
-      </div>
-    )
+      <Results
+        count={count}
+        competitors={competitors}
+        source={source}
+        resultsId={resultsId}
+      />
+    );
+  }
+
+  render() {
+    return (
+      <VCWiz
+        page="filter"
+        header={this.renderHeader()}
+        body={this.renderBody()}
+      />
+    );
   }
 }
