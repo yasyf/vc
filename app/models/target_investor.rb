@@ -110,7 +110,7 @@ class TargetInvestor < ApplicationRecord
   end
 
   def title
-    "#{role}, #{firm_name}"
+    role.present? ? "#{role}, #{firm_name}" : firm_name
   end
 
   def as_json(options = {})

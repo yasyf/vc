@@ -13,7 +13,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     targets = current_external_founder
       .target_investors
       .includes(*INCLUDES)
-      .order(:stage, :id)
+      .order(:stage, id: :desc)
       .limit(limit)
       .offset(page * limit)
       .as_json

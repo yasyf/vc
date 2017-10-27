@@ -58,6 +58,7 @@ export default class Lists extends React.Component {
   };
 
   renderList = ({title, name, competitors, count}, i, arr) => {
+    let displayCompetitors = _.take(competitors, 5);
     return (
       <Column large={4} key={name} isLast={i === arr.length - 1}>
         <div className="card" onClick={this.onListClick(name)}>
@@ -66,8 +67,8 @@ export default class Lists extends React.Component {
             <div className="body">
               <h6>Investors</h6>
               <div>
-                {competitors.map(this.renderCompetitor)}
-                {this.renderCount(count - competitors.length)}
+                {displayCompetitors.map(this.renderCompetitor)}
+                {this.renderCount(count - displayCompetitors.length)}
               </div>
             </div>
           </div>

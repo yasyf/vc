@@ -1,7 +1,6 @@
 import React from 'react';
-import ProfileImage from '../shared/profile_image';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
-import {fullName, ffetch, getDomain, initials} from '../utils';
+import {ffetch, getDomain} from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
 import IconLine from '../shared/icon_line';
@@ -12,6 +11,7 @@ import Truncate from 'react-truncate';
 import Tweet from '../shared/tweet';
 import Loader from '../shared/loader';
 import Track from '../fields/track';
+import PartnerHeading from './partner_heading';
 
 export default class PartnerTab extends React.Component {
   constructor(props) {
@@ -48,16 +48,11 @@ export default class PartnerTab extends React.Component {
   }
 
   renderHeading() {
-    const { photo, role, competitor } = this.state.investor;
     return (
       <div>
         <Row>
           <Column large={3}>
-            <ProfileImage fallback={initials(this.state.investor)} src={photo} size={50} className="inline-image" />
-            <div className="heading">{fullName(this.state.investor)}</div>
-            <div className="subheading">
-              <span>{role ? `${role}, ${competitor.name}` : competitor.name}</span>
-            </div>
+            <PartnerHeading investor={this.state.investor} />
           </Column>
           <Column offsetOnLarge={6} large={2}>
             {this.renderTrack()}

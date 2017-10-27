@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import classNames from 'classnames';
 import inflection from 'inflection';
+import {nullOrUndef} from '../utils';
 
 export default class OverlayModal extends React.Component {
   renderModal() {
@@ -29,10 +30,10 @@ export default class OverlayModal extends React.Component {
   }
 
   render() {
-    const { name, onClose, className } = this.props;
+    const { name, isOpen, onClose, className } = this.props;
     return (
       <Modal
-        isOpen={true}
+        isOpen={nullOrUndef(isOpen) ? true : isOpen}
         onRequestClose={onClose}
         contentLabel={name}
         overlayClassName="modal-overlay"

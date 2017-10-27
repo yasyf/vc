@@ -541,8 +541,7 @@ mark.highlighter {
     text-align: center;
   }
 
-  .emoji-button {
-    font-family: emoji, monospace;
+  .emoji-heading {
     text-align: center;
     font-size: 1.5em;
     font-weight: bold;
@@ -618,10 +617,23 @@ mark.highlighter {
   }
 }
 
+.typeahead {
+  .react-autosuggest__suggestions-container {
+    padding-top: 20px;
+  }
+
+  .react-autosuggest__suggestion {
+    cursor: pointer;
+  }
+}
+
 .overlay-modal {
+  background-color: $lightest-grey;
+  min-height: 100%;
+
   &-top {
-    padding: 40px 40px 0;
-    margin-bottom: 40px;
+    padding: 40px;
+    background-color: $white;
 
     .inline-image {
       border-radius: 0;
@@ -633,8 +645,7 @@ mark.highlighter {
   }
 
   &-bottom {
-    background-color: $lightest-grey;
-    padding: 40px;
+    padding: 50px 40px 40px;
   }
 
   p {
@@ -686,10 +697,6 @@ mark.highlighter {
 }
 
 .research-modal {
-  &-bottom {
-    padding: 10px 40px 40px;
-  }
-
   .tab-list-wrapper {
     overflow: scroll;
     white-space: nowrap;

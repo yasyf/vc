@@ -18,6 +18,10 @@ class IDPath {
     return this.withID(id);
   }
 
+  collectionResource(resource) {
+    return this.withID(resource);
+  }
+
   resource(id, resource) {
     return `${this.id(id)}/${resource}`;
   }
