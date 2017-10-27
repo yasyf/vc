@@ -14,16 +14,21 @@ class ServerSideRendering::ExecJs
   end
 
   def self.prelude
-    JS_TEMPLATE + polyfills + Gon::Base.render_data(camel_case: true, init: true, need_tag: false)
+    JS_TEMPLATE + polyfills
   end
 
   def initialize(js_code)
-    @context = ExecJS.compile(self.class.prelude + js_code)
+    @context = ExecJS.compile(self.class.prelude + gon_data + js_code)
+  end
+
+  def gon_data
+    Gon::Base.render_data(camel_case: true, init: true, need_tag: false)
   end
 
   def render(component_name, props)
     js_code = <<~JS
       (function() {
+        #{gon_data}
         var component = execJsGlobal.Components["#{component_name}"];
         var element = execJsGlobal.React.createElement(component, #{props.to_json});
         var html = execJsGlobal.ReactDOMServer.renderToString(element);

@@ -1,5 +1,4 @@
 import React from 'react';
-import Bloodhound from 'bloodhound-js';
 import Autosuggest from 'react-autosuggest';
 
 export default class Typeahead extends React.Component {
@@ -16,7 +15,11 @@ export default class Typeahead extends React.Component {
       suggestions: [],
       value: '',
     };
+  }
 
+  componentDidMount() {
+    // eslint-disable-next-line global-require
+    const Bloodhound = require('bloodhound-js');
     this.engine = new Bloodhound({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace(...this.props.dataFields),
@@ -26,9 +29,6 @@ export default class Typeahead extends React.Component {
         wildcard: this.props.querySub,
       }
     });
-  }
-
-  componentDidMount() {
     this.engine.initialize().then(() => this.setState({loaded: true}));
   }
 
