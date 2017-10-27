@@ -41,7 +41,7 @@ class TargetInvestor < ApplicationRecord
   sort :industry
   sort :fund_type
 
-  action :state_changed
+  actions :state_changed, :investor_clicked, :investor_opened, :investor_replied, :intro_requested
 
   scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
 
@@ -52,16 +52,24 @@ class TargetInvestor < ApplicationRecord
     instance.tap(&:load_from_investor!)
   end
 
-  def self.from_addr!(founder, addr)
+  def self.from_addr(founder, addr)
     target = founder.target_investors.where(email: addr.address).first || founder.target_investors.search(first_name: addr.name, last_name: addr.name).first
     return target if target.present?
 
-    investor = Investor.where(email: addr.address).first || Investor.search(first_name: addr.name, last_name: addr.name).first
+    investor = Investor.from_addr(addr)
+    founder.target_investors.where(investor: investor).first if investor.present?
+  end
+
+  def self.from_addr!(founder, addr)
+    target = from_addr(founder, addr)
+    return target if target.present?
+
+    investor = Investor.from_addr(addr)
     target = from_investor!(founder, investor) if investor.present?
     return target if target.present?
 
-    name = addr.name ? addr.name.split(' ') : []
-    create! first_name: name.first, last_name: name.drop(1).join(' '), note: 'imported from email'
+    first, last = Util.split_name(addr.name)
+    create! first_name: first, last_name: last, email: addr.address, note: 'imported from email'
   end
 
   def load_from_investor!

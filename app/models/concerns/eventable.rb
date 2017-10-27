@@ -4,7 +4,7 @@ module Concerns
 
     class_methods do
 
-      def action(actions)
+      def action(*actions)
         Array.wrap(actions).each do |action|
          define_method("#{action}!") do |*args|
             attrs = args.map.with_index { |x,i| ["arg#{i + 1}", x] }.to_h

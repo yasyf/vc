@@ -42,6 +42,10 @@ class Investor < ApplicationRecord
   after_commit :start_crunchbase_job, on: :create
   before_validation :normalize_location
 
+  def self.from_addr(addr)
+    where(email: addr.address).first || search(first_name: addr.name, last_name: addr.name).first
+  end
+
   def name
     "#{first_name} #{last_name}"
   end

@@ -145,6 +145,16 @@ class Founder < ApplicationRecord
     target_investors.create! TargetInvestor::DUMMY_ATTRS if target_investors.count == 0
   end
 
+  def events
+    Event
+      .where(subject_type: TargetInvestor.name)
+      .where(action: %w(investor_opened investor_clicked intro_requested investor_replied))
+      .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
+      .joins('INNER JOIN founders ON target_investors.founder_id = founders.id')
+      .where('founders.id = ?', id)
+      .order(created_at: :desc)
+  end
+
   def recommended_investors(limit: 5, offset: 0)
     query = <<-SQL
       SELECT DISTINCT ON (i.featured, i_ind.cnt, count(companies.id), i.target_investors_count, i.competitor_id)

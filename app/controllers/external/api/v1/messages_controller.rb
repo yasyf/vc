@@ -13,21 +13,14 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   before_action :check_signature if Rails.env.production?
 
   def create
-    from = Mail::Address.new(create_params[:From])
-    tos = create_params[:To].split(', ').map { |s| Mail::Address.new(s) }
-    if create_params[:Cc].present?
-      tos += create_params[:Cc].split(', ').map { |s| Mail::Address.new(s) }
-    end
-    tos.delete_if { |a| a.domain == ENV['MAILGUN_EMAIL'].split('@').last }
-
-    if (founder = Founder.where(email: from.address).first).present?
-      create_outgoings founder, tos
+    if (founder = founder_from_from).present?
+      create_outgoings founder, to_addrs
     else
-      founders = existing_emails Founder, tos
+      founders = existing_emails Founder, to_addrs
       if founders.present?
-        create_incomings founders, from
+        create_incomings founders, from_addr
       else
-        handle_response from, tos
+        handle_response from_addr, to_addrs
       end
     end
 
@@ -35,7 +28,8 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def open
-    return head :not_acceptable unless intro_request.present?
+    to_targets.each(&:investor_opened!) if founder_from_from.present?
+    return head :ok unless intro_request.present?
     intro_request.update!(
       opened_at: DateTime.now,
       open_city: hook_params['city'],
@@ -46,7 +40,8 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def click
-    return head :not_acceptable unless intro_request.present?
+    to_targets.each { |target| target.investor_clicked! hook_params['url'] } if founder_from_from.present?
+    return head :ok unless intro_request.present?
     intro_request.update!(
       open_city: hook_params['city'],
       open_country: hook_params['country'],
@@ -57,6 +52,31 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   private
+
+  def to_targets
+    to_addrs.map do |to|
+      TargetInvestor.from_addr(founder_from_from, to)
+    end.compact
+  end
+
+  def founder_from_from
+    @founder_from_from ||= Founder.where(email: from_addr.address).first
+  end
+
+  def from_addr
+    @from_addr ||= Mail::Address.new(create_params[:From])
+  end
+
+  def to_addrs
+    @to_addrs ||= begin
+      tos = create_params[:To].split(', ').map { |s| Mail::Address.new(s) }
+      if create_params[:Cc].present?
+        tos += create_params[:Cc].split(', ').map { |s| Mail::Address.new(s) }
+      end
+      tos.delete_if { |a| a.domain == ENV['MAILGUN_EMAIL'].split('@').last }
+      tos
+    end
+  end
 
   def existing_emails(klass, tos)
     tos.inject(klass.none) { |scope, to| scope.or(klass.where(email: to.address)) }
@@ -170,18 +190,21 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       end
     target = TargetInvestor.from_addr! founder, from
 
-    Email.create!(
-      intro_request: intro_request,
-      founder: founder,
-      investor: target.investor,
-      company: founder.primary_company,
-      direction: :incoming,
-      old_stage: target.stage,
-      new_stage: stage,
-      sentiment_score: sentiment&.score,
-      sentiment_magnitude: sentiment&.magnitude,
-      body: text,
-    ) if target.investor.present?
+    if target.investor.present?
+      email = Email.create!(
+        intro_request: intro_request,
+        founder: founder,
+        investor: target.investor,
+        company: founder.primary_company,
+        direction: :incoming,
+        old_stage: target.stage,
+        new_stage: stage,
+        sentiment_score: sentiment&.score,
+        sentiment_magnitude: sentiment&.magnitude,
+        body: text,
+      )
+      target.investor_replied! email.id
+    end
 
     target.email ||= from.address
     target.stage = stage

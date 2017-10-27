@@ -84,6 +84,10 @@ class IntroRequest < ApplicationRecord
 
   private
 
+  def target_investor
+    founder.target_investors.where(investor: investor).first
+  end
+
   def limit_outstanding_requests
     if self.class.unscoped.where(founder: founder, accepted: nil).count > MAX_IN_FLIGHT - 1
       errors.add(:base, 'too many outstanding requests')
@@ -93,10 +97,13 @@ class IntroRequest < ApplicationRecord
   def send!
     if investor.opted_in == false
       decide! false
-    elsif investor.opted_in?
-      IntroMailer.request_email(self).deliver_later
     else
-      IntroMailer.opt_in_email(self).deliver_later
+      target_investor&.intro_requested! self.id
+      if investor.opted_in?
+        IntroMailer.request_email(self).deliver_later
+      else
+        IntroMailer.opt_in_email(self).deliver_later
+      end
     end
   end
 
