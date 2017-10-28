@@ -2,7 +2,7 @@ import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import {Picker} from 'emoji-mart';
 
-export default class EmojiModal extends OverlayModal {
+export default class EmojiModal extends React.Component {
   static defaultProps = {
     className: 'no-background',
   };
@@ -27,5 +27,15 @@ export default class EmojiModal extends OverlayModal {
         />
       </div>
     )
+  }
+
+  render() {
+    return (
+      <OverlayModal
+        name="emoji"
+        modal={this.renderModal()}
+        {...this.props}
+      />
+    );
   }
 }

@@ -5,7 +5,7 @@ import Typeahead from '../global/shared/typeahead';
 import {fullName} from '../global/utils';
 import PartnerHeading from '../global/competitors/partner_heading';
 
-export default class AddInvestorModal extends OverlayModal {
+export default class AddInvestorModal extends React.Component {
   renderSuggestion = suggestion => {
     return <PartnerHeading investor={suggestion} />
   };
@@ -27,6 +27,17 @@ export default class AddInvestorModal extends OverlayModal {
         renderSuggestion={this.renderSuggestion}
         placeholder="Type a name or firm..."
         onSelect={this.onSelect}
+      />
+    );
+  }
+
+  render() {
+    return (
+      <OverlayModal
+        name="add_investor"
+        top={this.renderTop()}
+        bottom={this.renderBottom()}
+        {...this.props}
       />
     );
   }

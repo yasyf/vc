@@ -9,7 +9,7 @@ import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
 
-export default class ResearchModal extends OverlayModal {
+export default class ResearchModal extends React.Component {
   constructor(props) {
     super(props);
     this.converter = new showdown.Converter();
@@ -131,6 +131,17 @@ export default class ResearchModal extends OverlayModal {
           {this.renderCompetitorSocial()}
         </Column>
       </Row>
+    );
+  }
+
+  render() {
+    return (
+      <OverlayModal
+        name="research"
+        top={this.renderTop()}
+        bottom={this.renderBottom()}
+        {...this.props}
+      />
     );
   }
 }

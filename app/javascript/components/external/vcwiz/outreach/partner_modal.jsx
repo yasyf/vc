@@ -31,4 +31,15 @@ export default class PartnerModal extends OverlayModal {
   renderBottom() {
     return null;
   }
+
+  render() {
+    return (
+      <OverlayModal
+        name="partner"
+        top={this.renderTop()}
+        bottom={this.renderBottom()}
+        {...this.props}
+      />
+    );
+  }
 }

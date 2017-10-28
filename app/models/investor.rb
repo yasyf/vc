@@ -335,7 +335,9 @@ class Investor < ApplicationRecord
   def review
     cached do
       url = URI.escape "http://ec2-18-216-2-35.us-east-2.compute.amazonaws.com/api/investors/search?name=#{name}"
-      response = JSON.parse(HTTP::Fetch.get_one(url)).with_indifferent_access
+      value = HTTP::Fetch.get_one(url)
+      return nil unless value.present?
+      response = JSON.parse(value).with_indifferent_access
       return nil if response[:errors].present?
       return nil if response[:review].blank? || !response[:review][:published] || response[:review][:overall] < 4
       response[:review][:comment]
