@@ -18,6 +18,10 @@ html, body, .full-screen {
   width: 100%;
 }
 
+.full-width {
+  width: 100%;
+}
+
 html, body, .full-screen, #vcwiz, h1, h2, h3, h4, h5, h6 {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
@@ -195,13 +199,24 @@ p.tight {
 }
 
 .vcwiz {
+  &-page {
+    background-color: $light-grey;
+    overflow: scroll;
+    display: flex;
+    flex-flow: column;
+    height: calc(100% - 85px);
+  }
+
   &-header {
     padding: 30px 50px 0;
+    background-color: $white;
+    flex: 0 1 auto;
   }
 
   &-body {
-    background-color: $light-grey;
-    padding: 30px 50px 0;
+    margin: 30px 50px;
+    flex: 1 1 auto;
+    display: flex;
   }
 }
 
@@ -249,30 +264,36 @@ p.tight {
   }
 
   &-body {
-    padding: 50px 50px 0;
+    margin: 50px 50px 0;
   }
 }
 
 .list-page {
   &-header {
-  }
+    background-color: $light-grey;
 
-  &-body {
     .title {
       font-size: large;
       font-weight: bold;
       padding-left: 1em;
+      margin-bottom: 0;
     }
+  }
+
+  &-body {
+    margin-top: 10px;
   }
 }
 
 .discover-page {
   &-header {
-    margin-bottom: 50px;
+    margin-bottom: 10px;
+    padding-bottom: 75px;
   }
 
   &-body {
-    padding: 0;
+    margin: 0;
+    display: block;
 
     .inline-image {
       display: inline-block;

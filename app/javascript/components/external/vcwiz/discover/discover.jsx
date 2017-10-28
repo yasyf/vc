@@ -10,6 +10,7 @@ export default class Discovery extends React.Component {
         page="discover"
         header={<SearchHero />}
         body={<Lists />}
+        wrapBody={false}
       />
     );
   }

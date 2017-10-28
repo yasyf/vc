@@ -129,4 +129,4 @@ export const flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'val
 export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
 export const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
 
-export const withDims = klass => Dimensions()(klass);
+export const withDims = klass => Dimensions({elementResize: true})(klass);

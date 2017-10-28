@@ -139,12 +139,14 @@ export default class FilterPage extends React.Component {
     const { competitors, count, resultsId } = this.state;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
-      <Results
-        count={count}
-        competitors={competitors}
-        source={source}
-        resultsId={resultsId}
-      />
+      <div className="full-screen">
+        <Results
+          count={count}
+          competitors={competitors}
+          source={source}
+          resultsId={resultsId}
+        />
+      </div>
     );
   }
 
