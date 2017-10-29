@@ -47,11 +47,6 @@ module.exports = {
   ],
 
   resolve: {
-    alias: env.NODE_ENV === 'development' ? {} : {
-      "react": "preact-compat",
-      "react-dom": "preact-compat",
-      'create-react-class': 'preact-compat/lib/create-react-class',
-    },
     extensions: settings.extensions,
     modules: [
       resolve(settings.source_path),
