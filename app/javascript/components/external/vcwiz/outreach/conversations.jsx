@@ -21,7 +21,7 @@ class ConversationsTable extends FixedTable {
 
 export default class Conversations extends React.Component {
   render() {
-    let { targets, ...props } = this.props;
+    let { targets, ...rest } = this.props;
     return (
       <WrappedTable
         items={targets}
@@ -31,7 +31,7 @@ export default class Conversations extends React.Component {
         }}
         table={ConversationsTable}
         source={{path: TargetInvestorsPath, query: {}}}
-        {...props}
+        {...rest}
       />
     );
   }

@@ -40,13 +40,13 @@ class ResultsTable extends FixedTable {
 
 export default class Results extends React.Component {
   render() {
-    let { competitors, ...props } = this.props;
+    let { competitors, ...rest } = this.props;
     return (
       <WrappedTable
         items={competitors}
         modal={key => key !== 'track_status' && ResearchModal}
         table={ResultsTable}
-        {...props}
+        {...rest}
       />
     );
   }

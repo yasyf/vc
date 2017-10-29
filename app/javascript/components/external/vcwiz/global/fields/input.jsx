@@ -23,9 +23,9 @@ export default class Input extends React.Component {
   }
 
   inputProps() {
-    const {wrap, inputRef, formRef, ...props} = this.props;
+    const {wrap, inputRef, formRef, ...rest} = this.props;
     return {
-      ...props,
+      ...rest,
       onChange: this.onChange,
       onBlur: this.onBlur,
       value: this.state.value,

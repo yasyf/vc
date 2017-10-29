@@ -90,7 +90,7 @@ export default class WrappedTable extends React.Component {
 
   render() {
     const { array, scrollToRow } = this.state;
-    const { table, modal, ...props } = this.props;
+    const { table, modal, ...rest } = this.props;
     const BackingTable = withDims(table);
     return (
       <div className="full-screen">
@@ -100,7 +100,7 @@ export default class WrappedTable extends React.Component {
           onRowUpdate={this.onRowUpdate}
           scrollToRow={scrollToRow}
           array={array}
-          {...props}
+          {...rest}
         />
       </div>
     )

@@ -17,7 +17,7 @@ export default class Switch extends Input {
   onBlur = _.noop;
 
   renderInput() {
-    let {onBlur, yesLabel, noLabel, label, ...props} = this.inputProps();
+    let {onBlur, yesLabel, noLabel, label, ...rest} = this.inputProps();
     let checked = !!this.state.value;
     return (
       <div>
@@ -26,7 +26,7 @@ export default class Switch extends Input {
           <input
             className="switch-input"
             checked={checked}
-            {...props}
+            {...rest}
           />
           <label className="switch-paddle" htmlFor={this.props.name} onClick={this.onClick}>
             <span className={`switch-${checked ? 'active' : 'inactive'}`}>

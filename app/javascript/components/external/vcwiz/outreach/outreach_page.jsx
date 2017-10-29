@@ -61,7 +61,7 @@ export default class OutreachPage extends React.Component {
   }
 
   renderBody() {
-    let { targets, ...props } = this.props;
+    let { targets, ...rest } = this.props;
     targets = this.state.targets;
     return (
       <div className="full-screen">
@@ -69,7 +69,7 @@ export default class OutreachPage extends React.Component {
         <Conversations
           resultsId={this.state.resultsId}
           targets={targets}
-          {...props}
+          {...rest}
         />
       </div>
     )
