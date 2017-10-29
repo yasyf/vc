@@ -1,6 +1,6 @@
 import React from 'react';
 import { CompetitorsListsPath, ListPath } from '../global/constants.js.erb'
-import { ffetch } from '../global/utils';
+import { ffetchCached } from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
 import {Row, Column} from 'react-foundation';
 import Loader from '../global/shared/loader';
@@ -16,7 +16,7 @@ export default class Lists extends React.Component {
   }
 
   componentDidMount() {
-    ffetch(CompetitorsListsPath).then(lists => {
+    ffetchCached(CompetitorsListsPath).then(lists => {
       this.setState({lists, loading: false});
     });
   }

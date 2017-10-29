@@ -6,8 +6,9 @@ import {StoragePrefix} from './constants.js.erb';
 import Dimensions from 'react-dimensions';
 import Storage from './storage';
 
-export const _ffetch = function(path, opts, data, form) {
-  if (form) {
+export const _ffetch = function(path, data, opts) {
+  if (opts.form) {
+    delete opts.form;
     let formData = new FormData();
     Object.entries(data || {}).forEach(([k, v]) => {
       formData.append(k, v);
@@ -16,7 +17,8 @@ export const _ffetch = function(path, opts, data, form) {
   } else if (data) {
     opts['body'] = JSON.stringify(data);
     opts['headers']['Content-Type'] = 'application/json';
-  } else if (opts.method === 'GET') {
+  } else if (opts.method === 'GET' && opts.cache) {
+    delete opts.cache;
     const cached = Storage.getExpr(path);
     if (cached) {
       return new Promise(cb => cb(cached));
@@ -31,20 +33,25 @@ export const _ffetch = function(path, opts, data, form) {
   return fetch(path, opts).then(resp => resp.json());
 };
 
-export const ffetch = function(path, method = 'GET', data = null, form = false) {
-  const opts = {
+export const ffetch = function(path, method = 'GET', data = null, opts = {}) {
+  const allOpts = {
+    ...opts,
     credentials: 'same-origin',
     headers: {
       'X-CSRF-Token': window.gon.csrfToken,
     },
     method,
   };
-  return _ffetch(path, opts, data, form);
+  return _ffetch(path, data, allOpts);
 };
 
-export const ffetchPublic = function(path, method = 'GET', data = null, form = false) {
-  const opts = {method};
-  return _ffetch(path, opts, data, form);
+export const ffetchCached = function(path) {
+  return ffetch(path, 'GET', null, {cache: true});
+};
+
+export const ffetchPublic = function(path, method = 'GET', data = null, opts = {}) {
+  const allOpts = {...opts, method};
+  return _ffetch(path, data, allOpts);
 };
 
 export const isDRF = function() {

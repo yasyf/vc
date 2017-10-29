@@ -1,6 +1,6 @@
 import React from 'react';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
-import {ffetch, getDomain} from '../utils';
+import {ffetchCached, getDomain} from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
 import IconLine from '../shared/icon_line';
@@ -26,7 +26,7 @@ export default class PartnerTab extends React.Component {
 
   componentDidMount() {
     if (this.props.investor.id) {
-      ffetch(InvestorsPath.id(this.props.investor.id)).then(investor => {
+      ffetchCached(InvestorsPath.id(this.props.investor.id)).then(investor => {
         this.setState({investor});
       });
     } else {
@@ -197,7 +197,7 @@ export default class PartnerTab extends React.Component {
       return;
     }
     this.setState({fetchedReview: true});
-    ffetch(InvestorsPath.resource(this.props.investor.id, 'review')).then(({review}) => {
+    ffetchCached(InvestorsPath.resource(this.props.investor.id, 'review')).then(({review}) => {
       this.setState({review});
     })
   };
