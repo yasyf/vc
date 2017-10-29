@@ -18,16 +18,21 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
   end
 
   def self._sql(founder)
-    by_location = Competitor.where('competitors.location && ?', "{#{founder.city}}").select('competitors.id').limit(10).to_sql
-    by_company = Competitor.joins(:companies).where('companies.location = ?', founder.city).select('competitors.id').limit(10).to_sql
-    <<-SQL
-      (#{by_location}) UNION (#{by_company}) LIMIT 10
-    SQL
+    Competitor
+      .where('competitors.location && ?', "{#{founder.city}}")
+      .joins(:companies)
+      .joins(:investors)
+      .where('companies.location = ?', founder.city)
+      .order('ti_sum DESC, c_cnt DESC')
+      .group('competitors.id')
+      .select('competitors.id', 'COALESCE(SUM(investors.target_investors_count), 0) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
+      .limit(10)
+      .to_sql
   end
 
   def sort
     <<-SQL
-      COALESCE(SUM(investors.target_investors_count), 0) DESC, COUNT(companies.id) DESC
+      subquery.ti_sum DESC, subquery.c_cnt DESC
     SQL
   end
 
@@ -41,10 +46,6 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
     <<-SQL
       SELECT subquery.id, #{order_sql}
       FROM (#{self.class._sql(founder)}) AS subquery
-      LEFT OUTER JOIN investors ON investors.competitor_id = subquery.id
-      LEFT OUTER JOIN investments ON investments.competitor_id = subquery.id
-      LEFT OUTER JOIN companies ON companies.id = investments.company_id
-      GROUP BY subquery.id
       LIMIT 10
     SQL
   end
