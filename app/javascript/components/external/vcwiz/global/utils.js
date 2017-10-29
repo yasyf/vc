@@ -4,6 +4,7 @@ import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import {StoragePrefix} from './constants.js.erb';
 import Dimensions from 'react-dimensions';
+import Storage from './storage';
 
 export const _ffetch = function(path, opts, data, form) {
   if (form) {
@@ -15,6 +16,16 @@ export const _ffetch = function(path, opts, data, form) {
   } else if (data) {
     opts['body'] = JSON.stringify(data);
     opts['headers']['Content-Type'] = 'application/json';
+  } else if (opts.method === 'GET') {
+    const cached = Storage.getExpr(path);
+    if (cached) {
+      return new Promise(cb => cb(cached));
+    } else {
+      return fetch(path, opts).then(resp => resp.json()).then(res => {
+        Storage.setExpr(path, res, 3600);
+        return res;
+      });
+    }
   }
 
   return fetch(path, opts).then(resp => resp.json());

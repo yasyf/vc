@@ -19,7 +19,7 @@ const Panel = ({ children, selected }) => (
     className={classNames('tab-panel', {'tab-panel-active': selected})}
     role="tabpanel"
   >
-    {children}
+    {selected ? children : null}
   </div>
 );
 
