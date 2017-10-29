@@ -13,7 +13,6 @@ module.exports = merge(sharedConfig, {
   devtool: 'source-map',
   stats: 'normal',
   plugins: [
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
