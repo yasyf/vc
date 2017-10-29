@@ -25,5 +25,10 @@
         "spec": true
       }
     ]
-  ]
+  ],
+  "env": {
+    "production": {
+      "presets": ["react-optimize"]
+    }
+  }
 }

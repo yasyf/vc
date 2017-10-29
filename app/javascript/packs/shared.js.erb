@@ -1,7 +1,8 @@
 import 'helpers/raven.js.erb';
-import 'helpers/logrocket';
 
 <% if Rails.env.production? %>
+  import 'helpers/logrocket';
+
   <% include Webpacker::Helper %>
   if('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/packs/service-worker.js');
