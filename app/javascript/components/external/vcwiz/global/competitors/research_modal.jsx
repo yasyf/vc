@@ -3,11 +3,11 @@ import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {ffetch, fullName, withDots} from '../utils';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
+import Tabs from '../tabs/tabs';
 
 export default class ResearchModal extends React.Component {
   constructor(props) {
@@ -105,18 +105,11 @@ export default class ResearchModal extends React.Component {
     }
 
     return (
-      <Tabs selectedTabPanelClassName="tab-panel" defaultIndex={defaultIndex}>
-        <div className="tab-list-wrapper">
-          <TabList className="tab-list">
-            {partners.map(p => <Tab key={p.id}>{fullName(p)}</Tab>)}
-          </TabList>
-        </div>
-        {partners.map(p =>
-          <TabPanel key={p.id}>
-            <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />
-          </TabPanel>
-        )}
-      </Tabs>
+      <Tabs
+        defaultIndex={defaultIndex}
+        tabs={partners.map(fullName)}
+        panels={partners.map(p => <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />)}
+      />
     );
   }
 

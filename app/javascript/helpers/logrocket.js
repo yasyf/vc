@@ -1,6 +1,5 @@
 import Raven from 'raven-js';
 import LogRocket from 'logrocket';
-require('logrocket-react')(LogRocket);
 
 if (window.LogRocketKey) {
   LogRocket.init(window.LogRocketKey);

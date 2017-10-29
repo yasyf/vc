@@ -8,15 +8,13 @@
           "browsers": "> 1%",
           "uglify": true
         },
-        "useBuiltIns": 'usage'
+        "useBuiltIns": "usage"
       }
     ],
     "react",
     "stage-2"
   ],
   "plugins": [
-    "transform-es2015-function-name",
-    "add-react-displayname",
     "transform-runtime",
     "emotion",
     "transform-decorators-legacy",

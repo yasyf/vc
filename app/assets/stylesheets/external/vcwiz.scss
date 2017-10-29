@@ -1,4 +1,5 @@
 @import "fonts";
+@import "tabs";
 
 $white: #FFFFFF;
 $black: #000000;
@@ -719,35 +720,36 @@ mark.highlighter {
 }
 
 .research-modal {
-  .tab-list-wrapper {
-    overflow: scroll;
-    white-space: nowrap;
-    height: 40px;
-    width: calc(100% - 10px);
-  }
+  .tabs-component {
+    .tab-list-wrapper {
+      overflow: scroll;
+      white-space: nowrap;
+      height: 40px;
+      width: calc(100% - 10px);
+    }
 
-  ul.tab-list {
-    margin-bottom: 0;
-    margin-left: 0;
-    border: unset;
-  }
+    ul.tab-list {
+      margin-bottom: 0;
+      margin-left: 0;
+      border: unset;
+    }
 
-  .tab-panel {
-    border: 1px solid $grey;
-    border-top: 0;
-    border-radius: 0 10px 10px 10px;
-    padding: 20px;
-    display: block;
-    background-color: $white;
-  }
+    .tab-panel {
+      border: 1px solid $grey;
+      border-top: 0;
+      border-radius: 0 10px 10px 10px;
+      padding: 20px;
+      background-color: $white;
+    }
 
-  .react-tabs__tab {
-    border-bottom: 1px solid $grey;
-  }
+    .tab {
+      border-bottom: 1px solid $grey;
+    }
 
-  .react-tabs__tab--selected {
-    border-color: $grey;
-    border-bottom: 1px solid $white;
+    .tab-active {
+      border-color: $grey;
+      border-bottom: 1px solid $white;
+    }
   }
 
   .competitor-social {

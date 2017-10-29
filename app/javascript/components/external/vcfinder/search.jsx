@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import Modal from 'react-modal';
 import { InvestorsFuzzySearchPath, InvestorsPath, FounderClickPath } from './constants.js.erb';
 import SearchCreate from './search/create';

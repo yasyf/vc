@@ -14,6 +14,7 @@ export default class WrappedTable extends React.Component {
   }
 
   nextState(props) {
+    // TODO: fix jumping due to new array
     return {
       array: new LazyArray(props.source, props.items, this.onArrayUpdate),
       lastUpdate: timestamp(),
@@ -34,13 +35,13 @@ export default class WrappedTable extends React.Component {
     this.setState({lastUpdate: timestamp()});
   };
 
-  onModalClose = () => {
-    this.setState({currentModal: null});
+  onModalClose = i => () => {
+    this.setState({currentModal: null, scrollToRow: i});
   };
 
   onModalResult = i => (result, keepOpen) => {
     if (!keepOpen) {
-      this.onModalClose();
+      this.onModalClose(i)();
     }
     if (result) {
       this.onRowUpdate(i, result);
@@ -48,7 +49,7 @@ export default class WrappedTable extends React.Component {
   };
 
   onCellClick = (i, key) => {
-    this.setState({currentModal: [i, key], scrollToRow: i});
+    this.setState({currentModal: [i, key]});
   };
 
   getModal(key) {
@@ -79,7 +80,7 @@ export default class WrappedTable extends React.Component {
     }
     return (
       <Modal
-        onClose={this.onModalClose}
+        onClose={this.onModalClose(i)}
         onResult={this.onModalResult(i)}
         rowKey={key}
         item={array.getSync(i)}
