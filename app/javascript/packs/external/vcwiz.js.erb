@@ -8,16 +8,24 @@ import 'react-select/dist/react-select.css';
 import "react-placeholder/lib/reactPlaceholder.css";
 import 'emoji-mart/css/emoji-mart.css';
 
-import WebpackerReact from 'webpacker-react/hmr';
+<% if Rails.env.development? %>
+  import WebpackerReact from 'webpacker-react/hmr';
+<% else %>
+  import WebpackerReact from 'webpacker-react';
+<% end %>
 <%= External::PackHelper.common_js %>
 
 if (Object.keys(WebpackerReact.registeredComponents).length) {
-  ComponentNames.forEach(name => WebpackerReact.renderOnHMR(Components[name]));
+  <% if Rails.env.development? %>
+    ComponentNames.forEach(name => WebpackerReact.renderOnHMR(Components[name]));
+  <% end %>
 } else {
   WebpackerReact.setup(Components);
   WebpackerReactQueue.forEach(f => f());
 }
 
-if (module.hot) {
-  module.hot.accept();
-}
+<% if Rails.env.development? %>
+  if (module.hot) {
+    module.hot.accept();
+  }
+<% end %>
