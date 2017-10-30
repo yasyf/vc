@@ -2,7 +2,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
   TITLE = 'Firms that are popular'
 
   def title
-    "#{TITLE} in #{founder.city}"
+    "#{TITLE} in #{cache_values[:city]}"
   end
 
   def self._eligible?(attrs)
