@@ -192,7 +192,7 @@ class Founder < ApplicationRecord
   private
 
   def start_augment_job
-    FounderEnhanceJob.perform_later(self.id, augment: true)
+    FounderEnhanceJob.perform_later(self.id, augment: true) if email.present?
   end
 
   def start_enhance_job
