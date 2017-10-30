@@ -122,8 +122,15 @@ p.tight {
   }
 
   .subtitle {
-    vertical-align: middle;
     font-weight: bold;
+  }
+
+  .subtitle.nudge-middle {
+    vertical-align: middle;
+  }
+
+  .subtitle.nudge-right {
+    margin-left: 5px;
   }
 
   h3, h5 {
@@ -155,7 +162,7 @@ p.tight {
 
 .search-hero {
   padding-top: 75px;
-  width: 70vw;
+  width: 75vw;
   margin: 0 auto;
 
   p {
@@ -471,6 +478,12 @@ mark.highlighter {
   }
 }
 
+.fake-track-button {
+  border-radius: 40px;
+  width: 100%;
+  font-weight: bold;
+}
+
 .fixed-table {
   width: 100%;
   height: 100%;
@@ -522,11 +535,6 @@ mark.highlighter {
         font-size: small;
       }
     }
-  }
-
-  .competitor-track-button {
-    border-radius: 40px;
-    width: 100%;
   }
 
   .image-text-cell {
@@ -684,6 +692,10 @@ mark.highlighter {
     text-align: center;
   }
 
+  .muted {
+    color: $grey;
+  }
+
   .heading {
     position: absolute;
     padding-left: 10px;
@@ -716,6 +728,33 @@ mark.highlighter {
     max-width: unset;
     margin-right: unset;
     margin-left: unset;
+  }
+}
+
+.login-modal {
+  .filters {
+    input[type="text"] {
+      height: 50px;
+    }
+
+    .button.success {
+      padding: 0.85em 1em;
+    }
+
+    .info {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  }
+  .row {
+    max-width: 35rem;
+    margin-right: auto;
+    margin-left: auto;
+
+    .filter-row-column {
+      margin-bottom: 15px;
+    }
   }
 }
 

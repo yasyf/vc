@@ -13,10 +13,14 @@ module OmniAuth::Strategies
 end
 
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :google_internal, ENV['INTERNAL_GOOGLE_CLIENT_ID'], ENV['INTERNAL_GOOGLE_CLIENT_SECRET'],
-    hd: ENV['DOMAIN'], scope: 'userinfo.email,userinfo.profile,calendar.readonly,drive',
-    access_type: 'offline', prompt: 'consent', callback_path: '/internal/auth/callback'
+  if Rails.application.drfvote?
+    provider :google_internal, ENV['INTERNAL_GOOGLE_CLIENT_ID'], ENV['INTERNAL_GOOGLE_CLIENT_SECRET'],
+      hd: ENV['DOMAIN'], scope: 'userinfo.email,userinfo.profile,calendar.readonly,drive',
+      access_type: 'offline', prompt: 'consent', callback_path: '/auth/callback'
+  end
 
-  provider :google_external, ENV['EXTERNAL_GOOGLE_CLIENT_ID'], ENV['EXTERNAL_GOOGLE_CLIENT_SECRET'],
-    scope: 'userinfo.email,userinfo.profile', callback_path: '/external/auth/callback'
+  if Rails.application.vcwiz?
+    provider :google_external, ENV['EXTERNAL_GOOGLE_CLIENT_ID'], ENV['EXTERNAL_GOOGLE_CLIENT_SECRET'],
+      scope: 'userinfo.email,userinfo.profile', callback_path: '/auth/callback'
+  end
 end

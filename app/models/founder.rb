@@ -101,10 +101,20 @@ class Founder < ApplicationRecord
     TargetInvestor.from_investor! self, investor
   end
 
-  def create_company!
-    Company.from_founder(self).tap do |company|
-      self.companies << company
-      save!
+  def create_company!(data)
+    # TODO: store competitors
+    attrs = {
+      founders: [self],
+      name: data[:name],
+      description: data[:description],
+      industry: Util.split_slice(data[:industry], Competitor::INDUSTRIES).keys
+    }
+    if data[:domain]
+      Company.where(domain: Util.parse_domain(data[:domain])).first_or_initialize.tap do |c|
+        c.update! attrs
+      end
+    else
+      Company.create!(attrs)
     end
   end
 

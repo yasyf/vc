@@ -29,6 +29,9 @@ export default class OverlayModal extends React.Component {
 
   render() {
     const { name, modal, isOpen, onClose, className } = this.props;
+    if (!isOpen) {
+      return null;
+    }
     return (
       <Modal
         isOpen={isOpen}

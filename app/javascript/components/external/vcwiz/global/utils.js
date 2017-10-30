@@ -2,7 +2,6 @@ import React from 'react';
 import 'whatwg-fetch';
 import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
-import {StoragePrefix} from './constants.js.erb';
 import Dimensions from 'react-dimensions';
 import Storage from './storage';
 
@@ -38,7 +37,7 @@ export const ffetch = function(path, method = 'GET', data = null, opts = {}) {
     ...opts,
     credentials: 'same-origin',
     headers: {
-      'X-CSRF-Token': window.gon.csrfToken,
+      'X-CSRF-Token': csrfToken(),
     },
     method,
   };
@@ -52,6 +51,14 @@ export const ffetchCached = function(path) {
 export const ffetchPublic = function(path, method = 'GET', data = null, opts = {}) {
   const allOpts = {...opts, method};
   return _ffetch(path, data, allOpts);
+};
+
+export const csrfToken = function() {
+  return window.gon.csrfToken;
+};
+
+export const isLoggedIn = function() {
+  return !!window.gon.founder;
 };
 
 export const isDRF = function() {
@@ -141,7 +148,6 @@ export const getDomain = (url) => {
   }
 };
 
-export const storageKey = (key) => `${StoragePrefix}::${key}`;
 export const timestamp = () => Date.now();
 export const flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'value').join(','));
 export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);

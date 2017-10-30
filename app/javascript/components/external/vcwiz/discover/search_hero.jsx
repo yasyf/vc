@@ -1,8 +1,8 @@
 import React from 'react';
-import Filters from './filters';
 import Search from './search';
 import {FilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import {buildQuery} from '../global/utils';
+import FilterRow from './filter_row';
 
 export default class SearchHero extends React.Component {
   constructor(props) {
@@ -46,7 +46,7 @@ export default class SearchHero extends React.Component {
           </p>
         </div>
         <div className="search-and-filters float-center">
-          <Filters
+          <FilterRow
             showButton={!!this.query()}
             onButtonClick={this.onSubmit}
             onChange={this.onFiltersChange}

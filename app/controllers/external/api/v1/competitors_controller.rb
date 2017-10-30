@@ -4,12 +4,10 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   include External::Concerns::Pageable
   include External::ApplicationHelper
 
-  before_action :authenticate_api_user!
-
   filter %w(comments)
 
   def show
-    render_censored  Competitor.find(params[:id])
+    render_censored  Competitor.find(params[:id]).with_founder(current_external_founder)
   end
 
   def filter
@@ -31,6 +29,6 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def lists
-    render json: Competitor.lists(current_external_founder)
+    render json: Competitor.lists(current_external_founder, request)
   end
 end

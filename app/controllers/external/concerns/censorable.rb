@@ -25,7 +25,7 @@ module External::Concerns
 
     def filter_unless_portfolio(paths, object)
       base = JSON.parse object.to_json
-      return base if current_external_founder.drf?
+      return base if current_external_founder&.drf?
 
       paths.each do |path|
         components = path.to_s.split('.')

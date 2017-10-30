@@ -176,12 +176,12 @@ class Competitor < ApplicationRecord
     SQL
   end
 
-  def self.lists(founder)
-    CompetitorLists::Base.get_eligibles(founder).map { |l| l.new(founder).as_json(json: :list) }
+  def self.lists(founder, request)
+    CompetitorLists::Base.get_eligibles(founder, request).map { |l| l.new(founder, request).as_json(json: :list) }
   end
 
-  def self.list(founder, name)
-    CompetitorLists::Base.get_if_eligible(founder, name)&.new(founder)
+  def self.list(founder, request, name)
+    CompetitorLists::Base.get_if_eligible(founder, request, name)&.new(founder, request)
   end
 
   def as_json(options = {})

@@ -109,7 +109,7 @@ module CompetitorLists
       <<-SQL
         SELECT
           subquery.*,
-          #{'row_to_json(ti) AS target_investor,' if fetch_target_investors}
+          #{fetch_target_investors ? 'row_to_json(ti)' : 'NULL'} AS target_investor,
           array_to_json(partners.partners_arr) AS partners,
           array_to_json(ri.ri_arr) AS recent_investments
           #{_meta_select(meta_sql)}
@@ -123,26 +123,45 @@ module CompetitorLists
   end
 
   module ClassBulk
-    def get_if_eligible(founder, name)
-      @lists.find { |l| l.to_param == name.to_sym && l.eligible?(founder) }
+    def get_if_eligible(founder, request, name)
+      @lists.find { |l| l.to_param == name.to_sym && l.eligible?(founder, request) }
     end
 
-    def get_eligibles(founder)
-      @lists.select { |l| l.eligible? founder }
+    def get_eligibles(founder, request)
+      @lists.select { |l| l.eligible? founder, request }
     end
 
-    def eligible?(founder)
+    def _eligible?(attrs)
       true
+    end
+
+    def eligible?(founder, request)
+      _eligible?(cache_values(founder, request))
     end
 
     def cache_key_attrs
       nil
     end
 
-    def cache_key(founder, name)
+    def cache_key_fallbacks
+      {}
+    end
+
+    def cache_values(founder, request)
+      return {} unless cache_key_attrs.is_a?(Array)
+      cache_key_attrs.map do |a|
+        result = founder.present? ? founder.send(a).to_s : nil
+        if result.blank? && request.present? && cache_key_fallbacks[a].present?
+          result = cache_key_fallbacks[a].call(request)
+        end
+        [a, result]
+      end.to_h
+    end
+
+    def cache_key(founder, request, name)
       return nil unless cache_key_attrs.present?
       keys = ['competitor_lists', to_param, name]
-      keys += cache_key_attrs.sort.map { |a| founder.send(a).to_s } if cache_key_attrs.is_a?(Array)
+      keys += cache_values(founder, request).sort.map(&:last)
       keys.join('/')
     end
 
@@ -158,8 +177,12 @@ module CompetitorLists
   module Results
     GET_LIMIT = 5
 
+    def cache_values
+      self.class.cache_values(@founder, @request)
+    end
+
     def cache_key(name)
-      self.class.cache_key(@founder, name)
+      self.class.cache_key(@founder, @request, name)
     end
 
     def cached?
@@ -203,21 +226,26 @@ module CompetitorLists
       end
     end
 
-    def fetch_cached_results
-      results = Rails.cache.fetch(cache_key('results'))
+    def targets_for_investors(investors)
+      return {} unless @founder.present?
       sql = <<-SQL
         SELECT results.id AS competitor_id, ti.*
         FROM (
           SELECT competitors.id FROM competitors
-          WHERE competitors.id IN (#{results.map { |r| r['id'] }.join(',')})
+          WHERE competitors.id IN (#{investors.map { |r| r['id'] }.join(',')})
         ) AS results
         #{self.class.target_investor_sql(@founder, 'results')}
       SQL
-      targets = Competitor.connection.execute(sql).group_by { |r| r['competitor_id'] }
+      Competitor.connection.execute(sql).group_by { |r| r['competitor_id'] }
+    end
+
+    def fetch_cached_results
+      results = Rails.cache.fetch(cache_key('results'))
+      targets = targets_for_investors(results)
       results.each do |competitor|
-        meta = targets[competitor['id']].first
-        competitor['target_investor'] = if meta['id'].present?
-          competitor = { id: meta['id'], stage: TargetInvestor.stages.invert[meta['stage']] }
+        meta = targets[competitor['id']]&.first
+        competitor['target_investor'] = if meta.present? && meta['id'].present?
+          { id: meta['id'], stage: TargetInvestor.stages.invert[meta['stage']] }
         else
           nil
         end
@@ -247,8 +275,9 @@ module CompetitorLists
 
     attr_reader :founder
 
-    def initialize(founder)
+    def initialize(founder, request)
       @founder = founder
+      @request = request
     end
 
     def sql

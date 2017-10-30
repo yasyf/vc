@@ -5,10 +5,35 @@ import {
   TopBarRight,
 } from 'react-foundation';
 import {DiscoverPath,OutreachPath} from '../constants.js.erb';
+import {isLoggedIn} from '../utils';
+import LoginModal from '../login/login_modal';
+import Store from '../store';
 
 export default class Header extends React.Component {
+  state = {
+    loginOpen: false,
+  };
+
+  componentDidMount() {
+    Store.register('login', this.openLogin);
+  }
+
+  componentWillUnmount() {
+    Store.unregister('login');
+  }
+
   onClick = () => {
     window.location.href = DiscoverPath;
+  };
+
+  openLogin = e => {
+    this.setState({loginOpen: true});
+    if (e)
+      e.preventDefault();
+  };
+
+  closeLogin = () => {
+    this.setState({loginOpen: false});
   };
 
   renderCount() {
@@ -19,17 +44,30 @@ export default class Header extends React.Component {
   }
 
   renderRight() {
-    return (
-      <div className="title right">
-        <a href={OutreachPath}>
-          <h5 className="subtitle">Your Conversations {this.renderCount()}</h5>
-        </a>
-        <i className="line-icon fi-widget"/>
-      </div>
-    );
+    if (isLoggedIn()) {
+      return (
+        <div className="title right">
+          <a href={OutreachPath}>
+            <h5 className="subtitle nudge-middle">
+              Your Conversations {this.renderCount()}
+            </h5>
+          </a>
+          <i className="line-icon fi-widget"/>
+        </div>
+      );
+    } else {
+      return (
+        <div className="title right">
+          Already have an account?
+          <a onClick={this.openLogin}>
+            <span className="subtitle nudge-right">Log In</span>
+          </a>
+        </div>
+      );
+    }
   }
 
-  render() {
+  renderHeader() {
     return (
       <header>
         <TopBar id="top-bar">
@@ -46,6 +84,24 @@ export default class Header extends React.Component {
           </TopBarRight>
         </TopBar>
       </header>
-    )
+    );
+  }
+
+  renderModal() {
+    return (
+      <LoginModal
+        isOpen={this.state.loginOpen}
+        onClose={this.closeLogin}
+      />
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        {this.renderModal()}
+        {this.renderHeader()}
+      </div>
+    );
   }
 }

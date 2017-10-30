@@ -29,7 +29,7 @@ module External::Concerns
     end
 
     def list_from_name
-      @list ||= Competitor.list(current_external_founder, list_params[:list]) or not_found
+      @list ||= Competitor.list(current_external_founder, request, list_params[:list]) or not_found
     end
   end
 end

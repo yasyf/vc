@@ -76,6 +76,7 @@ gem 'activerecord-precount'
 gem 'ruby-readability'
 gem 'countries', '~> 2.1', :require => 'countries/global'
 gem 'execjs'
+gem 'geocoder'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

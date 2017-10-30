@@ -44,5 +44,9 @@ Zhong.schedule do
       every(1.hours, 'investors') { FindInvestorsJob.perform_later }
       every(12.hours, 'competitor_lists') { CompetitorListJob.perform_later }
     end
+
+    category 'geocode' do
+      every(1.month, 'maxmind') { MaxMindLoadJob.perform_later }
+    end
   end
 end

@@ -56,6 +56,10 @@ class External::VcwizController < External::ApplicationController
     render_default
   end
 
+  def signup
+    session[:signup_data] = signup_params
+    redirect_to omniauth_path('google_external')
+  end
 
   def opt_in
     intro_request.investor.update! opted_in: optin?
@@ -100,10 +104,14 @@ class External::VcwizController < External::ApplicationController
     @intro_request ||= IntroRequest.where(token: params[:token]).first!
   end
 
+  def signup_params
+    params.permit(:fund_type, :industry, :location, :companies, :name, :description, :domain)
+  end
+
   def full_filters
     {}.tap do |filters|
-      filters[:fund_type] = hash_to_options(Competitor::FUND_TYPES.slice(*filter_params[:fund_type].split(','))) if filter_params[:fund_type].present?
-      filters[:industry] = hash_to_options(Competitor::INDUSTRIES.slice(*filter_params[:industry].split(','))) if filter_params[:industry].present?
+      filters[:fund_type] = hash_to_options(Util.split_slice(filter_params[:fund_type], Competitor::FUND_TYPES)) if filter_params[:fund_type].present?
+      filters[:industry] = hash_to_options(Util.split_slice(filter_params[:industry], Competitor::INDUSTRIES)) if filter_params[:industry].present?
       filters[:location] = arr_to_options(filter_params[:location].split(',')) if filter_params[:location].present?
       filters[:companies] = records_to_options(Company.find(filter_params[:companies].split(',')).map(&:as_json_search)) if filter_params[:companies].present?
     end

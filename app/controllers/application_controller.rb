@@ -15,10 +15,11 @@ class ApplicationController < ActionController::Base
   end
 
   def set_raven_context
+    user = current_internal_user || current_external_founder
     context = {
-      id: current_internal_user.try(:id) || current_external_founder.try(:id),
-      name: current_internal_user.try(:name) || current_external_founder.try(:name),
-      email: current_internal_user.try(:email) || current_external_founder.try(:email),
+      id: user.try(:id),
+      name: user.try(:name),
+      email: user.try(:email),
     }
     gon.user_context = context
 

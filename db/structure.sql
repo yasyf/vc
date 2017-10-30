@@ -625,6 +625,34 @@ ALTER SEQUENCE logged_events_id_seq OWNED BY logged_events.id;
 
 
 --
+-- Name: maxmind_geolite_city_blocks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE maxmind_geolite_city_blocks (
+    start_ip_num bigint NOT NULL,
+    end_ip_num bigint NOT NULL,
+    loc_id bigint NOT NULL
+);
+
+
+--
+-- Name: maxmind_geolite_city_location; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE maxmind_geolite_city_location (
+    loc_id bigint NOT NULL,
+    country character varying NOT NULL,
+    region character varying NOT NULL,
+    city character varying,
+    postal_code character varying NOT NULL,
+    latitude double precision,
+    longitude double precision,
+    metro_code integer,
+    area_code integer
+);
+
+
+--
 -- Name: models; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1936,6 +1964,34 @@ CREATE UNIQUE INDEX index_logged_events_on_reason_and_record_id ON logged_events
 
 
 --
+-- Name: index_maxmind_geolite_city_blocks_on_end_ip_num_range; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_maxmind_geolite_city_blocks_on_end_ip_num_range ON maxmind_geolite_city_blocks USING btree (end_ip_num, start_ip_num);
+
+
+--
+-- Name: index_maxmind_geolite_city_blocks_on_loc_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_maxmind_geolite_city_blocks_on_loc_id ON maxmind_geolite_city_blocks USING btree (loc_id);
+
+
+--
+-- Name: index_maxmind_geolite_city_blocks_on_start_ip_num; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_maxmind_geolite_city_blocks_on_start_ip_num ON maxmind_geolite_city_blocks USING btree (start_ip_num);
+
+
+--
+-- Name: index_maxmind_geolite_city_location_on_loc_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_maxmind_geolite_city_location_on_loc_id ON maxmind_geolite_city_location USING btree (loc_id);
+
+
+--
 -- Name: index_news_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2551,6 +2607,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171017073841'),
 ('20171017114659'),
 ('20171020212520'),
-('20171023230210');
+('20171023230210'),
+('20171030065046');
 
 

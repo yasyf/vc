@@ -1,6 +1,5 @@
 import React from 'react';
 import VCWiz from '../vcwiz';
-import Filters from '../discover/filters';
 import Results from '../global/competitors/results';
 import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import {flattenFilters, buildQuery, extend, timestamp} from '../global/utils';
@@ -9,6 +8,7 @@ import Search from '../discover/search';
 import {Row, Column} from 'react-foundation';
 import Switch from '../global/fields/switch';
 import { canUseDOM } from 'exenv';
+import FilterRow from '../discover/filter_row';
 
 export default class FilterPage extends React.Component {
   constructor(props) {
@@ -62,7 +62,7 @@ export default class FilterPage extends React.Component {
       <div className="search-and-filters">
         <Row>
           <Column large={9}>
-            <Filters
+            <FilterRow
               showButton={false}
               showLabels={true}
               onChange={this.onFiltersChange}

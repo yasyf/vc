@@ -3,8 +3,6 @@ class External::Api::V1::CompaniesController < External::Api::V1::ApiV1Controlle
 
   LIMIT = 5
 
-  before_action :authenticate_api_user!
-
   def show
     render json: Company.find(params[:id])
   end

@@ -4,6 +4,7 @@ export default class Input extends React.Component {
   static defaultProps = {
     wrap: true,
     type: 'text',
+    showLabel: false,
     onBlur: _.noop,
   };
 
@@ -23,7 +24,7 @@ export default class Input extends React.Component {
   }
 
   inputProps() {
-    const {wrap, inputRef, formRef, ...rest} = this.props;
+    const {wrap, inputRef, formRef, showLabel, ...rest} = this.props;
     return {
       ...rest,
       onChange: this.onChange,
@@ -57,15 +58,28 @@ export default class Input extends React.Component {
     this.props.onBlur();
   };
 
+  renderInputAndLabel() {
+    if (this.props.showLabel) {
+      return (
+        <label>
+          <h6>{this.props.placeholder}</h6>
+          {this.renderInput()}
+        </label>
+      );
+    } else {
+      return this.renderInput();
+    }
+  }
+
   render() {
     if (this.props.wrap) {
       return (
         <form ref={this.props.formRef}>
-          {this.renderInput()}
+          {this.renderInputAndLabel()}
         </form>
       );
     } else {
-      return this.renderInput();
+      return this.renderInputAndLabel();
     }
   }
 }

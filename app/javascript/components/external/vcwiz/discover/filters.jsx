@@ -1,6 +1,5 @@
 import React from 'react';
-import inflection from 'inflection';
-import {extend, ffetch, storageKey, buildQuery, flattenFilters} from '../global/utils';
+import { extend, ffetch, buildQuery, flattenFilters } from '../global/utils';
 import {
   CompetitorIndustriesOptions,
   CompetitorFundTypesOptions,
@@ -10,63 +9,38 @@ import {
 import Storage from '../global/storage';
 import Select from '../global/fields/select';
 import Company from './company';
-import {Button, Column, Row, Colors} from 'react-foundation';
+import {Column, Row} from 'react-foundation';
 import Highlighter from 'react-highlight-words';
 
-const SessionStorageKey = storageKey('Filters');
+const SessionStorageKey = 'Filters';
 
 export default class Filters extends React.Component {
   static defaultProps = {
-    showButton: true,
     showLabels: false,
-    onChange: _.noop,
-    onButtonClick: _.noop,
+    sizes: {
+      fund_type: 2,
+      industry: 2,
+      location: 4,
+      companies: 4,
+    },
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      numInvestors: this.props.initialCount,
       filters: this.props.initialFilters || {},
       inputs: {},
     };
   }
 
   componentDidMount() {
-    let filters = this.state.filters;
-
-    let storedFilters = Storage.get(SessionStorageKey);
-    if (!_.isEmpty(storedFilters)) {
-      filters = storedFilters;
+    const filters = Storage.get(SessionStorageKey);
+    if (_.isEmpty(this.state.filters) && !_.isEmpty(filters)) {
       this.setState({filters});
-    }
-
-    if (!this.state.numInvestors) {
-      this.fetchNumInvestors(filters);
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (buildQuery(this.props.countSource.query) !== buildQuery(prevProps.countSource.query)) {
-      this.fetchNumInvestors(this.state.filters);
-    }
-  }
-
-  fetchNumInvestors(filters) {
-    const {path, query} = this.props.countSource;
-    let flattened = flattenFilters(filters);
-    let built = buildQuery({...query, ...flattened});
-    if (built) {
-      ffetch(`${path}?${built}`).then(({count}) => {
-        this.setState({numInvestors: count});
-        this.props.onChange(flattened, count);
-      });
+      this.propagateOnChange(filters);
     } else {
-      ffetch(path).then(({count}) => {
-        this.setState({numInvestors: null});
-        this.props.onChange({}, count);
-      });
+      this.propagateOnChange(this.state.filters);
     }
   }
 
@@ -75,11 +49,15 @@ export default class Filters extends React.Component {
     this.setState({inputs});
   };
 
+  propagateOnChange = filters => {
+    this.props.onChange(flattenFilters(filters));
+  };
+
   onChange = (update) => {
     let filters = extend(this.state.filters, update);
     Storage.set(SessionStorageKey, filters);
     this.setState({filters});
-    this.fetchNumInvestors(filters);
+    this.propagateOnChange(filters);
   };
 
   selectProps(name, label) {
@@ -88,10 +66,16 @@ export default class Filters extends React.Component {
       searchWords={[this.state.inputs[name]]}
       textToHighlight={o.label}
     />;
+    const value = this.state.filters[name];
+    let showLabel = this.props.showLabels;
+    if (showLabel === 'present') {
+      showLabel = !_.isEmpty(value);
+    }
     return {
       name: name,
-      value: this.state.filters[name],
+      value: value,
       placeholder: label,
+      showLabel: showLabel,
       multi: true,
       optionRenderer,
       onInputChange: v => this.onInputChange(name, v),
@@ -99,34 +83,38 @@ export default class Filters extends React.Component {
     };
   }
 
-  renderSelectWithProps(size, label, props) {
-    let select = <Select {...props} />;
-    if (this.props.showLabels) {
-      select = (
-        <label>
-          <h6>{label}</h6>
+  renderSelectWithProps(label, props) {
+    const size = this.props.sizes[props.name];
+    if (!size) {
+      return null;
+    }
+    const select = <Select {...props} />;
+    if (size === -1) {
+      return (
+        <Row className="filter-row-column" key={props.name} isColumn>
           {select}
-        </label>
+        </Row>
+      );
+    } else {
+      return (
+        <Column large={size} className="filter-column" key={props.name}>
+          {select}
+        </Column>
       );
     }
-    return (
-      <Column large={size} className="filter-column">
-        {select}
-      </Column>
-    );
   }
 
-  renderSelect(name, label, options, size = 3) {
-    return this.renderSelectWithProps(size, label, {options, ...this.selectProps(name, label)});
+  renderSelect(name, label, options) {
+    return this.renderSelectWithProps(label, {options, ...this.selectProps(name, label)});
   }
 
-  renderStaticRemoteSelect(name, label, path, size = 3) {
+  renderStaticRemoteSelect(name, label, path) {
     let loadOptions = () => ffetch(path).then(options => ({options, complete: true}));
     let searchPromptText = "No results found";
-    return this.renderSelectWithProps(size, label, {loadOptions, searchPromptText, ...this.selectProps(name, label)});
+    return this.renderSelectWithProps(label, {loadOptions, searchPromptText, ...this.selectProps(name, label)});
   }
 
-  renderDynamicRemoteSelect(name, label, path, size = 3, OptionComponent = null) {
+  renderDynamicRemoteSelect(name, label, path, OptionComponent = null) {
     let loadOptions = (q) => {
       if (!q) {
         return ffetch(`${path}`).then(options => ({options: (this.state.filters[name] || []).concat(options)}));
@@ -138,41 +126,17 @@ export default class Filters extends React.Component {
     if (OptionComponent) {
       props.optionRenderer = o => <OptionComponent input={this.state.inputs[name]} {...o} />;
     }
-    return this.renderSelectWithProps(size, label, {loadOptions, ...props});
-  }
-
-  numInvestors() {
-    if (!this.state.numInvestors) {
-      return null;
-    }
-
-    return this.state.numInvestors;
-  }
-
-  renderButton() {
-    return (
-      <Column large={2} className="filter-column">
-        <div className="boxed">
-          <Button color={Colors.SUCCESS} onClick={this.props.onButtonClick}>
-            Find {this.numInvestors()} {inflection.inflect('Investors', this.state.numInvestors)}
-          </Button>
-        </div>
-      </Column>
-    );
+    return this.renderSelectWithProps(label, {loadOptions, ...props});
   }
 
   render() {
-    let { showButton } = this.props;
-    return (
-      <div className="filters">
-        <Row>
-          {this.renderSelect('fund_type', 'Stage', CompetitorFundTypesOptions, 2)}
-          {this.renderSelect('industry', 'Industries', CompetitorIndustriesOptions, 2)}
-          {this.renderDynamicRemoteSelect('location', 'Cities', CompetitorsLocationsPath, showButton ? 3 : 4)}
-          {this.renderDynamicRemoteSelect('companies', 'Invested In', CompaniesSearchPath, showButton ? 3 : 4, Company)}
-          {showButton ? this.renderButton() : null}
-        </Row>
-      </div>
-    );
+    const { onlyLocal } = this.props;
+    const filters = [
+      this.renderSelect('fund_type', 'Stage', CompetitorFundTypesOptions),
+      this.renderSelect('industry', 'Industries', CompetitorIndustriesOptions),
+      this.renderDynamicRemoteSelect('location', 'Cities', CompetitorsLocationsPath),
+      this.renderDynamicRemoteSelect('companies', 'Competitors', CompaniesSearchPath, Company),
+    ];
+    return <Row>{filters}</Row>;
   }
 }

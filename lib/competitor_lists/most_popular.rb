@@ -5,10 +5,10 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
     "#{TITLE} in #{founder.city}"
   end
 
-  def self.eligible?(founder)
-    return false unless founder.city.present?
+  def self._eligible?(attrs)
+    return false unless attrs[:city].present?
     sql = <<-SQL
-      SELECT COUNT(*) FROM (#{_sql(founder)}) AS subquery
+      SELECT COUNT(*) FROM (#{_sql(attrs)}) AS subquery
     SQL
     Competitor.connection.select_value(sql) > 0
   end
@@ -17,12 +17,18 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
     [:city]
   end
 
-  def self._sql(founder)
+  def self.cache_key_fallbacks
+    {
+      city: Proc.new { |request| Geocoder.search("New York").first&.city }
+    }
+  end
+
+  def self._sql(attrs)
     Competitor
-      .where('competitors.location && ?', "{#{founder.city}}")
+      .where('competitors.location && ?', "{#{attrs[:city]}}")
       .joins(:companies)
       .joins(:investors)
-      .where('companies.location = ?', founder.city)
+      .where('companies.location = ?', attrs[:city])
       .order('ti_sum DESC, c_cnt DESC')
       .group('competitors.id')
       .select('competitors.id', 'COALESCE(SUM(investors.target_investors_count), 0) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
@@ -45,7 +51,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
   def with_order_subquery
     <<-SQL
       SELECT subquery.id, #{order_sql}
-      FROM (#{self.class._sql(founder)}) AS subquery
+      FROM (#{self.class._sql(cache_values)}) AS subquery
       LIMIT 10
     SQL
   end

@@ -193,13 +193,6 @@ class Company < ActiveRecord::Base
     end
   end
 
-  def self.from_founder(founder)
-    company = from_domain founder.domain
-    company = Company.new(name: "#{founder.name} NewCo", domain: founder.domain) unless company.present?
-    company.save!
-    company
-  end
-
   def complete?
     name.present? && description.present? && industry.present?
   end

@@ -4,7 +4,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   LIMIT = 10
 
-  before_action :authenticate_api_user!
+  before_action :authenticate_api_user!, only: [:fuzzy_search, :update]
 
   filter %w(email comments competitor.comments)
 
@@ -13,7 +13,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def show
-    render_censored  Investor.find(params[:id])
+    render_censored  Investor.find(params[:id]).with_founder(current_external_founder)
   end
 
   def review
@@ -31,11 +31,6 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     investors = investors.order('featured DESC, target_investors_count DESC')
     investors = investors.limit(LIMIT).offset(page * LIMIT)
     render_censored investors.map(&:as_search_json)
-  end
-
-  def recommendations
-    recommendations_shown!
-    render_censored current_external_founder.recommended_investors(limit: 5, offset: 5 * page)
   end
 
   def search

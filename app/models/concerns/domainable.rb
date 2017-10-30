@@ -7,13 +7,7 @@ module Concerns
     end
 
     def domain=(domain)
-      parsed = begin
-        URI.parse(domain).host
-      rescue URI::InvalidURIError => _
-      end || domain
-
-      parsed = parsed[4..-1] if parsed&.starts_with?('www.')
-      super parsed
+      super Util.parse_domain(domain)
     end
   end
 end

@@ -119,6 +119,7 @@ GEM
     ffi (1.9.18)
     formatador (0.2.5)
     gender_detector (2.0.0)
+    geocoder (1.4.4)
     gli (2.17.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
@@ -575,6 +576,7 @@ DEPENDENCIES
   factory_bot_rails
   feedjira
   gender_detector
+  geocoder
   gon
   google-api-client
   google-cloud-language

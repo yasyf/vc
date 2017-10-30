@@ -2,7 +2,6 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
   before_action :authenticate_api_user!
 
   def show
-    founder.create_company! if founder.companies.blank?
     render json: founder
   end
 

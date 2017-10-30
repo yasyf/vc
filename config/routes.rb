@@ -55,6 +55,7 @@ Rails.application.routes.draw do
         get 'filter'
         get 'list/:list', action: :list, as: :list
         get 'outreach'
+        post 'signup'
 
         scope :intro do
           get 'opt_in'

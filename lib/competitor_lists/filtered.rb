@@ -7,7 +7,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base
     @params = params
   end
 
-  def self.eligible?(founder)
+  def self._eligible?(attrs)
     false
   end
 

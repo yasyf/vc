@@ -46,4 +46,22 @@ class Util
       city
     end
   end
+
+  def self.ip_address(env)
+    env['HTTP_X_FORWARDED_FOR'].try(:split, ',').try(:first) || env['REMOTE_ADDR']
+  end
+
+  def self.split_slice(str, const)
+    const.slice(*str.split(','))
+  end
+
+  def self.parse_domain(url)
+    parsed = begin
+      URI.parse(url).host
+    rescue URI::InvalidURIError => _
+    end || url
+
+    parsed = parsed[4..-1] if parsed&.starts_with?('www.')
+    parsed
+  end
 end

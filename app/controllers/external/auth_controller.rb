@@ -1,7 +1,7 @@
 class External::AuthController < Devise::OmniauthCallbacksController
   def destroy
     sign_out current_external_founder
-    redirect_to external_root_path
+    redirect_to external_vcwiz_root_path
   end
 
   def create
@@ -9,15 +9,15 @@ class External::AuthController < Devise::OmniauthCallbacksController
     @founder = Founder.from_omniauth(auth)
 
     if @founder.present?
-      set_flash_message :notice, :success, kind: 'Google'
+      @founder.create_company! session[:signup_data].with_indifferent_access
       sign_in_and_redirect @founder, event: :authentication
     else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'an error occurred'
-      redirect_to external_root_path
+      redirect_to external_vcwiz_root_path
     end
   end
 
   def failure
-    redirect_to external_root_path
+    redirect_to external_vcwiz_root_path
   end
 end
