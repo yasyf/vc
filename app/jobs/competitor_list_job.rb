@@ -15,7 +15,7 @@ class CompetitorListJob < ActiveJob::Base
       Founder.limit(1)
     end
     eligibles.to_a.select { |f| list.eligible?(f, nil) }.each do |founder|
-      list.new(founder).cache!
+      list.new(founder, nil).cache!
     end
   end
 end
