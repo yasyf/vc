@@ -13,7 +13,7 @@ module Importers
     end
 
     def sync!(async: true)
-      ::CSV.foreach(@filename, headers: true) do |row|
+      ::CSV.foreach(@filename, headers: true, encoding: 'ISO-8859-1') do |row|
         parsed = preprocess(row)
         if async
           ImportRowJob.perform_later(self.class.name, parsed)
