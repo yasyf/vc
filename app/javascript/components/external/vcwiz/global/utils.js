@@ -100,7 +100,7 @@ export const pronoun = function(gender, tense = null) {
 let _extend = function(dest, src, overwrite = true) {
   let ret = Object.assign({}, dest);
   Object.entries(src).forEach(([k, v]) => {
-    if (v !== undefined && (overwrite || ret[k] === null)) {
+    if (v !== undefined && (overwrite || _.isEmpty(ret[k]))) {
       ret[k] = v;
     }
   });
@@ -154,3 +154,12 @@ export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">
 export const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
 
 export const withDims = klass => Dimensions({elementResize: true})(klass);
+
+export const imageExists = url => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = url;
+  });
+};

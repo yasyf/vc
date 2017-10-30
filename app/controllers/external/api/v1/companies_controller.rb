@@ -7,6 +7,10 @@ class External::Api::V1::CompaniesController < External::Api::V1::ApiV1Controlle
     render json: Company.find(params[:id])
   end
 
+  def query
+    render json: Company.where(domain: params[:domain]).first
+  end
+
   def search
     render json: [] and return unless params[:q].present?
     companies = Company.where(team: nil).or(Company.where('capital_raised > ?', 0))

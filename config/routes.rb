@@ -82,6 +82,7 @@ Rails.application.routes.draw do
           resources :companies, only: [:show] do
             collection do
               get 'search'
+              get 'query'
             end
           end
 
