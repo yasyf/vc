@@ -6,6 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+CONFIGS = %w(teams overrides pg_guc)
+APPS = %w(drfvote vcwiz)
+
 module Drfvote
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -21,9 +24,13 @@ module Drfvote
       g.test_framework :rspec
     end
 
-    %w(teams overrides pg_guc).each do |name|
+    CONFIGS.each do |name|
       result = YAML.load(ERB.new(File.read(Rails.root.join('config', "#{name}.yml"))).result)
       config.send("#{name}=", result.with_indifferent_access)
+    end
+
+    APPS.each do |name|
+      define_method("#{name}?") { ENV['HEROKU_APP_NAME'] == name }
     end
   end
 end

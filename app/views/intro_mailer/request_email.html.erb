@@ -9,6 +9,6 @@ Hey <%= @investor.first_name %>!
 <%= render partial: 'company' %>
 
 <p>
-  Click <a href="<%= subdomain_external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
-  or <a href="<%= subdomain_external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject it.
+  Click <a href="<%= external_vcfinder_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
+  or <a href="<%= external_vcfinder_decide_url(accept: false, token: @request.token) %>">here</a> to reject it.
 </p>

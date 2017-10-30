@@ -4,7 +4,7 @@ require_relative './environment'
 Zhong.redis = Redis.new(url: ENV['REDIS_URL'])
 
 Zhong.schedule do
-  if ENV['HEROKU_APP_NAME'] == 'drfvote'
+  if Rails.application.drfvote?
     category 'sync' do
       every(1.hour, 'list') { List.sync! }
       every(1.hour, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
@@ -31,7 +31,8 @@ Zhong.schedule do
     category 'users' do
       every(1.hours, 'calendar') { UserCalendarJob.perform_later }
     end
-  elsif ENV['HEROKU_APP_NAME'] == 'vcwiz'
+  end
+  if Rails.application.vcwiz?
     category 'crawl' do
       every(4.days, 'investors.posts', at: '01:00') { CrawlPostsJob.perform_later }
       every(12.hours, 'investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }

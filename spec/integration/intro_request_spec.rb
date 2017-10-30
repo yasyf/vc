@@ -35,7 +35,7 @@ RSpec.describe 'intro request', type: :request do
     expect(mail.body.encoded).to include(@founder.first_name)
     expect(mail.body.encoded).to include(@investor.first_name)
     expect(mail.body.encoded).to include(@company.description)
-    expect(mail.body.encoded).to include(subdomain_external_vcfinder_opt_in_path)
+    expect(mail.body.encoded).to include(external_vcfinder_opt_in_path)
     expect(mail.body.encoded).to include(IntroRequest.last.token)
   end
 

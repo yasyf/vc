@@ -38,22 +38,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def internal_path(prefix)
-    internal? ? eval("subdomain_internal_#{prefix}_path") : eval("internal_#{prefix}_path")
-  end
-
-  def external_path(prefix)
-    external? ? eval("subdomain_external_#{prefix}_path") : eval("external_#{prefix}_path")
-  end
-
-  def internal?
-    request.subdomain == ENV['INTERNAL_SUBDOMAIN']
-  end
-
-  def external?
-    request.subdomain == ENV['EXTERNAL_SUBDOMAIN']
-  end
-
   def not_found
     raise ActionController::RoutingError.new('Not Found')
   end
