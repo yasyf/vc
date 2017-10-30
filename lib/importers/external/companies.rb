@@ -26,7 +26,7 @@ module Importers::External
       company.location ||= row[:location]
       company.description ||= row[:description]
       company.capital_raised = row[:capital_raised].present? ? row[:capital_raised] : 0
-      company.industry = (company.industry || []) + row[:industry]
+      company.industry = (company.industry || []) + (row[:industry] || [])
       company.save! if company.changed?
     end
   end
