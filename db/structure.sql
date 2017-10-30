@@ -499,7 +499,8 @@ CREATE TABLE investors (
     university_id bigint,
     time_zone character varying,
     country character varying,
-    al_url character varying
+    al_url character varying,
+    last_fetched timestamp without time zone
 );
 
 
@@ -2608,6 +2609,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171017114659'),
 ('20171020212520'),
 ('20171023230210'),
-('20171030065046');
+('20171030065046'),
+('20171030181615');
 
 

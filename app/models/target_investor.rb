@@ -37,6 +37,7 @@ class TargetInvestor < ApplicationRecord
   validates :stage, presence: true
 
   before_save :record_stage_change, :check_investor
+  after_commit :fetch_email!, on: :create
 
   sort :industry
   sort :fund_type
@@ -137,6 +138,10 @@ class TargetInvestor < ApplicationRecord
 
   def investor_fields_changed?
     INVESTOR_FIELDS.any? { |f| send("#{f}_changed?") }
+  end
+
+  def fetch_email!
+    InvestorEmailJob.perform_later(investor.id) if investor.present? && investor.email.blank?
   end
 
   def check_investor

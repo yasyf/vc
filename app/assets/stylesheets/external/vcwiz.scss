@@ -330,25 +330,30 @@ p.tight {
       width: 85%;
     }
 
-    .card {
-      height: 165px;
-      width: 350px;
-      margin: auto;
-      cursor: pointer;
+    .card-wrapper {
+      padding-left: 20px;
+      padding-right: 20px;
 
-      .card-section {
-        position: relative;;
-      }
+      .card {
+        height: 165px;
+        width: 350px;
+        margin: auto;
+        cursor: pointer;
 
-      .body {
-        position: absolute;
-        bottom: 10px;
-      }
+        .card-section {
+          position: relative;;
+        }
 
-      .title {
-        font-weight: bold;
-        font-size: 1.05em;
-        line-height: 1.3em;
+        .body {
+          position: absolute;
+          bottom: 10px;
+        }
+
+        .title {
+          font-weight: bold;
+          font-size: 1.05em;
+          line-height: 1.3em;
+        }
       }
     }
   }

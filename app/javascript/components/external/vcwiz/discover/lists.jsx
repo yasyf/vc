@@ -61,14 +61,16 @@ export default class Lists extends React.Component {
     let displayCompetitors = _.take(competitors, 5);
     return (
       <Column large={4} key={name} isLast={i === arr.length - 1}>
-        <div className="card" onClick={this.onListClick(name)}>
-          <div className="card-section">
-            <p className="title">{title}</p>
-            <div className="body">
-              <h6>Investors</h6>
-              <div>
-                {displayCompetitors.map(this.renderCompetitor)}
-                {this.renderCount(count - displayCompetitors.length)}
+        <div className="card-wrapper">
+          <div className="card" onClick={this.onListClick(name)}>
+            <div className="card-section">
+              <p className="title">{title}</p>
+              <div className="body">
+                <h6>Investors</h6>
+                <div>
+                  {displayCompetitors.map(this.renderCompetitor)}
+                  {this.renderCount(count - displayCompetitors.length)}
+                </div>
               </div>
             </div>
           </div>
