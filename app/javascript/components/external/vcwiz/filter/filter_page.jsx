@@ -11,6 +11,10 @@ import { canUseDOM } from 'exenv';
 import FilterRow from '../discover/filter_row';
 
 export default class FilterPage extends React.Component {
+  static defaultProps = {
+    advanced: true,
+  };
+
   constructor(props) {
     super(props);
 

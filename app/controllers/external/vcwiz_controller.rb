@@ -81,7 +81,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def props(props)
-    @component_props = props
+    @component_props = props.keep_if { |k, v| !v.nil? }
   end
 
   def render_default
@@ -89,7 +89,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def advanced?
-    params[:advanced] == 'true'
+    params[:advanced] == 'true' if params[:advanced].present?
   end
 
   def optin?
