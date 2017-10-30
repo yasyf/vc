@@ -42,6 +42,8 @@ class Util
       'New York'
     elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park'])
       'San Francisco'
+    elsif city.in?(['Washington, DC', 'Washington DC', 'Washington'])
+      'Washington, DC'
     else
       city
     end

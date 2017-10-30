@@ -50,6 +50,8 @@ class Competitor < ApplicationRecord
     transportation: 'Transportation',
     marketplace: 'Marketplace',
     security: 'Security',
+    government: 'Government',
+    legal: 'Legal',
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
@@ -68,6 +70,7 @@ class Competitor < ApplicationRecord
     data: ['Analytics'],
     iot: ['Internet of Things'],
     security: ['Network Security', 'Cyber Security'],
+    government: ['GovTech'],
   }.freeze
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
