@@ -41,8 +41,8 @@ export default class SearchHero extends React.Component {
         <div className="welcome">
           <h3><b>Discover Seed-Stage Investors</b></h3>
           <p>
-            Find the VCs that may be interested in your startup.
-            Get introduced, track your conversations, and raise your seed round.
+            Discover the VCs that are relevant to your startup.
+            Research firms, and track your conversations with investors.
           </p>
         </div>
         <div className="search-and-filters float-center">

@@ -12,7 +12,7 @@ class ConversationsTable extends FixedTable {
       this.renderImageTextColumn('name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, subKey: 'title', max: 18 }, 2),
       this.renderTrackColumn('stage', 'Stage'),
       this.renderIntroColumn('intro_request', 'VCWiz Intro', { eligibleKey: 'can_intro?' }),
-      this.renderEmojiColumn('priority', <div className="emoji-heading">!!!</div>),
+      this.renderEmojiColumn('priority', <div className="emoji-heading">Tag</div>),
       this.renderTextColumn('note', 'Notes', 2),
       this.renderDatetimeColumn('last_response', 'Last Response'),
     ]

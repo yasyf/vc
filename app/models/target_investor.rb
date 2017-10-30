@@ -20,12 +20,12 @@ class TargetInvestor < ApplicationRecord
   }
 
   RAW_STAGES = {
-    added: 'Wishlist',
-    intro: 'Intro',
+    added: 'My Wishlist',
+    intro: 'Asked for Intro',
     waiting: 'In Talks',
-    respond: 'Respond!',
-    interested: 'Interested',
-    pass: 'Rejected',
+    respond: 'Need to Respond',
+    interested: 'Committed',
+    pass: 'Passed',
   }
 
   STAGES = RAW_STAGES.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h.freeze
