@@ -19,7 +19,10 @@ module Importers::External
     end
 
     def self.import!(row)
-      company = Company.where(crunchbase_id: row[:crunchbase_id]).or(Company.where(domain: row[:domain])).first_or_initialize
+      company = nil
+      company = Company.where(crunchbase_id: row[:crunchbase_id]).first if row[:crunchbase_id].present?
+      company = Company.where(domain: row[:domain]).first if company.blank? && row[:domain].present?
+      company = Company.new if company.blank?
       company.crunchbase_id = row[:crunchbase_id]
       company.domain = row[:domain]
       company.name ||= row[:name]

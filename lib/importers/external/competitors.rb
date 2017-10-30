@@ -27,7 +27,10 @@ module Importers::External
     end
 
     def self.import!(row)
-      competitor = Competitor.where(crunchbase_id: row[:crunchbase_id]).or(Competitor.where(name: row[:name])).first_or_initialize
+      competitor = nil
+      competitor = Competitor.where(crunchbase_id: row[:crunchbase_id]).first if row[:crunchbase_id].present?
+      competitor = Competitor.where(name: row[:name]).first if competitor.blank? && row[:name].present?
+      competitor = Competitor.new if competitor.blank?
       competitor.crunchbase_id = row[:crunchbase_id]
       competitor.name = row[:name]
       competitor.country = row[:country]
