@@ -1,13 +1,6 @@
 class External::AuthController < Devise::OmniauthCallbacksController
-  ILLEGAL_DOMAINS = %w(gmail.com)
-
   def create
-    auth = request.env["omniauth.auth"]
-    if auth.info.email.split('@').last.in?(ILLEGAL_DOMAINS)
-      set_flash_message :alert, :failure, kind: 'Google', reason: 'a personal account cannot be used'
-      return redirect_to external_root_path
-    end
-
+    auth = request.env['omniauth.auth']
     @founder = Founder.from_omniauth(auth)
 
     if @founder.present?
