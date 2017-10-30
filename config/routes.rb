@@ -33,9 +33,8 @@ Rails.application.routes.draw do
     devise_for :founders, skip: :all
 
     if Rails.application.vcwiz?
-      root 'welcome#index'
-
       devise_scope :external_founder do
+        get 'logout', to: 'auth#destroy'
         get 'auth/callback', to: 'auth#create'
       end
 

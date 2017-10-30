@@ -1,5 +1,5 @@
 class ServerSideRendering::Render
-  RENDERER_ENTRY_POINT = 'server_side_render.js'
+  RENDERER_ENTRY_POINT = 'external/server_side_render.js'
 
   def self.renderer
     @renderer ||= begin

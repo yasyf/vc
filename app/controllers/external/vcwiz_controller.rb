@@ -4,7 +4,7 @@ class External::VcwizController < External::ApplicationController
   include External::ReactServerHelper
 
   layout 'vcwiz'
-  before_action :check_founder!, except: [:opt_in, :decide]
+  before_action :check_founder!, only: [:outreach]
 
   def index
     redirect_to action: :discover

@@ -12,8 +12,18 @@ const extname = require('path-complete-extname');
 const { env, settings, output, loadersDir } = require('./configuration.js');
 
 const extensionGlob = `**/*{${settings.extensions.join(',')}}*`;
+const shallowExtensionGlob = `*{${settings.extensions.join(',')}}*`;
 const entryPath = join(settings.source_path, settings.source_entry_path);
-const packPaths = sync(join(entryPath, extensionGlob));
+
+let packPaths;
+if (env.HEROKU_APP_NAME) {
+  const appEntryPath = join(entryPath, settings.apps[env.HEROKU_APP_NAME]);
+  const sharedPacks = sync(join(entryPath, shallowExtensionGlob));
+  const appPacks = sync(join(appEntryPath, extensionGlob));
+  packPaths = sharedPacks.concat(appPacks);
+} else {
+  packPaths = sync(join(entryPath, extensionGlob));
+}
 
 module.exports = {
   entry: packPaths.reduce(

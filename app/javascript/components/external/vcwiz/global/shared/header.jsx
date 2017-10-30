@@ -15,11 +15,17 @@ export default class Header extends React.Component {
     if (!window.gon.founder.conversation_count) {
       return null;
     }
+    return <span>({window.gon.founder.conversation_count})</span>;
+  }
+
+  renderRight() {
     return (
-      <span>
-        ({window.gon.founder.conversation_count})
+      <div className="title right">
+        <a href={OutreachPath}>
+          <h5 className="subtitle">Your Conversations {this.renderCount()}</h5>
+        </a>
         <i className="line-icon fi-widget"/>
-      </span>
+      </div>
     );
   }
 
@@ -36,11 +42,7 @@ export default class Header extends React.Component {
             </div>
           </TopBarLeft>
           <TopBarRight>
-            <div className="title right">
-              <a href={OutreachPath}>
-                <h5 className="subtitle">Your Conversations {this.renderCount()}</h5>
-              </a>
-            </div>
+            {this.renderRight()}
           </TopBarRight>
         </TopBar>
       </header>
