@@ -16,6 +16,7 @@ module Importers::External
       return false unless row.delete(:roles) == '{company}'
       row[:industry] = row.delete(:categories).split(',').map { |c| Competitor.closest_industry(c) }.compact.uniq if row[:categories].present?
       row[:country] = Country.find_country_by_alpha3(row[:country])&.alpha2 if row[:country].present?
+      row[:crunchbase_id] = row[:crunchbase_id].split('/').last if row[:crunchbase_id].present?
     end
 
     def self.import!(row)
