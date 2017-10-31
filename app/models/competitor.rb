@@ -20,6 +20,7 @@ class Competitor < ApplicationRecord
   }.with_indifferent_access.freeze
 
   INDUSTRIES = {
+    bitcoin: 'Bitcoin',
     consumer: 'Consumer',
     enterprise: 'Enterprise',
     ecommerce: 'E-Commerce',
@@ -55,17 +56,18 @@ class Competitor < ApplicationRecord
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
+    bitcoin: ['Blockchain', 'Virtual Currency'],
     saas: ['Software as a Service'],
     gaming: ['Video Games'],
     transportation: ['Public Transportation', 'Ride Sharing'],
     mobile: ['Mobile Devices', 'Telecommunications', 'Mobile Apps'],
     food: ['Food and Beverage', 'Food Delivery', 'Nutrition', 'Food', 'Restaurants'],
     social: ['Social', 'Messaging', 'Social Media'],
-    ai: ['Machine Learning', 'Artificial Intelligence'],
+    ai: ['Machine Learning', 'Artificial Intelligence', 'Big Data'],
     enterprise: ['Enterprise Software', 'B2B'],
-    healthcare: ['Health Care', 'Medical'],
+    healthcare: ['Health Care', 'Medical', 'Biotechnology', 'Pharmaceutical', 'Personal Health'],
     media: ['Entertainment', 'Music', 'Video'],
-    finance: ['FinTech'],
+    finance: ['FinTech', 'Financial Services'],
     energy: ['Electric Vehicle', 'Energy Management'],
     data: ['Analytics'],
     iot: ['Internet of Things'],
