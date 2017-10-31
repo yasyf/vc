@@ -3,7 +3,7 @@ import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import {ffetch, fullName, withDots} from '../utils';
+import {ffetch, flush, fullName, withDots} from '../utils';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
@@ -16,6 +16,7 @@ export default class ResearchModal extends React.Component {
   }
 
   onTrackChange = id => update => {
+    flush();
     ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}});
   };
 
@@ -90,7 +91,7 @@ export default class ResearchModal extends React.Component {
         {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}
       </div>
     )
-  };
+  }
 
   renderBottom() {
     let { partners, matches } = this.props.item;

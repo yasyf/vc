@@ -4,7 +4,7 @@ import {CompetitorFundTypes, CompetitorIndustries, TargetInvestorsPath} from '..
 import ResearchModal from './research_modal';
 import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
-import {ffetch} from '../utils';
+import {ffetch, flush} from '../utils';
 
 class ResultsTable extends FixedTable {
   defaultMiddleColumns() {
@@ -26,6 +26,7 @@ class ResultsTable extends FixedTable {
 
   onTrackChange = (row, update) => {
     const id = this.props.array.getSync(row, false).target_investor.id;
+    flush();
     ffetch(TargetInvestorsPath.id(id), 'PATCH', update);
   };
 

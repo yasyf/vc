@@ -2,7 +2,7 @@ import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import Input from '../fields/input';
 import Filters from '../../discover/filters';
-import {buildQuery, extend, ffetch, merge} from '../utils';
+import {buildQuery, extend, ffetch, flush, merge} from '../utils';
 import {SignupPath, CompaniesQueryPath} from '../constants.js.erb';
 import {Button, Row, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
@@ -59,6 +59,7 @@ export default class LoginModal extends React.Component {
   };
 
   loginWithGoogle= () => {
+    flush();
     this.form.submit();
   };
 

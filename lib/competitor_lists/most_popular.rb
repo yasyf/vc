@@ -19,7 +19,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base
 
   def self.cache_key_fallbacks
     {
-      city: Proc.new { |request| Geocoder.search("New York").first&.city }
+      city: Proc.new { |request|  Geocoder.search(Util.ip_address(request.env)).first&.city }
     }
   end
 

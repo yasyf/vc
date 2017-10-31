@@ -7,6 +7,7 @@ const StorageMock = {
   set: _.noop,
   getExpr: _.noop,
   setExpr: _.noop,
+  clearExpr: _.noop,
 };
 
 const Storage = {

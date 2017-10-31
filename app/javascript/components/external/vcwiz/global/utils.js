@@ -53,6 +53,10 @@ export const ffetchPublic = function(path, method = 'GET', data = null, opts = {
   return _ffetch(path, data, allOpts);
 };
 
+export const flush = function() {
+  setTimeout(() => Storage.clearExpr(), 0);
+};
+
 export const csrfToken = function() {
   return window.gon.csrfToken;
 };
