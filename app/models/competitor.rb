@@ -182,7 +182,10 @@ class Competitor < ApplicationRecord
   end
 
   def self.lists(founder, request)
-    CompetitorLists::Base.get_eligibles(founder, request).map { |l| l.new(founder, request).as_json(json: :list) }
+    CompetitorLists::Base
+      .get_eligibles(founder, request)
+      .map { |l| l.new(founder, request).as_json(json: :list) }
+      .select { |l| l[:competitors].present? }
   end
 
   def self.list(founder, request, name)

@@ -10,7 +10,7 @@ export default class IntroCell extends TextCell {
     if (!introRequest && canIntro) {
       return <IconLine icon="mail" line="Request Intro" className="blue" />;
     } else if (!introRequest && !canIntro) {
-      return <span className="not-available">Not Available</span>;
+      return <span className="not-available">-</span>;
     } else if (row.last_response) {
       return <IconLine icon="check" line="Responded" className="green" />;
     } else if (introRequest.clicks.length) {

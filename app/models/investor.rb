@@ -11,16 +11,16 @@ class Investor < ApplicationRecord
   GENDERS = %w(unknown male female)
 
   belongs_to :competitor
-  has_many :target_investors
+  has_many :target_investors, dependent: :destroy
   has_many :notes, as: :subject
-  has_many :investments
+  has_many :investments, dependent: :destroy
   has_many :companies, through: :investments
   belongs_to :university
-  has_many :news
+  has_many :news, dependent: :destroy
   has_many :person_entities, as: :person
   has_many :entities, through: :person_entities
   has_many :emails
-  has_many :posts
+  has_many :posts, dependent: :destroy
   has_one :tweeter, as: :owner, dependent: :destroy
 
   validates :competitor, presence: true
@@ -414,10 +414,10 @@ class Investor < ApplicationRecord
 
   def recent_investments(n = 3)
     companies
-      .group('companies.id', 'investments.featured', 'investments.funded_at')
+      .group('companies.id')
       .joins(:investments)
-      .order('investments.featured DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'investments.funded_at DESC NULLS LAST')
-      .select('companies.*', 'investments.funded_at')
+      .order('bool_or(investments.featured) DESC, companies.capital_raised DESC', 'count(investments.id) DESC', 'MAX(investments.funded_at) DESC NULLS LAST')
+      .select('companies.*', 'MAX(investments.funded_at)')
       .limit(n)
   end
 

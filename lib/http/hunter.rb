@@ -26,7 +26,10 @@ class Http::Hunter
   end
 
   def find
-    @found ||= JSON.parse(Http::Fetch.get_one(url))
+    @found ||= begin
+      body = Http::Fetch.get_one(url)
+      JSON.parse(body) if body.present?
+    end
   end
 
   def self.next_key

@@ -1,7 +1,7 @@
 class CompetitorCrunchbaseJob < ApplicationJob
   include Concerns::Ignorable
 
-  INVESTOR_TITLE = ['Venture Partner', 'Managing Partner', 'Partner', 'Analyst', 'Associate']
+  INVESTOR_TITLE = ['Venture Partner', 'Managing Partner', 'Managing Director', 'Partner', 'Analyst', 'Associate']
 
   queue_as :default
 

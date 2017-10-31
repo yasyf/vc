@@ -241,6 +241,7 @@ module CompetitorLists
 
     def fetch_cached_results
       results = Rails.cache.fetch(cache_key('results'))
+      return [] unless results.present?
       targets = targets_for_investors(results)
       results.each do |competitor|
         meta = targets[competitor['id']]&.first
