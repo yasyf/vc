@@ -6,7 +6,7 @@ import {
   CompetitorsLocationsPath,
   CompaniesSearchPath,
 } from '../global/constants.js.erb';
-import Storage from '../global/storage';
+import Storage from '../global/storage.js.erb';
 import Select from '../global/fields/select';
 import Company from './company';
 import {Column, Row} from 'react-foundation';

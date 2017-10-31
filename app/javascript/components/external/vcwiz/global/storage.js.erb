@@ -49,4 +49,8 @@ const Storage = {
   },
 };
 
-export default window.sessionStorage ? Storage : StorageMock;
+<% if Rails.env.production? %>
+  export default window.sessionStorage ? Storage : StorageMock;
+<% else %>
+  export default StorageMock;
+<% end %>

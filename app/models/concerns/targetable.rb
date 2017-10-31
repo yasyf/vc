@@ -13,7 +13,13 @@ module Concerns
       if self.attributes.key?('target_investor')
         self[:target_investor]
       elsif @founder.present?
-        @founder.target_investors.order(updated_at: :desc).limit(1).first.as_json(only: [:id, :stage], methods: [], include: [])
+        @founder
+          .target_investors
+          .where("#{self.class.name.downcase}_id": self.id)
+          .order(updated_at: :desc)
+          .limit(1)
+          .first
+          .as_json(only: [:id, :stage], methods: [], include: [])
       end
     end
   end

@@ -134,12 +134,12 @@ export default class PartnerTab extends React.Component {
     return (
       <div key={id}>
         <p className="post-name">
-          <a href={url} target="_blank">{_.truncate(title, {length: 55})}</a>
+          <a href={url} target="_blank">{_.truncate(title, {length: 50})}</a>
         </p>
-        <p className="post-description">
-          {published_at && moment(published_at).fromNow()}
-          {context}
-        </p>
+        <div className="post-description">
+          <p>{published_at && moment(published_at).fromNow()}</p>
+          <p>{context}</p>
+        </div>
       </div>
     );
   };

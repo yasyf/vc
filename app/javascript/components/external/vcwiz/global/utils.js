@@ -3,7 +3,7 @@ import 'whatwg-fetch';
 import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import Dimensions from 'react-dimensions';
-import Storage from './storage';
+import Storage from './storage.js.erb';
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
