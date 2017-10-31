@@ -39,8 +39,6 @@ export default class Filters extends React.Component {
     if (_.isEmpty(this.state.filters) && !_.isEmpty(filters)) {
       this.setState({filters});
       this.propagateOnChange(filters);
-    } else {
-      this.propagateOnChange(this.state.filters);
     }
   }
 

@@ -22,7 +22,7 @@ export default class FilterRow extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (buildQuery(this.props.countSource.query) !== buildQuery(prevProps.countSource.query)) {
-      this.fetchNumInvestors(this.state.filters);
+      this.fetchNumInvestors(this.state.filters)
     }
   }
 

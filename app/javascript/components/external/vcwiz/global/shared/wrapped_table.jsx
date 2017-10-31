@@ -1,29 +1,42 @@
 import React from 'react';
-import {timestamp, withDims} from '../utils';
+import {withDims} from '../utils';
 import LazyArray from '../lazy_array';
 
+class FixedWrappedTable extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.resultsId !== this.props.resultsId;
+  }
+
+  render() {
+    const { table, ...rest } = this.props;
+    const BackingTable = withDims(table);
+    return (
+      <div className="full-screen">
+        <BackingTable {...rest} />
+      </div>
+    );
+  }
+}
+
 export default class WrappedTable extends React.Component {
+  static nextState(props) {
+    return {
+      array: new LazyArray(props.source, props.items),
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       currentModal: null,
-      scrollToRow: null,
-      ...this.state = this.nextState(props),
-    };
-  }
-
-  nextState(props) {
-    // TODO: fix jumping due to new array
-    return {
-      array: new LazyArray(props.source, props.items, this.onArrayUpdate),
-      lastUpdate: timestamp(),
+      ...WrappedTable.nextState(props),
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.resultsId !== this.props.resultsId) {
-      this.setState(this.nextState(nextProps));
+      this.setState(WrappedTable.nextState(nextProps));
     }
   }
 
@@ -31,12 +44,8 @@ export default class WrappedTable extends React.Component {
     this.setState({array: this.state.array.dup().set(i, update)});
   };
 
-  onArrayUpdate = () => {
-    this.setState({lastUpdate: timestamp()});
-  };
-
   onModalClose = i => () => {
-    this.setState({currentModal: null, scrollToRow: i});
+    this.setState({currentModal: null});
   };
 
   onModalResult = i => (result, keepOpen) => {
@@ -80,6 +89,7 @@ export default class WrappedTable extends React.Component {
     }
     return (
       <Modal
+        key="modal"
         onClose={this.onModalClose(i)}
         onResult={this.onModalResult(i)}
         rowKey={key}
@@ -89,20 +99,17 @@ export default class WrappedTable extends React.Component {
   }
 
   render() {
-    const { array, scrollToRow } = this.state;
-    const { table, modal, ...rest } = this.props;
-    const BackingTable = withDims(table);
-    return (
-      <div className="full-screen">
-        {this.renderCurrentModal()}
-        <BackingTable
-          onCellClick={this.onCellClick}
-          onRowUpdate={this.onRowUpdate}
-          scrollToRow={scrollToRow}
-          array={array}
-          {...rest}
-        />
-      </div>
-    )
+    const { modal, source, items, ...rest } = this.props;
+    const { array } = this.state;
+    return [
+      this.renderCurrentModal(),
+      <FixedWrappedTable
+        key="table"
+        array={array}
+        onCellClick={this.onCellClick}
+        onRowUpdate={this.onRowUpdate}
+        {...rest}
+      />,
+    ];
   }
 }
