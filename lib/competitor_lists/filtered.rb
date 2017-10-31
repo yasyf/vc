@@ -32,7 +32,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base
       INNER JOIN competitors on investors.competitor_id = competitors.id
       WHERE
         investors.first_name % '#{first_name}'
-        OR investors.last_name % '#{last_name}'
+        #{first_name == last_name ? 'OR' : 'AND'} investors.last_name % '#{last_name}'
       ORDER BY rank DESC
     SQL
     <<-SQL
