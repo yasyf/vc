@@ -19,7 +19,7 @@
   <%= favicon_link_tag %>
 </head>
 <body>
-  <%= nav_bar fixed: :top, brand: 'VoteCollector', responsive: true do %>
+  <%= nav_bar fixed: :top, brand: 'VoteCollector', brand_link: internal_root_path, responsive: true do %>
     <% if current_internal_user %>
       <%= menu_group pull: :right do %>
         <%= menu_item 'Voting', internal_voting_path %>
