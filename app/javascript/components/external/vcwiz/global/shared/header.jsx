@@ -7,7 +7,7 @@ import {
 import {DiscoverPath,OutreachPath} from '../constants.js.erb';
 import {isLoggedIn} from '../utils';
 import LoginModal from '../login/login_modal';
-import Store from '../store';
+import Actions from '../actions';
 
 export default class Header extends React.Component {
   state = {
@@ -15,11 +15,11 @@ export default class Header extends React.Component {
   };
 
   componentDidMount() {
-    Store.register('login', this.openLogin);
+    Actions.register('login', this.openLogin);
   }
 
   componentWillUnmount() {
-    Store.unregister('login');
+    Actions.unregister('login');
   }
 
   onClick = () => {

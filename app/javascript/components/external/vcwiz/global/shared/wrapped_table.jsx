@@ -1,18 +1,43 @@
 import React from 'react';
-import {withDims} from '../utils';
 import LazyArray from '../lazy_array';
+import Store from '../store';
 
 class FixedWrappedTable extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dimensions: Store.get('dimensions', {
+        width: 0,
+        height: 0,
+      }),
+    };
+  }
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('dimensions', dimensions => {
+      setTimeout(() => this.setState({dimensions}), 0);
+    });
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.resultsId !== this.props.resultsId;
+    return (
+      nextProps.resultsId !== this.props.resultsId ||
+      nextState.dimensions !== this.state.dimensions
+    );
   }
 
   render() {
     const { table, ...rest } = this.props;
-    const BackingTable = withDims(table);
+    const { dimensions } = this.state;
+    const BackingTable = table;
     return (
       <div className="full-screen">
-        <BackingTable {...rest} />
+        <BackingTable dimensions={dimensions} {...rest} />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 module External::ReactServerHelper
   def react_server_component(name, props, options = {})
-    if Rails.env.development?
+    if false && Rails.env.development?
       react_client_component_div(name, props, options)
     else
       react_server_component_div(name, props, options) + react_server_component_script(name)

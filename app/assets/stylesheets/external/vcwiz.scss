@@ -272,7 +272,7 @@ p.tight {
   }
 
   &-body {
-    margin: 50px 50px 0;
+    margin: 50px 50px 30px;
   }
 }
 
@@ -575,6 +575,13 @@ mark.highlighter {
 
   .emoji-cell {
     text-align: center;
+  }
+
+  .null-state-cell {
+    h5 {
+      text-align: center;
+      font-weight: bold;
+    }
   }
 
   .emoji-heading {

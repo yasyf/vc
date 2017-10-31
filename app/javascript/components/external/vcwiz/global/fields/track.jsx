@@ -2,7 +2,7 @@ import React from 'react';
 import Select from './select';
 import {TargetInvestorStagesOptions} from '../constants.js.erb'
 import {Button, Colors} from 'react-foundation';
-import Store from '../store';
+import Actions from '../actions';
 import {isLoggedIn} from '../utils';
 
 const nullRenderer = () => null;
@@ -13,7 +13,7 @@ export default class Track extends React.Component {
   };
 
   onButtonClick = () => {
-    Store.trigger('login');
+    Actions.trigger('login');
   };
 
   render() {

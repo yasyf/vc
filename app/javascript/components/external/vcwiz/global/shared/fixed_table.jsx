@@ -9,6 +9,7 @@ import CompanyCell from '../cells/company_cell';
 import IntroCell from '../cells/intro_cell';
 import EmojiCell from '../cells/emoji_cell';
 import CompetitorTrackCell from '../cells/competitor_track_cell';
+import NullStateCell from '../cells/null_state_cell';
 
 export default class FixedTable extends React.Component {
   onCellClick = name => (e, row) => {
@@ -47,6 +48,10 @@ export default class FixedTable extends React.Component {
     return this.renderColumn(key, name, TextCell, {}, undefined, flex);
   };
 
+  renderNullStateColumn = (flex = 1) => {
+    return this.renderColumn(null, null, NullStateCell, {}, undefined, flex, false);
+  };
+
   renderDatetimeColumn = (key, name) => {
     return this.renderColumn(key, name, DatetimeCell);
   };
@@ -78,14 +83,14 @@ export default class FixedTable extends React.Component {
         <Table
           rowHeight={100}
           headerHeight={50}
-          rowsCount={this.props.count}
-          width={this.props.containerWidth}
-          height={this.props.containerHeight}
+          rowsCount={this.props.count || 1}
+          width={this.props.dimensions.width}
+          height={this.props.dimensions.height}
           showScrollbarX={false}
           showScrollbarY={false}
           className="table-main"
         >
-          {this.renderColumns()}
+          {this.props.count ? this.renderColumns() : this.renderNullStateColumn()}
         </Table>
       </div>
     );

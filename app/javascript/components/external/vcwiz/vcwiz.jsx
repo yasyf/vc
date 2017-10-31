@@ -2,12 +2,15 @@ import React from 'react';
 import Header from './global/shared/header';
 import classNames from 'classnames';
 import {withDims} from './global/utils';
+import Store from './global/store';
 
 class VCWizBody extends React.Component {
   render() {
     const {page, children, containerWidth, containerHeight} = this.props;
     let element = React.Children.only(children);
-    const style = {width: containerWidth, height: containerHeight, ...element.props.style};
+    const dimensions = {width: containerWidth, height: containerHeight};
+    const style = {...element.props.style, ...dimensions};
+    Store.set('dimensions', dimensions);
     return React.cloneElement(element, {style});
   }
 }
