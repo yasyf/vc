@@ -115,7 +115,7 @@ export default class Filters extends React.Component {
   renderDynamicRemoteSelect(name, label, path, OptionComponent = null) {
     let loadOptions = (q) => {
       if (!q) {
-        return ffetch(`${path}`).then(options => ({options: (this.state.filters[name] || []).concat(options)}));
+        return new Promise(cb => cb({options: this.state.filters[name] || []}));
       } else {
         return ffetch(`${path}?${buildQuery({q})}`).then(options => ({options}));
       }
