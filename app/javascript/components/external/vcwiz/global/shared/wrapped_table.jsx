@@ -45,6 +45,10 @@ class FixedWrappedTable extends React.Component {
 }
 
 export default class WrappedTable extends React.Component {
+  static defaultProps = {
+    sort: {},
+  };
+
   constructor(props) {
     super(props);
 
