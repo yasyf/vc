@@ -10,7 +10,13 @@ export default class TextArrayCell extends TextCell {
     if (props.translate) {
       values = _.compact(values.map(v => props.translate[v]));
     }
-    let value = values.length ? values.join(', ') : '';
+
+    let value;
+    if (props.limit && values.length > props.limit) {
+      value = `${_.take(values, props.limit).join(', ')}, +${values.length - props.limit}`;
+    } else {
+      value = values.length ? values.join(', ') : '';
+    }
     return {value};
   };
 }

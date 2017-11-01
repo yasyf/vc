@@ -7,7 +7,7 @@ let TextCellFactory = (superclass) => class extends superclass {
   static defaultProps = {
     onClick: _.noop,
     min: 12,
-    max: 20,
+    max: 18,
   };
 
   constructor(props) {

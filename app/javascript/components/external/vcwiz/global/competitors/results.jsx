@@ -10,8 +10,8 @@ class ResultsTable extends FixedTable {
   defaultMiddleColumns() {
     return [
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
-      { type: 'text_array', key: 'location', name: 'Locations' },
-      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries },
+      { type: 'text', key: 'hq', name: 'Location' },
+      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: 3 },
     ]
   }
 
@@ -34,7 +34,7 @@ class ResultsTable extends FixedTable {
     return [
       this.renderImageTextColumn('name', 'Firm', { imageKey: 'photo', fallbackKey: 'acronym' }),
       this.middleColumns(),
-      this.renderCompetitorTrackColumn('target_investor.stage', this.onTrackChange, 'Track'),
+      this.renderCompetitorTrackColumn('track_status', this.onTrackChange, 'Track'),
     ];
   }
 }
@@ -45,7 +45,7 @@ export default class Results extends React.Component {
     return (
       <WrappedTable
         items={competitors}
-        modal={key => key !== 'track_status' && ResearchModal}
+        modal={ResearchModal}
         table={ResultsTable}
         {...rest}
       />

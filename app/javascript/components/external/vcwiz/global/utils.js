@@ -129,13 +129,19 @@ export const remove = function(items, item) {
   return update(items, {$splice: [[index, 1]]});
 };
 
-export const buildQuery = (row, fields = null) =>
-  _.compact(_.map(fields || Object.keys(row), k => {
+export const buildQuery = (row, context = '') =>
+  _.compact(_.map(Object.keys(row), k => {
     let val = _.get(row, k);
     if (_.isObjectLike(val)) {
-      val = JSON.stringify(val);
+      return buildQuery(val, k);
     }
-    return (nullOrUndef(val) || val === "") ? null : `${k}=${val}`;
+    if (nullOrUndef(val) || val === "" || val === 0) {
+      return null;
+    } else if (context) {
+      return `${context}[${k}]=${val}`;
+    } else {
+      return `${k}=${val}`;
+    }
   })).join('&');
 
 export const nullOrUndef = (val) => val === undefined || val === null;
@@ -153,7 +159,7 @@ export const getDomain = (url) => {
 };
 
 export const timestamp = () => Date.now();
-export const flattenFilters = filters => _.mapValues(filters, f => _.map(f, 'value').join(','));
+export const flattenFilters = filters => _.pickBy(_.mapValues(filters, f => _.map(f, 'value').join(',')), Boolean);
 export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
 export const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
 

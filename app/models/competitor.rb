@@ -157,12 +157,12 @@ class Competitor < ApplicationRecord
   end
 
 
-  def self.filtered(params, opts = {})
-    CompetitorLists::Filtered.new(params).results(**opts)
+  def self.filtered(founder, request, params, opts = {})
+    CompetitorLists::Filtered.new(founder, request, params).results(**opts)
   end
 
-  def self.filtered_count(params)
-    CompetitorLists::Filtered.new(params).result_count
+  def self.filtered_count(founder, request, params)
+    CompetitorLists::Filtered.new(founder, request, params).result_count
   end
 
   def self.locations(query, limit = 5)
@@ -182,14 +182,14 @@ class Competitor < ApplicationRecord
   end
 
   def self.lists(founder, request)
-    CompetitorLists::Base
+    CompetitorLists::Base::Base
       .get_eligibles(founder, request)
       .map { |l| l.new(founder, request).as_json(json: :list) }
       .select { |l| l[:competitors].present? }
   end
 
   def self.list(founder, request, name)
-    CompetitorLists::Base.get_if_eligible(founder, request, name)&.new(founder, request)
+    CompetitorLists::Base::Base.get_if_eligible(founder, request, name)&.new(founder, request)
   end
 
   def as_json(options = {})
@@ -231,7 +231,8 @@ class Competitor < ApplicationRecord
       methods: [
         :hq,
         :acronym,
-        with_target ? :target_investor : nil,
+        with_target ? :track_status : nil,
+        with_target ? :track_id : nil,
         :recent_investments,
         :cb_url,
       ].compact

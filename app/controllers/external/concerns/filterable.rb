@@ -21,11 +21,11 @@ module External::Concerns
     end
 
     def filtered(opts = {})
-      Competitor.filtered(competitor_params, opts)
+      Competitor.filtered(current_external_founder, request, competitor_params, opts)
     end
 
     def filtered_count
-      Competitor.filtered_count(competitor_params)
+      Competitor.filtered_count(current_external_founder, request, competitor_params)
     end
 
     def list_from_name

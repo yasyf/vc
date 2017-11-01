@@ -1,5 +1,5 @@
 import React from 'react';
-import {buildQuery, ffetch} from '../global/utils';
+import {buildQuery, ffetch, flattenFilters} from '../global/utils';
 import {Button, Column, Colors, Row} from 'react-foundation';
 import inflection from 'inflection';
 import Filters from './filters';
@@ -16,7 +16,7 @@ export default class FilterRow extends React.Component {
 
     this.state = {
       numInvestors: this.props.initialCount,
-      filters: {},
+      filters: flattenFilters(this.props.initialFilters || {}),
     };
   }
 
@@ -43,6 +43,9 @@ export default class FilterRow extends React.Component {
   }
 
   onChange = filters => {
+    if (_.isEqual(filters, this.state.filters)) {
+      return;
+    }
     this.setState({filters});
     this.fetchNumInvestors(filters);
   };

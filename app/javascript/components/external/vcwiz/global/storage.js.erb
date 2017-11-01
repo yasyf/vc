@@ -49,8 +49,16 @@ const Storage = {
   },
 };
 
+const VolatileStorage = {
+  get: Storage.get,
+  set: Storage.set,
+  getExpr: _.noop,
+  setExpr: _.noop,
+  clearExpr: _.noop,
+};
+
 <% if Rails.env.production? %>
   export default window.sessionStorage ? Storage : StorageMock;
 <% else %>
-  export default StorageMock;
+  export default VolatileStorage;
 <% end %>

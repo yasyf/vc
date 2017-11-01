@@ -9,6 +9,22 @@ module Concerns
 
     private
 
+    def track_status
+      if self.attributes.key?('track_status')
+        TargetInvestor::STAGES.keys[self[:track_status]] if self[:track_status].present?
+      elsif target_investor.present?
+        target_investor['stage']
+      end
+    end
+
+    def track_id
+      if self.attributes.key?('track_id')
+        self[:track_id]
+      elsif target_investor.present?
+        target_investor['id']
+      end
+    end
+
     def target_investor
       if self.attributes.key?('target_investor')
         self[:target_investor]

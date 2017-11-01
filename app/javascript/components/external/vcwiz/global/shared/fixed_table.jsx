@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Column, Cell} from 'fixed-data-table-2';
+import {Table, Column} from 'fixed-data-table-2';
 import ImageTextCell from '../cells/image_text_cell';
 import TextArrayCell from '../cells/text_array_cell';
 import TrackCell from '../cells/track_cell';
@@ -10,6 +10,7 @@ import IntroCell from '../cells/intro_cell';
 import EmojiCell from '../cells/emoji_cell';
 import CompetitorTrackCell from '../cells/competitor_track_cell';
 import NullStateCell from '../cells/null_state_cell';
+import Header from '../cells/header';
 
 export default class FixedTable extends React.Component {
   onCellClick = name => (e, row) => {
@@ -21,7 +22,7 @@ export default class FixedTable extends React.Component {
       <Column
         key={key}
         columnKey={key}
-        header={<Cell className="header">{name}</Cell>}
+        header={<Header sort={this.props.sort} name={name} onSort={this.props.onSort} />}
         cell={
           <CellComponent
             data={this.props.array}
@@ -36,16 +37,16 @@ export default class FixedTable extends React.Component {
     );
   }
 
-  renderTextArrayColumn = (key, name, { translate }) => {
-    return this.renderColumn(key, name, TextArrayCell, {translate});
+  renderTextArrayColumn = (key, name, props) => {
+    return this.renderColumn(key, name, TextArrayCell, props);
   };
 
   renderImageTextColumn = (key, name, props, flex = 1) => {
     return this.renderColumn(key, name, ImageTextCell, props, undefined, flex);
   };
 
-  renderTextColumn = (key, name, flex = 1) => {
-    return this.renderColumn(key, name, TextCell, {}, undefined, flex);
+  renderTextColumn = (key, name, props, flex = 1) => {
+    return this.renderColumn(key, name, TextCell, props, undefined, flex);
   };
 
   renderNullStateColumn = (flex = 1) => {

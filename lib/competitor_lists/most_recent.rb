@@ -1,4 +1,4 @@
-class CompetitorLists::MostRecent < CompetitorLists::Base
+class CompetitorLists::MostRecent < CompetitorLists::Base::Base
   TITLE = 'Firms that recently made investments'
 
   def self.cache_key_attrs

@@ -2,7 +2,7 @@ class CompetitorListJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    CompetitorLists::Base.lists.each { |list| cache_list! list }
+    CompetitorLists::Base::Base.lists.each { |list| cache_list! list }
   end
 
   private

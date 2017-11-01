@@ -1,4 +1,4 @@
-class CompetitorLists::MostPopular < CompetitorLists::Base
+class CompetitorLists::MostPopular < CompetitorLists::Base::Base
   TITLE = 'Firms that are popular'
 
   def title

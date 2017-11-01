@@ -2,6 +2,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   include External::Concerns::Censorable
   include External::Concerns::Filterable
   include External::Concerns::Pageable
+  include External::Concerns::Sortable
   include External::ApplicationHelper
 
   filter %w(comments)
@@ -11,7 +12,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def filter
-    competitors = filtered(limit: limit, offset: page * limit, meta: true)
+    competitors = filtered(sort: sorts, limit: limit, offset: page * limit, meta: true)
     render json: competitors
   end
 

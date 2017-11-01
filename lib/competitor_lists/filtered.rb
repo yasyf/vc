@@ -1,9 +1,10 @@
-class CompetitorLists::Filtered < CompetitorLists::Base
+class CompetitorLists::Filtered < CompetitorLists::Base::Base
   TITLE = 'Filtered'
 
   attr_reader :params
 
-  def initialize(params)
+  def initialize(founder, request, params)
+    super founder, request
     @params = params
   end
 

@@ -24,6 +24,7 @@ export default class FilterPage extends React.Component {
       filters: flattenFilters(props.filters),
       search: props.search,
       options: props.options,
+      sort: props.sort,
       resultsId: timestamp(),
     };
 
@@ -33,8 +34,8 @@ export default class FilterPage extends React.Component {
   }
 
   queryParams() {
-    let { search, filters, options } = this.state;
-    return {search, ...filters, ...options};
+    let { search, filters, options, sort } = this.state;
+    return {search, sort, ...filters, ...options};
   }
 
   query() {
@@ -54,6 +55,13 @@ export default class FilterPage extends React.Component {
 
   onSearchChange = (search) => {
     this.setState({search});
+  };
+
+  onSort = (key, direction) => {
+    const keys = Object.keys(this.state.sort);
+    const base = _.zipObject(keys, _.times(keys.length, _.constant(0)));
+    const sort = extend(base, {[key]: direction});
+    this.setState({sort});
   };
 
   onOptionChange = name => update => {
@@ -140,15 +148,17 @@ export default class FilterPage extends React.Component {
   }
 
   renderBody() {
-    const { competitors, count, resultsId } = this.state;
+    const { competitors, count, sort, resultsId } = this.state;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
       <div className="full-screen">
         <Results
           count={count}
           competitors={competitors}
+          sort={sort}
           source={source}
           resultsId={resultsId}
+          onSort={this.onSort}
         />
       </div>
     );

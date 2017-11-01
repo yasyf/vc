@@ -1,5 +1,6 @@
 class External::VcwizController < External::ApplicationController
   include External::Concerns::Filterable
+  include External::Concerns::Sortable
   include External::ApplicationHelper
   include External::ReactServerHelper
 
@@ -20,10 +21,11 @@ class External::VcwizController < External::ApplicationController
     title 'Filter'
     component 'Filter'
     props(
-      competitors: filtered(limit: 20, meta: true),
+      competitors: filtered(sort: sorts, limit: 20, meta: true),
       count: filtered_count,
       filters: full_filters,
       options: options_params.to_h,
+      sort: sorts,
       search: filter_params[:search],
       advanced: advanced?
     )

@@ -1,6 +1,7 @@
 import React from 'react';
 import LazyArray from '../lazy_array';
 import Store from '../store';
+import {timestamp} from '../utils';
 
 class FixedWrappedTable extends React.Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class FixedWrappedTable extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextProps.resultsId !== this.props.resultsId ||
+      nextProps.lastUpdate !== this.props.lastUpdate ||
       nextState.dimensions !== this.state.dimensions
     );
   }
@@ -44,26 +45,31 @@ class FixedWrappedTable extends React.Component {
 }
 
 export default class WrappedTable extends React.Component {
-  static nextState(props) {
-    return {
-      array: new LazyArray(props.source, props.items),
-    };
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
       currentModal: null,
-      ...WrappedTable.nextState(props),
+      ...this.nextState(props),
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.resultsId !== this.props.resultsId) {
-      this.setState(WrappedTable.nextState(nextProps));
+      this.setState(this.nextState(nextProps));
     }
   }
+
+  nextState(props) {
+    return {
+      array: new LazyArray(props.source, props.items, this.onArrayUpdate),
+      lastUpdate: timestamp(),
+    };
+  }
+
+  onArrayUpdate = () => {
+    this.setState({lastUpdate: timestamp()});
+  };
 
   onRowUpdate = (i, update) => {
     this.setState({array: this.state.array.dup().set(i, update)});
@@ -125,12 +131,13 @@ export default class WrappedTable extends React.Component {
 
   render() {
     const { modal, source, items, ...rest } = this.props;
-    const { array } = this.state;
+    const { array, lastUpdate } = this.state;
     return [
       this.renderCurrentModal(),
       <FixedWrappedTable
         key="table"
         array={array}
+        lastUpdate={lastUpdate}
         onCellClick={this.onCellClick}
         onRowUpdate={this.onRowUpdate}
         {...rest}
