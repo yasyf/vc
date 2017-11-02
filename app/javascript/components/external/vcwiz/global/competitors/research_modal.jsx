@@ -13,11 +13,18 @@ export default class ResearchModal extends React.Component {
   constructor(props) {
     super(props);
     this.converter = new showdown.Converter();
+    this.state = {
+      tab: null,
+    };
   }
 
   onTrackChange = id => update => {
     flush();
     ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}});
+  };
+
+  onTabChange = i => {
+    this.setState({tab: i});
   };
 
   renderHeading() {
@@ -94,19 +101,21 @@ export default class ResearchModal extends React.Component {
   }
 
   renderBottom() {
-    let { partners, matches } = this.props.item;
+    const { tab, item } = this.props;
+    const { partners, matches } = item;
 
     if (!partners || !partners.length) {
       return null;
     }
 
-    let defaultIndex = _.findIndex(partners, {id: _.first(matches)});
+    let defaultIndex = tab || _.findIndex(partners, {id: _.first(matches)});
     if (defaultIndex === -1) {
       defaultIndex = undefined;
     }
 
     return (
       <Tabs
+        onTabChange={this.onTabChange}
         defaultIndex={defaultIndex}
         tabs={partners.map(fullName)}
         panels={partners.map(p => <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />)}
@@ -129,9 +138,12 @@ export default class ResearchModal extends React.Component {
   }
 
   render() {
+    const { item } = this.props;
+    const { tab } = this.state;
     return (
       <OverlayModal
         name="research"
+        idParams={{item, tab}}
         top={this.renderTop()}
         bottom={this.renderBottom()}
         {...this.props}

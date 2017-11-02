@@ -21,7 +21,8 @@ class Store {
   subscribe = (key, fn) => {
     const existing = this.subscriptions.get(key) || [];
     const id = existing.length;
-    this.subscriptions.set(key, existing.concat([fn]));
+    const delayedFn = x => setTimeout(() => fn(x), 0);
+    this.subscriptions.set(key, existing.concat([delayedFn]));
 
     const value = this.get(key);
     if (value)

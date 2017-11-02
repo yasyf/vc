@@ -2,11 +2,14 @@ import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import Input from '../fields/input';
 import Filters from '../../discover/filters';
-import {buildQuery, extend, ffetch, flush, merge} from '../utils';
-import {SignupPath, CompaniesQueryPath} from '../constants.js.erb';
+import {buildQuery, extend, ffetch, flush, merge, currentPage} from '../utils';
+import {SignupPath, CompaniesQueryPath, StorageRestoreStateKey} from '../constants.js.erb';
 import {Button, Row, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
 import CompanyImage from '../../discover/company_image';
+import Breadcrumb from '../breadcrumbs';
+import Storage from '../storage.js.erb';
+import { canUseDOM } from 'exenv';
 
 const RequiredFields = [
   [],
@@ -17,12 +20,20 @@ const RequiredFields = [
 const NumStages = RequiredFields.length;
 
 export default class LoginModal extends React.Component {
-  state = {
-    data: {},
-    stage: 0,
-    company: {},
-    hasImage: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: {},
+      stage: 0,
+      company: {},
+      hasImage: false,
+      restoreState: canUseDOM ? {
+        breadcrumb: Breadcrumb.peek(),
+        location: currentPage(),
+      } : null,
+    };
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.data.domain && prevState.data.domain !== this.state.data.domain) {
@@ -59,6 +70,7 @@ export default class LoginModal extends React.Component {
   };
 
   loginWithGoogle= () => {
+    Storage.set(StorageRestoreStateKey, this.state.restoreState);
     flush();
     this.form.submit();
   };

@@ -16,9 +16,7 @@ class FixedWrappedTable extends React.Component {
   }
 
   componentWillMount() {
-    this.subscription = Store.subscribe('dimensions', dimensions => {
-      setTimeout(() => this.setState({dimensions}), 0);
-    });
+    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
   }
 
   componentWillUnmount() {
@@ -79,13 +77,13 @@ export default class WrappedTable extends React.Component {
     this.setState({array: this.state.array.dup().set(i, update)});
   };
 
-  onModalClose = i => () => {
+  onModalClose = () => {
     this.setState({currentModal: null});
   };
 
   onModalResult = i => (result, keepOpen) => {
     if (!keepOpen) {
-      this.onModalClose(i)();
+      this.onModalClose();
     }
     if (result) {
       this.onRowUpdate(i, result);
@@ -125,7 +123,7 @@ export default class WrappedTable extends React.Component {
     return (
       <Modal
         key="modal"
-        onClose={this.onModalClose(i)}
+        onClose={this.onModalClose}
         onResult={this.onModalResult(i)}
         rowKey={key}
         item={array.getSync(i)}

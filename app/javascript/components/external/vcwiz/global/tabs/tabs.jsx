@@ -24,6 +24,10 @@ const Panel = ({ children, selected }) => (
 );
 
 export default class Tabs extends React.Component {
+  static defaultProps = {
+    onTabChange: _.noop,
+  };
+
   constructor(props) {
     super(props);
 
@@ -32,8 +36,13 @@ export default class Tabs extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.props.onTabChange(this.state.selected);
+  }
+
   onClick = i => e => {
     this.setState({selected: i});
+    this.props.onTabChange(i);
     e.preventDefault();
   };
 

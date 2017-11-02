@@ -9,7 +9,10 @@ class External::AuthController < Devise::OmniauthCallbacksController
     @founder = Founder.from_omniauth(auth)
 
     if @founder.present?
-      @founder.create_company! session[:signup_data].with_indifferent_access
+      if session[:signup_data].present?
+        @founder.create_company! session[:signup_data].with_indifferent_access
+        session.delete(:signup_data)
+      end
       sign_in_and_redirect @founder, event: :authentication
     else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'an error occurred'

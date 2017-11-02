@@ -60,6 +60,11 @@ class External::VcwizController < External::ApplicationController
 
   def signup
     session[:signup_data] = signup_params
+    store_location_for(:external_founder, request.referer)
+    redirect_to omniauth_path('google_external')
+  end
+
+  def login
     redirect_to omniauth_path('google_external')
   end
 

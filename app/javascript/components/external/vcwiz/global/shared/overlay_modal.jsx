@@ -1,11 +1,27 @@
 import React from 'react';
 import Modal from 'react-modal';
 import classNames from 'classnames';
+import Breadcrumb from '../breadcrumbs';
 
 export default class OverlayModal extends React.Component {
   static defaultProps = {
     isOpen: true,
+    idParams: {},
   };
+
+  componentDidMount() {
+    Breadcrumb.push(this.props.name, 'modal', this.props.idParams);
+  }
+
+  componentWillUnmount() {
+    Breadcrumb.pop();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.idParams, this.props.idParams)) {
+      Breadcrumb.replace(nextProps.idParams);
+    }
+  }
 
   renderModal() {
     const { top, bottom, name } = this.props;

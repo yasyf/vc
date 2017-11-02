@@ -88,6 +88,9 @@ export default class Header extends React.Component {
   }
 
   renderModal() {
+    if (!this.state.loginOpen) {
+      return null;
+    }
     return (
       <LoginModal
         isOpen={this.state.loginOpen}

@@ -173,3 +173,7 @@ export const imageExists = url => {
     img.src = url;
   });
 };
+
+export const currentPage = () => {
+  return window.location.pathname + window.location.search;
+};

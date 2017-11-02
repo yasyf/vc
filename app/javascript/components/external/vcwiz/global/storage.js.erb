@@ -5,6 +5,7 @@ export const storageKey = (key) => `${StoragePrefix}::${key}`;
 const StorageMock = {
   get: _.noop,
   set: _.noop,
+  remove: _.noop,
   getExpr: _.noop,
   setExpr: _.noop,
   clearExpr: _.noop,
@@ -13,7 +14,7 @@ const StorageMock = {
 const Storage = {
   _get: key => JSON.parse(window.sessionStorage.getItem(key)),
   get: key => Storage._get(storageKey(key)),
-  _remove: key => window.sessionStorage.setItem(key, null),
+  _remove: key => window.sessionStorage.removeItem(key),
   remove: key =>  Storage._remove(storageKey(key)),
   _set: (key, value) => window.sessionStorage.setItem(key, JSON.stringify(value)),
   set: (key, value) => Storage._set(storageKey(key), value),
@@ -52,6 +53,7 @@ const Storage = {
 const VolatileStorage = {
   get: Storage.get,
   set: Storage.set,
+  remove: Storage.remove,
   getExpr: _.noop,
   setExpr: _.noop,
   clearExpr: _.noop,
