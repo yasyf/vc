@@ -5,8 +5,7 @@ module CompetitorLists::Base::ClassSetup
 
   def init
     @lists = []
-    Dir["#{File.dirname(__FILE__)}/*.rb"].each do |file|
-      next if file == __FILE__
+    Dir["#{File.dirname(__FILE__)}/../*.rb"].each do |file|
       require_dependency file
     end
   end

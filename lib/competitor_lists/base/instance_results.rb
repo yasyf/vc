@@ -34,7 +34,8 @@ module CompetitorLists::Base::InstanceResults
 
   def result_count
     if cached?
-      Rails.cache.fetch(cache_key('count')) || 0
+      count = Rails.cache.fetch(cache_key('count'))
+      count.present? ? count : 0
     else
       fetch_result_count
     end
