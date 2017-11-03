@@ -13,6 +13,7 @@ $success-dark: #23CFB2;
 $green: #34BF20;
 $blue: #0D71E9;
 $red: #E8441E;
+$dark: #363844;
 
 html, body, .full-screen {
   height: 100%;
@@ -95,10 +96,7 @@ p.tight {
   z-index: 1;
 }
 
-#top-bar {
-  height: 85px;
-  background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
-
+#top-bar, #signup-bar {
   .title {
     color: $white;
     cursor: pointer;
@@ -141,6 +139,35 @@ p.tight {
     display: inline-block;
     padding-right: 0.5em;
   }
+}
+
+
+#signup-bar {
+  height: 100px;
+  background-color: $dark;
+
+  button {
+    border-radius: 5px;
+    background: $white;
+    margin: auto;
+    color: $black;
+    font-weight: bold;
+  }
+
+  .benefits {
+    padding-top: 5px;
+
+    .benefit {
+      margin-right: 1.5em;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+  }
+}
+
+#top-bar {
+  height: 85px;
+  background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
 }
 
 .faded {
@@ -770,6 +797,14 @@ mark.highlighter {
 }
 
 .login-modal {
+  .skip {
+    font-size: smaller;
+    color: $grey;
+    position: relative;
+    top: -0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
   img {
     padding-top: 20px;
   }

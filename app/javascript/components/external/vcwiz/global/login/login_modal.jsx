@@ -25,7 +25,7 @@ export default class LoginModal extends React.Component {
 
     this.state = {
       data: {},
-      stage: 0,
+      stage: props.stage || 0,
       company: {},
       hasImage: false,
       restoreState: canUseDOM ? {
@@ -69,6 +69,10 @@ export default class LoginModal extends React.Component {
     this.setState({stage: this.state.stage + 1});
   };
 
+  skipToLogin = () => {
+    this.setState({stage: 3});
+  };
+
   loginWithGoogle= () => {
     Storage.set(StorageRestoreStateKey, this.state.restoreState);
     flush();
@@ -81,29 +85,45 @@ export default class LoginModal extends React.Component {
       return null;
     }
     return (
-      <div className="muted">
-        Help us personalize your search results and provide you with introductions to VCs.
+      <div>
+        <p className="skip">
+          <a onClick={this.skipToLogin}>I already have an account</a>
+        </p>
+        <p className="muted">
+          Help us personalize your search results and provide you with introductions to VCs.
+        </p>
       </div>
     );
   }
 
   renderTop() {
-    const { data, hasImage } = this.state;
-    return (
-      <div className="title">
-        <h3>Sign Up For VCWiz</h3>
-        <CompanyImage
-          fallback={null}
-          domain={data.domain}
-          size={150}
-          relaxHeight={true}
-          style={hasImage ? undefined : {display: 'none'}}
-          onLoad={this.onHasImage}
-          onError={this.onImageError}
-        />
-        {this.renderSubHeading()}
-      </div>
-    );
+    const { data, hasImage, stage } = this.state;
+    if (stage === 3) {
+      return (
+        <div className="title">
+          <h3>Login To VCWiz</h3>
+          <div className="muted">
+            VCWiz uses your email address to verify your account.
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="title">
+          <h3>Sign Up For VCWiz</h3>
+          <CompanyImage
+            fallback={null}
+            domain={data.domain}
+            size={150}
+            relaxHeight={true}
+            style={hasImage ? undefined : {display: 'none'}}
+            onLoad={this.onHasImage}
+            onError={this.onImageError}
+          />
+          {this.renderSubHeading()}
+        </div>
+      );
+    }
   }
 
   renderInput(name, placeholder) {

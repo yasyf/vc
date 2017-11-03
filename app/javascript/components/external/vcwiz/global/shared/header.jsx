@@ -1,5 +1,8 @@
 import React from 'react';
 import {
+  Badge,
+  Button,
+  Colors,
   TopBar,
   TopBarLeft,
   TopBarRight,
@@ -12,6 +15,7 @@ import Actions from '../actions';
 export default class Header extends React.Component {
   state = {
     loginOpen: false,
+    loginStage: 0,
   };
 
   componentDidMount() {
@@ -26,14 +30,22 @@ export default class Header extends React.Component {
     window.location.href = DiscoverPath;
   };
 
-  openLogin = e => {
-    this.setState({loginOpen: true});
+  openLoginModal = (e, i) => {
+    this.setState({loginOpen: true, loginStage: i});
     if (e)
       e.preventDefault();
   };
 
-  closeLogin = () => {
+  closeLoginModal = () => {
     this.setState({loginOpen: false});
+  };
+
+  openLogin = e => {
+    this.openLoginModal(e, 3);
+  };
+
+  openSignup = e => {
+    this.openLoginModal(e, 0);
   };
 
   renderCount() {
@@ -69,21 +81,49 @@ export default class Header extends React.Component {
 
   renderHeader() {
     return (
-      <header>
-        <TopBar id="top-bar">
-          <TopBarLeft>
-            <div className="title left">
-              <a href={DiscoverPath}>
-                <h3><b>VCWiz</b></h3>
-                <h5 className="faded subtitle">Raise Your Seed Round</h5>
-              </a>
+      <TopBar id="top-bar">
+        <TopBarLeft>
+          <div className="title left">
+            <a href={DiscoverPath}>
+              <h3><b>VCWiz</b></h3>
+              <h5 className="faded subtitle">Raise Your Seed Round</h5>
+            </a>
+          </div>
+        </TopBarLeft>
+        <TopBarRight>
+          {this.renderRight()}
+        </TopBarRight>
+      </TopBar>
+    );
+  }
+
+  renderBar() {
+    if (isLoggedIn()) {
+      return null;
+    }
+    return (
+      <TopBar id="signup-bar">
+        <TopBarLeft>
+          <div className="title left">
+            <div className="subtitle">Raise your seed round.</div>
+            <div className="benefits">
+              <Badge color={Colors.SECONDARY}>1</Badge>
+              <span className="benefit">Discover firms</span>
+              <Badge color={Colors.SECONDARY}>2</Badge>
+              <span className="benefit">Research investors</span>
+              <Badge color={Colors.SECONDARY}>3</Badge>
+              <span className="benefit">Get introduced, track conversations</span>
             </div>
-          </TopBarLeft>
-          <TopBarRight>
-            {this.renderRight()}
-          </TopBarRight>
-        </TopBar>
-      </header>
+          </div>
+        </TopBarLeft>
+        <TopBarRight>
+          <div className="title right">
+            <Button color={Colors.SECONDARY} onClick={this.openSignup} isHollow>
+              Sign Up
+            </Button>
+          </div>
+        </TopBarRight>
+      </TopBar>
     );
   }
 
@@ -94,7 +134,8 @@ export default class Header extends React.Component {
     return (
       <LoginModal
         isOpen={this.state.loginOpen}
-        onClose={this.closeLogin}
+        stage={this.state.loginStage}
+        onClose={this.closeLoginModal}
       />
     );
   }
@@ -103,7 +144,10 @@ export default class Header extends React.Component {
     return (
       <div>
         {this.renderModal()}
-        {this.renderHeader()}
+        <header>
+          {this.renderHeader()}
+          {this.renderBar()}
+        </header>
       </div>
     );
   }
