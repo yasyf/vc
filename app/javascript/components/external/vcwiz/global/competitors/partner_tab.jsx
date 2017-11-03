@@ -51,10 +51,10 @@ export default class PartnerTab extends React.Component {
     return (
       <div>
         <Row>
-          <Column large={6}>
+          <Column large={8}>
             <PartnerHeading investor={this.state.investor} />
           </Column>
-          <Column offsetOnLarge={4} large={2}>
+          <Column offsetOnLarge={2} large={2}>
             {this.renderTrack()}
           </Column>
         </Row>

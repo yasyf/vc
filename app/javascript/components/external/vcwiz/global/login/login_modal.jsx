@@ -80,15 +80,18 @@ export default class LoginModal extends React.Component {
   };
 
   renderSubHeading() {
-    const { hasImage } = this.state;
+    const { hasImage, stage } = this.state;
     if (hasImage) {
       return null;
     }
+    const skipToLogin = (stage === 0) && (
+      <p className="skip">
+        <a onClick={this.skipToLogin}>I already have an account</a>
+      </p>
+    );
     return (
       <div>
-        <p className="skip">
-          <a onClick={this.skipToLogin}>I already have an account</a>
-        </p>
+        {skipToLogin || null}
         <p className="muted">
           Help us personalize your search results and provide you with introductions to VCs.
         </p>
