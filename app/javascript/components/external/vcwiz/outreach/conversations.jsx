@@ -13,7 +13,7 @@ class ConversationsTable extends FixedTable {
       this.renderTrackColumn('stage', 'Stage'),
       this.renderIntroColumn('intro_request', 'VCWiz Intro', { eligibleKey: 'can_intro?' }),
       this.renderEmojiColumn('priority', 'Tag'),
-      this.renderTextColumn('note', 'Notes', 2),
+      this.renderPlaceholderColumn('note', 'Notes', 2),
       this.renderDatetimeColumn('last_response', 'Last Response'),
     ]
   }

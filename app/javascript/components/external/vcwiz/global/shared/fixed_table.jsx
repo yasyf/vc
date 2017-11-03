@@ -11,6 +11,7 @@ import EmojiCell from '../cells/emoji_cell';
 import CompetitorTrackCell from '../cells/competitor_track_cell';
 import NullStateCell from '../cells/null_state_cell';
 import Header from '../cells/header';
+import PlaceholderCell from '../cells/placeholder_cell';
 
 export default class FixedTable extends React.Component {
   onCellClick = name => (e, row) => {
@@ -47,6 +48,10 @@ export default class FixedTable extends React.Component {
 
   renderTextColumn = (key, name, props, flex = 1) => {
     return this.renderColumn(key, name, TextCell, props, undefined, flex);
+  };
+
+  renderPlaceholderColumn = (key, name, flex = 1) => {
+    return this.renderColumn(key, name, PlaceholderCell, {onChange: this.props.onRowUpdate}, undefined, flex);
   };
 
   renderNullStateColumn = (flex = 1) => {

@@ -37,6 +37,7 @@ export default class PlaceholderInput extends React.Component {
       <span>
         <Input
           name="value"
+          className="placeholded"
           wrap={false}
           type=""
           inputRef={input => { this.input = input }}
@@ -46,7 +47,11 @@ export default class PlaceholderInput extends React.Component {
           style={showInput ? undefined : {display: 'none'}}
           {...rest}
         />
-        <span onClick={this.onClick} style={showInput ? {display: 'none'} : undefined}>
+        <span
+          className="placeholder"
+          onClick={this.onClick}
+          style={showInput ? {display: 'none'} : undefined}
+        >
           {this.props.placeholder}
         </span>
       </span>
