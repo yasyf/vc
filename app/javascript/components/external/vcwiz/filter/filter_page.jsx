@@ -2,7 +2,10 @@ import React from 'react';
 import VCWiz from '../vcwiz';
 import Results from '../global/competitors/results';
 import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
-import {flattenFilters, buildQuery, extend, timestamp} from '../global/utils';
+import {
+  flattenFilters, buildQuery, extend, timestamp,
+  replaceSort,
+} from '../global/utils';
 import createHistory from 'history/createBrowserHistory'
 import Search from '../discover/search';
 import {Row, Column} from 'react-foundation';
@@ -58,9 +61,7 @@ export default class FilterPage extends React.Component {
   };
 
   onSort = (key, direction) => {
-    const keys = Object.keys(this.state.sort);
-    const base = _.zipObject(keys, _.times(keys.length, _.constant(0)));
-    const sort = extend(base, {[key]: direction});
+    const sort = replaceSort(key, direction, this.state.sort);
     this.setState({sort});
   };
 

@@ -4,7 +4,7 @@ import Conversations from './conversations';
 import {Column, Row} from 'react-foundation';
 import AddInvestorModal from './add_investor_modal';
 import { TargetInvestorsPath } from '../global/constants.js.erb';
-import {ffetch, timestamp} from '../global/utils';
+import {ffetch, replaceSort, timestamp} from '../global/utils';
 
 export default class OutreachPage extends React.Component {
   constructor(props) {
@@ -14,8 +14,14 @@ export default class OutreachPage extends React.Component {
       isModalOpen: false,
       resultsId: timestamp(),
       targets: this.props.targets,
+      sort: props.sort,
     };
   }
+
+  onSort = (key, direction) => {
+    const sort = replaceSort(key, direction, this.state.sort);
+    this.setState({sort, resultsId: timestamp(), targets: null});
+  };
 
   onModalClose = () => {
     this.setState({isModalOpen: false});
@@ -23,10 +29,12 @@ export default class OutreachPage extends React.Component {
 
   onModalResult = update => {
     this.onModalClose();
-    ffetch(TargetInvestorsPath.collectionResource('import'), 'POST', update).then(target => {
+    ffetch(TargetInvestorsPath.collectionResource('import'), 'POST', update).then(newTarget => {
+      const { targets, count } = this.state;
       this.setState({
         resultsId: timestamp(),
-        targets: [target].concat(this.state.targets),
+        count: count + 1,
+        targets: targets && [newTarget].concat(targets),
       });
     })
   };
@@ -61,15 +69,19 @@ export default class OutreachPage extends React.Component {
   }
 
   renderBody() {
-    let { targets, ...rest } = this.props;
-    targets = this.state.targets;
+    const { sort, targets, resultsId } = this.state;
+    const source = {path: TargetInvestorsPath, query: {sort}};
+
     return (
       <div className="full-screen">
         {this.renderHeader()}
         <Conversations
-          resultsId={this.state.resultsId}
+          resultsId={resultsId}
+          source={source}
+          onSort={this.onSort}
+          {...this.props}
           targets={targets}
-          {...rest}
+          sort={sort}
         />
       </div>
     )

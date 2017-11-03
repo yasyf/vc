@@ -114,7 +114,7 @@ class TargetInvestor < ApplicationRecord
     investor.founder_overlap(founder)
   end
 
-  def name
+  def full_name
     "#{first_name} #{last_name}"
   end
 
@@ -125,7 +125,7 @@ class TargetInvestor < ApplicationRecord
   def as_json(options = {})
     super options.reverse_merge(
       only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name],
-      methods: [:can_intro?, :intro_request, :overlap, :name, :title],
+      methods: [:can_intro?, :intro_request, :overlap, :full_name, :title],
       include: { investor: { only: [:id, :first_name, :last_name, :photo] } },
     )
   end

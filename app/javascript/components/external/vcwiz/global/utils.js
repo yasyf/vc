@@ -177,3 +177,9 @@ export const imageExists = url => {
 export const currentPage = () => {
   return window.location.pathname + window.location.search;
 };
+
+export const replaceSort = (key, direction, oldSort) => {
+  const keys = Object.keys(oldSort);
+  const base = _.zipObject(keys, _.times(keys.length, _.constant(0)));
+  return extend(base, {[key]: direction});
+};

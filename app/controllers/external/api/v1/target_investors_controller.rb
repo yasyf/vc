@@ -1,6 +1,7 @@
 class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Controller
   include External::Concerns::Censorable
   include External::Concerns::Pageable
+  include External::Concerns::Sortable
 
   INCLUDES = [investor: [:entities, :university, :tweeter], founder: [:intro_requests, :entities]]
 
@@ -13,7 +14,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     targets = current_external_founder
       .target_investors
       .includes(*INCLUDES)
-      .order(:stage, id: :desc)
+      .order(sort_params.present? ? order_sql_from_sort(sorts) : [:stage, id: :desc])
       .limit(limit)
       .offset(page * limit)
       .as_json

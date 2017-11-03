@@ -1,9 +1,12 @@
 module CompetitorLists::Base::ClassSortable
   SORTS = {
     name: 'name',
+    full_name: "first_name || ' ' || last_name",
+    last_response: 'last_response',
     hq: 'COALESCE(hq, location[1])',
     fund_type: { asc: 'fund_type[1]', desc: 'fund_type[array_length(fund_type, 1)]' },
-    'track_status': "COALESCE(track_status, #{TargetInvestor::STAGES.length})",
+    track_status: "COALESCE(track_status, #{TargetInvestor::STAGES.length})",
+    stage: "COALESCE(stage, #{TargetInvestor::STAGES.length})",
   }
 
   def order_sql_from_sort(sort)

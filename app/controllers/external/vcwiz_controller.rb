@@ -54,6 +54,7 @@ class External::VcwizController < External::ApplicationController
     props(
       targets: targets,
       count: current_external_founder.target_investors.count,
+      sort: sorts,
     )
     render_default
   end

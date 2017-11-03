@@ -4,12 +4,11 @@ import EmojiModal from './emoji_modal';
 import PartnerModal from './partner_modal';
 import FixedTable from '../global/shared/fixed_table';
 import {initials} from '../global/utils';
-import {TargetInvestorsPath} from '../global/constants.js.erb';
 
 class ConversationsTable extends FixedTable {
   renderColumns() {
     return [
-      this.renderImageTextColumn('name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, subKey: 'title', max: 18 }, 2),
+      this.renderImageTextColumn('full_name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, subKey: 'title', max: 18 }, 2),
       this.renderTrackColumn('stage', 'Stage'),
       this.renderIntroColumn('intro_request', 'VCWiz Intro', { eligibleKey: 'can_intro?' }),
       this.renderEmojiColumn('priority', 'Tag'),
@@ -30,7 +29,6 @@ export default class Conversations extends React.Component {
           priority: EmojiModal,
         }}
         table={ConversationsTable}
-        source={{path: TargetInvestorsPath, query: {}}}
         {...rest}
       />
     );
