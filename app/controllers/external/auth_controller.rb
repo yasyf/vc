@@ -13,6 +13,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
         @founder.create_company! session[:signup_data].with_indifferent_access
         session.delete(:signup_data)
       end
+      cookies.permanent[:login_domain] = @founder.domain
       sign_in_and_redirect @founder, event: :authentication
     else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'an error occurred'

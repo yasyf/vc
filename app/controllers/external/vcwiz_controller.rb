@@ -61,12 +61,13 @@ class External::VcwizController < External::ApplicationController
 
   def signup
     session[:signup_data] = signup_params
+    cookies.permanent[:login_domain] = signup_params[:domain]
     store_location_for(:external_founder, request.referer)
-    redirect_to omniauth_path('google_external')
+    redirect_login
   end
 
   def login
-    redirect_to omniauth_path('google_external')
+    redirect_login
   end
 
   def opt_in
@@ -94,6 +95,10 @@ class External::VcwizController < External::ApplicationController
 
   def render_default
     render html: '', layout: 'vcwiz'
+  end
+
+  def redirect_login
+    redirect_to omniauth_path('google_external', hd: cookies[:login_domain] || '*')
   end
 
   def advanced?

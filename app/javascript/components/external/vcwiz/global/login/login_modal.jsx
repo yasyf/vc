@@ -3,7 +3,7 @@ import OverlayModal from '../shared/overlay_modal';
 import Input from '../fields/input';
 import Filters from '../../discover/filters';
 import {buildQuery, extend, ffetch, flush, merge, currentPage} from '../utils';
-import {SignupPath, CompaniesQueryPath, StorageRestoreStateKey} from '../constants.js.erb';
+import {SignupPath, LoginPath, CompaniesQueryPath, StorageRestoreStateKey} from '../constants.js.erb';
 import {Button, Row, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
 import CompanyImage from '../../discover/company_image';
@@ -24,6 +24,7 @@ export default class LoginModal extends React.Component {
     super(props);
 
     this.state = {
+      path: LoginPath,
       data: {},
       stage: props.stage || 0,
       company: {},
@@ -66,7 +67,7 @@ export default class LoginModal extends React.Component {
   };
 
   nextStage = () => {
-    this.setState({stage: this.state.stage + 1});
+    this.setState({stage: this.state.stage + 1, path: SignupPath});
   };
 
   skipToLogin = () => {
@@ -188,7 +189,7 @@ export default class LoginModal extends React.Component {
   renderStage3() {
     return [
       <p className="info" key="text">Login with your company email address to secure your account</p>,
-      <HiddenForm key="form" data={this.state.data} formRef={form => { this.form = form; }} path={SignupPath} />,
+      <HiddenForm key="form" data={this.state.data} formRef={form => { this.form = form; }} path={this.state.path} />,
       <Button color={Colors.SUCCESS} onClick={this.loginWithGoogle} key="button">
         Login with Google
       </Button>,
