@@ -15,6 +15,11 @@ class CardSyncJob < ApplicationJob
     company = card.company
     pitch = company.pitch
 
+    company.team = team
+    card.list = list
+    company.users = users
+    company.save!
+
     if (pitch&.card != card) && card_data[:pitch_on].present?
       pitch = Pitch.new(company: company, card: card, when: card_data[:pitch_on])
     end
@@ -22,10 +27,6 @@ class CardSyncJob < ApplicationJob
     if pitch.present?
       pitch.when = card_data[:pitch_on] if card_data[:pitch_on].present?
     end
-
-    company.team = team
-    card.list = list
-    company.users = users
 
     card.save! if card&.changed?
     pitch.save! if pitch&.changed?
