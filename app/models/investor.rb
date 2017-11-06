@@ -207,6 +207,10 @@ class Investor < ApplicationRecord
     connection.select_values scope.to_sql
   end
 
+  def opted_out?
+    opted_in == false
+  end
+
   def as_json(options = {})
     super options.reverse_merge(
       only: [

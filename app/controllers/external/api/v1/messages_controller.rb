@@ -28,7 +28,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def open
-    to_targets.each(&:investor_opened!) if founder_from_from.present?
+    to_targets.each { |t| t.investor_opened! intro_request&.id } if founder_from_from.present?
     return head :ok unless intro_request.present?
     intro_request.update!(
       opened_at: DateTime.now,
@@ -203,7 +203,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
         sentiment_magnitude: sentiment&.magnitude,
         body: text,
       )
-      target.investor_replied! email.id
+      target.investor_replied! email.id, intro_request&.id
     end
 
     target.email ||= from.address

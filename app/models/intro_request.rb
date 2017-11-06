@@ -16,12 +16,18 @@ class IntroRequest < ApplicationRecord
 
   enum open_device_type: DEVICE_TYPES
 
+  before_validation :check_opt_out!, on: :create
   before_validation :set_token!, on: :create
   after_commit :send!, on: :create
 
   def decide!(decision)
     update! accepted: decision
-    if decision
+    send_decision!
+  end
+
+  def send_decision!
+    return unless decided?
+    if accepted
       IntroMailer.intro_email(self).deliver_later
     else
       if investor.opted_in?
@@ -94,9 +100,13 @@ class IntroRequest < ApplicationRecord
     end
   end
 
+  def check_opt_out!
+    self.accepted = false if investor.opted_out?
+  end
+
   def send!
-    if investor.opted_in == false
-      decide! false
+    if investor.opted_out?
+      send_decision!
     else
       target_investor&.intro_requested! self.id
       if investor.opted_in?

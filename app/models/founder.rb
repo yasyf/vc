@@ -139,12 +139,16 @@ class Founder < ApplicationRecord
     @primary_company ||= companies.where(primary: true).last || companies.last
   end
 
-  def conversation_count
-    target_investors.count
+  def conversations
+    {
+      counts: target_investors.group_by(&:stage).transform_values(&:count),
+      total: target_investors.count,
+      recents: target_investors.order(created_at: :desc).limit(3).pluck(:firm_name),
+    }
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversation_count])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversations, :events])
   end
 
   def existing_target_investor_ids
@@ -160,9 +164,10 @@ class Founder < ApplicationRecord
       .where(subject_type: TargetInvestor.name)
       .where(action: %w(investor_opened investor_clicked intro_requested investor_replied))
       .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
-      .joins('INNER JOIN founders ON target_investors.founder_id = founders.id')
-      .where('founders.id = ?', id)
+      .where('target_investors.founder_id = ?', id)
       .order(created_at: :desc)
+      .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name')
+      .limit(3)
   end
 
   def recommended_investors(limit: 5, offset: 0)

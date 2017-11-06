@@ -2,8 +2,11 @@ module Concerns
   module Eventable
     extend ActiveSupport::Concern
 
-    class_methods do
+    included do
+      has_many :events, as: :subject
+    end
 
+    class_methods do
       def action(*actions)
         Array.wrap(actions).each do |action|
          define_method("#{action}!") do |*args|

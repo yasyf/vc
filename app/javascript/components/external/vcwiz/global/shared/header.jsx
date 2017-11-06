@@ -49,10 +49,10 @@ export default class Header extends React.Component {
   };
 
   renderCount() {
-    if (!window.gon.founder.conversation_count) {
+    if (!window.gon.founder.conversations) {
       return null;
     }
-    return <span>({window.gon.founder.conversation_count})</span>;
+    return <span>({window.gon.founder.conversations.total})</span>;
   }
 
   renderRight() {

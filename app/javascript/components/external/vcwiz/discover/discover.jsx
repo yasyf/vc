@@ -11,6 +11,7 @@ export default class Discovery extends React.Component {
         header={<SearchHero />}
         body={<Lists />}
         wrapBody={false}
+        showSidebar={true}
       />
     );
   }
