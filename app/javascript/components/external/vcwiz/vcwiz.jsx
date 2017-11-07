@@ -59,8 +59,12 @@ export default class VCWiz extends React.Component {
         <Column className="full-height sidebar-column" large={3}>{<Sidebar />}</Column>
         <Column className="full-height" large={9}>{wrappedBody}</Column>
       </Row>
-    ) : wrappedBody;
-    return <VCWizBodyWithDims>{withSidebar}</VCWizBodyWithDims>;
+    ) : (
+      <div>
+        {wrappedBody}
+      </div>
+    );
+    return <VCWizBodyWithDims dimensionsKey="windowDimensions">{withSidebar}</VCWizBodyWithDims>;
   }
 
   render() {

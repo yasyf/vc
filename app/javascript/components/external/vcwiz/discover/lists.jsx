@@ -4,6 +4,7 @@ import { ffetchCached } from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
 import {Row, Column} from 'react-foundation';
 import Loader from '../global/shared/loader';
+import Store from '../global/store';
 
 export default class Lists extends React.Component {
   constructor(props) {
@@ -12,13 +13,25 @@ export default class Lists extends React.Component {
     this.state = {
       loading: true,
       lists: [],
+      dimensions: Store.get('windowDimensions', {
+        width: 0,
+        height: 0,
+      }),
     };
+  }
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('windowDimensions', dimensions => this.setState({dimensions}));
   }
 
   componentDidMount() {
     ffetchCached(CompetitorsListsPath).then(lists => {
       this.setState({lists, loading: false});
     });
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
   }
 
   profileImageProps() {
@@ -58,7 +71,7 @@ export default class Lists extends React.Component {
   };
 
   renderList = ({title, name, competitors, count}, i, arr) => {
-    let displayCompetitors = _.take(competitors, 5);
+    let displayCompetitors = _.take(competitors, this.state.dimensions.width > 1400 ? 5 : 3);
     return (
       <Column large={4} key={name} isLast={i === arr.length - 1}>
         <div className="card-wrapper">

@@ -68,6 +68,10 @@ p.tight {
     letter-spacing: 0.1em;
     padding-top: 10px;
   }
+
+  .button-wrapper {
+    padding-top: 15px;
+  }
 }
 
 .rounded-image {
@@ -378,16 +382,14 @@ input.placeholded {
     .cards {
       padding-top: 50px;
       margin: auto;
-      width: 85%;
+      width: 100%;
     }
 
     .card-wrapper {
-      padding-left: 20px;
-      padding-right: 20px;
-
       .card {
         height: 165px;
-        width: 350px;
+        width: 100%;
+        max-width: 350px;
         margin: auto;
         cursor: pointer;
 

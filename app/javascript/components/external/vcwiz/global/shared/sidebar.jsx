@@ -1,8 +1,13 @@
 import React from 'react';
 import {isLoggedIn} from '../utils';
-import {TargetInvestorStages} from '../constants.js.erb'
+import {TargetInvestorStages, OutreachPath} from '../constants.js.erb'
+import {Button, Colors} from 'react-foundation';
 
 export default class Sidebar extends React.Component {
+  onClick = () => {
+    window.location.href = OutreachPath;
+  };
+
   renderEvent = ({action, arg1, arg2, first_name, last_name}) => {
     const name = `${first_name} ${_.first(last_name)}.`;
     switch (action) {
@@ -19,7 +24,7 @@ export default class Sidebar extends React.Component {
 
   renderEvents() {
     const { events } = window.gon.founder;
-    if (!events) {
+    if (!events || !events.length) {
       return null;
     }
     const activities = events.map(e => <div key={e.id}>{this.renderEvent(e)}</div>);
@@ -31,7 +36,7 @@ export default class Sidebar extends React.Component {
 
   renderConversations() {
     const { conversations } = window.gon.founder;
-    if (!conversations) {
+    if (!conversations || !conversations.total) {
       return null;
     }
     const groups = Object.entries(conversations.counts).map(([name, count]) =>
@@ -55,6 +60,16 @@ export default class Sidebar extends React.Component {
     ];
   }
 
+  renderButton() {
+    return (
+      <div className="button-wrapper">
+        <Button color={Colors.SUCCESS} onClick={this.onClick}>
+          View Conversations
+        </Button>
+      </div>
+    )
+  }
+
   render() {
     if (!isLoggedIn()) {
       return null;
@@ -63,6 +78,7 @@ export default class Sidebar extends React.Component {
       <div className="sidebar full-height">
         {this.renderConversations()}
         {this.renderEvents()}
+        {this.renderButton()}
       </div>
     );
   }
