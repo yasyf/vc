@@ -327,6 +327,10 @@ GEM
     os (0.9.6)
     ox (2.8.2)
     pg (0.21.0)
+    picky (4.31.3)
+      activesupport
+      multi_json (~> 1.3)
+      rack_fast_escape (~> 2009.0)
     premailer (1.11.0)
       addressable
       css_parser (>= 1.6.0)
@@ -347,6 +351,8 @@ GEM
     rack-test (0.7.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.4.2)
+    rack_fast_escape (2009.06.24)
+      url_escape
     rails (5.1.4)
       actioncable (= 5.1.4)
       actionmailer (= 5.1.4)
@@ -530,6 +536,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.4)
     unicode_utils (1.4.0)
+    url_escape (2009.06.24)
     warden (1.2.7)
       rack (>= 1.0)
     web-console (3.5.1)
@@ -601,6 +608,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   ox (>= 2.1.2)
   pg
+  picky
   premailer-rails
   puma
   rack-timeout
