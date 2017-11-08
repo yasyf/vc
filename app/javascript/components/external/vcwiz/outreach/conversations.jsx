@@ -25,7 +25,7 @@ export default class Conversations extends React.Component {
       <WrappedTable
         items={targets}
         modal={{
-          name: PartnerModal,
+          full_name: PartnerModal,
           priority: EmojiModal,
         }}
         table={ConversationsTable}

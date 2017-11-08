@@ -104,8 +104,8 @@ p.tight {
 .modal-content {
   position: absolute;
   top: 8%;
-  left: 15%;
-  right: 15%;
+  left: 8%;
+  right: 8%;
   bottom: 8%;
   border: 1px solid $light-grey;
   background: $white;
@@ -419,10 +419,14 @@ input.placeholded {
   &-body {
     margin: 20px 0 0;
 
+    .title-wrapper {
+      margin-bottom: 15px;
+    }
+
     .title {
       font-size: large;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-right: 10px;
     }
 
     a {
@@ -767,7 +771,7 @@ mark.highlighter {
   }
 
   &-bottom {
-    padding: 50px 40px 40px;
+    padding: 30px;
   }
 
   p {
@@ -819,6 +823,63 @@ mark.highlighter {
     max-width: unset;
     margin-right: unset;
     margin-left: unset;
+  }
+}
+
+.import_investors-modal {
+  &-content {
+    top: 5%;
+    bottom: 5%;
+    left: 5%;
+    right: 5%;
+  }
+
+  &-top {
+    .button-wrapper {
+      text-align: center;
+      margin-top: 2rem;
+
+      .button {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &-bottom {
+    overflow-x: auto;
+    padding: 20px 0;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    .main {
+      text-align: center;
+
+      p {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .progress-wrapper {
+      width: 80%;
+      margin: auto;
+      text-align: center;
+
+      .percent {
+        color: $success;
+      }
+    }
+
+    .loader {
+      margin: auto;
+    }
+
+    .import-header {
+      min-width: 200px;
+    }
+
+    .error-header {
+      text-align: center;
+    }
   }
 }
 

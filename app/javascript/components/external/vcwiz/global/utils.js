@@ -12,10 +12,10 @@ export const _ffetch = function(path, data, opts) {
     Object.entries(data || {}).forEach(([k, v]) => {
       formData.append(k, v);
     });
-    opts['body'] = formData;
+    opts.body = formData;
   } else if (data) {
-    opts['body'] = JSON.stringify(data);
-    opts['headers']['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(data);
+    opts.headers['Content-Type'] = 'application/json';
   } else if (opts.method === 'GET' && opts.cache) {
     delete opts.cache;
     const cached = Storage.getExpr(path);
@@ -78,7 +78,7 @@ export const fullName = function(founder) {
 };
 
 export const initials = function(founder) {
-  return `${_.first(founder.first_name)}${_.first(founder.last_name)}`;
+  return `${_.first(founder.first_name) || ''}${_.first(founder.last_name) || ''}`;
 };
 
 export const wordJoin = function(words) {

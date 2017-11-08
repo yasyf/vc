@@ -7,6 +7,7 @@ class Founder < ApplicationRecord
 
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :notes
+  has_many :import_tasks
   has_many :emails, dependent: :destroy
   has_many :intro_requests, dependent: :destroy
   has_many :target_investors, dependent: :destroy
@@ -142,7 +143,7 @@ class Founder < ApplicationRecord
   def conversations
     {
       counts: target_investors.group_by(&:stage).transform_values(&:count),
-      total: target_investors.count,
+      total: target_investors.size,
       recents: target_investors.order(created_at: :desc).limit(3).pluck(:firm_name),
     }
   end

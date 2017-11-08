@@ -7,11 +7,16 @@ module GoogleCloud
     end
 
     def get(path, fname)
-      @bucket.file(path).download(fname)
+      FileUtils.mkdir_p File.dirname(fname)
+      @bucket.file(path).download(fname.try(:to_path) || fname)
+    end
+
+    def delete(path)
+      @bucket.file(path).delete
     end
 
     def put(fname, path)
-      @bucket.create_file(fname, path)
+      @bucket.create_file(fname.try(:to_path) || fname, path)
     end
 
     def self.client

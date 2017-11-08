@@ -4,6 +4,7 @@ class TargetInvestor < ApplicationRecord
 
   belongs_to :investor, counter_cache: true
   belongs_to :founder
+  belongs_to :competitor
 
   INVESTOR_FIELDS = %w(firm_name first_name last_name)
 
@@ -33,10 +34,11 @@ class TargetInvestor < ApplicationRecord
   enum stage: STAGES.keys
 
   validates :investor, uniqueness: { scope: [:founder], allow_nil: true }
+  validates :first_name, uniqueness: { scope: [:last_name, :firm_name, :founder], allow_nil: true }
   validates :founder, presence: true
   validates :stage, presence: true
 
-  before_save :record_stage_change, :check_investor
+  before_save :record_stage_change, :check_investor, :check_competitor
   after_commit :fetch_email!, on: :create
 
   sort :industry
@@ -126,7 +128,7 @@ class TargetInvestor < ApplicationRecord
     super options.reverse_merge(
       only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name],
       methods: [:can_intro?, :intro_request, :overlap, :full_name, :title],
-      include: { investor: { only: [:id, :first_name, :last_name, :photo] } },
+      include: { investor: { only: [:id, :first_name, :last_name, :photo], include: [:competitor] } },
     )
   end
 
@@ -154,6 +156,12 @@ class TargetInvestor < ApplicationRecord
       .where.not(id: founder.existing_target_investor_ids - [self.investor_id])
       .limit(1)
     self.investor = investors.first
+  end
+
+  def check_competitor
+    return unless investor_fields_changed?
+    return unless investor.present? || firm_name.present?
+    self.competitor = investor.present? ? investor.competitor : Competitor.where(name: firm_name).first
   end
 
   def record_stage_change

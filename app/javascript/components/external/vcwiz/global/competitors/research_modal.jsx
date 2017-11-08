@@ -20,7 +20,11 @@ export default class ResearchModal extends React.Component {
 
   onTrackChange = id => update => {
     flush();
-    ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}});
+    if (this.props.onTrackChange) {
+      this.props.onTrackChange(update);
+    } else {
+      ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}});
+    }
   };
 
   onTabChange = i => {
@@ -29,13 +33,16 @@ export default class ResearchModal extends React.Component {
 
   renderHeading() {
     const { name, photo, hq, fund_type } = this.props.item;
+    const type = _.first(fund_type) && [
+      <span key="type">{CompetitorFundTypes[_.first(fund_type)]}</span>,
+      <span key="dot">·</span>,
+    ];
     return (
       <div>
         <ProfileImage src={photo} size={50} className="inline-image" />
         <div className="heading">{name}</div>
         <div className="subheading">
-          <span>{CompetitorFundTypes[_.first(fund_type)]}</span>
-          <span>·</span>
+          {type || null}
           <span>{hq}</span>
         </div>
       </div>
@@ -126,11 +133,11 @@ export default class ResearchModal extends React.Component {
   renderTop() {
     return (
       <Row>
-        <Column large={9}>
+        <Column large={8}>
           {this.renderHeading()}
           {this.renderCompetitorInfo()}
         </Column>
-        <Column large={2} offsetOnLarge={1}>
+        <Column large={3} offsetOnLarge={1}>
           {this.renderCompetitorSocial()}
         </Column>
       </Row>

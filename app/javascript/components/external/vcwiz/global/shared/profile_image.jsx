@@ -21,7 +21,7 @@ export default class ProfileImage extends React.Component {
       backgroundColor: `#${background}`,
       ...this.sizeStyle()
     };
-    return <div className="fallback" style={style}>{fallback}</div>;
+    return <div className="fallback" style={style}>{fallback || ''}</div>;
   }
 
   renderImage() {

@@ -50,7 +50,7 @@ export default class Lists extends React.Component {
   renderLoading() {
     return (
       <div className="text-center loading">
-        <Loader color="#2ADBC4" size={200} />
+        <Loader />
       </div>
     );
   }

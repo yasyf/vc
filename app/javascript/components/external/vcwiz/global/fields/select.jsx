@@ -29,6 +29,11 @@ class TetheredSelectWrapAsync extends ReactSelect.Async {
 TetheredSelectWrap.Async = TetheredSelectWrapAsync;
 
 export default class Select extends Input {
+  static defaultProps = {
+    ...Input.defaultProps,
+    clearable: false,
+  };
+
   onChange = (option) => {
     this.setState({value: option});
     this.props.onChange({[this.props.name]: option});
@@ -41,7 +46,7 @@ export default class Select extends Input {
   renderInput() {
     let Component = this.props.loadOptions ? TetheredSelectWrap.Async : TetheredSelectWrap;
     return (
-      <Component joinValues={true} clearable={false} instanceId={this.props.name} {...this.inputProps()} />
+      <Component joinValues={true} clearable={this.props.clearable} instanceId={this.props.name} {...this.inputProps()} />
     );
   }
 }

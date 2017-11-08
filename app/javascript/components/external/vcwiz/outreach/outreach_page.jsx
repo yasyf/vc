@@ -5,13 +5,19 @@ import {Column, Row} from 'react-foundation';
 import AddInvestorModal from './add_investor_modal';
 import { TargetInvestorsPath } from '../global/constants.js.erb';
 import {ffetch, replaceSort, timestamp} from '../global/utils';
+import ImportInvestorsModal from './import_investors_modal';
+
+const Modals = {
+  ADD: 'Add',
+  IMPORT: 'Import',
+};
 
 export default class OutreachPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isModalOpen: false,
+      openModal: null,
       resultsId: timestamp(),
       targets: this.props.targets,
       sort: props.sort,
@@ -24,7 +30,7 @@ export default class OutreachPage extends React.Component {
   };
 
   onModalClose = () => {
-    this.setState({isModalOpen: false});
+    this.setState({openModal: null});
   };
 
   onModalResult = update => {
@@ -39,29 +45,49 @@ export default class OutreachPage extends React.Component {
     })
   };
 
-  openModal = () => {
-    this.setState({isModalOpen: true});
+  openAddModal = () => {
+    this.setState({openModal: Modals.ADD});
+  };
+
+  openImportModal = () => {
+    this.setState({openModal: Modals.IMPORT});
   };
 
   renderModal() {
-    return (
-      <AddInvestorModal
-        isOpen={this.state.isModalOpen}
-        onClose={this.onModalClose}
-        onResult={this.onModalResult}
-      />
-    );
+    switch (this.state.openModal) {
+      case Modals.ADD:
+        return (
+          <AddInvestorModal
+            isOpen={true}
+            onClose={this.onModalClose}
+            onResult={this.onModalResult}
+          />
+        );
+      case Modals.IMPORT:
+        return (
+          <ImportInvestorsModal
+            isOpen={true}
+            onClose={this.onModalClose}
+            onResult={this.onModalResult}
+          />
+        );
+      default:
+        return null;
+    }
   }
 
   renderHeader() {
     return (
       <Row>
         <Column large={3}>
-          <div className="title">Your Conversations</div>
+          <div className="title-wrapper">
+            <span className="title">Your Conversations</span>
+            <a onClick={this.openImportModal}>Import</a>
+          </div>
         </Column>
         <Column offsetOnLarge={6} large={3}>
           <div className="text-right">
-            <a onClick={this.openModal}>+ Add investor</a>
+            <a onClick={this.openAddModal}>+ Add investor</a>
           </div>
         </Column>
       </Row>

@@ -113,6 +113,7 @@ Rails.application.routes.draw do
             collection do
               post 'import'
               post 'bulk_import'
+              get 'poll/:id', action: :bulk_poll, as: :bulk_poll
             end
           end
 

@@ -9,7 +9,7 @@ export default class PartnerHeading extends React.Component {
     const { photo, role, competitor } = investor;
     return (
       <div>
-        <ProfileImage fallback={initials(investor)} src={photo} size={50} className="inline-image" />
+        <ProfileImage fallback={initials(investor)} src={photo || competitor.photo} size={50} className="inline-image" />
         <div className="heading">{fullName(investor)}</div>
         <div className="subheading">
           <span>{role ? `${role}, ${competitor.name}` : competitor.name}</span>

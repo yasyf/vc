@@ -53,8 +53,8 @@ export default class OverlayModal extends React.Component {
         isOpen={isOpen}
         onRequestClose={onClose}
         contentLabel={name}
-        overlayClassName="modal-overlay"
-        className={classNames('modal-content', className)}
+        overlayClassName={classNames('modal-overlay', `${name}-modal-overlay`)}
+        className={classNames('modal-content', `${name}-modal-content`, className)}
       >
         {modal ? modal : this.renderModal()}
       </Modal>

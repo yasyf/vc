@@ -48,7 +48,7 @@ export const CompetitorFundTypesInverse = Object.freeze(<%= Competitor::FUND_TYP
 
 export const CompetitorFundTypeOptions = Object.freeze(<%= hash_to_options(Competitor::FUND_TYPES).to_json %>);
 export const CompetitorIndustriesOptions = Object.freeze(<%= hash_to_options(Competitor::INDUSTRIES).to_json %>);
-export const ImportHeadersOptions = Object.freeze(<%= hash_to_options(Importers::External::TargetInvestors.headers).to_json %>);
+export const ImportHeadersOptions = Object.freeze(<%= hash_to_options(ImportTask.headers).to_json %>);
 
 // Paths
 

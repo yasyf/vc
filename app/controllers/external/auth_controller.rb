@@ -12,6 +12,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
       if session[:signup_data].present?
         @founder.create_company! session[:signup_data].with_indifferent_access
         session.delete(:signup_data)
+        @founder.ensure_target_investors!
       end
       cookies.permanent[:login_domain] = @founder.domain
       sign_in_and_redirect @founder, event: :authentication

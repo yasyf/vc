@@ -18,7 +18,7 @@ export default class Input extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.value && nextProps.value !== this.props.value) {
+    if (nextProps.value && nextProps.value !== this.props.value) {
       this.setState({value: nextProps.value});
     }
   }
@@ -36,7 +36,7 @@ export default class Input extends React.Component {
 
   renderInput() {
     return (
-      <input {...this.inputProps()} />
+      <input key="input" {...this.inputProps()} />
     );
   }
 

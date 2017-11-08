@@ -57,7 +57,7 @@ export const StorageRestoreStateKey = 'RestoreState';
 
 // Options
 
-export const ImportHeadersOptions = Object.freeze(<%= hash_to_options(Importers::External::TargetInvestors.headers).to_json %>);
+export const ImportHeadersOptions = Object.freeze(<%= hash_to_options(ImportTask.headers).to_json %>);
 
 // API Paths
 
@@ -77,6 +77,7 @@ export const InvestorsPath = idPath('<%= external_api_v1_investor_path(id: 'ID')
 export const TargetInvestorsPath = idPath('<%= external_api_v1_target_investor_path(id: 'ID') %>');
 export const TargetInvestorsImportPath = '<%= import_external_api_v1_target_investors_path %>';
 export const TargetInvestorsBulkImportPath = '<%= bulk_import_external_api_v1_target_investors_path %>';
+export const TargetInvestorsBulkPollPath = idPath('<%= bulk_poll_external_api_v1_target_investors_path(id: 'ID') %>');
 export const IntroRequestsPath = '<%= external_api_v1_intro_path %>';
 export const FounderPath = '<%= external_api_v1_founder_path %>';
 export const FounderClickPath = '<%= click_external_api_v1_founder_path %>';

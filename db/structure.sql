@@ -50,6 +50,20 @@ COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs
 
 
 --
+-- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQL statements executed';
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -390,6 +404,45 @@ ALTER SEQUENCE founders_id_seq OWNED BY founders.id;
 
 
 --
+-- Name: import_tasks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE import_tasks (
+    id bigint NOT NULL,
+    founder_id bigint NOT NULL,
+    headers jsonb DEFAULT '"{}"'::jsonb,
+    samples jsonb[] DEFAULT '{}'::jsonb[],
+    complete boolean DEFAULT false NOT NULL,
+    header_row character varying[],
+    total integer,
+    imported integer,
+    error_message character varying,
+    errored jsonb[] DEFAULT '{}'::jsonb[],
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: import_tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE import_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: import_tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE import_tasks_id_seq OWNED BY import_tasks.id;
+
+
+--
 -- Name: intro_requests; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -697,9 +750,9 @@ CREATE TABLE news (
     id bigint NOT NULL,
     investor_id bigint,
     company_id bigint,
-    url character varying,
-    title character varying,
-    description text,
+    url character varying NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     published_at timestamp without time zone,
@@ -897,7 +950,8 @@ CREATE TABLE target_investors (
     industry character varying[],
     email character varying,
     fund_type character varying[],
-    priority character varying
+    priority character varying,
+    competitor_id bigint
 );
 
 
@@ -1026,7 +1080,7 @@ ALTER SEQUENCE tweets_id_seq OWNED BY tweets.id;
 
 CREATE TABLE universities (
     id bigint NOT NULL,
-    name character varying,
+    name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -1178,6 +1232,13 @@ ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::reg
 --
 
 ALTER TABLE ONLY founders ALTER COLUMN id SET DEFAULT nextval('founders_id_seq'::regclass);
+
+
+--
+-- Name: import_tasks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY import_tasks ALTER COLUMN id SET DEFAULT nextval('import_tasks_id_seq'::regclass);
 
 
 --
@@ -1383,6 +1444,14 @@ ALTER TABLE ONLY events
 
 ALTER TABLE ONLY founders
     ADD CONSTRAINT founders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: import_tasks import_tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY import_tasks
+    ADD CONSTRAINT import_tasks_pkey PRIMARY KEY (id);
 
 
 --
@@ -1776,6 +1845,13 @@ CREATE UNIQUE INDEX index_founders_on_twitter ON founders USING btree (twitter);
 
 
 --
+-- Name: index_import_tasks_on_founder_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_import_tasks_on_founder_id ON import_tasks USING btree (founder_id);
+
+
+--
 -- Name: index_intro_requests_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2007,6 +2083,13 @@ CREATE INDEX index_news_on_investor_id ON news USING btree (investor_id);
 
 
 --
+-- Name: index_news_on_url_and_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_news_on_url_and_investor_id ON news USING btree (url, investor_id);
+
+
+--
 -- Name: index_news_on_url_and_investor_id_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2074,6 +2157,20 @@ CREATE UNIQUE INDEX index_pitches_on_snapshot ON pitches USING btree (snapshot);
 --
 
 CREATE INDEX index_posts_on_investor_id ON posts USING btree (investor_id);
+
+
+--
+-- Name: index_target_investors_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_target_investors_on_competitor_id ON target_investors USING btree (competitor_id);
+
+
+--
+-- Name: index_target_investors_on_first_last_firm_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_target_investors_on_first_last_firm_name ON target_investors USING btree (first_name, last_name, firm_name, founder_id);
 
 
 --
@@ -2248,6 +2345,14 @@ ALTER TABLE ONLY cards
 
 
 --
+-- Name: import_tasks fk_rails_1705f4b9e0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY import_tasks
+    ADD CONSTRAINT fk_rails_1705f4b9e0 FOREIGN KEY (founder_id) REFERENCES founders(id);
+
+
+--
 -- Name: intro_requests fk_rails_203146869d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2381,6 +2486,14 @@ ALTER TABLE ONLY investors
 
 ALTER TABLE ONLY calendar_events
     ADD CONSTRAINT fk_rails_c3e3b9423b FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
+-- Name: target_investors fk_rails_c8ec711f83; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY target_investors
+    ADD CONSTRAINT fk_rails_c8ec711f83 FOREIGN KEY (competitor_id) REFERENCES competitors(id);
 
 
 --
@@ -2610,6 +2723,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171020212520'),
 ('20171023230210'),
 ('20171030065046'),
-('20171030181615');
+('20171030181615'),
+('20171107012911'),
+('20171107111143'),
+('20171108005014');
 
 

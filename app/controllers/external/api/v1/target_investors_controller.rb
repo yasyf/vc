@@ -10,11 +10,10 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   filter %w(investor.email investor.comments)
 
   def index
-    current_external_founder.ensure_target_investors!
     targets = current_external_founder
       .target_investors
       .includes(*INCLUDES)
-      .order(sort_params.present? ? order_sql_from_sort(sorts) : [:stage, id: :desc])
+      .order(sort_params.present? ? order_sql_from_sort(sorts) : [updated_at: :desc])
       .limit(limit)
       .offset(page * limit)
       .as_json
@@ -27,15 +26,20 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
     render_censored target
   end
 
+  def bulk_poll
+    render json: import_task
+  end
+
   def bulk_import
-    if bulk_import_params[:headers].present?
-      importer = Importers::External::TargetInvestors.new(session[:bulk_import_meta]['filename'], current_external_founder)
-      targets = importer.import! bulk_import_params[:headers], session[:bulk_import_meta]['header_row']
-      render_censored targets
+    if bulk_import_params[:id].present?
+      import_task.update! headers: bulk_import_params[:headers]
+      import_task.enqueue_import!
+      render json: import_task
     else
-      parsed, meta = Importers::External::TargetInvestors.new(bulk_import_params[:csv_file], current_external_founder).parse!
-      session[:bulk_import_meta] = meta
-      render json: parsed
+      import_task = current_external_founder.import_tasks.create!
+      import_task.file = bulk_import_params[:file]
+      import_task.enqueue_preview!
+      render json: import_task
     end
   end
 
@@ -73,8 +77,14 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
 
   private
 
+  def import_task
+    @import_task ||= ImportTask.find(params[:id]).tap do |import_task|
+      not_found unless import_task.founder == current_external_founder
+    end
+  end
+
   def bulk_import_params
-    params.permit(:csv_file, headers: {})
+    params.permit(:file, :id, headers: {})
   end
 
   def investor_params

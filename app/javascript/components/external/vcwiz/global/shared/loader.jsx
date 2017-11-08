@@ -1,6 +1,11 @@
 import React from 'react';
 
 export default class Loader extends React.Component {
+  static defaultProps = {
+    size: 200,
+    color: "#2ADBC4",
+  };
+
   constructor(props) {
     super(props);
 

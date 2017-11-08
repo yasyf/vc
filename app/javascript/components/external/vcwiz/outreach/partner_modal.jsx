@@ -1,13 +1,14 @@
 import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import PartnerTab from '../global/competitors/partner_tab';
+import ResearchModal from '../global/competitors/research_modal';
 
 export default class PartnerModal extends OverlayModal {
   onTrackChange = update => {
     this.props.onResult({stage: update.track.value}, true);
   };
 
-  renderTop() {
+  investor() {
     let { investor, stage } = this.props.item;
     if (!investor) {
       let { firm_name, first_name, last_name, role } = this.props.item;
@@ -23,23 +24,41 @@ export default class PartnerModal extends OverlayModal {
         },
       };
     }
+    return investor;
+  }
+
+  competitor() {
+    const investor = this.investor();
+    const { competitor } = investor;
+    return {
+      partners: [investor],
+      ...competitor,
+    };
+  }
+
+  renderResearch() {
+    const { item, ...rest } = this.props;
     return (
-      <PartnerTab investor={investor} onTrackChange={this.onTrackChange} />
+      <ResearchModal {...rest} item={this.competitor()} onTrackChange={this.onTrackChange} />
     );
   }
 
-  renderBottom() {
-    return null;
-  }
-
-  render() {
+  renderPartner() {
     return (
       <OverlayModal
         name="partner"
-        top={this.renderTop()}
-        bottom={this.renderBottom()}
+        top={<PartnerTab investor={this.investor()} onTrackChange={this.onTrackChange} />}
+        bottom={null}
         {...this.props}
       />
     );
+  }
+
+  render() {
+    if (this.props.item.investor) {
+      return this.renderResearch();
+    } else {
+      return this.renderPartner();
+    }
   }
 }
