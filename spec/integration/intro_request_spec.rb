@@ -35,7 +35,7 @@ RSpec.describe 'intro request', type: :request do
     expect(mail.body.encoded).to include(@founder.first_name)
     expect(mail.body.encoded).to include(@investor.first_name)
     expect(mail.body.encoded).to include(@company.description)
-    expect(mail.body.encoded).to include(external_vcfinder_opt_in_path)
+    expect(mail.body.encoded).to include(external_vcwiz_opt_in_path)
     expect(mail.body.encoded).to include(IntroRequest.last.token)
   end
 
@@ -43,7 +43,7 @@ RSpec.describe 'intro request', type: :request do
     intro_request = FactoryBot.create(:intro_request, founder: @founder, company: @company, investor: @investor)
 
     perform_enqueued_jobs do
-      get external_vcfinder_opt_in_path, params: {
+      get external_vcwiz_opt_in_path, params: {
         optin: true,
         accept: true,
         token: intro_request.token,

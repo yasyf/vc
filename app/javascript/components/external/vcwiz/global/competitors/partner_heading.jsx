@@ -1,7 +1,6 @@
 import React from 'react';
 import ProfileImage from '../shared/profile_image';
-import {initials} from '../utils';
-import {fullName} from '../../../vcfinder/utils';
+import {fullName, initials} from '../utils';
 
 export default class PartnerHeading extends React.Component {
   render() {

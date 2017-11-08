@@ -38,17 +38,6 @@ Rails.application.routes.draw do
         get 'auth/callback', to: 'auth#create'
       end
 
-      scope :vcfinder, controller: 'vc_finder', as: :vcfinder do
-        root action: 'index'
-        get 'login'
-        get 'admin'
-
-        scope :intro do
-          get 'opt_in'
-          get 'decide'
-        end
-      end
-
       scope controller: 'vcwiz', as: :vcwiz do
         root action: 'index'
         get 'discover'

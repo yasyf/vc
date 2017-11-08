@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'vcfinder request', type: :request do
+RSpec.describe 'vcwiz request', type: :request do
   before do
     @company = FactoryBot.create(:company, :verified, :with_external)
     @founder = FactoryBot.create(:founder, companies: [@company])
@@ -10,7 +10,7 @@ RSpec.describe 'vcfinder request', type: :request do
   end
 
   it 'renders the react component' do
-    get external_vcfinder_root_path
+    get external_vcwiz_root_path
     assert_select 'div[data-react-class=VCFinder]'
   end
 

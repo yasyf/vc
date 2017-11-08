@@ -13,7 +13,7 @@ Hey <%= @investor.first_name %>!
 </p>
 
 <p>
-  Click <a href="<%= external_vcfinder_opt_in_url(optin: true, accept: true, token: @request.token) %>">here</a> to opt-in to VCWiz intros, and to accept <%= @founder.name %>'s request.<br>
-  Click <a href="<%= external_vcfinder_opt_in_url(optin: true, accept: false, token: @request.token) %>">here</a> to opt-in, but decline the intro request for <%= @company.name %>.<br>
-  Click <a href="<%= external_vcfinder_opt_in_url(optin: false, accept: false, token: @request.token) %>">here</a> if you'd rather not get intro requests through VCWiz.<br>
+  Click <a href="<%= external_vcwiz_opt_in_url(optin: true, accept: true, token: @request.token) %>">here</a> to opt-in to VCWiz intros, and to accept <%= @founder.name %>'s request.<br>
+  Click <a href="<%= external_vcwiz_opt_in_url(optin: true, accept: false, token: @request.token) %>">here</a> to opt-in, but decline the intro request for <%= @company.name %>.<br>
+  Click <a href="<%= external_vcwiz_opt_in_url(optin: false, accept: false, token: @request.token) %>">here</a> if you'd rather not get intro requests through VCWiz.<br>
 </p>
