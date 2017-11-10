@@ -4,6 +4,7 @@ import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import Dimensions from 'react-dimensions';
 import Storage from './storage.js.erb';
+import { FounderEventNames, FounderEventPath } from './constants.js.erb';
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
@@ -182,4 +183,11 @@ export const replaceSort = (key, direction, oldSort) => {
   const keys = Object.keys(oldSort);
   const base = _.zipObject(keys, _.times(keys.length, _.constant(0)));
   return extend(base, {[key]: direction});
+};
+
+export const sendEvent = (name, ...args) => {
+  if (!FounderEventNames.includes(name)) {
+    throw new Error(`invalid event ${name}`);
+  }
+  return ffetch(FounderEventPath, 'POST', {event: {name, args}});
 };

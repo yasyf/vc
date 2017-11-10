@@ -34,11 +34,13 @@ let idPath = function(path){
 // Misc
 
 export const StoragePrefix = '<%= Rails.application.class.parent_name %>::vcwiz';
-export const SortDirection = {
+export const SortDirection = Object.freeze({
   Asc: 1,
   Desc: -1,
   Natural: 0,
-};
+});
+
+export const FounderEventNames = Object.freeze(<%= Founder.event_names.to_json %>);
 
 // Keys
 
@@ -80,7 +82,7 @@ export const TargetInvestorsBulkImportPath = '<%= bulk_import_external_api_v1_ta
 export const TargetInvestorsBulkPollPath = idPath('<%= bulk_poll_external_api_v1_target_investors_path(id: 'ID') %>');
 export const IntroRequestsPath = '<%= external_api_v1_intro_path %>';
 export const FounderPath = '<%= external_api_v1_founder_path %>';
-export const FounderClickPath = '<%= click_external_api_v1_founder_path %>';
+export const FounderEventPath = '<%= event_external_api_v1_founder_path %>';
 
 // Navigation Paths
 

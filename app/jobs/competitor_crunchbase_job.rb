@@ -35,6 +35,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (team = cb_fund.team).present?
       team.each do |job|
+        next unless job['relationships']['person'].present?
         Investor.from_crunchbase( job['relationships']['person']['properties']['permalink'])
       end
     end

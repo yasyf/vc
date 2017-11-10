@@ -3,7 +3,7 @@ import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import {ffetch, flush, fullName, withDots} from '../utils';
+import {ffetch, flush, fullName, sendEvent, withDots} from '../utils';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
@@ -16,6 +16,12 @@ export default class ResearchModal extends React.Component {
     this.state = {
       tab: null,
     };
+  }
+
+  componentDidMount() {
+    if (this.props.item.id) {
+      sendEvent('competitor_clicked', this.props.item.id);
+    }
   }
 
   onTrackChange = id => update => {
@@ -83,7 +89,10 @@ export default class ResearchModal extends React.Component {
 
     return (
       <div className="competitor-info">
-        <p className="description" dangerouslySetInnerHTML={{ __html: this.converter.makeHtml(description) }} />
+        <div
+          className="description scroll-shadow"
+          dangerouslySetInnerHTML={{ __html: this.converter.makeHtml(description) }}
+        />
         {this.renderIndustries()}
         {this.renderInvestments()}
       </div>

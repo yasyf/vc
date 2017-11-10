@@ -74,7 +74,7 @@ module Http::Crunchbase
     end
 
     def website_of_type(type)
-      websites&.find { |site| site['properties']['website_type'] == type }
+      websites&.find { |site| site['properties'].present? && site['properties']['website_type'] == type }
     end
 
     def websites

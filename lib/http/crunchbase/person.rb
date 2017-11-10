@@ -45,7 +45,7 @@ module Http::Crunchbase
       %w(jobs advisory_roles).flat_map do |field|
         jobs = get_in 'relationships', field, multi: true
         if jobs.present?
-          jobs.map { |job| job['relationships']['organization']['properties'].slice('name', 'permalink') }
+          jobs.map { |job| job['relationships']['organization']['properties'] }.compact.map { |props| props.slice('name', 'permalink') }
         else
           []
         end

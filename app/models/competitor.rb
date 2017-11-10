@@ -128,7 +128,7 @@ class Competitor < ApplicationRecord
     end
   end
 
-  def self.from_crunchbase!(crunchbase_id, name, domain = nil)
+  def self.from_crunchbase!(crunchbase_id, name)
     found = where(crunchbase_id: crunchbase_id).or(where(name: name)).first
     found = create!(crunchbase_id: crunchbase_id, name: name) unless found.present?
     found.tap do |competitor|

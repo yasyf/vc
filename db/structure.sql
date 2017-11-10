@@ -2083,13 +2083,6 @@ CREATE INDEX index_news_on_investor_id ON news USING btree (investor_id);
 
 
 --
--- Name: index_news_on_url_and_investor_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_news_on_url_and_investor_id ON news USING btree (url, investor_id);
-
-
---
 -- Name: index_news_on_url_and_investor_id_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2726,6 +2719,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171030181615'),
 ('20171107012911'),
 ('20171107111143'),
-('20171108005014');
+('20171108005014'),
+('20171110185838');
 
 

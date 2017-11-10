@@ -107,7 +107,7 @@ Rails.application.routes.draw do
           end
 
           resource :founder do
-            post 'click'
+            post 'event'
           end
         end
       end

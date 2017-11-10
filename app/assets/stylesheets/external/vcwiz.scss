@@ -32,6 +32,17 @@ html, body, .full-screen {
   height: 100%;
 }
 
+.scroll-shadow {
+  background:
+          linear-gradient(white 30%, hsla(0,0%,100%, 0)),
+          linear-gradient(hsla(0,0%,100%,0) 10px, white 70%) bottom,
+          radial-gradient(at top, rgba(0,0,0,0.2), transparent 70%),
+          radial-gradient(at bottom, rgba(0,0,0,0.2), transparent 70%) bottom;
+  background-repeat: no-repeat;
+  background-size: 100% 20px, 100% 20px, 100% 10px, 100% 10px;
+  background-attachment: local, local, scroll, scroll;
+}
+
 html, body, .full-screen, #vcwiz, h1, h2, h3, h4, h5, h6, input {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
@@ -926,6 +937,10 @@ mark.highlighter {
 }
 
 .research-modal {
+  &-top {
+    padding-bottom: 20px;
+  }
+
   .tabs-component {
     .tab-list-wrapper {
       overflow: scroll;
@@ -967,7 +982,9 @@ mark.highlighter {
 
   .competitor-info {
     .description {
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
+      max-height: 30vh;
+      overflow: auto;
     }
   }
 }

@@ -4,6 +4,10 @@ import Truncate from 'react-truncate';
 export default class ReadMore extends React.Component {
   static defaultProps = {
     onTruncate: _.noop,
+    block: false,
+    lines: 2,
+    more: 'more',
+    less: 'less',
   };
 
   constructor(props) {
@@ -30,33 +34,34 @@ export default class ReadMore extends React.Component {
     const {less} = this.props;
     const {expanded, truncated} = this.state;
     if (!truncated && expanded) {
-      return  <span> <a href='#' onClick={this.toggleLines}>{less}</a></span>;
+      return  <span key="less"><a href='#' onClick={this.toggleLines}>{less}</a></span>;
     } else {
       return null;
     }
   }
 
-  render() {
+  renderReadMore() {
     const {children, more, lines} = this.props;
     const {expanded} = this.state;
 
-    return (
-      <span>
-        <Truncate
-          lines={!expanded && lines}
-          ellipsis={<span>.. <a href='#' onClick={this.toggleLines}>{more}</a></span>}
-          onTruncate={this.handleTruncate}
-        >
-          {children}
-        </Truncate>
-        {this.renderLess()}
-      </span>
-    );
+    return _.compact([
+      <Truncate
+        lines={!expanded && lines}
+        ellipsis={<span>.. <a href='#' onClick={this.toggleLines}>{more}</a></span>}
+        onTruncate={this.handleTruncate}
+        key="truncate"
+      >
+        {children}
+      </Truncate>,
+      this.renderLess()
+    ]);
+  }
+
+  render() {
+    if (this.props.block) {
+      return <div>{this.renderReadMore()}</div>;
+    } else {
+      return <span>{this.renderReadMore()}</span>;
+    }
   }
 }
-
-ReadMore.defaultProps = {
-  lines: 2,
-  more: 'more',
-  less: 'less'
-};
