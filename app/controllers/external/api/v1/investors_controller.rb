@@ -67,7 +67,9 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   def update
     investor = Investor.find(params[:id])
     if (stage = investor_params[:stage]).present?
-      TargetInvestor.from_investor!(current_external_founder, investor).update! stage: stage
+      target = TargetInvestor.from_investor!(current_external_founder, investor)
+      current_external_founder.investor_targeted! investor.id
+      target.update! stage: stage
     end
     render_censored investor
   end

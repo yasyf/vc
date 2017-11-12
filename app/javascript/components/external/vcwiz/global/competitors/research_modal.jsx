@@ -16,6 +16,7 @@ export default class ResearchModal extends React.Component {
     this.state = {
       tab: null,
     };
+    this.firstTabChange = true;
   }
 
   componentDidMount() {
@@ -35,6 +36,11 @@ export default class ResearchModal extends React.Component {
 
   onTabChange = i => {
     this.setState({tab: i});
+    if (this.firstTabChange) {
+      this.firstTabChange = false;
+    } else {
+      sendEvent('investor_clicked', this.props.item.partners[i].id);
+    }
   };
 
   renderHeading() {

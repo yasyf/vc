@@ -21,7 +21,7 @@ class Founder < ApplicationRecord
   after_commit :start_augment_job, on: :create
   after_commit :start_enhance_job, on: :update
 
-  action :competitor_clicked, :investor_clicked
+  action :competitor_clicked, :investor_clicked, :investor_targeted
 
   devise
 
