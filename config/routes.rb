@@ -90,6 +90,7 @@ Rails.application.routes.draw do
           resource :message, only: [:create] do
             post 'open'
             post 'click'
+            post 'demo'
           end
 
           resource :pubsub, only: [] do

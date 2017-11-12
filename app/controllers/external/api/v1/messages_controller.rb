@@ -27,6 +27,11 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     head :ok
   end
 
+  def demo
+    TargetInvestor.from_addr(founder_from_from, ENV['DEMO_EMAIL'])&.investor_opened! if founder_from_from.present?
+    head :ok
+  end
+
   def open
     to_targets.each { |t| t.investor_opened! intro_request&.id } if founder_from_from.present?
     return head :ok unless intro_request.present?
