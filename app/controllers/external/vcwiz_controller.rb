@@ -23,6 +23,7 @@ class External::VcwizController < External::ApplicationController
     props(
       competitors: filtered(sort: sorts, limit: 20, meta: true),
       count: filtered_count,
+      suggestions: filtered_suggestions,
       filters: full_filters,
       options: options_params.to_h,
       sort: sorts,

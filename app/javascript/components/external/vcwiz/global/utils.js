@@ -130,8 +130,10 @@ export const remove = function(items, item) {
   return update(items, {$splice: [[index, 1]]});
 };
 
-export const buildQuery = (row, context = '') =>
-  _.compact(_.map(Object.keys(row), k => {
+export const buildQuery = (row, context = '') => {
+  const keys = Object.keys(row);
+  keys.sort();
+  return _.compact(_.map(keys, k => {
     let val = _.get(row, k);
     if (_.isObjectLike(val)) {
       return buildQuery(val, k);
@@ -143,7 +145,8 @@ export const buildQuery = (row, context = '') =>
     } else {
       return `${k}=${val}`;
     }
-  })).join('&');
+  })).join('&')
+};
 
 export const nullOrUndef = (val) => val === undefined || val === null;
 

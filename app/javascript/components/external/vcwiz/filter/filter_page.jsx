@@ -3,7 +3,10 @@ import VCWiz from '../vcwiz';
 import Results from '../global/competitors/results';
 import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import {
-  flattenFilters, buildQuery, extend, timestamp,
+  flattenFilters,
+  buildQuery,
+  extend,
+  timestamp,
   replaceSort,
 } from '../global/utils';
 import createHistory from 'history/createBrowserHistory'
@@ -25,6 +28,7 @@ export default class FilterPage extends React.Component {
       competitors: props.competitors,
       count: props.count,
       filters: flattenFilters(props.filters),
+      suggestions: props.suggestions,
       search: props.search,
       options: props.options,
       sort: props.sort,
@@ -51,8 +55,8 @@ export default class FilterPage extends React.Component {
     }
   };
 
-  onFiltersChange = (filters, count) => {
-    this.setState({filters, count, resultsId: timestamp(), competitors: null});
+  onFiltersChange = (filters, count, suggestions) => {
+    this.setState({filters, count, suggestions, resultsId: timestamp(), competitors: null});
     this.pushState();
   };
 
@@ -96,10 +100,12 @@ export default class FilterPage extends React.Component {
   }
 
   renderSwitch(name, label) {
+    const { options, suggestions } = this.state;
     return (
       <Switch
         name={name}
-        value={this.state.options[name] || false}
+        value={options[name]}
+        highlight={suggestions.includes(name)}
         onChange={this.onOptionChange('name')}
         label={label}
       />

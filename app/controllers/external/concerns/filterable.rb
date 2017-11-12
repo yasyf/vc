@@ -25,7 +25,14 @@ module External::Concerns
     end
 
     def filtered_count
-      Competitor.filtered_count(current_external_founder, request, competitor_params)
+      @filtered_count ||= Competitor.filtered_count(current_external_founder, request, competitor_params)
+    end
+
+    def filtered_suggestions
+      {
+        related: filter_params[:companies].present? && filtered_count == 0,
+        company_cities: filter_params[:location].present? && filtered_count == 0,
+      }.select { |_, v| v }.keys
     end
 
     def list_from_name

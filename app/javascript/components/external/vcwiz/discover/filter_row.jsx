@@ -30,14 +30,14 @@ export default class FilterRow extends React.Component {
     const {path, query} = this.props.countSource;
     let built = buildQuery({...query, ...filters});
     if (built) {
-      ffetch(`${path}?${built}`).then(({count}) => {
-        this.setState({numInvestors: count});
-        this.props.onChange(filters, count);
+      ffetch(`${path}?${built}`).then(({count, suggestions}) => {
+        this.setState({numInvestors: count, suggestions});
+        this.props.onChange(filters, count, suggestions);
       });
     } else {
-      ffetch(path).then(({count}) => {
-        this.setState({numInvestors: null});
-        this.props.onChange({}, count);
+      ffetch(path).then(({count, suggestions}) => {
+        this.setState({numInvestors: null, suggestions});
+        this.props.onChange({}, count, suggestions);
       });
     }
   }

@@ -22,7 +22,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def filter_count
-    render json: { count: filtered_count }
+    render json: { count: filtered_count, suggestions: filtered_suggestions }
   end
 
   def locations

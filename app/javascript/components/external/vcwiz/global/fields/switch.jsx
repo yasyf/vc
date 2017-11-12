@@ -1,11 +1,13 @@
 import React from 'react';
 import Input from './input';
+import classNames from 'classnames';
 
 export default class Switch extends Input {
   static defaultProps = {
     type: 'checkbox',
     yesLabel: 'Yes',
     noLabel: 'No',
+    highlight: false,
   };
 
   onClick = () => {
@@ -17,7 +19,7 @@ export default class Switch extends Input {
   onBlur = _.noop;
 
   renderInput() {
-    let {onBlur, yesLabel, noLabel, label, ...rest} = this.inputProps();
+    let {onBlur, yesLabel, noLabel, label, highlight, ...rest} = this.inputProps();
     let checked = !!this.state.value;
     return (
       <div>
@@ -28,7 +30,7 @@ export default class Switch extends Input {
             checked={checked}
             {...rest}
           />
-          <label className="switch-paddle" htmlFor={this.props.name} onClick={this.onClick}>
+          <label className={classNames('switch-paddle', {'glow-highlight': highlight})} htmlFor={this.props.name} onClick={this.onClick}>
             <span className={`switch-${checked ? 'active' : 'inactive'}`}>
               {checked ? yesLabel : noLabel}
             </span>

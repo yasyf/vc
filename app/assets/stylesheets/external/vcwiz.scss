@@ -43,6 +43,10 @@ html, body, .full-screen {
   background-attachment: local, local, scroll, scroll;
 }
 
+.glow-highlight {
+  box-shadow: 0 0 15px 2px $success-dark;
+}
+
 html, body, .full-screen, #vcwiz, h1, h2, h3, h4, h5, h6, input {
   font-family: 'Circular Std', CircularStd-Book, "Helvetica Neue", sans-serif;
 }
