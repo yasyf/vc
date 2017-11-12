@@ -18,6 +18,7 @@ class TargetInvestor < ApplicationRecord
     fund_type: [:seed],
     note: 'met through Jon Doe',
     last_response: 1.day.ago,
+    email: ENV['DEMO_EMAIL'],
   }
 
   RAW_STAGES = {

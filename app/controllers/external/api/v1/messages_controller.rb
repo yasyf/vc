@@ -73,7 +73,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       if create_params[:Cc].present?
         tos += create_params[:Cc].split(', ').map { |s| Mail::Address.new(s) }
       end
-      tos.delete_if { |a| a.domain == ENV['MAILGUN_EMAIL'].split('@').last }
+      tos.delete_if { |a| a.address == ENV['MAILGUN_EMAIL'] }
       tos
     end
   end
