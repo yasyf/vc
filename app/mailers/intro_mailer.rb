@@ -1,8 +1,6 @@
-class IntroMailer < ApplicationMailer
+class IntroMailer < ExternalMailer
   helper :intro_mail
-  default from: "VCWiz <#{ENV['MAILGUN_EMAIL']}>"
   after_action :add_headers!
-  after_action :set_mailgun_options!
 
   def opt_in_email(request)
     set_instance_vars! request
@@ -42,22 +40,6 @@ class IntroMailer < ApplicationMailer
       'X-Mailgun-Recipient-Variables': Array.wrap(mail.to).map { |to| [to, vars] }.to_h.to_json,
       'X-Mailgun-Variables': vars.to_json,
     })
-  end
-
-  def set_mailgun_options!
-    mail.delivery_method.settings.merge!(
-      address:              'smtp.mailgun.org',
-      port:                 587,
-      domain:               ENV['MAILGUN_EMAIL'].split('@').last,
-      user_name:            ENV['MAILGUN_EMAIL'],
-      password:             ENV['MAILGUN_PASSWORD'],
-      authentication:       'plain',
-      enable_starttls_auto: true
-    )
-  end
-
-  def named_email(person)
-    "#{person.name} <#{person.email}>"
   end
 
   def set_instance_vars!(request)

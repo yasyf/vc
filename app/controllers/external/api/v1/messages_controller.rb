@@ -28,7 +28,9 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def demo
-    TargetInvestor.from_addr(founder_from_from, ENV['DEMO_EMAIL'])&.investor_opened! if founder_from_from.present?
+    return head :not_acceptable unless (founder = founder_from_from).present?
+    target = TargetInvestor.from_addr!(founder, ENV['DEMO_EMAIL']).tap(&:investor_opened!)
+    DemoMailer.demo_email(founder, target, demo_params[:subject]).deliver_later
     head :ok
   end
 
@@ -222,6 +224,10 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def create_params
     params.permit(:To, :From, :Cc, 'stripped-text', 'body-plain', 'message-headers')
+  end
+
+  def demo_params
+    params.permit(:subject)
   end
 
   def check_signature

@@ -1,4 +1,4 @@
-class ErrorMailer < ApplicationMailer
+class ErrorMailer < InternalMailer
   def datetime_not_found_email(to, list_name, card_name, card_link)
     @list_name = list_name
     @card_name = card_name

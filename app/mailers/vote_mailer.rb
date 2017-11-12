@@ -1,4 +1,4 @@
-class VoteMailer < ApplicationMailer
+class VoteMailer < InternalMailer
   def upcoming_pitch_email(to, company)
     @company = company
     mail to: to, subject: "#{SUBJECT_HEADER} [#{company.team.name.titleize}] #{company.name} Upcoming Pitch"
