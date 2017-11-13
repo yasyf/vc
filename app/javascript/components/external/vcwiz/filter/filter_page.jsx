@@ -1,5 +1,4 @@
 import React from 'react';
-import VCWiz from '../vcwiz';
 import Results from '../global/competitors/results';
 import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import {
@@ -9,16 +8,17 @@ import {
   timestamp,
   replaceSort,
 } from '../global/utils';
-import createHistory from 'history/createBrowserHistory'
 import Search from '../discover/search';
 import {Row, Column} from 'react-foundation';
 import Switch from '../global/fields/switch';
-import { canUseDOM } from 'exenv';
 import FilterRow from '../discover/filter_row';
+import SectionWithDims from '../global/shared/section_with_dims';
 
 export default class FilterPage extends React.Component {
   static defaultProps = {
-    advanced: true,
+    onQueryChange: _.noop,
+    showFilters: true,
+    showSearch: true,
   };
 
   constructor(props) {
@@ -34,10 +34,10 @@ export default class FilterPage extends React.Component {
       sort: props.sort,
       resultsId: timestamp(),
     };
+  }
 
-    if (canUseDOM) {
-      this.history = createHistory();
-    }
+  componentDidMount() {
+    this.props.onQueryChange(this.query(), this.state.count);
   }
 
   queryParams() {
@@ -49,15 +49,9 @@ export default class FilterPage extends React.Component {
     return buildQuery(this.queryParams());
   }
 
-  pushState = () => {
-    if (this.history) {
-      this.history.push({search: `?${this.query()}`});
-    }
-  };
-
   onFiltersChange = (filters, count, suggestions) => {
     this.setState({filters, count, suggestions, resultsId: timestamp(), competitors: null});
-    this.pushState();
+    this.props.onQueryChange(this.query(), count);
   };
 
   onSearchChange = (search) => {
@@ -74,29 +68,49 @@ export default class FilterPage extends React.Component {
     this.setState({options});
   };
 
-  renderSearchAndFilters() {
+  renderFilterRow() {
     return (
-      <div className="search-and-filters">
+      <FilterRow
+        showButton={false}
+        showLabels={true}
+        onChange={this.onFiltersChange}
+        initialFilters={this.props.filters}
+        initialCount={this.props.count}
+        countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
+      />
+    );
+  }
+
+  renderSearch() {
+    return (
+      <Search
+        value={this.props.search}
+        onChange={this.onSearchChange}
+      />
+    );
+  }
+
+  renderSearchAndFilters() {
+    const { showFilters, showSearch } = this.props;
+    if (showFilters && showSearch) {
+      return (
         <Row>
           <Column large={9}>
-            <FilterRow
-              showButton={false}
-              showLabels={true}
-              onChange={this.onFiltersChange}
-              initialFilters={this.props.filters}
-              initialCount={this.props.count}
-              countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
-            />
+            {this.renderFilterRow()}
           </Column>
           <Column large={3}>
-            <Search
-              value={this.props.search}
-              onChange={this.onSearchChange}
-            />
+            {this.renderSearch()}
           </Column>
         </Row>
-      </div>
-    );
+      );
+    } else if (showFilters) {
+      return <Row isColumn>{this.renderFilterRow()}</Row>;
+    } else if (showSearch) {
+      return <Row isColumn>{this.renderSearch()}</Row>;
+    } else {
+      return null;
+    }
+
   }
 
   renderSwitch(name, label) {
@@ -113,9 +127,6 @@ export default class FilterPage extends React.Component {
   }
 
   renderSwitches() {
-    if (!this.props.advanced) {
-      return null;
-    }
     return (
       <div className="option-switches">
         <Row>
@@ -137,10 +148,10 @@ export default class FilterPage extends React.Component {
     )
   }
 
-  renderFilterRow() {
+  renderHeader() {
     return (
       <div>
-        <Row className="wide-row">
+        <Row className="wide-row search-and-filters">
           {this.renderSearchAndFilters()}
         </Row>
         <Row className="wide-row">
@@ -150,34 +161,28 @@ export default class FilterPage extends React.Component {
     );
   }
 
-  renderHeader() {
-    return this.renderFilterRow();
-  }
-
   renderBody() {
     const { competitors, count, sort, resultsId } = this.state;
+    const { rowHeight, industryLimit, overflowY } = this.props;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
-      <div className="full-screen">
-        <Results
-          count={count}
-          competitors={competitors}
-          sort={sort}
-          source={source}
-          resultsId={resultsId}
-          onSort={this.onSort}
-        />
-      </div>
+        <SectionWithDims dimensionsKey="dimensions">
+          <Results
+            count={count}
+            competitors={competitors}
+            sort={sort}
+            source={source}
+            resultsId={resultsId}
+            rowHeight={rowHeight}
+            industryLimit={industryLimit}
+            overflowY={overflowY}
+            onSort={this.onSort}
+          />
+        </SectionWithDims>
     );
   }
 
   render() {
-    return (
-      <VCWiz
-        page="filter"
-        header={this.renderHeader()}
-        body={this.renderBody()}
-      />
-    );
+    return this.props.render(this.renderHeader(), this.renderBody());
   }
 }

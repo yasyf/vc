@@ -189,6 +189,9 @@ export const replaceSort = (key, direction, oldSort) => {
 };
 
 export const sendEvent = (name, ...args) => {
+  if (!isLoggedIn()) {
+    return;
+  }
   if (!FounderEventNames.includes(name)) {
     throw new Error(`invalid event ${name}`);
   }

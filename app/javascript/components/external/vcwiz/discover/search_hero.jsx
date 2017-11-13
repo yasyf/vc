@@ -1,60 +1,79 @@
 import React from 'react';
 import Search from './search';
 import {FilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
-import {buildQuery} from '../global/utils';
-import FilterRow from './filter_row';
+import Tabs from '../global/tabs/tabs';
+import FilterPage from '../filter/filter_page';
+import inflection from 'inflection';
 
 export default class SearchHero extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      filters: {},
-      search: null,
-    };
-  }
-
-  onFiltersChange = (filters) => {
-    this.setState({filters});
+  state = {
+    query: '',
+    count: 0,
   };
 
-  onSearchChange = (search) => {
-    this.setState({search});
+
+  onQueryChange = (query, count) => {
+    this.setState({query, count});
   };
 
-  queryParams() {
-    let { search, filters } = this.state;
-    return {search, ...filters};
+  renderViewAll() {
+    const { query, count } = this.state;
+    return (
+      <div className="view-all">
+        <a href={`${FilterPath}?${query}`}>
+          View {count !== 1 ? 'all' : null} {count || null} {inflection.inflect('results', count)}
+        </a>
+      </div>
+    );
   }
 
-  query() {
-    return buildQuery(this.queryParams());
+  renderBrowse() {
+    return (
+      <div>
+        <FilterPage
+          {...this.props}
+          onQueryChange={this.onQueryChange}
+          showSearch={false}
+          rowHeight={60}
+          industryLimit={2}
+          overflowY="hidden"
+          render={(header, body) => (
+            <div>
+              {header}
+              <div className="results">{body}</div>
+            </div>
+          )}
+        />
+        {this.renderViewAll()}
+      </div>
+    );
   }
 
-  onSubmit = () => {
-    window.location.href = `${FilterPath}?${this.query()}`;
-  };
+  renderSearch() {
+    return (
+      <div className="search-and-filters float-center">
+        <p className="or">or</p>
+        <Search onChange={this.onSearchChange} onSubmit={this.onSubmit} />
+      </div>
+    );
+  }
+
 
   render() {
     return (
-      <div className="text-center search-hero">
+      <div className="search-hero">
         <div className="welcome">
           <h3><b>Discover Seed-Stage Investors</b></h3>
           <p>
-            Discover the VCs that are relevant to your startup.
-            Research firms, and track your conversations with investors.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Aenean commodo viverra blandit. In hac habitasse platea dictumst.
+            Etiam mattis placerat augue ut scelerisque. In eget ultricies ipsum
           </p>
         </div>
-        <div className="search-and-filters float-center">
-          <FilterRow
-            showButton={!!this.query()}
-            onButtonClick={this.onSubmit}
-            onChange={this.onFiltersChange}
-            countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
-          />
-          <p className="or">or</p>
-          <Search onChange={this.onSearchChange} onSubmit={this.onSubmit} />
-        </div>
+        <Tabs
+          tabs={['Browse Investors']}
+          panels={[this.renderBrowse()]}
+        />
       </div>
     )
   }

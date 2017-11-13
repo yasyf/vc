@@ -335,9 +335,27 @@ i.reversed::before {
 }
 
 .search-hero {
-  padding-top: 75px;
-  width: 75vw;
+  padding-top: 50px;
+  width: 90vw;
   margin: 0 auto;
+
+  .welcome {
+    width: 65%;
+  }
+
+  .view-all {
+    border: 1px solid $light-grey;
+    border-top: 1px solid white;
+    padding: 1em;
+  }
+
+  .results {
+    height: 355px;
+
+    .fixedDataTableLayout_bottomShadow {
+      background: white;
+    }
+  }
 
   p {
     color: $grey;
@@ -345,11 +363,6 @@ i.reversed::before {
 
   .filters {
     padding-top: 25px;
-  }
-
-  .or {
-    padding-top: 20px;
-    padding-bottom: 5px;
   }
 }
 
@@ -382,7 +395,6 @@ input.placeholded {
     overflow: scroll;
     display: flex;
     flex-flow: column;
-    height: calc(100% - 85px);
   }
 
   &-header {
@@ -668,13 +680,13 @@ mark.highlighter {
   height: 100%;
 
   .image-text {
-    margin-left: 80px;
+    margin-left: 2.5em;
     width: calc(95% - 60px - 1rem);
   }
 
   .floating-image {
     position: absolute;
-    top: 20px;
+    top: 25%;
   }
 
   .header {
@@ -696,7 +708,7 @@ mark.highlighter {
   }
 
   .table-main {
-    border-color: $header-grey;
+    border-color: $light-grey;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
   }
@@ -714,6 +726,14 @@ mark.highlighter {
 
   .cell-wrapper {
     cursor: pointer;
+  }
+
+  .track-cell {
+    text-align: center;
+
+    .button {
+      width: 75%;
+    }
   }
 
   .company-cell {
@@ -1095,6 +1115,6 @@ mark.highlighter {
 
 // Hacks
 
-div.fixedDataTableRowLayout_rowWrapper > div > div > div:nth-child(2) {
+div.fixedDataTableRowLayout_rowWrapper > div.fixedDataTableLayout_header > div > div:nth-child(2) {
   background-color: $header-grey;
 }

@@ -14,6 +14,11 @@ import Header from '../cells/header';
 import PlaceholderCell from '../cells/placeholder_cell';
 
 export default class FixedTable extends React.Component {
+  static defaultProps = {
+    rowHeight: 100,
+    headerHeight: 50,
+  };
+
   onCellClick = name => (e, row) => {
     this.props.onCellClick(row, name);
   };
@@ -43,7 +48,7 @@ export default class FixedTable extends React.Component {
   };
 
   renderImageTextColumn = (key, name, props, flex = 1) => {
-    return this.renderColumn(key, name, ImageTextCell, props, undefined, flex);
+    return this.renderColumn(key, name, ImageTextCell, { size: this.props.rowHeight / 2 , ...props }, undefined, flex);
   };
 
   renderTextColumn = (key, name, props, flex = 1) => {
@@ -84,19 +89,21 @@ export default class FixedTable extends React.Component {
   };
 
   render() {
+    const { rowHeight, headerHeight, count, dimensions, overflowY } = this.props;
     return (
       <div className="fixed-table">
         <Table
-          rowHeight={100}
-          headerHeight={50}
-          rowsCount={this.props.count || 1}
-          width={this.props.dimensions.width}
-          height={this.props.dimensions.height}
+          rowHeight={rowHeight}
+          headerHeight={headerHeight}
+          rowsCount={count || 1}
+          width={dimensions.width}
+          height={dimensions.height}
           showScrollbarX={false}
           showScrollbarY={false}
+          overflowY={overflowY}
           className="table-main"
         >
-          {this.props.count ? this.renderColumns() : this.renderNullStateColumn()}
+          {count ? this.renderColumns() : this.renderNullStateColumn()}
         </Table>
       </div>
     );

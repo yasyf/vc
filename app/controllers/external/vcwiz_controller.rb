@@ -14,22 +14,19 @@ class External::VcwizController < External::ApplicationController
   def discover
     title 'Discover'
     component 'Discover'
+    params.merge!(
+      us_only: 'true',
+      fund_type: 'seed',
+      location: Util.city(request) || 'San Francisco',
+    )
+    result_props 5
     render_default
   end
 
   def filter
     title 'Filter'
     component 'Filter'
-    props(
-      competitors: filtered(sort: sorts, limit: 20, meta: true),
-      count: filtered_count,
-      suggestions: filtered_suggestions,
-      filters: full_filters,
-      options: options_params.to_h,
-      sort: sorts,
-      search: filter_params[:search],
-      advanced: advanced?
-    )
+    result_props 20
     render_default
   end
 
@@ -102,10 +99,6 @@ class External::VcwizController < External::ApplicationController
     redirect_to omniauth_path('google_external', hd: cookies[:login_domain] || '*')
   end
 
-  def advanced?
-    params[:advanced] == 'true' if params[:advanced].present?
-  end
-
   def optin?
     params[:optin] == 'true'
   end
@@ -129,5 +122,17 @@ class External::VcwizController < External::ApplicationController
       filters[:location] = arr_to_options(filter_params[:location].split(',')) if filter_params[:location].present?
       filters[:companies] = records_to_options(Company.find(filter_params[:companies].split(',')).map(&:as_json_search)) if filter_params[:companies].present?
     end
+  end
+
+  def result_props(limit)
+    props(
+      competitors: filtered(sort: sorts, limit: limit, meta: true),
+      count: filtered_count,
+      suggestions: filtered_suggestions,
+      filters: full_filters,
+      options: options_params.to_h,
+      sort: sorts,
+      search: filter_params[:search],
+    )
   end
 end

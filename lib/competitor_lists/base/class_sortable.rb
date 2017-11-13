@@ -8,6 +8,7 @@ module CompetitorLists::Base::ClassSortable
     track_status: "COALESCE(track_status, #{TargetInvestor::STAGES.length})",
     stage: "COALESCE(stage, #{TargetInvestor::STAGES.length})",
   }
+  LOGGED_IN_SORTS = %i(track_status stage)
 
   def order_sql_from_sort(sort)
     sort

@@ -6,7 +6,11 @@ module External::Concerns
     private
 
     def sorts
-      SORTS.keys.map { |x| [x, sort_params[x].to_i || 0] }.to_h
+      SORTS
+        .keys
+        .reject { |k| !external_founder_signed_in? && k.in?(LOGGED_IN_SORTS) }
+        .map { |x| [x, sort_params[x].to_i || 0] }
+        .to_h
     end
 
     def sort_params

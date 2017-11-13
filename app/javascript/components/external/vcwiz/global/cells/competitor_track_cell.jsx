@@ -13,9 +13,11 @@ export default class CompetitorTrackCell extends TrackCell {
       return super.renderValue();
     } else {
       return (
-        <Button onClick={this.onButtonClick} color={Colors.SUCCESS} className="fake-track-button">
-          ADD
-        </Button>
+        <div className="track-cell">
+          <Button onClick={this.onButtonClick} color={Colors.SUCCESS} className="fake-track-button">
+            ADD
+          </Button>
+        </div>
       );
     }
   }

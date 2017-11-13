@@ -8,11 +8,16 @@ import {ffetch, flush} from '../utils';
 import Store from '../store';
 
 class ResultsTable extends FixedTable {
+  static defaultProps = {
+    ...FixedTable.defaultProps,
+    industryLimit: 3,
+  };
+
   defaultMiddleColumns() {
     return [
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
       { type: 'text', key: 'hq', name: 'Location' },
-      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: 3 },
+      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: this.props.industryLimit },
     ]
   }
 

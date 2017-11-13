@@ -17,6 +17,7 @@ export default class Header extends React.Component {
   state = {
     loginOpen: false,
     loginStage: 0,
+    showIntro: true,
   };
 
   componentDidMount() {
@@ -115,7 +116,7 @@ export default class Header extends React.Component {
   }
 
   renderBar() {
-    if (isLoggedIn()) {
+    if (!this.props.showIntro || isLoggedIn()) {
       return null;
     }
     return (
