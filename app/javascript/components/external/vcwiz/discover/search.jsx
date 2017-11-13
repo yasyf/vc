@@ -17,7 +17,7 @@ export default class Search extends React.Component {
     return (
       <div className="search">
         <div className="line float-center">
-          <Icon name="fi-magnifying-glass" className='icon' />
+          <Icon name="fi-magnifying-glass icon reversed" />
           <PlaceholderInput
             value={this.props.value}
             placeholder="Search by Firm or Partner..."

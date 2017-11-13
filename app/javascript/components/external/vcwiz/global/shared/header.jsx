@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Badge,
   Button,
-  Colors,
   TopBar,
   TopBarLeft,
   TopBarRight,
@@ -11,6 +10,7 @@ import {DiscoverPath,OutreachPath} from '../constants.js.erb';
 import {isLoggedIn} from '../utils';
 import LoginModal from '../login/login_modal';
 import Actions from '../actions';
+import classNames from 'classnames';
 
 export default class Header extends React.Component {
   state = {
@@ -97,32 +97,48 @@ export default class Header extends React.Component {
     );
   }
 
+  renderBadge(icon) {
+    return <Badge><i className={`fi-${icon}`} /></Badge>;
+  }
+
+  renderBenefit(name, icon, heading, subheading) {
+    return (
+      <div className={classNames(name, 'benefit')}>
+        {this.renderBadge(icon)}
+        <div className="info">
+          <div className="heading">{heading}</div>
+          <div className="subheading">{subheading}</div>
+        </div>
+      </div>
+    );
+  }
+
   renderBar() {
     if (isLoggedIn()) {
       return null;
     }
     return (
       <TopBar id="signup-bar">
-        <TopBarLeft>
-          <div className="title left">
-            <div className="subtitle">Raise your seed round.</div>
-            <div className="benefits">
-              <Badge color={Colors.SECONDARY}>1</Badge>
-              <span className="benefit">Discover firms</span>
-              <Badge color={Colors.SECONDARY}>2</Badge>
-              <span className="benefit">Research investors</span>
-              <Badge color={Colors.SECONDARY}>3</Badge>
-              <span className="benefit">Get introduced, track conversations</span>
-            </div>
+        <div className="space" />
+        <div className="signup-content title left">
+          <div className="intro">
+            <h2 className="subtitle">Raise your seed round with VCWiz.</h2>
+            <p className="subtitle">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo viverra blandit.
+              In hac habitasse platea dictumst. Etiam mattis placerat augue ut scelerisque. In eget ultricies ipsum
+            </p>
           </div>
-        </TopBarLeft>
-        <TopBarRight>
-          <div className="title right">
-            <Button color={Colors.SECONDARY} onClick={this.openSignup} isHollow>
+          <div className="benefits">
+            {this.renderBenefit('discover', 'magnifying-glass reversed', '1. Discover', 'Filter or search to find VCs.')}
+            {this.renderBenefit('outreach', 'mail', '2. VCWiz Intros', 'Get introduced to participating investors.')}
+            {this.renderBenefit('track', 'check', '3. Track', 'All your conversations, organized.')}
+          </div>
+          <div className="button-wrapper">
+            <Button onClick={this.openSignup}>
               Sign Up
             </Button>
           </div>
-        </TopBarRight>
+        </div>
       </TopBar>
     );
   }
@@ -144,7 +160,7 @@ export default class Header extends React.Component {
     return (
       <div>
         {this.renderModal()}
-        <header>
+        <header id="top-header">
           {this.renderHeader()}
           {this.renderBar()}
         </header>

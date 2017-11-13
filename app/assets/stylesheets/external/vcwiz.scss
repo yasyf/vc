@@ -15,6 +15,15 @@ $blue: #0D71E9;
 $red: #E8441E;
 $dark: #363844;
 
+$discover: #D97FF2;
+$discover-icon: #9D47B4;
+
+$outreach: #E25F4D;
+$outreach-icon: #A94234;
+
+$track: #E3ED95;
+$track-icon: #5B6036;
+
 html, body, .full-screen {
   height: 100%;
   width: 100%;
@@ -139,10 +148,20 @@ p.tight {
   z-index: 1;
 }
 
+i.reversed::before {
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+#top-header {
+  background: linear-gradient(#100444, #074066);
+}
+
 #top-bar, #signup-bar {
   .title {
     color: $white;
-    cursor: pointer;
 
     &.left {
       padding-left: 2vw;
@@ -184,33 +203,119 @@ p.tight {
   }
 }
 
-
 #signup-bar {
-  height: 100px;
-  background-color: $dark;
+  position: relative;
+  padding: 0;
+  height: 70vh;
+  max-height: 500px;
+  background: transparent;
 
-  button {
-    border-radius: 5px;
-    background: $white;
+  .space {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     margin: auto;
-    color: $black;
-    font-weight: bold;
+    height: 90%;
+    width: 95%;
+    background: url(image-path("vcwiz-bg-transparent.png")) no-repeat center;
+    background-size: contain;
+  }
+
+  .signup-content {
+    width: 70%;
+    position: absolute;
+
+    & > div:not(:last-child) {
+      margin-bottom: 3em;
+    }
+  }
+
+  .button-wrapper {
+    button {
+      border-radius: 5px;
+      background: #145D9B;
+      margin: auto;
+      color: $white;
+      font-weight: bold;
+      text-transform: uppercase;
+      border: 0;
+      padding: 1rem 2rem;
+    }
   }
 
   .benefits {
-    padding-top: 5px;
+    i {
+      font-size: large;
+      line-height: normal;
+    }
 
     .benefit {
-      margin-right: 1.5em;
-      margin-left: 10px;
       vertical-align: middle;
+      display: inline-block;
+      margin-right: 1em;
+
+      .badge {
+        width: 4em;
+        height: 4em;
+        line-height: 4em;
+        vertical-align: 1.2em;
+        margin-right: 10px;
+      }
+
+      .info {
+        display: inline-block;
+
+        .heading {
+          text-transform: uppercase;
+          font-weight: bold;
+        }
+      }
+
+      &.discover {
+        .badge {
+          background-color: $discover;
+          color: $discover-icon;
+        }
+
+        .heading {
+          color: $discover;
+        }
+      }
+
+      &.outreach {
+        .badge {
+          background-color: $outreach;
+          color: $outreach-icon;
+        }
+
+        .heading {
+          color: $outreach;
+        }
+      }
+
+      &.track {
+        .badge {
+          background-color: $track;
+          color: $track-icon;
+        }
+
+        .heading {
+          color: $track;
+        }
+      }
     }
   }
 }
 
 #top-bar {
   height: 85px;
-  background-image: linear-gradient(-180deg, $success 0%, $success-dark 100%);
+  background: rgba(30, 175, 242, 0.27);
+
+  .title {
+    cursor: pointer;
+  }
 }
 
 .faded {
@@ -268,10 +373,6 @@ input.placeholded {
 
     i::before {
       color: $success-dark;
-      -moz-transform: scaleX(-1);
-      -o-transform: scaleX(-1);
-      -webkit-transform: scaleX(-1);
-      transform: scaleX(-1);
     }
   }
 }
