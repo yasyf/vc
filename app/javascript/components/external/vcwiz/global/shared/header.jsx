@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Badge,
   Button,
+  Colors,
   TopBar,
   TopBarLeft,
   TopBarRight,
@@ -134,7 +135,7 @@ export default class Header extends React.Component {
             {this.renderBenefit('track', 'check', '3. Track', 'All your conversations, organized.')}
           </div>
           <div className="button-wrapper">
-            <Button onClick={this.openSignup}>
+            <Button onClick={this.openSignup} color={Colors.SUCCESS}>
               Sign Up
             </Button>
           </div>
