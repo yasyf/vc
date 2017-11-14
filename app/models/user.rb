@@ -175,7 +175,7 @@ class User < ActiveRecord::Base
     )
     super(options).merge(
       name: cached_name,
-      team: team.name
+      team: team&.name
     )
   end
 
