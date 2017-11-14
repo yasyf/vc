@@ -1,5 +1,5 @@
 import React from 'react';
-import { extend, ffetch, buildQuery, flattenFilters } from '../global/utils';
+import { extend, flattenFilters } from '../global/utils';
 import {
   CompetitorIndustriesOptions,
   CompetitorFundTypesOptions,
@@ -7,22 +7,14 @@ import {
   CompaniesSearchPath,
 } from '../global/constants.js.erb';
 import Storage from '../global/storage.js.erb';
-import Select from '../global/fields/select';
 import Company from './company';
-import {Column, Row} from 'react-foundation';
-import Highlighter from 'react-highlight-words';
+import Filter from './filter';
 
 const SessionStorageKey = 'Filters';
 
 export default class Filters extends React.Component {
   static defaultProps = {
     showLabels: false,
-    sizes: {
-      fund_type: 2,
-      industry: 2,
-      location: 4,
-      companies: 4,
-    },
   };
 
   constructor(props) {
@@ -58,83 +50,38 @@ export default class Filters extends React.Component {
     this.propagateOnChange(filters);
   };
 
-  selectProps(name, label) {
-    let optionRenderer = o => <Highlighter
-      highlightClassName='highlighter'
-      searchWords={[this.state.inputs[name]]}
-      textToHighlight={o.label}
-    />;
-    const value = this.state.filters[name];
-    let showLabel = this.props.showLabels;
-    if (showLabel === 'present') {
-      showLabel = !_.isEmpty(value);
-    }
-    return {
-      name: name,
-      value: value,
-      placeholder: label,
-      showLabel: showLabel,
-      multi: true,
-      optionRenderer,
-      onInputChange: v => this.onInputChange(name, v),
-      onChange: this.onChange,
-    };
-  }
-
-  renderSelectWithProps(label, props) {
-    const size = this.props.sizes[props.name];
-    if (!size) {
-      return null;
-    }
-    const select = <Select {...props} />;
-    if (size === -1) {
-      return (
-        <Row className="filter-row-column" key={props.name} isColumn>
-          {select}
-        </Row>
-      );
-    } else {
-      return (
-        <Column large={size} className="filter-column" key={props.name}>
-          {select}
-        </Column>
-      );
-    }
-  }
-
-  renderSelect(name, label, options) {
-    return this.renderSelectWithProps(label, {options, ...this.selectProps(name, label)});
-  }
-
-  renderStaticRemoteSelect(name, label, path) {
-    let loadOptions = () => ffetch(path).then(options => ({options, complete: true}));
-    let searchPromptText = "No results found";
-    return this.renderSelectWithProps(label, {loadOptions, searchPromptText, ...this.selectProps(name, label)});
-  }
-
-  renderDynamicRemoteSelect(name, label, path, OptionComponent = null) {
-    let loadOptions = (q) => {
-      if (!q) {
-        return new Promise(cb => cb({options: this.state.filters[name] || []}));
-      } else {
-        return ffetch(`${path}?${buildQuery({q})}`).then(options => ({options}));
-      }
-    };
-    let props = this.selectProps(name, label);
-    if (OptionComponent) {
-      props.optionRenderer = o => <OptionComponent input={this.state.inputs[name]} {...o} />;
-    }
-    return this.renderSelectWithProps(label, {loadOptions, ...props});
+  renderFilter(name, label, optionProps) {
+    return (
+      <Filter
+        key={name}
+        name={name}
+        label={label}
+        input={this.state.inputs[name]}
+        value={this.state.filters[name]}
+        meta={this.props.meta}
+        showLabel={this.props.showLabels}
+        onInputChange={this.onInputChange}
+        onChange={this.onChange}
+        {...optionProps}
+      />
+    );
   }
 
   render() {
     const { onlyLocal } = this.props;
     const filters = [
-      this.renderSelect('fund_type', 'Stage', CompetitorFundTypesOptions),
-      this.renderSelect('industry', 'Industries', CompetitorIndustriesOptions),
-      this.renderDynamicRemoteSelect('location', 'Cities', CompetitorsLocationsPath),
-      this.renderDynamicRemoteSelect('companies', 'Related Startups', CompaniesSearchPath, Company),
+      this.renderFilter('fund_type', 'Stage', { options: CompetitorFundTypesOptions }),
+      this.renderFilter('industry', 'Industries', { options: CompetitorIndustriesOptions }),
+      this.renderFilter('location', 'Cities', { path: CompetitorsLocationsPath }),
+      this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }),
     ];
-    return <Row>{filters}</Row>;
+    const withDividers = _.flatMap(filters, (f, i) =>  {
+      if (i === filters.length - 1) {
+        return [f];
+      } else {
+        return [f, <hr key={`hr-${i}`} className="vr"/>]
+      }
+    });
+    return <div className="filters-wrapper">{withDividers}</div>;
   }
 }

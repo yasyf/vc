@@ -6,7 +6,6 @@ import Filters from './filters';
 
 export default class FilterRow extends React.Component {
   static defaultProps = {
-    showButton: true,
     onChange: _.noop,
     onButtonClick: _.noop,
   };
@@ -57,6 +56,13 @@ export default class FilterRow extends React.Component {
     return this.state.numInvestors;
   }
 
+  meta() {
+    if (!this.state.numInvestors) {
+      return null;
+    }
+    return `Filter Results (${this.state.numInvestors})`;
+  }
+
   renderButton() {
     return (
       <div className="boxed">
@@ -68,27 +74,12 @@ export default class FilterRow extends React.Component {
   }
 
   render() {
-    const { showButton, initialCount, countSource, onChange, onButtonClick, ...rest } = this.props;
-    const filters = <Filters onChange={this.onChange} {...rest} />;
-    if (showButton) {
-      return (
-        <div className="filters">
-          <Row>
-            <Column large={10}>
-              {filters}
-            </Column>
-            <Column large={2} className="filter-column">
-              {this.renderButton()}
-            </Column>
-          </Row>
-        </div>
-      )
-    } else {
-      return (
-        <div className="filters">
-          {filters}
-        </div>
-      );
-    }
+    const { initialCount, countSource, onChange, onButtonClick, ...rest } = this.props;
+    const filters = <Filters onChange={this.onChange} meta={this.meta()} {...rest} />;
+    return (
+      <div className="filters">
+        {filters}
+      </div>
+    );
   }
 }

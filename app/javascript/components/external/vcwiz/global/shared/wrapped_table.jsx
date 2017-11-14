@@ -34,7 +34,6 @@ class FixedWrappedTable extends React.Component {
     const { table, ...rest } = this.props;
     const { dimensions } = this.state;
     const BackingTable = table;
-    console.log(dimensions);
     return (
       <div className="full-screen">
         <BackingTable dimensions={dimensions} {...rest} />

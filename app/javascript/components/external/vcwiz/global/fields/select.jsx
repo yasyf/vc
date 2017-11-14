@@ -15,7 +15,7 @@ export class TetheredSelectWrap extends ReactSelect {
       return;
     }
     const selectWidth = this.wrapper ? this.wrapper.offsetWidth : null;
-    return <Tether width={selectWidth}>{menu}</Tether>;
+    return <Tether width={selectWidth} className={this.props.tetherClassName}>{menu}</Tether>;
   }
 }
 
@@ -35,18 +35,23 @@ export default class Select extends Input {
   };
 
   onChange = (option) => {
-    this.setState({value: option});
     this.props.onChange({[this.props.name]: option});
   };
 
-  onBlur = (option) => {
-    // noop
+  onBlur = () => {
+    this.props.onBlur();
   };
 
   renderInput() {
     let Component = this.props.loadOptions ? TetheredSelectWrap.Async : TetheredSelectWrap;
     return (
-      <Component joinValues={true} clearable={this.props.clearable} instanceId={this.props.name} {...this.inputProps()} />
+      <Component
+        joinValues={true}
+        clearable={this.props.clearable}
+        instanceId={this.props.name}
+        className={this.props.selectClassName}
+        {...this.inputProps()}
+      />
     );
   }
 }

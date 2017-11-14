@@ -197,3 +197,9 @@ export const sendEvent = (name, ...args) => {
   }
   return ffetch(FounderEventPath, 'POST', {event: {name, args}});
 };
+
+export const withoutIndexes = (arr, idxs) => {
+  const newArr = [...arr];
+  _.pullAt(newArr, idxs);
+  return newArr;
+};

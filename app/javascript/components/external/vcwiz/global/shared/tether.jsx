@@ -5,6 +5,7 @@ export default class Tether extends React.Component {
   render() {
     return (
       <TetherComponent
+        className={this.props.className}
         renderElementTo="body"
         attachment="top left"
         targetAttachment="top left"
