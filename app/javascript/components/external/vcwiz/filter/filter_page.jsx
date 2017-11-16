@@ -116,9 +116,12 @@ export default class FilterPage extends React.Component {
 
   renderHeader() {
     return (
-      <Row className="wide-row search-and-filters">
-        {this.renderSearchAndFilters()}
-      </Row>
+      <div>
+        <h3>{this.props.title}</h3>
+        <Row className="wide-row search-and-filters">
+          {this.renderSearchAndFilters()}
+        </Row>
+      </div>
     );
   }
 

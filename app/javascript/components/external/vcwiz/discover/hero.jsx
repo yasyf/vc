@@ -1,11 +1,10 @@
 import React from 'react';
-import Search from './search';
 import {FilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import Tabs from '../global/tabs/tabs';
 import FilterPage from '../filter/filter_page';
 import inflection from 'inflection';
 
-export default class SearchHero extends React.Component {
+export default class Hero extends React.Component {
   state = {
     query: '',
     count: 0,
@@ -45,15 +44,6 @@ export default class SearchHero extends React.Component {
           )}
         />
         {this.renderViewAll()}
-      </div>
-    );
-  }
-
-  renderSearch() {
-    return (
-      <div className="search-and-filters float-center">
-        <p className="or">or</p>
-        <Search onChange={this.onSearchChange} onSubmit={this.onSubmit} />
       </div>
     );
   }

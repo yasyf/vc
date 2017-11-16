@@ -1,6 +1,6 @@
 import React from 'react';
 import VCWiz  from '../vcwiz';
-import SearchHero from './search_hero';
+import Hero from './hero';
 import Lists from './lists';
 
 export default class Discovery extends React.Component {
@@ -8,7 +8,7 @@ export default class Discovery extends React.Component {
     return (
       <VCWiz
         page="discover"
-        header={<SearchHero {...this.props} />}
+        header={<Hero {...this.props} />}
         body={<Lists />}
         showIntro={true}
       />

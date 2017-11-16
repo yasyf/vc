@@ -435,33 +435,22 @@ input.placeholded {
 
 .filter-page {
   &-header {
-    h6 {
-      text-transform: uppercase;
-      font-weight: bold;
-      color: $mid-grey;
+    padding: 0;
+
+    h3 {
+      padding: 30px 50px 0;
     }
 
-    .option-switches {
-      margin-bottom: 15px;
-
-      p {
-        font-size: smaller;
-      }
-    }
-
-    .or {
-      color: $grey;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 60px;
-    }
     .search-and-filters {
-      .search {
-        margin-top: 35px;
-      }
+      margin-bottom: 0;
+      width: 90%;
+      background-color: unset;
+    }
 
-      .line {
-        width: 220px;
+    .edit-button-wrapper {
+      .edit-button {
+        border-color: $grey;
+        color: $grey;
       }
     }
 
@@ -695,8 +684,8 @@ input.placeholded {
 
   .edit-button-wrapper {
     .edit-button {
-      border-color: $grey;
-      color: $grey;
+      border-color: $mid-grey;
+      color: $mid-grey;
     }
   }
 

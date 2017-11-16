@@ -23,6 +23,8 @@ export default class Filter extends React.Component {
     return (
       <FilterPage
         {...this.props}
+        title="Filter Investors"
+        showSearch={false}
         onQueryChange={this.pushState}
         render={(header, body) => (
           <VCWiz
