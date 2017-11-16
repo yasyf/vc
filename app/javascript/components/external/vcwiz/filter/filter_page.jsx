@@ -10,7 +10,6 @@ import {
 } from '../global/utils';
 import Search from '../discover/search';
 import {Row, Column} from 'react-foundation';
-import Switch from '../global/fields/switch';
 import FilterRow from '../discover/filter_row';
 import SectionWithDims from '../global/shared/section_with_dims';
 
@@ -63,7 +62,7 @@ export default class FilterPage extends React.Component {
     this.setState({sort});
   };
 
-  onOptionChange = name => update => {
+  onOptionChange = update => {
     let options = extend(this.state.options, update);
     this.setState({options});
   };
@@ -71,10 +70,12 @@ export default class FilterPage extends React.Component {
   renderFilterRow() {
     return (
       <FilterRow
-        showButton={false}
-        onChange={this.onFiltersChange}
-        initialFilters={this.props.filters}
+        onFiltersChange={this.onFiltersChange}
+        onOptionChange={this.onOptionChange}
+        filters={this.props.filters}
+        options={this.props.options}
         initialCount={this.props.count}
+        suggestions={this.state.suggestions}
         countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
       />
     );
@@ -112,51 +113,11 @@ export default class FilterPage extends React.Component {
 
   }
 
-  renderSwitch(name, label) {
-    const { options, suggestions } = this.state;
-    return (
-      <Switch
-        name={name}
-        value={options[name]}
-        highlight={suggestions.includes(name)}
-        onChange={this.onOptionChange('name')}
-        label={label}
-      />
-    );
-  }
-
-  renderSwitches() {
-    return (
-      <div className="option-switches">
-        <Row>
-          <Column large={2}  offsetOnLarge={1}>
-            {this.renderSwitch('us_only', 'US Only')}
-          </Column>
-          <Column large={2}>
-            {this.renderSwitch('related', 'Related')}
-          </Column>
-          <Column large={2}>
-            {this.renderSwitch('company_cities', '💵 Cities')}
-          </Column>
-          <Column large={5}>
-            <p className="tight">"Related" finds investors who invested in similar companies, instead of exact matches.</p>
-            <p className="tight">"💵 Cities" finds investors who made investments in the given locations, instead of ones based there.</p>
-          </Column>
-        </Row>
-      </div>
-    )
-  }
-
   renderHeader() {
     return (
-      <div>
-        <Row className="wide-row search-and-filters">
-          {this.renderSearchAndFilters()}
-        </Row>
-        <Row className="wide-row">
-          {this.renderSwitches()}
-        </Row>
-      </div>
+      <Row className="wide-row search-and-filters">
+        {this.renderSearchAndFilters()}
+      </Row>
     );
   }
 
@@ -165,19 +126,19 @@ export default class FilterPage extends React.Component {
     const { rowHeight, industryLimit, overflowY } = this.props;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
-        <SectionWithDims dimensionsKey="dimensions">
-          <Results
-            count={count}
-            competitors={competitors}
-            sort={sort}
-            source={source}
-            resultsId={resultsId}
-            rowHeight={rowHeight}
-            industryLimit={industryLimit}
-            overflowY={overflowY}
-            onSort={this.onSort}
-          />
-        </SectionWithDims>
+      <SectionWithDims dimensionsKey="dimensions">
+        <Results
+          count={count}
+          competitors={competitors}
+          sort={sort}
+          source={source}
+          resultsId={resultsId}
+          rowHeight={rowHeight}
+          industryLimit={industryLimit}
+          overflowY={overflowY}
+          onSort={this.onSort}
+        />
+      </SectionWithDims>
     );
   }
 

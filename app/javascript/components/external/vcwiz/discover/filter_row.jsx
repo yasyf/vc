@@ -1,8 +1,7 @@
 import React from 'react';
-import {buildQuery, ffetch, flattenFilters} from '../global/utils';
-import {Button, Column, Colors, Row} from 'react-foundation';
-import inflection from 'inflection';
+import {buildQuery, ffetch} from '../global/utils';
 import Filters from './filters';
+import MoreFilters from './more_filters';
 
 export default class FilterRow extends React.Component {
   static defaultProps = {
@@ -14,21 +13,23 @@ export default class FilterRow extends React.Component {
     super(props);
 
     this.state = {
-      numInvestors: this.props.initialCount,
-      filters: flattenFilters(this.props.initialFilters || {}),
+      numInvestors: props.initialCount,
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextState.numInvestors !== this.state.numInvestors
-      || !_.isEqual(nextState.filters, this.state.filters)
+      || !_.isEqual(nextProps.filters, this.props.filters)
+      || !_.isEqual(nextProps.options, this.props.options)
+      || !_.isEqual(nextProps.suggestions, this.props.suggestions)
+      || !_.isEqual(nextProps.countSource, this.props.countSource)
     )
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (buildQuery(this.props.countSource.query) !== buildQuery(prevProps.countSource.query)) {
-      this.fetchNumInvestors(this.state.filters)
+      this.fetchNumInvestors(this.props.filters)
     }
   }
 
@@ -38,30 +39,22 @@ export default class FilterRow extends React.Component {
     if (built) {
       ffetch(`${path}?${built}`).then(({count, suggestions}) => {
         this.setState({numInvestors: count, suggestions});
-        this.props.onChange(filters, count, suggestions);
+        this.props.onFiltersChange(filters, count, suggestions);
       });
     } else {
       ffetch(path).then(({count, suggestions}) => {
         this.setState({numInvestors: null, suggestions});
-        this.props.onChange({}, count, suggestions);
+        this.props.onFiltersChange({}, count, suggestions);
       });
     }
   }
 
-  onChange = filters => {
-    if (_.isEqual(filters, this.state.filters)) {
+  onFiltersChange = filters => {
+    if (_.isEqual(filters, this.props.filters)) {
       return;
     }
-    this.setState({filters});
     this.fetchNumInvestors(filters);
   };
-
-  numInvestors() {
-    if (!this.state.numInvestors) {
-      return null;
-    }
-    return this.state.numInvestors;
-  }
 
   meta() {
     if (!this.state.numInvestors) {
@@ -70,22 +63,15 @@ export default class FilterRow extends React.Component {
     return `Filter Results (${this.state.numInvestors})`;
   }
 
-  renderButton() {
-    return (
-      <div className="boxed">
-        <Button color={Colors.SUCCESS} onClick={this.props.onButtonClick}>
-          Find {this.numInvestors()} {inflection.inflect('Investors', this.state.numInvestors)}
-        </Button>
-      </div>
-    );
-  }
-
   render() {
-    const { initialCount, countSource, onChange, onButtonClick, ...rest } = this.props;
-    const filters = <Filters onChange={this.onChange} meta={this.meta()} {...rest} />;
+    const { initialCount, countSource, onFiltersChange, onOptionChange, onButtonClick, options, suggestions, ...rest } = this.props;
+    const filters = <Filters onChange={this.onFiltersChange} meta={this.meta()} {...rest} />;
     return (
       <div className="filters">
-        {filters}
+        <div className="filters-wrapper">
+          {filters}
+          <MoreFilters options={options} suggestions={suggestions} onChange={onOptionChange} />
+        </div>
       </div>
     );
   }

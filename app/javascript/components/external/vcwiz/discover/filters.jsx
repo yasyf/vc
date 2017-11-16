@@ -78,13 +78,12 @@ export default class Filters extends React.Component {
       this.renderFilter('location', 'Cities', { path: CompetitorsLocationsPath }),
       this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }, false),
     ]);
-    const withDividers = _.flatMap(filters, (f, i) =>  {
+    return _.flatMap(filters, (f, i) =>  {
       if (i === filters.length - 1) {
         return [f];
       } else {
         return [f, <hr key={`hr-${i}`} className="vr"/>]
       }
     });
-    return <div className="filters-wrapper">{withDividers}</div>;
   }
 }

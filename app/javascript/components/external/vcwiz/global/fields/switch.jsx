@@ -19,11 +19,11 @@ export default class Switch extends Input {
   onBlur = _.noop;
 
   renderInput() {
-    let {onBlur, yesLabel, noLabel, label, highlight, ...rest} = this.inputProps();
+    let {onBlur, yesLabel, noLabel, label, description, highlight, ...rest} = this.inputProps();
     let checked = !!this.state.value;
     return (
       <div>
-        <h6>{label}</h6>
+        <h6>{label}</h6> {description}
         <div className="switch">
           <input
             className="switch-input"

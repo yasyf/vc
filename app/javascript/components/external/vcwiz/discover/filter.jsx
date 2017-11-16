@@ -80,7 +80,7 @@ export default class Filter extends React.Component {
     return (
       <div className="selected-wrapper">
         <div className="button selected">
-          {display.join(', ')} {remaining ? `, +${remaining} ${inflection.inflect('others', remaining)}` : null}
+          {display.join(', ')}{remaining ? `, +${remaining} ${inflection.inflect('others', remaining)}` : null}
         </div>
       </div>
     );
