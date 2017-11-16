@@ -18,6 +18,7 @@ class ApplicationJob < ActiveJob::Base
 
   # Temporary Failures
   retry_with_exp_backoff Redis::CommandError
+  retry_with_exp_backoff SocketError
 
   # Irrecoverable
   discard_on Http::Crunchbase::Errors::BadRequest
