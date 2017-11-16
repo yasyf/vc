@@ -40,7 +40,7 @@ boston: &boston
     passed: 'Post-pitch (Stage 4)'
     rejected: 'Passed - No Pitch'
   time_zone: 'Eastern Time (US & Canada)'
-  voting_period: 2
+  voting_period: 1
 
 nyc:
   ignore: <%= !Rails.env.production? %>

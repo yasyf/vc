@@ -119,7 +119,8 @@ class Pitch < ApplicationRecord
   private
 
   def google_drive
-    @google_drive ||= GoogleApi::Drive.new(company.users.first || team.users.first)
+    users = company.users.present? ? company.users : team.users
+    @google_drive ||= GoogleApi::Drive.new(users.order(created_at: :desc).first)
   end
 
   def find_or_create_prevote_doc!
