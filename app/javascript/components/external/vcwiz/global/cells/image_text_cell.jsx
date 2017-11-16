@@ -36,7 +36,10 @@ export default class ImageTextCell extends TextCell {
     return (
       <div className="image-text-cell">
         {this.renderImage()}
-        <div className="image-text">
+        <div className="image-text" style={{
+          marginLeft: `calc(${this.props.size}px + 0.5rem)`,
+          width: `width: calc(95% - ${this.props.size}px - 1rem);`
+        }}>
           <Textfit mode="single" min={this.props.min} max={this.props.max}>
             <div className="textfit-cell">
               {this.state.value}

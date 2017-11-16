@@ -783,11 +783,6 @@ mark.highlighter {
   width: 100%;
   height: 100%;
 
-  .image-text {
-    margin-left: 2.5em;
-    width: calc(95% - 60px - 1rem);
-  }
-
   .floating-image {
     position: absolute;
     top: 25%;
@@ -824,7 +819,7 @@ mark.highlighter {
   }
 
   .text-block, .media-block {
-    margin-top: 15px;
+    margin-top: 1%;
     margin-left: 10px;
   }
 
