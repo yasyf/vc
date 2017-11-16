@@ -72,7 +72,6 @@ export default class FilterPage extends React.Component {
     return (
       <FilterRow
         showButton={false}
-        showLabels={true}
         onChange={this.onFiltersChange}
         initialFilters={this.props.filters}
         initialCount={this.props.count}

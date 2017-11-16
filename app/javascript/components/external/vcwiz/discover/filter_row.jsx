@@ -19,6 +19,13 @@ export default class FilterRow extends React.Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      nextState.numInvestors !== this.state.numInvestors
+      || !_.isEqual(nextState.filters, this.state.filters)
+    )
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (buildQuery(this.props.countSource.query) !== buildQuery(prevProps.countSource.query)) {
       this.fetchNumInvestors(this.state.filters)

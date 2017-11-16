@@ -144,13 +144,12 @@ export default class LoginModal extends React.Component {
     );
   }
 
-  renderFilters(sizes) {
+  renderFilters(fields) {
     return (
       <Filters
         key="filters"
         showButton={false}
-        showLabels={'present'}
-        sizes={sizes}
+        fields={fields}
         onChange={this.onChange}
       />
     );
@@ -173,7 +172,7 @@ export default class LoginModal extends React.Component {
       <p className="info" key="text">Your Startup</p>,
       this.renderInput('name', 'Company Name'),
       this.renderInput('description', 'Description (may be shown to investors)'),
-      this.renderFilters({industry: -1, companies: -1}),
+      this.renderFilters(['industry', 'companies']),
       this.renderStandardButton(),
     ];
   }
@@ -181,7 +180,7 @@ export default class LoginModal extends React.Component {
   renderStage2() {
     return [
       <p className="info" key="text">Your Ideal Investor</p>,
-      this.renderFilters({fund_type: -1, location: -1}),
+      this.renderFilters(['fund_type', 'location']),
       this.renderStandardButton(),
     ];
   }

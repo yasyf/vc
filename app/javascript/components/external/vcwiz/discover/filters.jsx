@@ -14,7 +14,7 @@ const SessionStorageKey = 'Filters';
 
 export default class Filters extends React.Component {
   static defaultProps = {
-    showLabels: false,
+    showLabels: true,
   };
 
   constructor(props) {
@@ -50,7 +50,10 @@ export default class Filters extends React.Component {
     this.propagateOnChange(filters);
   };
 
-  renderFilter(name, label, optionProps) {
+  renderFilter(name, label, optionProps, showMeta = true) {
+    if (this.props.fields && !this.props.fields.includes(name)) {
+      return null;
+    }
     return (
       <Filter
         key={name}
@@ -58,7 +61,7 @@ export default class Filters extends React.Component {
         label={label}
         input={this.state.inputs[name]}
         value={this.state.filters[name]}
-        meta={this.props.meta}
+        meta={showMeta ? this.props.meta : undefined}
         showLabel={this.props.showLabels}
         onInputChange={this.onInputChange}
         onChange={this.onChange}
@@ -69,12 +72,12 @@ export default class Filters extends React.Component {
 
   render() {
     const { onlyLocal } = this.props;
-    const filters = [
+    const filters = _.compact([
       this.renderFilter('fund_type', 'Stage', { options: CompetitorFundTypesOptions }),
       this.renderFilter('industry', 'Industries', { options: CompetitorIndustriesOptions }),
       this.renderFilter('location', 'Cities', { path: CompetitorsLocationsPath }),
-      this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }),
-    ];
+      this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }, false),
+    ]);
     const withDividers = _.flatMap(filters, (f, i) =>  {
       if (i === filters.length - 1) {
         return [f];

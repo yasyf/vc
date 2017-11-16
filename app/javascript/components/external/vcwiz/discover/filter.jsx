@@ -54,12 +54,13 @@ export default class Filter extends React.Component {
       openOnFocus: true,
       closeOnSelect: false,
       onSelectResetsInput: false,
+      scrollMenuIntoView: false,
       name: name,
       placeholder: 'Start typing...',
       showLabel: false,
       multi: true,
       arrowRenderer: nullRenderer,
-      menuRenderer: metaMenuRenderer,
+      menuRenderer: meta ? metaMenuRenderer : undefined,
       optionRenderer,
       optionComponent: OptionFactory(value),
       valueComponent : nullRenderer,
@@ -79,7 +80,7 @@ export default class Filter extends React.Component {
     return (
       <div className="selected-wrapper">
         <div className="button selected">
-          {display.join(', ')} {remaining ? `+${remaining} ${inflection.inflect('others', remaining)}` : null}
+          {display.join(', ')} {remaining ? `, +${remaining} ${inflection.inflect('others', remaining)}` : null}
         </div>
       </div>
     );
@@ -102,7 +103,7 @@ export default class Filter extends React.Component {
   }
 
   renderSelectWithProps(props) {
-    const { name, showLabel, label } = this.props;
+    const { name, value, showLabel, label } = this.props;
     const { editing } = this.state;
     const select = (
       <div className="section">
@@ -112,7 +113,7 @@ export default class Filter extends React.Component {
     );
     return (
       <div className={classNames('filter', {'filter-grow': editing})}>
-        {(showLabel === 'present' ? !_.isEmpty(value) : showLabel) ? <div className="filter-label">{label}</div> : null}
+        {showLabel ? <div className="filter-label">{label}</div> : null}
         {select}
       </div>
     );
