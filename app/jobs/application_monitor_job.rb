@@ -14,8 +14,7 @@ class ApplicationMonitorJob < ActiveJob::Base
           user.send! message
         end
       end
-      next unless company.cards.present?
-      links = companies.map { |company| "<#{company.cards.first.trello_url}|#{company.name}>" }
+      links = companies.filter { |company| company.cards.present? }.map { |company| "<#{company.cards.first.trello_url}|#{company.name}>" }
       message = "The following companies applied and are waiting to hear back from us!" +
         " If you're already talking with one, please move it to the 'Allocated Point Partner' column." +
         "\n#{links.join(', ')}"
