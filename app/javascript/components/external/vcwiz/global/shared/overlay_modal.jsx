@@ -57,6 +57,7 @@ export default class OverlayModal extends React.Component {
         className={classNames('modal-content', `${name}-modal-content`, className)}
       >
         {modal ? modal : this.renderModal()}
+        <div className="close-icon" onClick={onClose}><i className="fi-x" /></div>
       </Modal>
     )
   }

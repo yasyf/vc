@@ -1,5 +1,6 @@
 import React from 'react';
 import {ffetch, buildQuery, withoutIndexes} from '../global/utils';
+import {SmallScreenSize} from '../global/constants.js.erb';
 import Select from '../global/fields/select';
 import { Button } from 'react-foundation';
 import Highlighter from 'react-highlight-words';
@@ -7,11 +8,24 @@ import inflection from 'inflection';
 import classNames from 'classnames';
 import OptionFactory from './option';
 import menuRenderer from './menu_renderer';
+import Store from '../global/store';
 
 export default class Filter extends React.Component {
   state = {
     editing: false,
+    dimensions: Store.get('dimensions', {
+      width: 0,
+      height: 0,
+    }),
   };
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
+  }
 
   onClick = () => {
     this.setState({editing: true});
@@ -75,7 +89,7 @@ export default class Filter extends React.Component {
     if (!value || !value.length) {
       return null;
     }
-    const display = _.map(_.take(value, 2), 'label');
+    const display = _.map(_.take(value, this.state.dimensions > SmallScreenSize ? 2 : 1), 'label');
     const remaining = value.length - display.length;
     return (
       <div className="selected-wrapper">

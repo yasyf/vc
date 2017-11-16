@@ -33,8 +33,8 @@ export default class MoreFilters extends React.Component {
 
   render() {
     return [
-      <hr key="vr" className="vr"/>,
-      <div key="filter" className="filter">
+      <hr key="vr" className="vr vr-hidden"/>,
+      <div key="filter" className="filter filter-last">
         <div className="edit-button-wrapper more-filters-wrapper">
           <Button isHollow className="edit-button" onClick={this.openModal}>
             More Filters

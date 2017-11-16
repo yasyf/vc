@@ -72,9 +72,10 @@ export default class FilterPage extends React.Component {
       <FilterRow
         onFiltersChange={this.onFiltersChange}
         onOptionChange={this.onOptionChange}
-        filters={this.props.filters}
-        options={this.props.options}
-        initialCount={this.props.count}
+        initialFilters={this.props.filters}
+        filters={this.state.filters}
+        options={this.state.options}
+        initialCount={this.state.count}
         suggestions={this.state.suggestions}
         countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
       />

@@ -64,7 +64,7 @@ export default class Results extends React.Component {
 
   renderModal() {
     const { restoreState } = this.state;
-    if (!restoreState || restoreState.breadcrumb.name !== 'research') {
+    if (!restoreState || !restoreState.breadcrumb || restoreState.breadcrumb.name !== 'research') {
       return null;
     }
     return <ResearchModal {...restoreState.breadcrumb.params} key="modal" onClose={this.onModalClose} />

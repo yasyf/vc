@@ -149,6 +149,17 @@ p.tight {
   -webkit-overflow-scrolling: touch;
   border-radius: 4px;
   outline: none;
+
+  .close-icon {
+    position: absolute;
+    top: 0.5em;
+    right: 1em;
+
+    i {
+      font-size: xx-large;
+      cursor: pointer;
+    }
+  }
 }
 
 .modal-content.no-background {
@@ -583,20 +594,23 @@ input.placeholded {
 .search-and-filters {
   max-width: 100%;
   background-color: #F5F9FA;
-  padding: 0.5em 1em;
+  padding: 0.5em 2em;
   margin-bottom: 2em;
   margin-top: 1em;
 
   .filters-wrapper {
     display: flex;
-    justify-content: space-between;
   }
 
   .vr {
     width: 0;
     border: 1px solid rgba($light-grey, 0.75);
     height: auto;
-    margin: 0.5em;
+    margin: 0.5em 1.5em;
+  }
+
+  .vr-hidden {
+    visibility: hidden;
   }
 }
 
@@ -653,7 +667,12 @@ input.placeholded {
 
 .filter {
   &-grow {
-    flex: 1
+    flex-basis: 500px;
+    flex-shrink: 1;
+  }
+
+  &-last {
+    margin-left: auto;
   }
 
   .filter-label {

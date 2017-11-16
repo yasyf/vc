@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompetitorsListsPath, ListPath } from '../global/constants.js.erb'
+import { CompetitorsListsPath, ListPath, SmallScreenSize } from '../global/constants.js.erb'
 import { ffetchCached } from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
 import {Row, Column} from 'react-foundation';
@@ -13,7 +13,7 @@ export default class Lists extends React.Component {
     this.state = {
       loading: true,
       lists: [],
-      dimensions: Store.get('windowDimensions', {
+      dimensions: Store.get('dimensions', {
         width: 0,
         height: 0,
       }),
@@ -21,7 +21,7 @@ export default class Lists extends React.Component {
   }
 
   componentWillMount() {
-    this.subscription = Store.subscribe('windowDimensions', dimensions => this.setState({dimensions}));
+    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
   }
 
   componentDidMount() {
@@ -71,7 +71,7 @@ export default class Lists extends React.Component {
   };
 
   renderList = ({title, name, competitors, count}, i, arr) => {
-    let displayCompetitors = _.take(competitors, this.state.dimensions.width > 1400 ? 5 : 3);
+    let displayCompetitors = _.take(competitors, this.state.dimensions.width > SmallScreenSize ? 5 : 3);
     return (
       <Column large={4} key={name} isLast={i === arr.length - 1}>
         <div className="card-wrapper">
