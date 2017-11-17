@@ -15,9 +15,8 @@ class External::VcwizController < External::ApplicationController
     title 'Discover'
     component 'Discover'
     params.merge!(
-      us_only: 'true',
-      fund_type: 'seed',
-      location: Util.city(request) || 'San Francisco',
+      options: { us_only: 'true' },
+      filters: { fund_type: 'seed', location: Util.city(request) || 'San Francisco' },
     )
     result_props 5
     render_default
@@ -26,6 +25,13 @@ class External::VcwizController < External::ApplicationController
   def filter
     title 'Filter'
     component 'Filter'
+    result_props 20
+    render_default
+  end
+
+  def search
+    title 'Search'
+    component 'Search'
     result_props 20
     render_default
   end
@@ -116,11 +122,12 @@ class External::VcwizController < External::ApplicationController
   end
 
   def full_filters
+    from_params = filter_params[:filters]
     {}.tap do |filters|
-      filters[:fund_type] = hash_to_options(Util.split_slice(filter_params[:fund_type], Competitor::FUND_TYPES)) if filter_params[:fund_type].present?
-      filters[:industry] = hash_to_options(Util.split_slice(filter_params[:industry], Competitor::INDUSTRIES)) if filter_params[:industry].present?
-      filters[:location] = arr_to_options(filter_params[:location].split(',')) if filter_params[:location].present?
-      filters[:companies] = records_to_options(Company.find(filter_params[:companies].split(',')).map(&:as_json_search)) if filter_params[:companies].present?
+      filters[:fund_type] = hash_to_options(Util.split_slice(from_params[:fund_type], Competitor::FUND_TYPES)) if from_params[:fund_type].present?
+      filters[:industry] = hash_to_options(Util.split_slice(from_params[:industry], Competitor::INDUSTRIES)) if from_params[:industry].present?
+      filters[:location] = arr_to_options(from_params[:location].split(',')) if from_params[:location].present?
+      filters[:companies] = records_to_options(Company.find(from_params[:companies].split(',')).map(&:as_json_search)) if from_params[:companies].present?
     end
   end
 
@@ -130,9 +137,9 @@ class External::VcwizController < External::ApplicationController
       count: filtered_count,
       suggestions: filtered_suggestions,
       filters: full_filters,
-      options: options_params.to_h,
+      options: options_params[:options].to_h,
       sort: sorts,
-      search: filter_params[:search],
+      search: search_params[:search].to_h,
     )
   end
 end

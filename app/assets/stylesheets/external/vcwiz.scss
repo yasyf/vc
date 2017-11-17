@@ -24,6 +24,8 @@ $outreach-icon: #A94234;
 $track: #E3ED95;
 $track-icon: #5B6036;
 
+$filters-blue: #F5F9FA;
+
 html, body, .full-screen {
   height: 100%;
   width: 100%;
@@ -395,23 +397,6 @@ input.placeholded {
   text-align: center;
 }
 
-.search-and-filters {
-  .search {
-    .line {
-      border-bottom: 2px solid $light-grey;
-      width: 230px;
-    }
-
-    i {
-      padding-right: 6px;
-    }
-
-    i::before {
-      color: $success-dark;
-    }
-  }
-}
-
 .vcwiz {
   &-page {
     background-color: $light-grey;
@@ -433,7 +418,7 @@ input.placeholded {
   }
 }
 
-.filter-page {
+.filter-page, .search-page {
   &-header {
     padding: 0;
 
@@ -445,6 +430,12 @@ input.placeholded {
       margin-bottom: 0;
       width: 90%;
       background-color: unset;
+
+      .search {
+        input {
+          background-color: unset;
+        }
+      }
     }
 
     .edit-button-wrapper {
@@ -582,10 +573,35 @@ input.placeholded {
 
 .search-and-filters {
   max-width: 100%;
-  background-color: #F5F9FA;
+  background-color: $filters-blue;
   padding: 0.5em 2em;
   margin-bottom: 2em;
   margin-top: 1em;
+
+  .search {
+    text-align: center;
+    display: flex;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    .line {
+      border-bottom: 2px solid $light-grey;
+      width: 230px;
+    }
+
+    input {
+      background-color: $filters-blue;
+      font-weight: bold;
+    }
+
+    i {
+      padding-right: 6px;
+    }
+
+    i::before {
+      color: $success-dark;
+    }
+  }
 
   .filters-wrapper {
     display: flex;

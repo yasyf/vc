@@ -5,15 +5,22 @@ module External::Concerns
     private
 
     def filter_params
-      params.permit(:industry, :location, :fund_type, :companies, :search)
+      filters = params.permit(filters: [:industry, :location, :fund_type, :companies])[:filters]
+      { filters: filters || {} }
     end
 
     def options_params
-      params.permit(:us_only, :related, :company_cities).transform_values { |v| v.downcase == 'true' }
+      options = params.permit(options: [:us_only, :related, :company_cities])[:options]
+      { options: options.present? ? options.transform_values { |v| v.downcase == 'true' } : {} }
+    end
+
+    def search_params
+      search = params.permit(search: [:first_name, :last_name, :firm_name])[:search]
+      { search: search || {} }
     end
 
     def competitor_params
-      filter_params.to_h.merge(options_params.to_h)
+      filter_params.to_h.merge(options_params.to_h).merge(search_params.to_h)
     end
 
     def list_params

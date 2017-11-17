@@ -18,11 +18,20 @@ class Store {
     return this.store.get(key) || _default;
   };
 
+  _getSubscription = key => {
+    return this.subscriptions.get(key) || (new Map());
+  };
+
   subscribe = (key, fn) => {
-    const existing = this.subscriptions.get(key) || [];
-    const id = existing.length;
-    const delayedFn = x => setTimeout(() => fn(x), 0);
-    this.subscriptions.set(key, existing.concat([delayedFn]));
+    const existing = this._getSubscription(key);
+    const id = existing.size;
+    const delayedFn = x => setTimeout(() => {
+      if (this._getSubscription(key).has(id)) {
+        fn(x);
+      }
+    }, 0);
+    existing.set(id, delayedFn);
+    this.subscriptions.set(key, existing);
 
     const value = this.get(key);
     if (value)
@@ -33,8 +42,8 @@ class Store {
 
   unsubscribe = ({key, id}) => {
     const existing = this.subscriptions.get(key);
-    existing[id] = null;
-    if (_.compact(existing).length === 0) {
+    existing.delete(id);
+    if (existing.size === 0) {
       this.subscriptions.delete(key);
     } else {
       this.subscriptions.set(key, existing);

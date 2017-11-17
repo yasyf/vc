@@ -1,13 +1,24 @@
 import React from 'react';
-import {FilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
+import {FilterPath, SearchPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
 import Tabs from '../global/tabs/tabs';
 import FilterPage from '../filter/filter_page';
 import inflection from 'inflection';
+
+const MaxCount = 100;
+const TabIndex = Object.freeze({
+  FILTER: 0,
+  SEARCH: 1,
+});
 
 export default class Hero extends React.Component {
   state = {
     query: '',
     count: 0,
+    tab: 0,
+  };
+
+  onTabChange = tab => {
+    this.setState({tab});
   };
 
 
@@ -17,10 +28,18 @@ export default class Hero extends React.Component {
 
   renderViewAll() {
     const { query, count } = this.state;
+    const clipped = Math.min(count, MaxCount);
+    const path = this.state.tab === TabIndex.FILTER ? FilterPath : SearchPath;
     return (
       <div className="view-all">
-        <a href={`${FilterPath}?${query}`}>
-          View {count !== 1 ? 'all' : null} {count || null} {inflection.inflect('results', count)}
+        <a href={`${path}?${query}`}>
+          View
+          {' '}
+          {clipped !== 1 ? 'all' : null}
+          {' '}
+          {clipped && clipped !== MaxCount ? clipped : null}
+          {' '}
+          {clipped !== MaxCount ? inflection.inflect('results', clipped) : `${clipped}+ results`}
         </a>
       </div>
     );
@@ -31,8 +50,9 @@ export default class Hero extends React.Component {
       <div>
         <FilterPage
           {...this.props}
+          showFilters={this.state.tab === TabIndex.FILTER}
+          showSearch={this.state.tab === TabIndex.SEARCH}
           onQueryChange={this.onQueryChange}
-          showSearch={false}
           rowHeight={60}
           industryLimit={2}
           overflowY="hidden"
@@ -61,9 +81,11 @@ export default class Hero extends React.Component {
           </p>
         </div>
         <Tabs
-          tabs={['Browse Investors']}
-          panels={[this.renderBrowse()]}
+          tabs={['Browse Investors', 'Find an Investor']}
+          panels={[null, null]}
+          onTabChange={this.onTabChange}
         />
+        {this.renderBrowse()}
       </div>
     )
   }

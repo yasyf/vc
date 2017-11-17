@@ -4,6 +4,7 @@ import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/const
 import {
   flattenFilters,
   buildQuery,
+  ffetch,
   extend,
   timestamp,
   replaceSort,
@@ -39,21 +40,46 @@ export default class FilterPage extends React.Component {
     this.props.onQueryChange(this.query(), this.state.count);
   }
 
-  queryParams() {
-    let { search, filters, options, sort } = this.state;
-    return {search, sort, ...filters, ...options};
+  queryParams(state = null) {
+    let { search, filters, options, sort } = state || this.state;
+    const params = { options, sort };
+    if (this.props.showSearch) {
+      params.search = search;
+    }
+    if (this.props.showFilters) {
+      params.filters = filters;
+    }
+    return params;
   }
 
   query() {
     return buildQuery(this.queryParams());
   }
 
-  onFiltersChange = (filters, count, suggestions) => {
-    this.setState({filters, count, suggestions, resultsId: timestamp(), competitors: null});
-    this.props.onQueryChange(this.query(), count);
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      (prevProps.showFilters !== this.props.showFilters && !_.isEmpty(_.compact(this.props.filters)))
+      || (prevProps.showSearch !== this.props.showSearch && !_.isEmpty(_.compact(this.props.search)))
+      || buildQuery(this.queryParams()) !== buildQuery(this.queryParams(prevState))
+    ) {
+      this.fetchNumInvestors();
+    }
+  }
+
+  fetchNumInvestors() {
+    const query = this.query();
+    ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count, suggestions}) => {
+      this.setState({count, suggestions, resultsId: timestamp(), competitors: null});
+      this.props.onQueryChange(query, count);
+    });
+  }
+
+  onFiltersChange = filters => {
+    this.setState({filters});
   };
 
-  onSearchChange = (search) => {
+  onSearchChange = update => {
+    let search = extend(this.state.search, update);
     this.setState({search});
   };
 
@@ -77,7 +103,6 @@ export default class FilterPage extends React.Component {
         options={this.state.options}
         initialCount={this.state.count}
         suggestions={this.state.suggestions}
-        countSource={{path: CompetitorsFilterCountPath, query: this.queryParams()}}
       />
     );
   }

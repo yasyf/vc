@@ -42,6 +42,7 @@ Rails.application.routes.draw do
         root action: 'index'
         get 'discover'
         get 'filter'
+        get 'search'
         get 'list/:list', action: :list, as: :list
         get 'outreach'
         get 'login'

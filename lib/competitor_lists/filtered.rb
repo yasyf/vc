@@ -12,35 +12,29 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     false
   end
 
-  def _filtered_by_search_subquery
-    name = Util.escape_sql_argument(params[:search])
-    first_name, last_name = Util.split_name(params[:search]).map(&Util.method(:escape_sql_argument))
-    last_name = first_name unless last_name.present?
-    competitors_subquery = <<-SQL
-      SELECT
-        competitors.id as id,
-        COALESCE(similarity(competitors.name, '#{name}'), 0) AS rank
-      FROM competitors
-      WHERE competitors.name % '#{name}'
-      ORDER BY rank DESC
-    SQL
-    investors_subquery = <<-SQL
+  def _filtered_by_search_subquery(search)
+    first_name = search[:first_name].present? ? Util.escape_sql_argument(search[:first_name]) : nil
+    last_name = search[:last_name].present? ? Util.escape_sql_argument(search[:last_name]) : nil
+    firm_name = search[:firm_name].present? ? Util.escape_sql_argument(search[:firm_name]) : nil
+
+    <<-SQL
       SELECT
         competitors.id AS id,
         investors.id AS match_id,
-        COALESCE(similarity(investors.first_name, '#{first_name}'), 0) + COALESCE(similarity(investors.last_name, '#{last_name}'), 0) AS rank
+        #{[
+          first_name && "COALESCE(similarity(investors.first_name, '#{first_name}'), 0)",
+          last_name && "COALESCE(similarity(investors.last_name, '#{last_name}'), 0)",
+          firm_name && "COALESCE(similarity(competitors.name, '#{firm_name}'), 0)",
+        ].compact.join(' + ')} AS rank
       FROM investors
       INNER JOIN competitors on investors.competitor_id = competitors.id
       WHERE
-        investors.first_name % '#{first_name}'
-        #{first_name == last_name ? 'OR' : 'AND'} investors.last_name % '#{last_name}'
+        #{[
+          first_name && "investors.first_name % '#{first_name}'",
+          last_name && "investors.last_name % '#{last_name}'",
+          firm_name && "competitors.name % '#{firm_name}'",
+        ].compact.join(' AND ')}
       ORDER BY rank DESC
-    SQL
-    <<-SQL
-      SELECT COALESCE(csub.id, isub.id) AS id, isub.match_id
-      FROM (#{competitors_subquery}) AS csub
-      FULL JOIN (#{investors_subquery}) AS isub USING (id)
-      ORDER BY csub.rank + isub.rank
     SQL
   end
 
@@ -50,7 +44,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
       FROM (
         SELECT DISTINCT unnest(companies.industry)
         FROM companies
-        WHERE companies.id IN (#{Util.escape_sql_argument(params[:companies])})
+        WHERE companies.id IN (#{Util.escape_sql_argument(params[:filters][:companies])})
       ) AS t(related_industries)
     SQL
     <<-SQL
@@ -65,33 +59,30 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
 
   def _filtered
     competitors = if params[:search].present?
-      Competitor.joins("INNER JOIN (#{_filtered_by_search_subquery}) AS searched ON competitors.id = searched.id")
+      Competitor.joins("INNER JOIN (#{_filtered_by_search_subquery(params[:search])}) AS searched ON competitors.id = searched.id")
     else
       Competitor.all
     end
-    %w(fund_type).each do |param|
-      next unless params[param].present?
-      competitors = competitors.where("competitors.#{param} && ?", "{#{params[param]}}")
+    competitors = competitors.where("competitors.fund_type && ?", "{#{params[:filters][:fund_type]}}") if params[:filters][:fund_type].present?
+    if params[:filters][:industry].present?
+      competitors = competitors.where('competitors.industry @> ?', "{#{params[:filters][:industry]}}")
     end
-    if params[:industry].present?
-      competitors = competitors.where('competitors.industry @> ?', "{#{params[:industry]}}")
-    end
-    if params[:location].present?
-      competitors = if params[:company_cities]
-        competitors.joins(:companies).where('companies.location IN (?)', params[:location])
+    if params[:filters][:location].present?
+      competitors = if params[:options][:company_cities]
+        competitors.joins(:companies).where('companies.location IN (?)', params[:filters][:location])
       else
-        competitors.where('competitors.location && ?', "{#{params[:location]}}")
+        competitors.where('competitors.location && ?', "{#{params[:filters][:location]}}")
       end
     end
-    if params[:companies].present?
+    if params[:filters][:companies].present?
       competitors = competitors.joins(:companies)
-      competitors = if params[:related]
+      competitors = if params[:options][:related]
         competitors.joins("INNER JOIN (#{_filtered_by_related_subquery}) AS related_companies ON companies.id = related_companies.id")
       else
-        competitors.where('companies.id': params[:companies].split(','))
+        competitors.where('companies.id': params[:filters][:companies].split(','))
       end
     end
-    competitors = competitors.where(country: 'US') if params[:us_only]
+    competitors = competitors.where(country: 'US') if params[:options][:us_only]
     competitors.left_outer_joins(:investors)
   end
 
