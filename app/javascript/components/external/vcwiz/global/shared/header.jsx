@@ -22,10 +22,12 @@ export default class Header extends React.Component {
 
   componentDidMount() {
     Actions.register('login', this.openLogin);
+    Actions.register('signup', this.openSignup);
   }
 
   componentWillUnmount() {
     Actions.unregister('login');
+    Actions.unregister('signup');
   }
 
   onClick = () => {

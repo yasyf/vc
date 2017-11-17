@@ -13,7 +13,7 @@ export default class Track extends React.Component {
   };
 
   onButtonClick = () => {
-    Actions.trigger('login');
+    Actions.trigger('signup');
   };
 
   render() {
