@@ -146,12 +146,15 @@ export default class LoginModal extends React.Component {
 
   renderFilters(fields) {
     return (
-      <Filters
-        key="filters"
-        showButton={false}
-        fields={fields}
-        onChange={this.onChange}
-      />
+      <div key="filters" className="filters">
+        <div className="filters-wrapper">
+          <Filters
+            showButton={false}
+            fields={fields}
+            onChange={this.onChange}
+          />
+        </div>
+      </div>
     );
   }
 

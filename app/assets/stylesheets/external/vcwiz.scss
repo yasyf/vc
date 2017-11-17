@@ -571,6 +571,23 @@ input.placeholded {
   }
 }
 
+.filters {
+  .filters-wrapper {
+    display: flex;
+  }
+
+  .vr {
+    width: 0;
+    border: 1px solid rgba($light-grey, 0.75);
+    height: auto;
+    margin: 0.5em 1.5em;
+  }
+
+  .vr-hidden {
+    visibility: hidden;
+  }
+}
+
 .search-and-filters {
   max-width: 100%;
   background-color: $filters-blue;
@@ -601,21 +618,6 @@ input.placeholded {
     i::before {
       color: $success-dark;
     }
-  }
-
-  .filters-wrapper {
-    display: flex;
-  }
-
-  .vr {
-    width: 0;
-    border: 1px solid rgba($light-grey, 0.75);
-    height: auto;
-    margin: 0.5em 1.5em;
-  }
-
-  .vr-hidden {
-    visibility: hidden;
   }
 }
 
@@ -1173,12 +1175,13 @@ mark.highlighter {
   }
 
   .filters {
-    input[type="text"] {
-      height: 50px;
+    .filters-wrapper {
+      justify-content: center;
+      margin-bottom: 1em;
     }
 
-    .vr {
-      display: none;
+    input[type="text"] {
+      height: 50px;
     }
 
     .button.success {
