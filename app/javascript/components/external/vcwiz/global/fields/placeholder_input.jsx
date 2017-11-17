@@ -22,7 +22,7 @@ export default class PlaceholderInput extends React.Component {
     this.props.onChange(value);
   };
 
-  onClick = () => {
+  onFocus = () => {
     this.setState({focused: true});
   };
 
@@ -48,8 +48,10 @@ export default class PlaceholderInput extends React.Component {
           {...rest}
         />
         <span
+          tabIndex={0}
           className="placeholder"
-          onClick={this.onClick}
+          onClick={this.onFocus}
+          onFocus={this.onFocus}
           style={showInput ? {display: 'none'} : undefined}
         >
           {this.props.placeholder}

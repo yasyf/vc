@@ -73,7 +73,7 @@ export default class ResearchModal extends React.Component {
     if (!industry || !industry.length) {
       return null;
     }
-    let industries = industry.map(i =>
+    let industries = _.take(industry, 7).map(i =>
       <span key={i}>{CompetitorIndustries[i]}</span>
     );
     return <p><b>Top Industries</b>: {withDots(industries)}</p>
