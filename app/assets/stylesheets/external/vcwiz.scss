@@ -231,7 +231,7 @@ i.reversed::before {
 #signup-bar {
   position: relative;
   padding: 0;
-  height: 70vh;
+  height: 50vh;
   max-height: 500px;
   background: transparent;
 
@@ -249,8 +249,11 @@ i.reversed::before {
   }
 
   .signup-content {
-    width: 70%;
     position: absolute;
+
+    .intro {
+      width: 70%;
+    }
 
     & > div:not(:last-child) {
       margin-bottom: 3em;
@@ -266,6 +269,7 @@ i.reversed::before {
       text-transform: uppercase;
       border: 0;
       padding: 1rem 2rem;
+      font-size: large;
     }
   }
 
@@ -360,7 +364,7 @@ i.reversed::before {
 }
 
 .search-hero {
-  padding-top: 50px;
+  padding-top: 20px;
   width: 90vw;
   margin: 0 auto;
 
