@@ -6,6 +6,7 @@ import AddInvestorModal from './add_investor_modal';
 import { TargetInvestorsPath } from '../global/constants.js.erb';
 import {ffetch, replaceSort, timestamp} from '../global/utils';
 import ImportInvestorsModal from './import_investors_modal';
+import SectionWithDims from '../global/shared/section_with_dims';
 
 const Modals = {
   ADD: 'Add',
@@ -79,15 +80,14 @@ export default class OutreachPage extends React.Component {
   renderHeader() {
     return (
       <Row>
-        <Column large={3}>
-          <div className="title-wrapper">
-            <span className="title">Your Conversations</span>
-            <a onClick={this.openImportModal}>Import</a>
-          </div>
+        <Column large={5}>
+          <h3>Your Conversations</h3>
         </Column>
-        <Column offsetOnLarge={6} large={3}>
-          <div className="text-right">
-            <a onClick={this.openAddModal}>+ Add investor</a>
+        <Column offsetOnLarge={4} large={3}>
+          <div className="actions">
+            <a onClick={this.openAddModal}>Add investor</a>
+            <span className="sep">|</span>
+            <a onClick={this.openImportModal}>Import</a>
           </div>
         </Column>
       </Row>
@@ -99,8 +99,7 @@ export default class OutreachPage extends React.Component {
     const source = {path: TargetInvestorsPath, query: {sort}};
 
     return (
-      <div className="full-screen">
-        {this.renderHeader()}
+      <SectionWithDims dimensionsKey="dimensions">
         <Conversations
           resultsId={resultsId}
           source={source}
@@ -109,7 +108,7 @@ export default class OutreachPage extends React.Component {
           targets={targets}
           sort={sort}
         />
-      </div>
+      </SectionWithDims>
     )
   }
 
@@ -117,6 +116,7 @@ export default class OutreachPage extends React.Component {
     return (
       <VCWiz
         page="outreach"
+        header={this.renderHeader()}
         body={this.renderBody()}
         modal={this.renderModal()}
       />
