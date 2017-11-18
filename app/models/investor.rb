@@ -62,7 +62,7 @@ class Investor < ApplicationRecord
     self.last_name = person.last_name
     if person.affiliation.present?
       self.role = person.affiliation.role
-      self.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name)
+      self.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name) if person.affiliation.permalink.present?
     end
     self.description = person.bio
     self.photo = person.image

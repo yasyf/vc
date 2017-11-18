@@ -2,25 +2,11 @@ import React from 'react';
 import ReactSelect  from 'react-select';
 import Input from './input';
 import Tether from '../shared/tether';
-import onElementResize, { unbind } from 'element-resize-event';
 
 export class TetheredSelectWrap extends ReactSelect {
   constructor(props) {
     super(props);
     this.renderOuter = this._renderOuter;
-  }
-
-  componentDidMount() {
-    super.componentDidMount();
-    if (this.wrapper) {
-      onElementResize(this.wrapper, () => this.forceUpdate());
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.wrapper) {
-      unbind(this.wrapper);
-    }
   }
 
   _renderOuter() {
