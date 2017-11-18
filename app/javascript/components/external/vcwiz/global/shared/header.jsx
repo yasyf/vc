@@ -68,7 +68,6 @@ export default class Header extends React.Component {
               Your Conversations {this.renderCount()}
             </h5>
           </a>
-          <i className="line-icon fi-widget"/>
         </div>
       );
     } else {
