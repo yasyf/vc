@@ -22,6 +22,7 @@ export default class OutreachPage extends React.Component {
       resultsId: timestamp(),
       targets: this.props.targets,
       sort: props.sort,
+      count: props.count,
     };
   }
 
@@ -95,7 +96,7 @@ export default class OutreachPage extends React.Component {
   }
 
   renderBody() {
-    const { sort, targets, resultsId } = this.state;
+    const { sort, count, targets, resultsId } = this.state;
     const source = {path: TargetInvestorsPath, query: {sort}};
 
     return (
@@ -107,6 +108,7 @@ export default class OutreachPage extends React.Component {
           {...this.props}
           targets={targets}
           sort={sort}
+          count={count}
         />
       </SectionWithDims>
     )
