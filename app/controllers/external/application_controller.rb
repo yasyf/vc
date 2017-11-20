@@ -5,7 +5,7 @@ class External::ApplicationController < ::ApplicationController
   private
 
   def populate_gon
-    gon.founder = current_external_founder.cached_json
+    gon.founder = current_external_founder&.cached_json
   end
 
   def check_founder!
