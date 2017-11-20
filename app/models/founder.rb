@@ -178,10 +178,9 @@ class Founder < ApplicationRecord
       .where(subject_type: TargetInvestor.name)
       .where(action: %w(investor_opened investor_clicked intro_requested investor_replied))
       .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
-      .joins("LEFT OUTER JOIN emails ON events.action = 'investor_replied' AND events.arg2::bigint = emails.id")
       .where('target_investors.founder_id = ?', id)
       .order(created_at: :desc)
-      .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name, emails.subject AS email_subject')
+      .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name')
       .limit(3)
   end
 

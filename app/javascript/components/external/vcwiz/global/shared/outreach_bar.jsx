@@ -32,9 +32,9 @@ export default class OutreachBar extends React.Component {
     window.location.href = OutreachPath;
   };
 
-  renderEvent = ({action, arg1, arg2, first_name, last_name, firm_name, email_subject}) => {
+  renderEvent = ({action, arg1, arg2, first_name, last_name, firm_name, meta}) => {
     const name = `${first_name} ${last_name} from ${firm_name}`;
-    const email = email_subject ?  `email (${email_subject})` : 'email';
+    const email = meta.email_subject ?  `email (${meta.email_subject})` : 'email';
     switch (action) {
       case 'investor_opened':
         return `${name} opened your ${arg1 ? 'intro' : email}. Look forward to a response soon!`;
