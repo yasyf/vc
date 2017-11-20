@@ -5,11 +5,10 @@ class DuplicateCompetitorJob < ApplicationJob
   def perform(competitor_id)
     ActiveRecord::Base.transaction do
       competitor = Competitor.find(competitor_id)
-      other = Competitor
-        .where(crunchbase_id: competitor.crunchbase_id)
-        .or(Competitor.where(al_id: competitor.al_id))
-        .where.not(id: competitor.id)
-        .first
+      other = Competitor.none
+      other = other.where(crunchbase_id: competitor.crunchbase_id) if competitor.crunchbase_id.present?
+      other = other.or(Competitor.where(al_id: competitor.al_id)) if competitor.al_id.present?
+      other = other.where.not(id: competitor.id).first
       return unless other.present?
 
       competitor.lock!

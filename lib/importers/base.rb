@@ -3,6 +3,8 @@ require 'open-uri'
 
 module Importers
   class Base
+    attr_getter :filename
+
     def initialize(filename, headers = {})
       @filename = url?(filename) ? save(filename) : filename
       @headers = headers.with_indifferent_access.slice(*self.class::HEADER_DEFAULTS.keys).reverse_merge(self.class::HEADER_DEFAULTS)

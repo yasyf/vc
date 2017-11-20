@@ -132,6 +132,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
   def competitor_from_person_id(id)
     details = Http::Crunchbase::Person.new(id, TIMEOUT)
+    return nil unless details.affiliation.permalink.present?
     Retriable.retriable(on: NoMethodError) { Competitor.where(crunchbase_id: details.affiliation.permalink).first }
   rescue NoMethodError
     nil

@@ -121,6 +121,7 @@ class Competitor < ApplicationRecord
   end
 
   def self.create_from_domain!(domain, name)
+    return nil unless domain.present?
     where(domain: domain).first_or_initialize.tap do |i|
       i.crunchbase_id ||= Http::Crunchbase::Organization.find_domain_id(domain)
       i.name = name
@@ -139,6 +140,7 @@ class Competitor < ApplicationRecord
   end
 
   def self.from_angelist!(al_id, name)
+    return nil unless al_id.present?
     where(al_id: al_id).first_or_create! do |competitor|
       competitor.name = name
     end
