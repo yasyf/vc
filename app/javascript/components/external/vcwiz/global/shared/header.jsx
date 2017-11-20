@@ -8,6 +8,7 @@ import {
   TopBarRight,
 } from 'react-foundation';
 import {DiscoverPath,OutreachPath} from '../constants.js.erb';
+import Store from '../store';
 import {isLoggedIn} from '../utils';
 import LoginModal from '../login/login_modal';
 import Actions from '../actions';
@@ -19,7 +20,12 @@ export default class Header extends React.Component {
     loginOpen: false,
     loginStage: 0,
     showIntro: true,
+    founder: Store.get('founder', {}),
   };
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('founder', founder => this.setState({founder}));
+  }
 
   componentDidMount() {
     Actions.register('login', this.openLogin);
@@ -27,6 +33,7 @@ export default class Header extends React.Component {
   }
 
   componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
     Actions.unregister('login');
     Actions.unregister('signup');
   }
@@ -54,10 +61,10 @@ export default class Header extends React.Component {
   };
 
   renderCount() {
-    if (!window.gon.founder.conversations) {
+    if (!this.state.founder.conversations) {
       return null;
     }
-    return <span>({window.gon.founder.conversations.total})</span>;
+    return <span>({this.state.founder.conversations.total})</span>;
   }
 
   renderRight() {

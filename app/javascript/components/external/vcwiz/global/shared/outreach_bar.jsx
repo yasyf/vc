@@ -1,6 +1,7 @@
 import React from 'react';
 import {getDomain, isLoggedIn} from '../utils';
 import {TargetInvestorCategories, OutreachPath, CCEmail} from '../constants.js.erb'
+import Store from '../store';
 import {Button, Colors} from 'react-foundation';
 import classNames from 'classnames';
 import moment from 'moment';
@@ -15,6 +16,18 @@ const CategoryColors = {
 };
 
 export default class OutreachBar extends React.Component {
+  state = {
+    founder: Store.get('founder', {}),
+  };
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('founder', founder => this.setState({founder}));
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
+  }
+
   onClick = () => {
     window.location.href = OutreachPath;
   };
@@ -35,8 +48,7 @@ export default class OutreachBar extends React.Component {
   };
 
   renderReminder() {
-    const { stats } = window.gon.founder;
-    const { conversations } = window.gon.founder;
+    const { stats, conversations } = this.state.founder;
     if (conversations.total && _.isEmpty(stats)) {
       return (
         <span>
@@ -52,7 +64,7 @@ export default class OutreachBar extends React.Component {
   }
 
   renderStats() {
-    const { stats } = window.gon.founder;
+    const { stats } = this.state.founder;
     if (_.isEmpty(stats)) {
       return null;
     }
@@ -69,7 +81,7 @@ export default class OutreachBar extends React.Component {
   }
 
   renderEvents() {
-    const { events } = window.gon.founder;
+    const { events } = this.state.founder;
     if (!events || !events.length) {
       return null;
     }
@@ -81,7 +93,7 @@ export default class OutreachBar extends React.Component {
   }
 
   renderBusy() {
-    const { conversations } = window.gon.founder;
+    const { conversations } = this.state.founder;
     if (conversations.total) {
       return "You've been busy!";
     } else {
@@ -104,7 +116,7 @@ export default class OutreachBar extends React.Component {
   }
 
   renderConversation(key) {
-    const { conversations } = window.gon.founder;
+    const { conversations } = this.state.founder;
     const firms = conversations.recents[key] || [];
     const show = _.map(_.take(firms, 4), (f, i) => <div key={i}>{f}</div>);
     const left = firms.length - show.length;
@@ -144,9 +156,9 @@ export default class OutreachBar extends React.Component {
   }
 
   renderWelcome() {
-    const { conversations } = window.gon.founder;
+    const { conversations } = this.state.founder;
     if (conversations.total) {
-      return `You're in talks with ${window.gon.founder.conversations.total} investors.`;
+      return `You're in talks with ${conversations.total} investors.`;
     } else {
       return "You're not tracking any investors yet!"
     }
@@ -159,7 +171,7 @@ export default class OutreachBar extends React.Component {
     return (
       <div className="outreach-bar">
         <h4>
-          Hi {window.gon.founder.first_name}.
+          Hi {this.state.founder.first_name}.
           {' '}
           {this.renderWelcome()}
         </h4>

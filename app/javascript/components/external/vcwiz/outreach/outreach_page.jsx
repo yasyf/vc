@@ -5,6 +5,7 @@ import {Column, Row} from 'react-foundation';
 import AddInvestorModal from './add_investor_modal';
 import { TargetInvestorsPath } from '../global/constants.js.erb';
 import {ffetch, replaceSort, timestamp} from '../global/utils';
+import Actions from '../global/actions';
 import ImportInvestorsModal from './import_investors_modal';
 import SectionWithDims from '../global/shared/section_with_dims';
 
@@ -44,6 +45,7 @@ export default class OutreachPage extends React.Component {
         count: count + 1,
         targets: targets && [newTarget].concat(targets),
       });
+      Actions.trigger('refreshFounder');
     })
   };
 

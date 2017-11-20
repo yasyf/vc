@@ -1,6 +1,5 @@
 import React from 'react';
 import 'whatwg-fetch';
-import update from 'immutability-helper';
 import parseDomain from 'parse-domain';
 import Dimensions from 'react-dimensions';
 import Storage from './storage.js.erb';
@@ -49,11 +48,6 @@ export const ffetchCached = function(path) {
   return ffetch(path, 'GET', null, {cache: true});
 };
 
-export const ffetchPublic = function(path, method = 'GET', data = null, opts = {}) {
-  const allOpts = {...opts, method};
-  return _ffetch(path, data, allOpts);
-};
-
 export const flush = function() {
   setTimeout(() => Storage.clearExpr(), 0);
 };
@@ -66,40 +60,12 @@ export const isLoggedIn = function() {
   return !!window.gon.founder;
 };
 
-export const isDRF = function() {
-  return window.gon.founder['drf?'];
-};
-
-export const isMe = function(founder) {
-  return window.gon.founder.id === founder.id;
-};
-
 export const fullName = function(founder) {
   return `${founder.first_name} ${founder.last_name}`;
 };
 
 export const initials = function(founder) {
   return `${_.first(founder.first_name) || ''}${_.first(founder.last_name) || ''}`;
-};
-
-export const wordJoin = function(words) {
-  if (words.length === 1) {
-    return words[0];
-  } else if (words.length === 2) {
-    return words.join(' and ');
-  } else {
-    return `${_.initial(words).join(', ')}, and ${_.last(words)}`;
-  }
-};
-
-export const pronoun = function(gender, tense = null) {
-  if (gender === 'male') {
-    return (tense === 'pos') ? 'his' : (tense === 'past') ? 'him' : 'he';
-  } else if (gender === 'female') {
-    return (tense === 'pos') ? 'her' : (tense === 'past') ? 'her' : 'she';
-  } else {
-    return (tense === 'pos') ? 'their' : (tense === 'past') ? 'them' : 'they';
-  }
 };
 
 let _extend = function(dest, src, overwrite = true) {
@@ -114,21 +80,6 @@ let _extend = function(dest, src, overwrite = true) {
 
 export const extend = (dest, src) => _extend(dest, src, true);
 export const merge = (dest, src) => _extend(dest, src, false);
-
-export const emplace = function(items, item) {
-  let index = _.findIndex(items, {id: item.id});
-  return [update(items, {[index]: {$set: item}}), index];
-};
-
-export const extract = function(items, item) {
-  let index = _.findIndex(items, {id: item.id});
-  return update(items, {$unset: [index]});
-};
-
-export const remove = function(items, item) {
-  let index = _.findIndex(items, {id: item.id});
-  return update(items, {$splice: [[index, 1]]});
-};
 
 export const buildQuery = (row, context = '') => {
   const keys = Object.keys(row);

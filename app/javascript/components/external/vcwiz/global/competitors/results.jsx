@@ -6,6 +6,7 @@ import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
 import {ffetch, flush} from '../utils';
 import Store from '../store';
+import Actions from '../actions';
 
 class ResultsTable extends FixedTable {
   static defaultProps = {
@@ -31,9 +32,11 @@ class ResultsTable extends FixedTable {
   }
 
   onTrackChange = (row, update) => {
-    const id = this.props.array.getSync(row, false).target_investor.id;
+    const id = this.props.array.getSync(row, false).track_id;
     flush();
-    ffetch(TargetInvestorsPath.id(id), 'PATCH', update);
+    ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: {stage: update.track_status}}).then(() => {
+      Actions.trigger('refreshFounder');
+    });
   };
 
   renderColumns() {

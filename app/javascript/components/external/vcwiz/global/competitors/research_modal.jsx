@@ -4,6 +4,7 @@ import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import {ffetch, flush, fullName, sendEvent, withDots} from '../utils';
+import Actions from '../actions';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
@@ -30,7 +31,9 @@ export default class ResearchModal extends React.Component {
     if (this.props.onTrackChange) {
       this.props.onTrackChange(update);
     } else {
-      ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}});
+      ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}}).then(() => {
+        Actions.trigger('refreshFounder');
+      });
     }
   };
 
