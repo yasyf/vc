@@ -7,7 +7,7 @@ import SectionWithDims from '../global/shared/section_with_dims';
 export default class ListPage extends React.Component {
   renderHeader() {
     let { title } = this.props;
-    return <p className="title">{title}</p>;
+    return <h3>{title}</h3>;
   }
 
   renderBody() {
