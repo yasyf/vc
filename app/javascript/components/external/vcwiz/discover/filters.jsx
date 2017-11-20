@@ -28,7 +28,7 @@ export default class Filters extends React.Component {
 
   componentDidMount() {
     const filters = Storage.get(SessionStorageKey);
-    if (_.isEmpty(this.state.filters) && !_.isEmpty(filters)) {
+    if (!_.isEmpty(filters) && (_.isEmpty(this.state.filters) || this.props.overwriteWithSaved)) {
       this.setState({filters});
       this.propagateOnChange(filters);
     }

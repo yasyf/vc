@@ -50,6 +50,7 @@ export default class Hero extends React.Component {
       <div>
         <FilterPage
           {...this.props}
+          overwriteWithSavedFilters={true}
           showFilters={this.state.tab === TabIndex.FILTER}
           showSearch={this.state.tab === TabIndex.SEARCH}
           onQueryChange={this.onQueryChange}

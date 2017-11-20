@@ -96,6 +96,7 @@ export default class FilterPage extends React.Component {
   renderFilterRow() {
     return (
       <FilterRow
+        overwriteWithSaved={this.props.overwriteWithSavedFilters}
         onFiltersChange={this.onFiltersChange}
         onOptionChange={this.onOptionChange}
         initialFilters={this.props.filters}
