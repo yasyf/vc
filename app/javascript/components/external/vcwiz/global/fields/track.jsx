@@ -26,6 +26,7 @@ export default class Track extends React.Component {
             placeholder="Add"
             multi={false}
             searchable={false}
+            scrollMenuIntoView={false}
             onChange={this.props.onChange}
             options={TargetInvestorStagesOptions}
             arrowRenderer={this.props.value ? undefined : nullRenderer}

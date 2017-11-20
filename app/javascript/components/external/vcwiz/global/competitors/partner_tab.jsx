@@ -12,6 +12,7 @@ import Tweet from '../shared/tweet';
 import Loader from '../shared/loader';
 import Track from '../fields/track';
 import PartnerHeading from './partner_heading';
+import update from 'immutability-helper';
 
 export default class PartnerTab extends React.Component {
   constructor(props) {
@@ -34,6 +35,13 @@ export default class PartnerTab extends React.Component {
     }
   }
 
+  onTrackChange = change => {
+    const target_investor = { ...(this.state.investor.target_investor || {}), stage: change.track.value };
+    const investor = update(this.state.investor, {target_investor: {$set: target_investor}});
+    this.setState({investor});
+    this.props.onTrackChange(change);
+  };
+
   renderLoading() {
     return (
       <div className="text-center loading">
@@ -44,7 +52,7 @@ export default class PartnerTab extends React.Component {
 
   renderTrack() {
     let stage = this.state.investor.target_investor && this.state.investor.target_investor.stage;
-    return <Track onChange={this.props.onTrackChange} value={stage} />;
+    return <Track onChange={this.onTrackChange} value={stage} />;
   }
 
   renderHeading() {

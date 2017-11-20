@@ -7,6 +7,11 @@ module Concerns
       self
     end
 
+    def with_target_investor(target_investor)
+      @target_investor = target_investor
+      self
+    end
+
     private
 
     def track_status
@@ -26,7 +31,9 @@ module Concerns
     end
 
     def target_investor
-      if self.attributes.key?('target_investor')
+      if @target_investor
+        @target_investor.as_json(only: [:id, :stage], methods: [], include: [])
+      elsif self.attributes.key?('target_investor')
         self[:target_investor]
       elsif @founder.present?
         @founder

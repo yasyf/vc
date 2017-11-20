@@ -70,6 +70,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
       target = TargetInvestor.from_investor!(current_external_founder, investor)
       current_external_founder.investor_targeted! investor.id
       target.update! stage: stage
+      investor = investor.with_target_investor target
     end
     render_censored investor
   end

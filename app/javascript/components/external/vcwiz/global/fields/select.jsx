@@ -17,6 +17,11 @@ export class TetheredSelectWrap extends ReactSelect {
     const selectWidth = this.wrapper ? this.wrapper.offsetWidth : null;
     return <Tether width={selectWidth} className={this.props.tetherClassName}>{menu}</Tether>;
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.hasScrolledToOption = true;
+    super.componentDidUpdate(prevProps, prevState);
+  }
 }
 
 class TetheredSelectWrapAsync extends ReactSelect.Async {
