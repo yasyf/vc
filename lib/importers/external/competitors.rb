@@ -18,9 +18,9 @@ module Importers::External
     }
 
     def self.process!(row)
-      return false unless row.delete(:roles) == '{investor}'
+      return false unless row.delete(:roles) == 'investor'
       return false unless row[:type].present?
-      row[:fund_type] = row.delete(:type)[1...-1].split(',').map { |t| TYPES[t.to_sym] }.compact
+      row[:fund_type] = row.delete(:type).split(',').map { |t| TYPES[t.to_sym] }.compact
       return false unless row[:fund_type].present?
       row[:country] = Country.find_country_by_alpha3(row[:country])&.alpha2 if row[:country].present?
       row[:crunchbase_id] = row[:crunchbase_id].split('/').last if row[:crunchbase_id].present?

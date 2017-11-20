@@ -3,7 +3,9 @@ require 'open-uri'
 
 module Importers
   class Base
-    attr_getter :filename
+    HEADER_DEFAULTS = {}
+
+    attr_reader :filename
 
     def initialize(filename, headers = {})
       @filename = url?(filename) ? save(filename) : filename

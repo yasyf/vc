@@ -2,7 +2,7 @@ module Importers::External
   class Companies < Importers::Base
     HEADER_DEFAULTS = {
       name: 'company_name',
-      roles: 'roles',
+      role: 'primary_role',
       crunchbase_id: 'permalink',
       domain: 'domain',
       description: 'short_description',
@@ -13,7 +13,7 @@ module Importers::External
     }
 
     def self.process!(row)
-      return false unless row.delete(:roles) == '{company}'
+      return false unless row.delete(:role) == 'company'
       row[:industry] = row.delete(:categories).split(',').map { |c| Competitor.closest_industry(c) }.compact.uniq if row[:categories].present?
       row[:country] = Country.find_country_by_alpha3(row[:country])&.alpha2 if row[:country].present?
       row[:crunchbase_id] = row[:crunchbase_id].split('/').last if row[:crunchbase_id].present?
