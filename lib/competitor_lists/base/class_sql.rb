@@ -17,16 +17,15 @@ module CompetitorLists::Base::ClassSql
         SELECT investors.id, investors.first_name, investors.last_name
         FROM investors
         LEFT OUTER JOIN investments ON investments.investor_id = investors.id
-        WHERE investors.competitor_id = #{competitors_table}.id
+        WHERE
+          investors.competitor_id = #{competitors_table}.id
+          AND lower(investors.role) ILIKE ANY (ARRAY[#{CompetitorCrunchbaseJob::INVESTOR_TITLE.map { |t| "'%#{t}%'" }.join(', ')}])
         GROUP BY investors.id
         ORDER BY
           MAX(investments.funded_at) DESC NULLS LAST,
-          CASE
-            WHEN investors.role IN (#{CompetitorCrunchbaseJob::INVESTOR_TITLE.map { |t| "'#{t}'" }.join(', ')}) THEN 1
-            ELSE 0
-          END DESC,
           COUNT(investments.id) DESC,
           investors.featured DESC
+        LIMIT 15
     SQL
     <<-SQL
         LEFT JOIN LATERAL (

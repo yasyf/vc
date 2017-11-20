@@ -1,7 +1,7 @@
 class CompetitorCrunchbaseJob < ApplicationJob
   include Concerns::Ignorable
 
-  INVESTOR_TITLE = ['Venture Partner', 'Managing Partner', 'Managing Director', 'Partner', 'Analyst', 'Associate', 'CEO']
+  INVESTOR_TITLE = %w(Managing Partner Director Associate Principal CEO Founder Invest).map(&:downcase)
 
   queue_as :default
 
@@ -41,7 +41,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
     end
 
     al_fund.roles.each do |person|
-      next unless person['role'] == 'founder' || INVESTOR_TITLE.include?(person['title']&.titleize)
+      next unless person['role'] == 'founder' || (title = person['title']&.downcase) && INVESTOR_TITLE.any { |t| title.include?(t) }
       Investor.from_angelist(person['id'])
     end
 
