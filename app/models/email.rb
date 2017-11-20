@@ -1,5 +1,5 @@
 class Email < ApplicationRecord
-  belongs_to :founder
+  belongs_to :founder, touch: true
   belongs_to :company
   belongs_to :investor
   belongs_to :intro_request

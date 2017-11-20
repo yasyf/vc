@@ -5,6 +5,7 @@ import Breadcrumb from '../breadcrumbs';
 
 export default class OverlayModal extends React.Component {
   static defaultProps = {
+    showClose: true,
     isOpen: true,
     idParams: {},
   };
@@ -43,6 +44,13 @@ export default class OverlayModal extends React.Component {
     )
   }
 
+  renderCloseButton() {
+    if (!this.props.showClose) {
+      return null;
+    }
+    return <div className="close-icon" onClick={onClose}><i className="fi-x" /></div>;
+  }
+
   render() {
     const { name, modal, isOpen, onClose, className } = this.props;
     if (!isOpen) {
@@ -56,8 +64,10 @@ export default class OverlayModal extends React.Component {
         overlayClassName={classNames('modal-overlay', `${name}-modal-overlay`)}
         className={classNames('modal-content', `${name}-modal-content`, className)}
       >
-        {modal ? modal : this.renderModal()}
-        <div className="close-icon" onClick={onClose}><i className="fi-x" /></div>
+        {this.renderCloseButton()}
+        <div className={classNames('overlay-modal-wrapper', `${name}-modal-wrapper`)}>
+          {modal ? modal : this.renderModal()}
+        </div>
       </Modal>
     )
   }

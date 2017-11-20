@@ -70,4 +70,18 @@ class Util
     parsed = parsed[4..-1] if parsed&.starts_with?('www.')
     parsed
   end
+
+  def self.average_response_time(emails, grouper)
+    average = Average.new
+    emails.distinct.pluck(grouper).each do |group_id|
+      scope = emails.where(grouper => group_id).order(created_at: :asc)
+      outgoing = scope.outgoing.first
+      while outgoing.present? && (incoming = scope.after(outgoing).incoming.first).present? do
+        delta = incoming.created_at - outgoing.created_at
+        average.add(delta)
+        outgoing = scope.outgoing.after(incoming).first
+      end
+    end
+    (average.to_f / 1.minute).minutes
+  end
 end

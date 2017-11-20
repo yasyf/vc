@@ -164,8 +164,8 @@ export const getDomain = (url) => {
 
 export const timestamp = () => Date.now();
 export const flattenFilters = filters => _.pickBy(_.mapValues(filters, f => _.map(f, 'value').join(',')), Boolean);
-export const dots = n => _.times(n, i => <span key={`dot-${i}`} className="dot">·</span>);
-export const withDots = a => _.flatMap(_.zip(a, dots(a.length - 1)));
+export const withSeparators = (sepFn, a) => _.flatMap(_.zip(a, _.times(a.length - 1, sepFn)));
+export const withDots = a => withSeparators(i => <span key={`dot-${i}`} className="dot">·</span>, a);
 
 export const withDims = klass => Dimensions({elementResize: true})(klass);
 

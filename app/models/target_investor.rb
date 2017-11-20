@@ -3,7 +3,7 @@ class TargetInvestor < ApplicationRecord
   include Concerns::Eventable
 
   belongs_to :investor, counter_cache: true
-  belongs_to :founder
+  belongs_to :founder, touch: true
   belongs_to :competitor
 
   INVESTOR_FIELDS = %w(firm_name first_name last_name)
@@ -21,16 +21,20 @@ class TargetInvestor < ApplicationRecord
     email: ENV['DEMO_EMAIL'],
   }
 
+  # [Stage Name, Category]
   RAW_STAGES = {
-    added: 'My Wishlist',
-    intro: 'Asked for Intro',
-    waiting: 'In Talks',
-    respond: 'Need to Respond',
-    interested: 'Committed',
-    pass: 'Passed',
+    added: ['My Wishlist', :wishlist],
+    intro: ['Asked for Intro', :wishlist],
+    waiting: ['In Talks', :in_talks],
+    respond: ['Need to Respond', :in_talks],
+    pitch: ['Pitching', :pitching],
+    interested: ['Committed', :committed],
+    pass: ['Passed', :passed],
   }
 
-  STAGES = RAW_STAGES.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h.freeze
+  STAGES_WITH_CATEGORIES = RAW_STAGES.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h
+  STAGES = STAGES_WITH_CATEGORIES.transform_values(&:first)
+  CATEGORIES = STAGES_WITH_CATEGORIES.transform_values(&:last)
 
   enum stage: STAGES.keys
 

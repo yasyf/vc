@@ -266,7 +266,8 @@ CREATE TABLE emails (
     new_stage integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    intro_request_id bigint
+    intro_request_id bigint,
+    subject text
 );
 
 
@@ -380,7 +381,8 @@ CREATE TABLE founders (
     ip_address inet,
     city character varying,
     time_zone character varying,
-    bio text
+    bio text,
+    response_time integer
 );
 
 
@@ -2720,6 +2722,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171107012911'),
 ('20171107111143'),
 ('20171108005014'),
-('20171110185838');
+('20171110185838'),
+('20171119082029'),
+('20171120001408');
 
 

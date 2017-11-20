@@ -1,5 +1,5 @@
 import React from 'react';
-import { extend, flattenFilters } from '../global/utils';
+import {extend, flattenFilters, withSeparators} from '../global/utils';
 import {
   CompetitorIndustriesOptions,
   CompetitorFundTypesOptions,
@@ -78,12 +78,6 @@ export default class Filters extends React.Component {
       this.renderFilter('location', 'Cities', { path: CompetitorsLocationsPath }),
       this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }, false),
     ]);
-    return _.flatMap(filters, (f, i) =>  {
-      if (i === filters.length - 1) {
-        return [f];
-      } else {
-        return [f, <hr key={`hr-${i}`} className="vr"/>]
-      }
-    });
+    return withSeparators(i => <hr key={`hr-${i}`} className="vr"/>, filters);
   }
 }

@@ -317,19 +317,7 @@ class Investor < ApplicationRecord
   end
 
   def average_response_time
-    cached do
-      average = Average.new
-      emails.distinct.pluck(:founder_id).each do |founder_id|
-        scope = emails.where(founder_id: founder_id).order(created_at: :asc)
-        outgoing = scope.outgoing.first
-        while outgoing.present? && (incoming = scope.after(outgoing).incoming.first).present? do
-          delta = incoming.created_at - outgoing.created_at
-          average.add(delta)
-          outgoing = scope.outgoing.after(incoming).first
-        end
-      end
-      (average.to_f / 1.minute).minutes
-    end
+    cache_for_a_week { Util.average_response_time(emails, :founder_id) }
   end
 
   def founder_overlap(founder)

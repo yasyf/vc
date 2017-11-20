@@ -34,7 +34,7 @@ export default class Track extends React.Component {
       );
     } else {
       return (
-        <Button onClick={this.onButtonClick} color={Colors.SUCCESS} className="fake-track-button">
+        <Button onClick={this.onButtonClick} color={Colors.SECONDARY} className="fake-track-button">
           Track
         </Button>
       );

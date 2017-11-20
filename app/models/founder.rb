@@ -20,6 +20,7 @@ class Founder < ApplicationRecord
 
   after_commit :start_augment_job, on: :create
   after_commit :start_enhance_job, on: :update
+  after_touch :start_touch_job
 
   action :competitor_clicked, :investor_clicked, :investor_targeted
 
@@ -142,14 +143,18 @@ class Founder < ApplicationRecord
 
   def conversations
     {
-      counts: target_investors.group_by(&:stage).transform_values(&:count),
+      counts: target_investors.group(:stage).count,
       total: target_investors.size,
-      recents: target_investors.order(created_at: :desc).limit(3).pluck(:firm_name),
+      recents: grouped_conversations
     }
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversations, :events])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats])
+  end
+
+  def cached_json
+    Rails.env.development? ? as_json : cache_for_a_hour { as_json }
   end
 
   def existing_target_investor_ids
@@ -160,14 +165,23 @@ class Founder < ApplicationRecord
     target_investors.create! TargetInvestor::DUMMY_ATTRS if target_investors.count == 0
   end
 
+  def stats
+    {
+      emails: emails.count,
+      investors: emails.count('DISTINCT investor_id'),
+      response_time: response_time,
+    }
+  end
+
   def events
     Event
       .where(subject_type: TargetInvestor.name)
       .where(action: %w(investor_opened investor_clicked intro_requested investor_replied))
       .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
+      .joins("LEFT OUTER JOIN emails ON events.action = 'investor_replied' AND events.arg2::bigint = emails.id")
       .where('target_investors.founder_id = ?', id)
       .order(created_at: :desc)
-      .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name')
+      .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name, emails.subject AS email_subject')
       .limit(3)
   end
 
@@ -196,6 +210,22 @@ class Founder < ApplicationRecord
   end
 
   private
+
+  def set_response_time!
+    update! response_time: Util.average_response_time(emails, :investor_id)
+  end
+
+  def grouped_conversations
+    target_investors
+      .order(created_at: :desc)
+      .pluck(:stage, :firm_name)
+      .group_by { |v| TargetInvestor::CATEGORIES[v.first] }
+      .transform_values { |v| v.map(&:last) }
+  end
+
+  def start_touch_job
+    FounderRefreshJob.perform_later(self.id)
+  end
 
   def start_augment_job
     FounderEnhanceJob.perform_later(self.id, augment: email.present?)

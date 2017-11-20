@@ -35,8 +35,9 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def open
-    to_targets.each { |t| t.investor_opened! intro_request&.id } if founder_from_from.present?
     return head :ok unless intro_request.present?
+    return head :ok unless recipient.address == intro_request.investor.email
+    recipient_target.investor_opened! intro_request.id
     intro_request.update!(
       opened_at: DateTime.now,
       open_city: hook_params['city'],
@@ -47,8 +48,9 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def click
-    to_targets.each { |target| target.investor_clicked! hook_params['url'] } if founder_from_from.present?
     return head :ok unless intro_request.present?
+    return head :ok unless recipient.address == intro_request.investor.email
+    recipient_target.investor_clicked! intro_request.id, hook_params['url']
     intro_request.update!(
       open_city: hook_params['city'],
       open_country: hook_params['country'],
@@ -83,6 +85,14 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       tos.delete_if { |a| a.address == ENV['MAILGUN_EMAIL'] }
       tos
     end
+  end
+
+  def recipient
+    @recipient ||= Mail::Address.new(hook_params[:recipient])
+  end
+
+  def recipient_target
+    @recipient_target ||= TargetInvestor.from_addr(intro_request.founder, recipient)
   end
 
   def existing_emails(klass, tos)
@@ -178,6 +188,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       sentiment_score: sentiment&.score,
       sentiment_magnitude: sentiment&.magnitude,
       body: text,
+      subject: create_params[:Subject]
     ) if target.investor.present?
 
     target.stage = stage
@@ -209,8 +220,9 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
         sentiment_score: sentiment&.score,
         sentiment_magnitude: sentiment&.magnitude,
         body: text,
+        subject: create_params[:Subject]
       )
-      target.investor_replied! email.id, intro_request&.id
+      target.investor_replied! intro_request&.id, email.id
     end
 
     target.email ||= from.address
@@ -219,11 +231,11 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def hook_params
-    params.permit('intro_request_token', 'country', 'city', 'device-type', 'url')
+    params.permit('intro_request_token', 'country', 'city', 'device-type', 'url', 'recipient')
   end
 
   def create_params
-    params.permit(:To, :From, :Cc, 'stripped-text', 'body-plain', 'message-headers')
+    params.permit(:To, :From, :Cc, :Subject, 'stripped-text', 'body-plain', 'message-headers')
   end
 
   def demo_params

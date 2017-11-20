@@ -33,6 +33,7 @@ export default class EmojiModal extends React.Component {
     return (
       <OverlayModal
         name="emoji"
+        showClose={false}
         modal={this.renderModal()}
         {...this.props}
       />

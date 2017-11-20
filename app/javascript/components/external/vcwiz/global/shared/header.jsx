@@ -12,6 +12,7 @@ import {isLoggedIn} from '../utils';
 import LoginModal from '../login/login_modal';
 import Actions from '../actions';
 import classNames from 'classnames';
+import OutreachBar from './outreach_bar';
 
 export default class Header extends React.Component {
   state = {
@@ -116,10 +117,7 @@ export default class Header extends React.Component {
     );
   }
 
-  renderBar() {
-    if (!this.props.showIntro || isLoggedIn()) {
-      return null;
-    }
+  renderLoggedOutBar() {
     return (
       <TopBar id="signup-bar">
         <div className="space" />
@@ -144,6 +142,26 @@ export default class Header extends React.Component {
         </div>
       </TopBar>
     );
+  }
+
+  renderLoggedInBar() {
+    return (
+      <TopBar id="outreach-bar">
+        <div className="outreach-bar-content">
+          <OutreachBar />
+        </div>
+      </TopBar>
+    );
+  }
+
+  renderBar() {
+    if (!this.props.showIntro) {
+      return null;
+    } else if (isLoggedIn()) {
+      return this.renderLoggedInBar();
+    } else {
+      return this.renderLoggedOutBar();
+    }
   }
 
   renderModal() {

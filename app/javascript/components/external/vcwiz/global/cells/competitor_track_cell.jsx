@@ -14,7 +14,7 @@ export default class CompetitorTrackCell extends TrackCell {
     } else {
       return (
         <div className="track-cell">
-          <Button onClick={this.onButtonClick} color={Colors.SUCCESS} className="fake-track-button">
+          <Button onClick={this.onButtonClick} color={Colors.SECONDARY} className="fake-track-button">
             ADD
           </Button>
         </div>
