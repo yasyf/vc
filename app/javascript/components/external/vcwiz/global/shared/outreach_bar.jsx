@@ -62,7 +62,7 @@ export default class OutreachBar extends React.Component {
     } else {
       return (
         <span>
-          So far, you've sent <b>{emails}</b> emails to over <b>{investors}</b> investors and have an average response time of <b>{moment.duration(stats.response_time, 'seconds').humanize()}</b>.
+          So far, you've sent <b>{emails} emails</b> to over <b>{investors} investors</b> and have an average response time of <b>{moment.duration(stats.response_time, 'seconds').humanize()}</b>.
         </span>
       );
     }
