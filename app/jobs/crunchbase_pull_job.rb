@@ -1,7 +1,7 @@
 class CrunchbasePullJob < ApplicationJob
   URL = 'https://api.crunchbase.com/v3.1/csv_export/csv_export.tar.gz'
 
-  queue_as :default
+  queue_as :low
 
   def perform
     url = "#{URL}?user_key=#{ENV['CB_API_KEY'].split(',').first}"

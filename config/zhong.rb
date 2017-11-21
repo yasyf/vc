@@ -45,8 +45,9 @@ Zhong.schedule do
       every(12.hours, 'competitor_lists') { CompetitorListJob.perform_later }
     end
 
-    category 'geocode' do
+    category 'bulk' do
       every(1.month, 'maxmind') { MaxMindLoadJob.perform_later }
+      every(1.month, 'crunchbase') { CrunchbasePullJob.perform_later }
     end
   end
 end
