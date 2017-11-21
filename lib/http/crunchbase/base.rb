@@ -1,3 +1,6 @@
+require 'redcarpet'
+require 'redcarpet/render_strip'
+
 module Http::Crunchbase
   class Base
     extend Concerns::Cacheable
