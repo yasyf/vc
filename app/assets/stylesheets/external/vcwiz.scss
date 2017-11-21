@@ -1325,6 +1325,8 @@ mark.highlighter {
 
   .tabs-component {
     .tab-list-wrapper {
+      position: relative;
+      top: 1px;
       overflow: scroll;
       white-space: nowrap;
       height: 40px;
@@ -1339,14 +1341,9 @@ mark.highlighter {
 
     .tab-panel {
       border: 1px solid $grey;
-      border-top: 0;
       border-radius: 0 10px 10px 10px;
       padding: 20px;
       background-color: $white;
-    }
-
-    .tab {
-      border-bottom: 1px solid $grey;
     }
 
     .tab-active {
