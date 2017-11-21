@@ -12,6 +12,11 @@ class IntroMailer < ExternalMailer
     mail to: named_email(@investor), subject: "#{@company.name} <> #{@competitor.name}"
   end
 
+  def request_preview_email(request)
+    set_instance_vars! request
+    mail to: named_email(@investor), subject: "#{@company.name} <> #{@competitor.name}"
+  end
+
   def intro_email(request)
     set_instance_vars! request
     mail to: [named_email(@investor), named_email(@founder)], subject: "#{@company.name} <> #{@competitor.name}"

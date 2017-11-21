@@ -94,7 +94,7 @@ export default class WrappedTable extends React.Component {
     this.setState({currentModal: [i, key]});
   };
 
-  getModal(key) {
+  getModal(key, item) {
     const { modal } = this.props;
     if (!modal) {
       return null;
@@ -104,7 +104,7 @@ export default class WrappedTable extends React.Component {
     } else if (modal.prototype.isReactComponent) {
       return modal;
     } else if (_.isFunction(modal)) {
-      return modal(key);
+      return modal(key, item);
     } else {
       return null;
     }
@@ -116,7 +116,8 @@ export default class WrappedTable extends React.Component {
       return null;
     }
     const [i, key] = currentModal;
-    const Modal = this.getModal(key);
+    const item = array.getSync(i);
+    const Modal = this.getModal(key, item);
     if (!Modal) {
       return null;
     }
@@ -126,7 +127,7 @@ export default class WrappedTable extends React.Component {
         onClose={this.onModalClose}
         onResult={this.onModalResult(i)}
         rowKey={key}
-        item={array.getSync(i)}
+        item={item}
       />
     );
   }

@@ -1112,6 +1112,28 @@ mark.highlighter {
   }
 }
 
+.intro-modal {
+  &-top {
+    text-align: center;
+  }
+
+  &-bottom {
+    text-align: center;
+
+    .preview {
+      text-align: left;
+      background: white;
+      padding: 3em;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+      p {
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
+      }
+    }
+  }
+}
+
 .emoji-modal {
   width: 100%;
   text-align: center;

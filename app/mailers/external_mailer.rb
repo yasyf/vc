@@ -9,7 +9,7 @@ class ExternalMailer < ApplicationMailer
       address:              'smtp.mailgun.org',
       port:                 587,
       domain:               ENV['MAILGUN_EMAIL'].split('@').last,
-      user_name:            mail.from.address,
+      user_name:            mail.from.first,
       password:             ENV['MAILGUN_PASSWORD'],
       authentication:       'plain',
       enable_starttls_auto: true

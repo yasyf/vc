@@ -9,7 +9,7 @@ class Founder < ApplicationRecord
   has_many :notes
   has_many :import_tasks
   has_many :emails, dependent: :destroy
-  has_many :intro_requests, dependent: :destroy
+  has_many :intro_requests, -> { where(pending: false) }, dependent: :destroy
   has_many :target_investors, dependent: :destroy
   has_many :person_entities, as: :person
   has_many :entities, through: :person_entities

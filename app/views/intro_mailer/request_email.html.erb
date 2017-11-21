@@ -1,12 +1,4 @@
-Hey <%= @investor.first_name %>!
-
-<p>
-  <%= founder @founder %> would like to talk to you about their company, <%= company @company %>.
-  Respond "yes" or "no" to quickly deal with this request.
-  Details about the company are below.
-</p>
-
-<%= render partial: 'company' %>
+<%= render partial: 'request' %>
 
 <p>
   Click <a href="<%= external_vcwiz_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,

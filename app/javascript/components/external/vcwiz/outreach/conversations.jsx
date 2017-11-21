@@ -4,8 +4,9 @@ import EmojiModal from './emoji_modal';
 import PartnerModal from './partner_modal';
 import FixedTable from '../global/shared/fixed_table';
 import {initials, ffetch} from '../global/utils';
-import {TargetInvestorsPath} from '../global/constants.js.erb';
+import {TargetInvestorsPath, TargetInvestorStagesKeys} from '../global/constants.js.erb';
 import Actions from '../global/actions';
+import IntroModal from './intro_modal';
 
 class ConversationsTable extends FixedTable {
   onTrackChange = (row, update) => {
@@ -33,9 +34,16 @@ export default class Conversations extends React.Component {
     return (
       <WrappedTable
         items={targets}
-        modal={{
-          full_name: PartnerModal,
-          priority: EmojiModal,
+        modal={(key, item) => {
+          switch (key) {
+            case 'full_name':
+              return PartnerModal;
+            case 'priority':
+              return EmojiModal;
+            case 'intro_requests[0]':
+              if (item['can_intro?'] && item.stage === _.first(TargetInvestorStagesKeys))
+                return IntroModal;
+          }
         }}
         table={ConversationsTable}
         {...rest}

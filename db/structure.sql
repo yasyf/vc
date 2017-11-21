@@ -465,7 +465,9 @@ CREATE TABLE intro_requests (
     reason character varying,
     opened_at timestamp without time zone,
     context text,
-    target_investor_id bigint
+    target_investor_id bigint,
+    preview_html text,
+    pending boolean DEFAULT true NOT NULL
 );
 
 
@@ -2741,6 +2743,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171110185838'),
 ('20171119082029'),
 ('20171120001408'),
-('20171121023523');
+('20171121023523'),
+('20171121095936');
 
 

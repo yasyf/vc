@@ -103,7 +103,7 @@ module CompetitorLists::Base::InstanceResults
   end
 
   def cache!(limit: GET_LIMIT * 2, offset: 0)
-    results = fetch_results(limit, offset, true, json: 'cached_meta')
+    results = fetch_results(limit, offset, true)
     Rails.cache.write(cache_key('results'), results)
     Rails.cache.write(cache_key('count'), results.count)
   end

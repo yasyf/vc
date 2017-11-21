@@ -57,6 +57,12 @@ Rails.application.routes.draw do
 
       namespace :api, defaults: { format: :json } do
         namespace :v1 do
+          resources :intros, only: [:index, :show, :create] do
+            member do
+              post 'preview'
+            end
+          end
+
           resources :investors do
             member do
               get 'review'
@@ -97,8 +103,6 @@ Rails.application.routes.draw do
           resource :pubsub, only: [] do
             post 'generation'
           end
-
-          resource :intro, only: [:create]
 
           resources :target_investors do
             collection do

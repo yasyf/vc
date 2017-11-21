@@ -19,15 +19,15 @@ class IntroRequest < ApplicationRecord
 
   before_validation :check_opt_out!, on: :create
   before_validation :set_token!, on: :create
-  after_commit :send!, on: :create
 
-  def self.from_target_investor!(target_investor)
-    create!(
-      target_investor: target_investor,
-      investor: target_investor.investor,
-      founder: target_investor.founder,
-      company: target_investor.founder.primary_company,
-    )
+  def self.from_target_investor(target_investor)
+    where(target_investor: target_investor).first_or_initialize.tap do |intro|
+      intro.update_attributes(
+        investor: target_investor.investor,
+        founder: target_investor.founder,
+        company: target_investor.founder.primary_company,
+      )
+    end
   end
 
   def decide!(decision)
@@ -91,12 +91,29 @@ class IntroRequest < ApplicationRecord
   end
 
   def clicks
-    %w(twitter linkedin website deck).map { |s| [s,
-                                                 send("clicked_#{s}?")] }.to_h
+    %w(twitter linkedin website deck).map { |s| [s, send("clicked_#{s}?")] }.to_h
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :opened_at, :open_city, :accepted, :reason], methods: [:clicks, :travel_status])
+    super options.reverse_merge(methods: [:clicks, :travel_status])
+  end
+
+  def send!
+    update! pending: false
+    if investor.opted_out?
+      send_decision!
+    else
+      target_investor&.intro_requested! self.id
+      if investor.opted_in?
+        IntroMailer.request_email(self).deliver_later
+      else
+        IntroMailer.opt_in_email(self).deliver_later
+      end
+    end
+  end
+
+  def start_preview_job!
+    IntroRequestPreviewJob.perform_later(self.id)
   end
 
   private
@@ -109,19 +126,6 @@ class IntroRequest < ApplicationRecord
 
   def check_opt_out!
     self.accepted = false if investor.opted_out?
-  end
-
-  def send!
-    if investor.opted_out?
-      send_decision!
-    else
-      target_investor&.intro_requested! self.id
-      if investor.opted_in?
-        IntroMailer.request_email(self).deliver_later
-      else
-        IntroMailer.opt_in_email(self).deliver_later
-      end
-    end
   end
 
   def set_token!

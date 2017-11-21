@@ -5,7 +5,7 @@ class TargetInvestor < ApplicationRecord
   belongs_to :investor, counter_cache: true
   belongs_to :founder, touch: true
   belongs_to :competitor
-  has_many :intro_requests
+  has_many :intro_requests, -> { where(pending: false) }
 
   INVESTOR_FIELDS = %w(firm_name first_name last_name)
 
