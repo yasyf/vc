@@ -3,7 +3,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
   include External::Concerns::Pageable
   include External::Concerns::Sortable
 
-  INCLUDES = [investor: [:entities, :university, :tweeter, :competitor], founder: [:intro_requests, :entities]]
+  INCLUDES = [:founder, investor: [:university, :tweeter, :competitor]]
 
   before_action :authenticate_api_user!
 
