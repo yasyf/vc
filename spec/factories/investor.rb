@@ -1,8 +1,12 @@
 FactoryBot.define do
   factory :investor do
-    first_name "Jane"
+    sequence :first_name do |n|
+      "Jane #{n}"
+    end
     last_name "Risk"
-    email "jane@risk.com"
+    sequence :email do |n|
+      "jane#{n}@risk.com"
+    end
     competitor
   end
 end

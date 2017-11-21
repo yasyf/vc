@@ -11,6 +11,8 @@ RSpec.describe 'intro request', type: :request do
     @investor = FactoryBot.create(:investor)
     @target_investor = FactoryBot.create(:target_investor, founder: @founder, investor: @investor)
 
+    @investor2 = FactoryBot.create(:investor)
+
     sign_in @founder
   end
 
@@ -64,37 +66,37 @@ RSpec.describe 'intro request', type: :request do
   it 'tracks outreach' do
     expect do
       post external_api_v1_message_path, params: {
-        To: @investor.email,
+        To: @investor2.email,
         From: @founder.email,
         'stripped-text': 'hi'
       }
       expect(response).to be_success
-    end.to change { TargetInvestor.count }.from(0).to(1)
+    end.to change { TargetInvestor.count }.by(1)
 
     target = TargetInvestor.last
-    expect(target.investor).to eq(@investor)
-    expect(target.email).to eq(@investor.email)
+    expect(target.investor).to eq(@investor2)
+    expect(target.email).to eq(@investor2.email)
     expect(target.stage).to include('waiting')
   end
 
   it 'tracks responses and recognizes passes' do
     expect do
       post external_api_v1_message_path, params: {
-        From: @investor.email,
+        From: @investor2.email,
         To: @founder.email,
         'stripped-text': 'hello'
       }
       expect(response).to be_success
-    end.to change { TargetInvestor.count }.from(0).to(1)
+    end.to change { TargetInvestor.count }.by(1)
 
     target = TargetInvestor.last
-    expect(target.investor).to eq(@investor)
-    expect(target.email).to eq(@investor.email)
+    expect(target.investor).to eq(@investor2)
+    expect(target.email).to eq(@investor2.email)
     expect(target.stage).to include('respond')
 
     expect do
       post external_api_v1_message_path, params: {
-        From: @investor.email,
+        From: @investor2.email,
         To: @founder.email,
         'stripped-text': 'sorry, not interested right now.'
       }
@@ -102,8 +104,8 @@ RSpec.describe 'intro request', type: :request do
     end.to_not change { TargetInvestor.count }
 
     target = TargetInvestor.last
-    expect(target.investor).to eq(@investor)
-    expect(target.email).to eq(@investor.email)
+    expect(target.investor).to eq(@investor2)
+    expect(target.email).to eq(@investor2.email)
     expect(target.stage).to include('pass')
   end
 end
