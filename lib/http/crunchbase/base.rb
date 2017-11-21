@@ -113,6 +113,10 @@ module Http::Crunchbase
       ENV['CB_API_KEY'].split(',').sample
     end
 
+    def self.markdown
+      @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::StripDown)
+    end
+
     def get_in_raw(path, multi)
       return (multi ? [] : nil) unless found?
       current = search_for_data

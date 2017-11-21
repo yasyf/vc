@@ -19,7 +19,7 @@ export default class PartnerTab extends React.Component {
   constructor(props) {
     super(props);
 
-    const { target_investors } = Store.get('founder');
+    const { target_investors } = Store.get('founder', {});
 
     this.state = {
       investor: null,

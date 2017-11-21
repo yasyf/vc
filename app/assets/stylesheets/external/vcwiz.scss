@@ -279,6 +279,7 @@ i.reversed::before {
   position: relative;
   padding: 0;
   height: 50vh;
+  min-height: 400px;
   max-height: 500px;
   background: transparent;
 
@@ -951,6 +952,8 @@ mark.highlighter {
 
   .cell-wrapper {
     cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .track-cell {

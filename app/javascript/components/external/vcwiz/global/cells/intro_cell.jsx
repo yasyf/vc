@@ -6,7 +6,7 @@ import {TargetInvestorStagesKeys} from '../constants.js.erb';
 
 export default class IntroCell extends UnpureTextCell {
   processRow(props, row) {
-    const { target_investors } = Store.get('founder');
+    const { target_investors } = Store.get('founder', {});
     const target = _.find(target_investors, {id: row.id});
     return {
       stage: _.get(target, props.stageKey),

@@ -6,7 +6,7 @@ import Store from '../store';
 
 export default class CompetitorTrackCell extends TrackCell {
   processRow(props, row) {
-    const { target_investors } = Store.get('founder');
+    const { target_investors } = Store.get('founder', {});
     const target = _.find(target_investors, {competitor_id: row.id});
     if (target) {
       return {value: _.get(target, props.columnKey), id: target.id, rowId: row.id};

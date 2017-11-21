@@ -33,7 +33,7 @@ class ResultsTable extends FixedTable {
 
   onTrackChange = (row, update) => {
     const id = this.props.array.getSync(row, false).id;
-    const { target_investors } = Store.get('founder');
+    const { target_investors } = Store.get('founder', {});
     const target = _.find(target_investors, {competitor_id: id});
     ffetch(TargetInvestorsPath.id(target.id), 'PATCH', {target_investor: update}).then(() => {
       Actions.trigger('refreshFounder');

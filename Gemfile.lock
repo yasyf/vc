@@ -387,6 +387,7 @@ GEM
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rdoc (4.3.0)
+    redcarpet (3.4.0)
     redis (4.0.1)
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
@@ -616,6 +617,7 @@ DEPENDENCIES
   rack-timeout
   rails (~> 5.1.2)
   rails_12factor
+  redcarpet
   redis
   redis-namespace
   retriable (~> 3.0)
