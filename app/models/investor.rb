@@ -287,7 +287,7 @@ class Investor < ApplicationRecord
   end
 
   def twitter=(twitter)
-    super twitter&.delete_prefix('@')
+    super twitter&.first == '@' ? twitter[1..-1] : twitter
   end
 
   def tweeter
