@@ -74,6 +74,7 @@ class CompanyRelationshipsJob < ApplicationJob
   def add_cb_founders
     return unless (founders = @cb_org.founders).present?
     founders.each do |founder|
+      next unless founder['properties'].present?
       person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
       next unless person.found?
       social = Founder::SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
