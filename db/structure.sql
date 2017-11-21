@@ -464,7 +464,8 @@ CREATE TABLE intro_requests (
     pitch_deck character varying,
     reason character varying,
     opened_at timestamp without time zone,
-    context text
+    context text,
+    target_investor_id bigint
 );
 
 
@@ -1882,6 +1883,13 @@ CREATE INDEX index_intro_requests_on_investor_id ON intro_requests USING btree (
 
 
 --
+-- Name: index_intro_requests_on_target_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_intro_requests_on_target_investor_id ON intro_requests USING btree (target_investor_id);
+
+
+--
 -- Name: index_intro_requests_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2324,6 +2332,14 @@ ALTER TABLE ONLY emails
 
 
 --
+-- Name: intro_requests fk_rails_0c534c3fde; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY intro_requests
+    ADD CONSTRAINT fk_rails_0c534c3fde FOREIGN KEY (target_investor_id) REFERENCES target_investors(id);
+
+
+--
 -- Name: pitches fk_rails_115ef0c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2724,6 +2740,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171108005014'),
 ('20171110185838'),
 ('20171119082029'),
-('20171120001408');
+('20171120001408'),
+('20171121023523');
 
 

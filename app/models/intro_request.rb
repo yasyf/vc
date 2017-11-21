@@ -6,6 +6,7 @@ class IntroRequest < ApplicationRecord
   belongs_to :investor
   belongs_to :company
   belongs_to :founder
+  belongs_to :target_investor
 
   validates :investor, presence: true, uniqueness: { scope: [:founder, :company] }
   validates :company, presence: true
@@ -19,6 +20,15 @@ class IntroRequest < ApplicationRecord
   before_validation :check_opt_out!, on: :create
   before_validation :set_token!, on: :create
   after_commit :send!, on: :create
+
+  def self.from_target_investor!(target_investor)
+    create!(
+      target_investor: target_investor,
+      investor: target_investor.investor,
+      founder: target_investor.founder,
+      company: target_investor.founder.primary_company,
+    )
+  end
 
   def decide!(decision)
     update! accepted: decision
@@ -81,7 +91,8 @@ class IntroRequest < ApplicationRecord
   end
 
   def clicks
-    %w(twitter linkedin website deck).map { |s| [s, send("clicked_#{s}?")] }.to_h
+    %w(twitter linkedin website deck).map { |s| [s,
+                                                 send("clicked_#{s}?")] }.to_h
   end
 
   def as_json(options = {})
@@ -89,10 +100,6 @@ class IntroRequest < ApplicationRecord
   end
 
   private
-
-  def target_investor
-    founder.target_investors.where(investor: investor).first
-  end
 
   def limit_outstanding_requests
     if self.class.unscoped.where(founder: founder, accepted: nil).count > MAX_IN_FLIGHT - 1

@@ -5,6 +5,7 @@ class TargetInvestor < ApplicationRecord
   belongs_to :investor, counter_cache: true
   belongs_to :founder, touch: true
   belongs_to :competitor
+  has_many :intro_requests
 
   INVESTOR_FIELDS = %w(firm_name first_name last_name)
 
@@ -105,15 +106,10 @@ class TargetInvestor < ApplicationRecord
 
   def can_intro?
     email.blank? &&
-      intro_request.blank? &&
+      intro_requests.size == 0 &&
       investor&.email.present? &&
       investor&.opted_in != false &&
       stage == STAGES.first.first
-  end
-
-  def intro_request
-    return nil unless investor.present?
-    founder.intro_requests.where(investor: investor).first
   end
 
   def overlap
@@ -132,8 +128,8 @@ class TargetInvestor < ApplicationRecord
   def as_json(options = {})
     super options.reverse_merge(
       only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name],
-      methods: [:can_intro?, :intro_request, :overlap, :full_name, :title],
-      include: { investor: { only: [:id, :first_name, :last_name, :photo], include: [:competitor] } },
+      methods: [:can_intro?, :full_name, :title],
+      include: [:intro_requests, investor: { only: [:id, :first_name, :last_name, :photo], include: [:competitor] }],
     )
   end
 

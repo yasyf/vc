@@ -26,6 +26,7 @@ export default class Outreach extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <OutreachPage {...this.props} />
     )
