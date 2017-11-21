@@ -9,6 +9,7 @@ RSpec.describe 'intro request', type: :request do
     @founder = FactoryBot.create(:founder, :with_companies)
     @company = @founder.primary_company
     @investor = FactoryBot.create(:investor)
+    @target_investor = FactoryBot.create(:target_investor, founder: @founder, investor: @investor)
 
     sign_in @founder
   end
@@ -18,9 +19,7 @@ RSpec.describe 'intro request', type: :request do
       perform_enqueued_jobs do
         post external_api_v1_intro_path, params: {
           intro_request: {
-            investor_id: @investor.id,
-            founder_id: @founder.id,
-            company_id: @company.id,
+            target_investor_id: @target_investor.id,
           }
         }
         expect(response).to be_success
