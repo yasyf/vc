@@ -78,6 +78,7 @@ gem 'countries', '~> 2.1', :require => 'countries/global'
 gem 'execjs'
 gem 'geocoder'
 gem 'redcarpet'
+gem 'activerecord-precount'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'
