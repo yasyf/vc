@@ -10,7 +10,7 @@ class Founder < ApplicationRecord
   has_many :import_tasks
   has_many :emails, dependent: :destroy
   has_many :intro_requests, dependent: :destroy
-  has_many :target_investors, dependent: :destroy
+  has_many :target_investors, -> { order(updated_at: :desc) }, dependent: :destroy
   has_many :person_entities, as: :person
   has_many :entities, through: :person_entities
 
@@ -143,14 +143,13 @@ class Founder < ApplicationRecord
 
   def conversations
     {
-      counts: target_investors.group(:stage).count,
       total: target_investors.size,
-      recents: grouped_conversations
+      recents: grouped_conversations,
     }
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats])
+    super options.reverse_merge(only: [:id, :first_name, :last_name], methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats], include: [:target_investors])
   end
 
   def cached_json

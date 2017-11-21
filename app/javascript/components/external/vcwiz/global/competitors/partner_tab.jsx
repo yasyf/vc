@@ -1,5 +1,6 @@
 import React from 'react';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
+import Store from '../store';
 import {ffetchCached, getDomain} from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
@@ -18,11 +19,26 @@ export default class PartnerTab extends React.Component {
   constructor(props) {
     super(props);
 
+    const { target_investors } = Store.get('founder');
+
     this.state = {
       investor: null,
+      target: _.find(target_investors, {investor_id: this.props.investor.id}),
       fetchedReview: false,
       review: null,
     };
+  }
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('founder', ({target_investors}) => {
+      const target = _.find(target_investors, {investor_id: this.props.investor.id});
+      if (!_.isEqual(target, this.state.target))
+        this.setState({target});
+    });
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
   }
 
   componentDidMount() {
@@ -36,9 +52,12 @@ export default class PartnerTab extends React.Component {
   }
 
   onTrackChange = change => {
-    const target_investor = { ...(this.state.investor.target_investor || {}), stage: change.track.value };
-    const investor = update(this.state.investor, {target_investor: {$set: target_investor}});
-    this.setState({investor});
+    const target = (
+      this.state.target
+        ? update(this.state.target, {stage: {$set: change.track.value}})
+        : {stage: change.track.value}
+    );
+    this.setState({target});
     this.props.onTrackChange(change);
   };
 
@@ -51,7 +70,7 @@ export default class PartnerTab extends React.Component {
   }
 
   renderTrack() {
-    let stage = this.state.investor.target_investor && this.state.investor.target_investor.stage;
+    const stage = this.state.target && this.state.target.stage;
     return <Track onChange={this.onTrackChange} value={stage} />;
   }
 
@@ -62,7 +81,7 @@ export default class PartnerTab extends React.Component {
           <Column large={8}>
             <PartnerHeading investor={this.state.investor} />
           </Column>
-          <Column offsetOnLarge={2} large={2}>
+          <Column offsetOnLarge={1} large={3}>
             {this.renderTrack()}
           </Column>
         </Row>

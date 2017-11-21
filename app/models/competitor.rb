@@ -1,7 +1,6 @@
 class Competitor < ApplicationRecord
   include Concerns::AttributeSortable
   include Concerns::Domainable
-  include Concerns::Targetable
 
   COMPETITORS = {
     'Rough Draft Ventures': Http::Rdv,
@@ -212,7 +211,7 @@ class Competitor < ApplicationRecord
     )
   end
 
-  def as_meta_json(with_target: true)
+  def as_meta_json
     as_json(
       only: [
         :id,
@@ -234,16 +233,10 @@ class Competitor < ApplicationRecord
       methods: [
         :hq,
         :acronym,
-        with_target ? :track_status : nil,
-        with_target ? :track_id : nil,
         :recent_investments,
         :cb_url,
       ].compact
     )
-  end
-
-  def as_cached_meta_json
-    as_meta_json(with_target: false)
   end
 
   def hq

@@ -4,7 +4,7 @@ import {CompetitorFundTypes, CompetitorIndustries, TargetInvestorsPath, StorageR
 import ResearchModal from './research_modal';
 import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
-import {ffetch, flush} from '../utils';
+import {ffetch} from '../utils';
 import Store from '../store';
 import Actions from '../actions';
 
@@ -32,9 +32,10 @@ class ResultsTable extends FixedTable {
   }
 
   onTrackChange = (row, update) => {
-    const id = this.props.array.getSync(row, false).track_id;
-    flush();
-    ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: {stage: update.track_status}}).then(() => {
+    const id = this.props.array.getSync(row, false).id;
+    const { target_investors } = Store.get('founder');
+    const target = _.find(target_investors, {competitor_id: id});
+    ffetch(TargetInvestorsPath.id(target.id), 'PATCH', {target_investor: update}).then(() => {
       Actions.trigger('refreshFounder');
     });
   };
@@ -43,7 +44,7 @@ class ResultsTable extends FixedTable {
     return [
       this.renderImageTextColumn('name', 'Firm', { imageKey: 'photo', fallbackKey: 'acronym' }),
       this.middleColumns(),
-      this.renderCompetitorTrackColumn('track_status', this.onTrackChange, 'Track'),
+      this.renderCompetitorTrackColumn('stage', this.onTrackChange, 'Track'),
     ];
   }
 }

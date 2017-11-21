@@ -2,7 +2,7 @@ module CompetitorLists::Base::ClassSql
   def target_investor_sql(founder, competitors_table = 'competitors')
     <<-SQL
         LEFT JOIN LATERAL (
-          SELECT target_investors.stage AS track_status, target_investors.id AS track_id
+          SELECT target_investors.stage
           FROM investors
           INNER JOIN target_investors ON target_investors.investor_id = investors.id AND target_investors.founder_id = #{founder.id}
           WHERE investors.competitor_id = #{competitors_table}.id
@@ -69,16 +69,16 @@ module CompetitorLists::Base::ClassSql
     order.present? ? "ORDER BY #{order}" : ''
   end
 
-  def _base_sql(founder, sql, meta_sql, order, limit, offset)
-    fetch_target_investors = cache_key_attrs.blank? && founder.present?
+  def _base_sql(founder, sql, meta_sql, order, limit, offset, include_targets: false)
+    fetch_targets = cache_key_attrs.blank? && founder.present? && include_targets
     distinct_sql = <<-SQL
         SELECT DISTINCT ON (fullquery.id) fullquery.*
         FROM (#{sql}) AS fullquery
     SQL
     limited_sql = <<-SQL
-        SELECT distincted.* #{fetch_target_investors ? ', ti.*' : ''}
+        SELECT distincted.* #{fetch_targets ? ', ti.*' : ''}
         FROM (#{distinct_sql}) AS distincted
-        #{target_investor_sql(founder, 'distincted') if fetch_target_investors}
+        #{target_investor_sql(founder, 'distincted') if fetch_targets}
         #{_order_clause(order)}
         OFFSET #{offset}
         LIMIT #{limit}

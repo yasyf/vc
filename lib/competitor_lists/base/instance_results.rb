@@ -20,12 +20,28 @@ module CompetitorLists::Base::InstanceResults
     SQL
   end
 
-  def find_sql(limit, offset: 0, order: nil)
-    self.class._base_sql(@founder, sql, '', order.present? ? order : self.order, limit, offset)
+  def find_sql(limit, offset: 0, sort: nil)
+    self.class._base_sql(
+      @founder,
+      sql,
+      '',
+      sort.present? ? self.class.order_sql_from_sort(sort) : self.order,
+      limit,
+      offset,
+      include_targets: sort && sort.include?(:stage)
+    )
   end
 
-  def find_with_meta_sql(limit, offset: 0, order: nil)
-    self.class._base_sql(@founder, sql, meta_sql, order.present? ? order : self.order, limit, offset)
+  def find_with_meta_sql(limit, offset: 0, sort: nil)
+    self.class._base_sql(
+      @founder,
+      sql,
+      meta_sql,
+      sort.present? ? self.class.order_sql_from_sort(sort) : self.order,
+      limit,
+      offset,
+      include_targets: sort && sort.include?(:stage)
+    )
   end
 
   def fetch_result_count
@@ -41,13 +57,13 @@ module CompetitorLists::Base::InstanceResults
     end
   end
 
-  def fetch_results(limit, offset, meta, json: nil, order: nil)
+  def fetch_results(limit, offset, meta, json: nil, sort: nil)
     if meta
       mapper = json.present? ? "as_#{json}_json".to_sym : :as_meta_json
-      Competitor.find_by_sql(find_with_meta_sql(limit, offset: offset, order: order)).map(&mapper)
+      Competitor.find_by_sql(find_with_meta_sql(limit, offset: offset, sort: sort)).map(&mapper)
     else
       mapper = json.present? ? "as_#{json}_json".to_sym : :as_json
-      Competitor.find_by_sql(find_sql(limit, offset: offset, order: order)).map(&mapper)
+      Competitor.find_by_sql(find_sql(limit, offset: offset, sort: sort)).map(&mapper)
     end
   end
 
@@ -82,7 +98,7 @@ module CompetitorLists::Base::InstanceResults
     if cached?
       fetch_cached_results
     else
-      fetch_results(limit, offset, meta, json: json, order: sort && self.class.order_sql_from_sort(sort))
+      fetch_results(limit, offset, meta, json: json, sort: sort)
     end
   end
 

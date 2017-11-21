@@ -8,7 +8,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   filter %w(comments)
 
   def show
-    render_censored  Competitor.find(params[:id]).with_founder(current_external_founder)
+    render_censored  Competitor.find(params[:id])
   end
 
   def filter

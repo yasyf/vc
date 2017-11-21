@@ -1,26 +1,29 @@
 import React from 'react';
+import {TargetInvestorsPath} from '../global/constants.js.erb';
 import OverlayModal from '../global/shared/overlay_modal';
 import PartnerTab from '../global/competitors/partner_tab';
 import ResearchModal from '../global/competitors/research_modal';
+import {ffetch} from '../global/utils';
+import Actions from '../global/actions';
 
 export default class PartnerModal extends OverlayModal {
   onTrackChange = update => {
-    this.props.onResult({stage: update.track.value}, true);
+    const { id } = this.props.item;
+    ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: {stage: update.track.value}}).then(() => {
+      Actions.trigger('refreshFounder');
+    });
   };
 
   investor() {
-    let { investor, stage } = this.props.item;
+    let { investor } = this.props.item;
     if (!investor) {
-      let { firm_name, first_name, last_name, role } = this.props.item;
+      const { firm_name, first_name, last_name, role } = this.props.item;
       investor = {
         first_name,
         last_name,
         role,
         competitor: {
           name: firm_name,
-        },
-        target_investor: {
-          stage: stage,
         },
       };
     }
