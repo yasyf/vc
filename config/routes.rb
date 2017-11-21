@@ -60,6 +60,7 @@ Rails.application.routes.draw do
           resources :intros, only: [:index, :show, :create] do
             member do
               post 'preview'
+              post 'confirm'
             end
           end
 

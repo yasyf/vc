@@ -27,7 +27,13 @@ RSpec.describe 'intro request', type: :request do
         expect(response).to be_success
       end
     end.to change { IntroRequest.count }.from(0).to(1)
-    expect(ActionMailer::Base.deliveries.count).to eq(1)
+
+    expect do
+      perform_enqueued_jobs do
+        post confirm_external_api_v1_intro_path(id: IntroRequest.last.id)
+        expect(response).to be_success
+      end
+    end.to change { ActionMailer::Base.deliveries.count }.from(0).to(1)
 
     mail = ActionMailer::Base.deliveries.last
     expect(mail.to.length).to eq(1)

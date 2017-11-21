@@ -1120,6 +1120,20 @@ mark.highlighter {
   &-bottom {
     text-align: center;
 
+    .intro-form {
+      width: 75%;
+      margin: auto;
+    }
+
+    p {
+      padding-bottom: 1em;
+    }
+
+    input {
+      width: 50%;
+      margin: auto auto 1em;
+    }
+
     .preview {
       text-align: left;
       background: white;

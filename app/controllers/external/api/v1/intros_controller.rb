@@ -11,7 +11,9 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
   end
 
   def create
-    intro = IntroRequest.from_target_investor TargetInvestor.find(intro_request_params[:target_investor_id])
+    target_investor = TargetInvestor.find(intro_request_params[:target_investor_id])
+    target_investor.update! email: intro_request_params[:email] if intro_request_params[:email].present?
+    intro = IntroRequest.from_target_investor target_investor
     intro.update! intro_request_params.slice(:context, :pitch_deck)
     render json: intro
   end
@@ -22,6 +24,11 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
     render json: intro
   end
 
+  def confirm
+    intro.send!
+    render json: intro
+  end
+
   private
 
   def intro
@@ -29,6 +36,6 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
   end
 
   def intro_request_params
-    params.require(:intro_request).permit(:target_investor_id, :context, :pitch_deck)
+    params.require(:intro_request).permit(:target_investor_id, :email, :context, :pitch_deck)
   end
 end

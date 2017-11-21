@@ -88,8 +88,8 @@ export default class IntroModal extends React.Component {
     const { firm_name } = this.props.item;
     return (
       <div>
-        <h3>Intro Request</h3>
-        <p className="title">{fullName(this.props.item)} ({firm_name})</p>
+        <h2>Intro Request</h2>
+        <h4>{fullName(this.props.item)} ({firm_name})</h4>
       </div>
     );
   }
@@ -108,15 +108,15 @@ export default class IntroModal extends React.Component {
     const { first_name } = this.props.item;
     const hasEmail = this.props.item['email_present?'];
     return [
-      <div key="welcome">
+      <p key="welcome">
         Welcome to VCWiz Intro Requests! There's a few things we need from you.
         We'll give {first_name} a chance to review everything we collect here, and then get back to you with a response as fast as we can.
-      </div>,
+      </p>,
       hasEmail
-        ? <div key="request">We'll send the intro request to {first_name}'s email on file, unless you'd prefer to specify one.</div>
-        : <div key="request">We need an email for {first_name}, since we don't have one on file!</div>
+        ? <p key="request">We'll send the intro request to {first_name}'s email on file, unless you'd prefer to specify one.</p>
+        : <p key="request">We need an email for {first_name}, since we don't have one on file!</p>
       ,
-      this.renderInput('email', hasEmail ? 'Default Email' : 'jane@demo.vc'),
+      this.renderInput('email', hasEmail ? 'Leave Blank For Default Email' : 'jane@demo.vc'),
       this.renderStandardButton(!hasEmail && !intro.email),
     ];
   }
@@ -158,7 +158,7 @@ export default class IntroModal extends React.Component {
     if (this.state.loading) {
       return <Loader />;
     }
-    return this[`renderStage${this.state.stage}`]();
+    return <div className="intro-form">{this[`renderStage${this.state.stage}`]()}</div>;
   }
 
   render() {
