@@ -286,6 +286,10 @@ class Investor < ApplicationRecord
     posts.order(published_at: :desc).limit(n)
   end
 
+  def twitter=(twitter)
+    super twitter.delete_prefix('@')
+  end
+
   def tweeter
     super || (create_tweeter(username: twitter) if twitter.present?)
   end
