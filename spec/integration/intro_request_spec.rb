@@ -19,7 +19,7 @@ RSpec.describe 'intro request', type: :request do
   it 'asks for an opt in' do
     expect do
       perform_enqueued_jobs do
-        post external_api_v1_intro_path, params: {
+        post external_api_v1_intros_path, params: {
           intro_request: {
             target_investor_id: @target_investor.id,
           }
