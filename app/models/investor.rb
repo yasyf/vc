@@ -323,7 +323,7 @@ class Investor < ApplicationRecord
   end
 
   def founder_overlap(founder)
-    founder.entities.where(id: popular_entities(50))
+    founder.entities.where(id: n_popular_entities(50))
   end
 
   def review
@@ -388,7 +388,12 @@ class Investor < ApplicationRecord
     news.order('published_at DESC, created_at DESC').limit(n)
   end
 
-  def popular_entities(n = 3)
+  def popular_entities
+    ids = cached { n_popular_entities.pluck(:id) }
+    Entity.find(ids)
+  end
+
+  def n_popular_entities(n = 3)
     popular = post_entities(n)
     return popular unless (count = popular.count) < n
     Entity.where(id: entities.order(person_entities_count: :desc).limit(n - count)).or(popular)

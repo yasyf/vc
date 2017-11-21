@@ -108,6 +108,7 @@ group :development do
   gem 'awesome_print'
   gem 'guard-rspec', require: false
   gem 'spring-commands-rspec'
+  gem 'bullet'
 end
 
 group :development, :test do
