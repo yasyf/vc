@@ -9,20 +9,20 @@ export default class CompetitorTrackCell extends TrackCell {
     const { target_investors } = Store.get('founder');
     const target = _.find(target_investors, {competitor_id: row.id});
     if (target) {
-      return {value: target.stage, id: target.id, rowId: row.id};
+      return {value: _.get(target, props.columnKey), id: target.id, rowId: row.id};
     } else {
       return {rowId: row.id};
     }
   };
 
-  setSubscription() {
+  componentWillMount() {
     this.subscription = Store.subscribe('founder', ({target_investors}) => {
       if (!this.state.rowId) {
         return;
       }
       const target = _.find(target_investors, {competitor_id: this.state.rowId});
       if (target)
-        this.setState({value: target.stage});
+        this.setState({value: _.get(target, props.columnKey)});
     });
   }
 

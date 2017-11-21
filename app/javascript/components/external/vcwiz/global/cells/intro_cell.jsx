@@ -1,14 +1,46 @@
 import React from 'react';
-import TextCell from './text_cell';
+import {UnpureTextCell} from './text_cell';
 import IconLine from '../shared/icon_line';
+import Store from '../store';
+import {TargetInvestorStagesKeys} from '../constants.js.erb';
 
-export default class IntroCell extends TextCell {
-  processIntroRequest(props, row) {
-    let introRequest = _.get(row, props.columnKey);
-    let canIntro = _.get(row, props.eligibleKey);
+export default class IntroCell extends UnpureTextCell {
+  processRow(props, row) {
+    const { target_investors } = Store.get('founder');
+    const target = _.find(target_investors, {id: row.id});
+    return {
+      stage: _.get(target, props.stageKey),
+      id: row.id,
+      value: _.get(row, props.columnKey),
+      canIntro: _.get(row, props.eligibleKey),
+      hasEmail: _.get(row, props.emailKey),
+    };
+  };
 
-    if (!introRequest && canIntro) {
+  componentWillMount() {
+    this.subscription = Store.subscribe('founder', ({target_investors}) => {
+      if (!this.state.id) {
+        return;
+      }
+      const target = _.find(target_investors, {id: this.state.id});
+      this.setState({stage: _.get(target, this.props.stageKey)});
+    });
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
+  }
+
+  renderButton(props, row) {
+    const { hasEmail, stage } = this.state;
+    const firstStage = stage === _.first(TargetInvestorStagesKeys);
+    const introRequest = this.state.value;
+    const canIntro = firstStage && this.state.canIntro;
+
+    if (canIntro && hasEmail) {
       return <IconLine icon="mail" line="Request Intro" className="blue" />;
+    } else if (canIntro) {
+      return <IconLine icon="mail" line="Needs Email" className="blue" />;
     } else if (!introRequest && !canIntro) {
       return <span className="not-available">-</span>;
     } else if (row.last_response) {
@@ -22,8 +54,7 @@ export default class IntroCell extends TextCell {
     }
   }
 
-  processRow(props, row) {
-    let value = <div className="intro-cell">{this.processIntroRequest(props, row)}</div>;
-    return {value};
+  renderValue() {
+    return <div className="intro-cell">{this.renderButton()}</div>;
   }
 }

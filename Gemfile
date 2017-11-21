@@ -73,7 +73,6 @@ gem 'clearbit'
 gem 'googlemaps-services'
 gem 'sinatra', '~>2.0', require: false
 gem 'rack-timeout'
-gem 'activerecord-precount'
 gem 'ruby-readability'
 gem 'countries', '~> 2.1', :require => 'countries/global'
 gem 'execjs'

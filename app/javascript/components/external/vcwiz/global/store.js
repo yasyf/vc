@@ -1,3 +1,5 @@
+import {timestamp} from './utils';
+
 class Store {
   constructor() {
     this.store = new Map();
@@ -8,8 +10,7 @@ class Store {
     this.store.set(key, value);
     if (this.subscriptions.has(key)) {
       this.subscriptions.get(key).forEach(fn => {
-        if (fn)
-          fn(value);
+        fn(value);
       });
     }
   };
@@ -24,7 +25,7 @@ class Store {
 
   subscribe = (key, fn) => {
     const existing = this._getSubscription(key);
-    const id = existing.size;
+    const id = timestamp();
     const delayedFn = x => setTimeout(() => {
       if (this._getSubscription(key).has(id)) {
         fn(x);

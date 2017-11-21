@@ -72,12 +72,12 @@ export default class FixedTable extends React.Component {
   };
 
   renderTrackColumn = (key, onChange, name) => {
-    return this.renderColumn(key, name, TrackCell, {onChange}, 150, null, false);
+    return this.renderColumn(key, name, TrackCell, {onChange}, 175, null, false);
   };
 
   renderCompetitorTrackColumn = (key, onChange, name) => {
     let props = {onChange, onButtonClick: this.onCellClick(key)};
-    return this.renderColumn(key, name, CompetitorTrackCell, props, 150, null, false);
+    return this.renderColumn(key, name, CompetitorTrackCell, props, 175, null, false);
   };
 
   renderIntroColumn = (key, name, props) => {

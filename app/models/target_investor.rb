@@ -104,12 +104,12 @@ class TargetInvestor < ApplicationRecord
     end
   end
 
+  def email_present?
+    email.present? || investor&.email.present?
+  end
+
   def can_intro?
-    email.blank? &&
-      intro_requests.size == 0 &&
-      investor&.email.present? &&
-      investor&.opted_in != false &&
-      stage == STAGES.first.first
+    intro_requests.size == 0 && investor&.opted_in != false
   end
 
   def overlap
@@ -127,8 +127,8 @@ class TargetInvestor < ApplicationRecord
 
   def as_json(options = {})
     super options.reverse_merge(
-      only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name],
-      methods: [:can_intro?, :full_name, :title],
+      only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name, :investor_id],
+      methods: [:can_intro?, :email_present?, :full_name, :title],
       include: [:intro_requests, investor: { only: [:id, :first_name, :last_name, :photo], include: [:competitor] }],
     )
   end
