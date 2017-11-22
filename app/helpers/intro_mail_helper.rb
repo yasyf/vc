@@ -18,7 +18,7 @@ module IntroMailHelper
       else
         ''
     end
-    "<a href='#{prefix}#{founder.send(link)}'>#{founder.name}</a>"
+    "<a href='#{prefix}#{founder.send(link)}'>#{founder.name}</a>".html_safe
   end
 
   def role(investor)
