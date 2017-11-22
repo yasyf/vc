@@ -90,7 +90,7 @@ group :production do
   gem 'puma'
   gem 'dalli'
   gem 'connection_pool'
-  gem 'scout_apm', '~> 3.0.x'
+  gem 'skylight'
 end
 
 group :development, :staging do
