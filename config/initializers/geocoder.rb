@@ -1,1 +1,9 @@
-Geocoder.configure(ip_lookup: :maxmind_local, maxmind_local: {package: :city})
+if Rails.env.production?
+  Geocoder.configure(
+    ip_lookup: :geoip2,
+    geoip2: {
+      lib: 'hive_geoip2',
+      file: ENV['GEOIP_DB_PATH'],
+    }
+  )
+end

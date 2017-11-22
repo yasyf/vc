@@ -90,6 +90,7 @@ group :production do
   gem 'puma'
   gem 'dalli'
   gem 'connection_pool'
+  gem 'hive_geoip2'
   gem 'skylight'
 end
 

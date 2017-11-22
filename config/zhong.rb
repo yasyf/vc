@@ -46,7 +46,6 @@ Zhong.schedule do
     end
 
     category 'bulk' do
-      every(1.month, 'maxmind') { MaxMindLoadJob.perform_later }
       every(1.month, 'crunchbase') { CrunchbasePullJob.perform_later }
     end
   end

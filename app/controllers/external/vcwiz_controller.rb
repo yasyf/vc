@@ -16,7 +16,7 @@ class External::VcwizController < External::ApplicationController
     component 'Discover'
     params.merge!(
       options: { us_only: 'true' },
-      filters: { fund_type: 'seed', location: location_from_ip },
+      filters: { fund_type: 'seed', location: session[:city] || 'San Francisco' },
     )
     result_props 5
     render_default
@@ -84,10 +84,6 @@ class External::VcwizController < External::ApplicationController
   end
 
   private
-
-  def location_from_ip
-    session[:location_from_ip] ||= Util.city(request) || 'San Francisco'
-  end
 
   def title(title)
     @title = title

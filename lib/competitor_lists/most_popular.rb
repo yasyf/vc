@@ -19,7 +19,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
 
   def self.cache_key_fallbacks
     {
-      city: Proc.new { |request| Util.city(request) }
+      city: Proc.new { |request| request.session[:city] }
     }
   end
 

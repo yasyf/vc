@@ -1,11 +1,15 @@
 class External::ApplicationController < ::ApplicationController
   layout 'external'
-  before_action :populate_gon
+  before_action :populate_gon, :populate_city
 
   private
 
   def populate_gon
     gon.founder = current_external_founder&.cached_json
+  end
+
+  def populate_city
+    session[:city] ||= Util.city(request)
   end
 
   def check_founder!
