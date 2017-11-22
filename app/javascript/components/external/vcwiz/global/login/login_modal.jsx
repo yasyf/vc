@@ -171,12 +171,13 @@ export default class LoginModal extends React.Component {
   }
 
   renderStage1() {
+    const description = this.state.data.description;
     return [
       <p className="info" key="text">Your Startup</p>,
       this.renderInput('name', 'Company Name'),
       this.renderInput('description', 'Description (may be shown to investors)'),
       this.renderFilters(['industry', 'companies']),
-      this.renderStandardButton(),
+      this.renderStandardButton(description && description.length > 50),
     ];
   }
 
@@ -198,9 +199,9 @@ export default class LoginModal extends React.Component {
     ];
   }
 
-  renderStandardButton() {
+  renderStandardButton(isEnabled = true) {
     const { stage } = this.state;
-    const enabled = _.every(_.map(RequiredFields[stage], f => this.state.data[f]), Boolean);
+    const enabled = isEnabled && _.every(_.map(RequiredFields[stage], f => this.state.data[f]), Boolean);
     return (
       <Row key="button" isColumn>
         <Button color={Colors.SUCCESS} onClick={enabled ? this.nextStage : undefined} isDisabled={!enabled}>
