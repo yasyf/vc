@@ -534,6 +534,10 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-add-react-displayname@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/babel-plugin-add-react-displayname/-/babel-plugin-add-react-displayname-0.0.4.tgz#bc2a74bcbee6e505025b3352fea85ee7bc4c6f7c"
+
 babel-plugin-check-es2015-constants@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-check-es2015-constants/-/babel-plugin-check-es2015-constants-6.22.0.tgz#35157b101426fd2ffd3da3f75c7d1e91835bbf8a"
@@ -3775,12 +3779,12 @@ loglevel@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.4.1.tgz#95b383f91a3c2756fd4ab093667e4309161f2bcd"
 
-logrocket-react@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/logrocket-react/-/logrocket-react-0.0.4.tgz#790581b3e7c3b68ee8ed3eb0ee2cfa76045c9985"
+logrocket-react@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/logrocket-react/-/logrocket-react-1.0.0.tgz#088b7773bd85ca44a25a5471529849d9e3fdf50b"
   dependencies:
-    react "15"
-    react-dom "15"
+    react "16"
+    react-dom "16"
 
 logrocket@^0.5.1:
   version "0.5.5"
@@ -5156,14 +5160,14 @@ react-dimensions@2.0.0-alpha2:
     element-resize-event "^2.0.4"
     lodash.debounce "^4.0.6"
 
-react-dom@15:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.2.tgz#41cfadf693b757faf2708443a1d1fd5a02bef730"
+react-dom@16:
+  version "16.1.1"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.1.1.tgz#b2e331b6d752faf1a2d31399969399a41d8d45f8"
   dependencies:
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react-dom@16.0.0:
   version "16.0.0"
@@ -5281,15 +5285,14 @@ react-truncate@^2.1.5:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-truncate/-/react-truncate-2.2.2.tgz#c13e420df82cf6d0385bb2a6eb10212743085550"
 
-react@15:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
+react@16:
+  version "16.1.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.1.1.tgz#d5c4ef795507e3012282dd51261ff9c0e824fe1f"
   dependencies:
-    create-react-class "^15.6.0"
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react@16.0.0:
   version "16.0.0"
