@@ -5,8 +5,6 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   include External::Concerns::Sortable
   include External::ApplicationHelper
 
-  filter %w(comments)
-
   def show
     render_censored  Competitor.find(params[:id])
   end

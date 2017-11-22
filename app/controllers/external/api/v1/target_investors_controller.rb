@@ -7,7 +7,7 @@ class External::Api::V1::TargetInvestorsController < External::Api::V1::ApiV1Con
 
   before_action :authenticate_api_user!
 
-  filter %w(investor.email investor.comments)
+  filter %w(investor.email)
 
   def index
     targets = current_external_founder

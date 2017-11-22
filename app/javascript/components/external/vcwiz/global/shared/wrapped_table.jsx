@@ -117,6 +117,9 @@ export default class WrappedTable extends React.Component {
     }
     const [i, key] = currentModal;
     const item = array.getSync(i);
+    if (!item) {
+      return null;
+    }
     const Modal = this.getModal(key, item);
     if (!Modal) {
       return null;

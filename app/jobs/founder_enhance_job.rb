@@ -27,6 +27,7 @@ class FounderEnhanceJob < ApplicationJob
 
   def augment_with_clearbit(founder)
     response = Http::Clearbit.new(founder, founder.primary_company).enhance
+    return unless response.person.present?
 
     founder.city ||= response.person.geo.city
     founder.time_zone ||= response.person.time_zone
