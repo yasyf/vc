@@ -13,7 +13,13 @@ services:
   - redis-server
 addons:
   postgresql: "9.6"
-  ssh_known_hosts: git@git.handsontable.com
+  apt:
+    sources:
+      - sourceline: 'ppa:maxmind/ppa'
+    packages:
+      - libmaxminddb0
+      - libmaxminddb-dev
+      - mmdb-bin
 before_install:
   - nvm install 8.6
   - nvm use 8.6
