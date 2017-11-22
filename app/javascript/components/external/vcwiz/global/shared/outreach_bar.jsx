@@ -49,7 +49,7 @@ export default class OutreachBar extends React.Component {
 
   renderReminder() {
     const { stats, conversations } = this.state.founder;
-    if (conversations.total && _.isEmpty(stats)) {
+    if (conversations.total && (_.isEmpty(stats) || !stats.emails)) {
       return (
         <span>
           You haven't sent any emails yet! Be sure to CC <b>{CCEmail}</b> in your emails to start tracking your investor outreach.
@@ -65,7 +65,7 @@ export default class OutreachBar extends React.Component {
 
   renderStats() {
     const { stats } = this.state.founder;
-    if (_.isEmpty(stats)) {
+    if (_.isEmpty(stats) || !stats.emails) {
       return null;
     }
     const { response_time, emails, investors } = stats;

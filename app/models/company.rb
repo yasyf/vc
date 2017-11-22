@@ -197,6 +197,29 @@ class Company < ActiveRecord::Base
     name.present? && description.present? && industry.present?
   end
 
+  def latest_news
+    @latest_news ||= news.order(created_at: :desc).limit(3)
+  end
+
+  def latest_tweets
+    newsworthy = tweeter.newsworthy_tweets
+    newsworthy.present? ? newsworthy : tweeter.latest_tweets(3)
+  end
+
+  def featured_competitors
+    @featured_competitors ||= begin
+      ids = investments
+        .where(featured: true)
+        .includes(:investor)
+        .references(:investors)
+        .order('COALESCE(SUM(investors.target_investors_count), 0) DESC')
+        .limit(3)
+        .group(:competitor_id)
+        .pluck(:competitor_id)
+      Competitor.where(id: ids)
+    end
+  end
+
   private
 
   def normalize_location

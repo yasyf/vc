@@ -152,7 +152,9 @@ class Founder < ApplicationRecord
     super(options.reverse_merge(
       only: [:id, :first_name, :last_name],
       methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats]
-    )).reverse_merge(target_investors: target_investors.order(updated_at: :desc).as_json(include: [], methods: []))
+    )).reverse_merge(
+      target_investors: target_investors.includes(:intro_requests).order(updated_at: :desc).as_json(include: [], methods: [:intro_requests])
+    )
   end
 
   def cached_json

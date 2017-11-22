@@ -1,5 +1,9 @@
 <%= render partial: 'request' %>
 
+<hr />
+
+<h3>Your Response</h3>
+
 <p>
   Click <a href="<%= external_vcwiz_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
   or <a href="<%= external_vcwiz_decide_url(accept: false, token: @request.token) %>">here</a> to reject it.

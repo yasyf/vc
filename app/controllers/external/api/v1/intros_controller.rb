@@ -2,7 +2,8 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
   before_action :authenticate_api_user!
 
   def index
-    intro = IntroRequest.where(target_investor_id: params[:target_investor_id]).first_or_initialize
+    target_investor = TargetInvestor.find(params[:target_investor_id])
+    intro = IntroRequest.from_target_investor(target_investor).tap(&:save!)
     render json: intro.as_json(methods: [])
   end
 
@@ -12,8 +13,9 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
 
   def create
     target_investor = TargetInvestor.find(intro_request_params[:target_investor_id])
+    intro = IntroRequest.from_target_investor(target_investor)
+
     target_investor.update! email: intro_request_params[:email] if intro_request_params[:email].present?
-    intro = IntroRequest.from_target_investor target_investor
     intro.update! intro_request_params.slice(:context, :pitch_deck)
     render json: intro
   end
@@ -26,6 +28,7 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
 
   def confirm
     intro.send!
+    intro.target_investor.update! stage: TargetInvestor::RAW_STAGES.keys.index(:intro)
     render json: intro
   end
 

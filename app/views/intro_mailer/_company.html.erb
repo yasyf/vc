@@ -1,12 +1,30 @@
+<blockquote>
+  <p><%= @request.context %></p>
+</blockquote>
+
+<p>
+  You can learn more about <%= @company.name %> below. This is an auto-generated dossier by VCWiz, and might not be perfectly accurate!
+  Please verify all information with <%= @founder.first_name %>.
+  <b>You can find the deck <a href="<%= @request.pitch_deck %>">here</a>.</b>
+</p>
+
+<% if @company.funded? %>
+  <p>
+    This is a Dorm Room Fund company! <%= @founder.first_name %>'s team is backed by the largest student-run venture firm in the country.
+    You can learn more about DRF at <a href="https://drf.vc/">our website</a>.
+  </p>
+<% end %>
+
+<hr />
+
 <p>
   <%= @company.description %>
 </p>
 
 <p>
-  <%= @request.context %>
-</p>
-
-<p>
+  <% if @company.location.present? %>
+    <b>Location</b>: <%= @company.location %><br>
+  <% end %>
   <% if @request.pitch_deck.present? %>
     <b>Deck</b>: <a href="<%= @request.pitch_deck %>"><%= @company.name %> Pitch Deck</a><br>
   <% end %>
@@ -14,21 +32,40 @@
     <b>Website</b>: <a href="http://<%= @company.domain %>"><%= @company.domain %></a><br>
   <% end %>
   <% if @company.crunchbase_org(raise_on_error: false).found? %>
-    <b>Crunchbase</b>: <a href="<%= @company.cb_url %>"><%= @company.cb_url %></a><br>
+    <b>Crunchbase</b>: <a href="<%= @company.cb_url %>"><%= @company.name %> on CrunchBase</a><br>
+  <% end %>
+  <% if @company.al_id.present? %>
+    <b>AngelList</b>: <a href="<%= @company.al_url %>"><%= @company.name %> on AngelList</a><br>
+  <% end %>
+  <% if @company.tweeter.present? %>
+    <b>Twitter</b>: <a href="<%= @company.al_url %>"><a href="http://twitter.com/<%= @company.tweeter.username %>">@<%= @company.tweeter.username %></a><br>
   <% end %>
   <% if @company.capital_raised > 0 %>
     <b>Raised</b>: At least <%= @company.capital_raised(format: true) %><br>
   <% end %>
-  <% if @company.competitors.present? %>
-    <b>Investors</b>: <%= @company.competitors.pluck(:name).join(', ') %><br>
-  <% end %>
-  <% if @company.tweeter.present? %>
-    <b>Twitter</b>: <a href="http://twitter.com/<%= @company.tweeter.username %>">@<%= @company.tweeter.username %></a><br>
-    <% newsworthy = @company.tweeter.newsworthy_tweets %>
-    <% if newsworthy.present? %>
-      <b>Popular Tweet</b>: <%= newsworthy.last.text %><br>
-    <% else %>
-      <b>Recent Tweet</b>: <%= @company.tweeter.latest_tweets(1).last.text %><br>
-    <% end %>
+  <% if @company.featured_competitors.present? %>
+    <b>Investors</b>: <%= @company.featured_competitors.pluck(:name).join(', ') %><br>
   <% end %>
 </p>
+
+<% if @company.latest_news.present? %>
+  <hr />
+  <h3><%= @company.name %> In The News</h3>
+  <% @company.latest_news.each do |news| %>
+    <p>
+      <b><%= news.title %></b><br />
+      <%= news.description %>
+      <a href="<%= news.url %>">read more</a>
+    </p>
+  <% end %>
+<% end %>
+
+<% if @company.tweeter.present? %>
+  <hr />
+  <h3>@<%= @company.tweeter.username %> On Twitter</h3>
+  <% @company.latest_tweets.each do |tweet| %>
+    <p>
+      <i><%= tweet.text %></i> - <%= tweet.tweeted_at.to_s(:long) %>
+    </p>
+  <% end %>
+<% end %>

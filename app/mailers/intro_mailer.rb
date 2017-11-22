@@ -1,4 +1,5 @@
 class IntroMailer < ExternalMailer
+  layout 'intro_mailer'
   helper :intro_mail
   after_action :add_headers!
 

@@ -3,9 +3,10 @@ import OverlayModal from '../global/shared/overlay_modal';
 import {Button, Colors} from 'react-foundation';
 import Input from '../global/fields/input';
 import {extend, ffetch, fullName, getDomain} from '../global/utils';
-import {IntroRequestsPath} from '../global/constants.js.erb';
+import {IntroRequestsPath, SupportEmail} from '../global/constants.js.erb';
 import TextArea from '../global/fields/text_area';
 import Store from '../global/store';
+import Actions from '../global/actions';
 import Loader from '../global/shared/loader';
 
 const NumStages = 5;
@@ -84,6 +85,14 @@ export default class IntroModal extends React.Component {
     }
   };
 
+  submit = () => {
+    const { intro } = this.state;
+    ffetch(IntroRequestsPath.resource(intro.id, 'confirm'), 'POST').then(() => {
+      Actions.trigger('refreshFounder');
+    });
+    this.props.onClose();
+  };
+
   renderTop() {
     const { firm_name } = this.props.item;
     return (
@@ -126,9 +135,9 @@ export default class IntroModal extends React.Component {
     const { first_name, firm_name } = this.props.item;
     const founder = Store.get('founder', {});
     return [
-      <div key="info">
+      <p key="info">
         Please provide a brief context blurb, which helps customize the email for this particular investor.
-      </div>,
+      </p>,
       this.renderTextArea('context', `Hey ${first_name}! My name is ${founder.first_name} and I think ${founder.primary_company.name} is a great fit for ${firm_name} because...`),
       this.renderStandardButton(!intro.context || intro.context.length < 50),
     ];
@@ -138,9 +147,9 @@ export default class IntroModal extends React.Component {
     const { intro } = this.state;
     const { primary_company } = Store.get('founder', {});
     return [
-      <div key="info">
+      <p key="info">
         Last one! We need a link to your pitch deck for {primary_company.name}.
-      </div>,
+      </p>,
       this.renderInput('pitch_deck', 'http://www.example.com/deck.pdf'),
       this.renderStandardButton(!intro.pitch_deck || !getDomain(intro.pitch_deck)),
     ];
@@ -148,15 +157,24 @@ export default class IntroModal extends React.Component {
 
   renderStage3() {
     const { preview } = this.state;
+    const { primary_company } = Store.get('founder', {});
     return [
+      <p key="info">
+        Please check out the below preview, and hit send if you're happy with it!
+        <br />
+        We currently don't allow any customization,
+        but please <a target="_blank" href={`mailto:${SupportEmail}?subject=VCWiz Intro Request Issue - ${primary_company.name}`}>reach out</a> if you see something wrong!
+      </p>,
       <div key="preview" className="preview" dangerouslySetInnerHTML={{ __html: preview }} />,
-      this.renderStandardButton(),
+      <Button color={Colors.SUCCESS} onClick={this.submit} key="button">
+        Send!
+      </Button>,
     ];
   }
 
   renderBottom() {
     if (this.state.loading) {
-      return <Loader />;
+      return <div className="loader"><Loader /></div>;
     }
     return <div className="intro-form">{this[`renderStage${this.state.stage}`]()}</div>;
   }

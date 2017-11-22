@@ -1,9 +1,11 @@
-Hey <%= @investor.first_name %>!
+<p>
+  Hey <%= @investor.first_name %>!
+</p>
 
 <p>
   <%= founder @founder %> would like to talk to you about their company, <%= company @company %>.
   Respond "yes" or "no" to quickly deal with this request.
-  Details about the company are below.
+  I've included <%= @founder.first_name %>'s note below.
 </p>
 
 <%= render partial: 'company' %>

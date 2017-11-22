@@ -6,6 +6,7 @@ import FixedTable from '../global/shared/fixed_table';
 import {initials, ffetch} from '../global/utils';
 import {TargetInvestorsPath, TargetInvestorStagesKeys} from '../global/constants.js.erb';
 import Actions from '../global/actions';
+import Store from '../global/store';
 import IntroModal from './intro_modal';
 
 class ConversationsTable extends FixedTable {
@@ -35,13 +36,15 @@ export default class Conversations extends React.Component {
       <WrappedTable
         items={targets}
         modal={(key, item) => {
+          const { target_investors } = Store.get('founder', {});
+          const target = _.find(target_investors, {id: item.id});
           switch (key) {
             case 'full_name':
               return PartnerModal;
             case 'priority':
               return EmojiModal;
             case 'intro_requests[0]':
-              if (item['can_intro?'] && item.stage === _.first(TargetInvestorStagesKeys))
+              if (item['can_intro?'] && target.stage === _.first(TargetInvestorStagesKeys))
                 return IntroModal;
           }
         }}
