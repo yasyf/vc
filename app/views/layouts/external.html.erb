@@ -6,17 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= yield(:title) %></title>
 
-  <%= include_gon(camel_case: true, init: true) %>
-  <script>window.WebpackerReactQueue = [];</script>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css"/>
-
   <%= stylesheet_link_tag 'external/application', media: 'all' %>
-
   <% if content_for?(:pack) %>
     <%= stylesheet_pack_tag "external/#{yield(:pack)}" %>
   <% end %>
-
   <% if content_for?(:styles) %>
     <%= stylesheet_link_tag "external/#{yield(:styles)}", media: 'all' %>
   <% end %>
@@ -32,14 +26,15 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
+  <%= include_gon(camel_case: true, init: true) %>
+  <script>window.WebpackerReactQueue = [];</script>
   <% if Rails.env.production? && content_for?(:logrocket) %>
     <%= logrocket_key(yield(:logrocket)) %>
   <% end %>
 
+
   <%= javascript_include_tag 'external/application', defer: true %>
-
   <%= javascript_pack_tag 'shared', defer: true %>
-
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}", defer: true %>
   <% end %>
