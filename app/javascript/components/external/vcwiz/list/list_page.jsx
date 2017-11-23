@@ -3,6 +3,7 @@ import VCWiz from '../vcwiz';
 import Results from '../global/competitors/results';
 import {CompetitorsListPath} from '../global/constants.js.erb';
 import SectionWithDims from '../global/shared/section_with_dims';
+import Lists from '../discover/lists';
 
 export default class ListPage extends React.Component {
   renderHeader() {
@@ -32,6 +33,7 @@ export default class ListPage extends React.Component {
         page="list"
         header={this.renderHeader()}
         body={this.renderBody()}
+        footer={<Lists />}
       />
     );
   }

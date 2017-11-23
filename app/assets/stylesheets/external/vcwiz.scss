@@ -518,8 +518,70 @@ input.placeholded {
 
   &-body {
     margin: 30px 50px;
-    flex: 1 1 auto;
+    flex: 1 0 auto;
     display: flex;
+  }
+
+  &-footer {
+    margin: 30px 50px;
+    flex: 0 1 auto;
+  }
+}
+
+.lists {
+  .inline-image {
+    display: inline-block;
+
+    &:not(:first-child) {
+      margin-left: 8px;
+    }
+  }
+
+  h6 {
+    text-transform: uppercase;
+    color: $mid-grey;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .loading {
+    padding-top: 10%;
+    width: 200px;
+    margin: auto;
+  }
+
+  .cards {
+    margin: auto;
+    width: 100%;
+
+    .row:not(:first-child)  {
+      margin-top: 2.5em;
+    }
+  }
+
+  .card-wrapper {
+    .card {
+      height: 165px;
+      width: 100%;
+      max-width: 350px;
+      margin: auto;
+      cursor: pointer;
+
+      .card-section {
+        position: relative;;
+      }
+
+      .body {
+        position: absolute;
+        bottom: 10px;
+      }
+
+      .title {
+        font-weight: bold;
+        font-size: 1.05em;
+        line-height: 1.3em;
+      }
+    }
   }
 }
 
@@ -628,6 +690,19 @@ input.placeholded {
 
   &-body {
     margin: 20px 0 0;
+    flex-basis: 60%;
+  }
+
+  &-footer {
+    margin: 30px 1em;
+
+    h3 {
+      margin-bottom: 1em;
+
+      b {
+        font-weight: normal;
+      }
+    }
   }
 }
 
@@ -639,63 +714,11 @@ input.placeholded {
   }
 
   &-body {
-    margin-top: 0;
     display: block;
+    margin: 30px 75px;
 
-    .inline-image {
-      display: inline-block;
-
-      &:not(:first-child) {
-        margin-left: 8px;
-      }
-    }
-
-    h6 {
-      text-transform: uppercase;
-      color: $mid-grey;
-      font-size: 0.9rem;
-      font-weight: bold;
-    }
-
-    .loading {
-      padding-top: 10%;
-      width: 200px;
-      margin: auto;
-    }
-
-    .cards {
-      padding-top: 50px;
-      margin: auto;
-      width: 100%;
-
-      .row:not(:first-child)  {
-        margin-top: 2.5em;
-      }
-    }
-
-    .card-wrapper {
-      .card {
-        height: 165px;
-        width: 100%;
-        max-width: 350px;
-        margin: auto;
-        cursor: pointer;
-
-        .card-section {
-          position: relative;;
-        }
-
-        .body {
-          position: absolute;
-          bottom: 10px;
-        }
-
-        .title {
-          font-weight: bold;
-          font-size: 1.05em;
-          line-height: 1.3em;
-        }
-      }
+    h3 {
+      margin-bottom: 1em;
     }
   }
 }

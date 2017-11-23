@@ -64,6 +64,18 @@ export default class VCWiz extends React.Component {
     );
   }
 
+  renderFooter() {
+    const { page, footer } = this.props;
+    if (!footer) {
+      return null;
+    }
+    return (
+      <div className={classNames('vcwiz-footer', `${page}-page-footer`)}>
+        {footer}
+      </div>
+    );
+  }
+
   render() {
     const { page, showIntro, showLogin, subtitle } = this.props;
     return (
@@ -72,6 +84,7 @@ export default class VCWiz extends React.Component {
         <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})}>
           {this.renderHeader()}
           {this.renderBody()}
+          {this.renderFooter()}
         </div>
         {this.props.modal}
       </div>

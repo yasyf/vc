@@ -56,6 +56,9 @@ export default class Lists extends React.Component {
   }
 
   renderCount(count) {
+    if (!count) {
+      return null;
+    }
     return <ProfileImage fallback={`+${count}`} {...this.profileImageProps()} />;
   }
 
@@ -108,11 +111,20 @@ export default class Lists extends React.Component {
     );
   }
 
-  render() {
+  renderListsOrLoading() {
     if (this.state.loading) {
       return this.renderLoading();
     } else {
       return this.renderLists();
     }
+  }
+
+  render() {
+    return (
+      <div className="lists">
+        <h3><b>Recommended Lists For You</b></h3>
+        {this.renderListsOrLoading()}
+      </div>
+    );
   }
 }

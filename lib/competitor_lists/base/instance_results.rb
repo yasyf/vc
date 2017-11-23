@@ -57,10 +57,9 @@ module CompetitorLists::Base::InstanceResults
   def result_count
     if cached?
       count = Rails.cache.fetch(cache_key('count'))
-      count.present? ? count : 0
-    else
-      fetch_result_count
+      return count unless count.nil?
     end
+    fetch_result_count
   end
 
   def fetch_results(limit, offset, meta, json: nil, sort: nil)
