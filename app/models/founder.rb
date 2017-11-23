@@ -188,30 +188,6 @@ class Founder < ApplicationRecord
       .limit(3)
   end
 
-  def recommended_investors(limit: 5, offset: 0)
-    query = <<-SQL
-      SELECT DISTINCT ON (i.featured, i_ind.cnt, count(companies.id), i.target_investors_count, i.competitor_id)
-        i.*, i_ind.cnt as ind_cnt, i_ind.industry_highlight, count(companies.id) as cnt
-      FROM
-        investors i,
-        LATERAL (
-           SELECT
-            count(*) AS cnt,
-            array_agg(i_ind_t) AS industry_highlight
-           FROM   unnest(i.industry) i_ind_t
-           WHERE  i_ind_t = ANY('{#{primary_company.industry.join(',')}}')
-        ) i_ind
-      LEFT OUTER JOIN investments on (investments.id = investments.investor_id)
-      LEFT OUTER JOIN companies on (investments.company_id = companies.id)
-      WHERE i_ind.cnt > 0
-      GROUP BY i.id, i_ind.cnt, i_ind.industry_highlight
-      ORDER BY i.featured DESC, i_ind.cnt DESC, count(companies.id) DESC, i.target_investors_count DESC, i.competitor_id DESC
-      LIMIT #{limit}
-      OFFSET #{offset};
-    SQL
-    Investor.find_by_sql query
-  end
-
   private
 
   def set_response_time!

@@ -9,7 +9,7 @@ class External::ApplicationController < ::ApplicationController
   end
 
   def populate_city
-    session[:city] ||= (city = Util.city(request)).present? ? city : 'San Francisco'
+    session[:city] ||= (city = Util.city(request)).present? ? city : (current_external_founder&.city || 'San Francisco')
   end
 
   def check_founder!

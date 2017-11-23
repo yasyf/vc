@@ -33,11 +33,12 @@ module CompetitorLists::Base::InstanceResults
   end
 
   def find_with_meta_sql(limit, offset: 0, sort: nil)
+    sort_sql = self.class.order_sql_from_sort(sort)
     self.class._base_sql(
       @founder,
       sql,
       meta_sql,
-      sort.present? ? self.class.order_sql_from_sort(sort) : self.order,
+      sort_sql.present? ? sort_sql : self.order,
       limit,
       offset,
       include_targets: sort && sort.include?(:stage)

@@ -57,13 +57,46 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     SQL
   end
 
+  def _industry_overlap_subquery
+    count_subquery = <<-SQL
+      SELECT COUNT(*) AS overlap_cnt
+      FROM unnest(competitors.industry) AS compet_ind
+      WHERE compet_ind = ANY('{#{overlap_industries}}')
+    SQL
+    <<-SQL
+      LEFT JOIN LATERAL (#{count_subquery}) AS overlap_counts ON true
+    SQL
+  end
+
+  def overlap_industries
+    @overlap_industries ||= begin
+      if params[:filters][:industry].present?
+        params[:filters][:industry]
+      elsif @founder.present?
+        @founder.primary_company.industry.join(',')
+      end
+    end
+  end
+
+  def overlap_cities
+    @overlap_cities ||= begin
+      if params[:filters][:location].present?
+        params[:filters][:location]
+      elsif @founder.city.present?
+        @founder.city
+      else
+        @request.session[:city]
+      end
+    end
+  end
+
   def _filtered
     competitors = if params[:search].present?
       Competitor.joins("INNER JOIN (#{_filtered_by_search_subquery(params[:search])}) AS searched ON competitors.id = searched.id")
     else
       Competitor.all
     end
-    competitors = competitors.where("competitors.fund_type && ?", "{#{params[:filters][:fund_type]}}") if params[:filters][:fund_type].present?
+    competitors = competitors.where('competitors.fund_type && ?', "{#{params[:filters][:fund_type]}}") if params[:filters][:fund_type].present?
     if params[:filters][:industry].present?
       competitors = competitors.where('competitors.industry @> ?', "{#{params[:filters][:industry]}}")
     end
@@ -83,13 +116,17 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
       end
     end
     competitors = competitors.where(country: 'US') if params[:options][:us_only]
+    competitors = competitors.joins(_industry_overlap_subquery) if overlap_industries.present?
     competitors.left_outer_joins(:investors)
   end
 
   def sort
-    <<-SQL
-      COUNT(NULLIF(investors.featured, false)) DESC, COALESCE(SUM(investors.target_investors_count), 0) DESC
-    SQL
+    [
+      'bool_or(COALESCE(investors.featured, false)) DESC',
+      overlap_industries.present? && 'MIN(overlap_cnt) DESC',
+      overlap_cities.present? && "(competitors.location && '{#{overlap_cities}}') DESC",
+      'COALESCE(SUM(investors.target_investors_count), 0) DESC',
+    ].select { |x| x }.join(', ')
   end
 
   def order_sql
