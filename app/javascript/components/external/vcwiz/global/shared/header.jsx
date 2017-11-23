@@ -16,6 +16,10 @@ import classNames from 'classnames';
 import OutreachBar from './outreach_bar';
 
 export default class Header extends React.Component {
+  static defaultProps = {
+    showLogin: true,
+  };
+
   state = {
     loginOpen: false,
     loginStage: 0,
@@ -78,7 +82,7 @@ export default class Header extends React.Component {
           </a>
         </div>
       );
-    } else {
+    } else if (this.props.showLogin) {
       return (
         <div className="title right">
           Already have an account?
@@ -87,6 +91,8 @@ export default class Header extends React.Component {
           </a>
         </div>
       );
+    } else {
+      return null;
     }
   }
 

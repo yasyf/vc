@@ -12,6 +12,7 @@ export default class Investor extends React.Component {
         subtitle={`${investor.competitor.name} Investor Portal`}
         header={<InvestorHeader {...this.props} />}
         body={body}
+        showLogin={false}
       />
     );
   }

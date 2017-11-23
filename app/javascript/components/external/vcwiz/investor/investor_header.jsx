@@ -4,14 +4,20 @@ import {initials} from '../global/utils';
 import CompanyImage from '../discover/company_image';
 
 export default class InvestorHeader extends React.Component {
+  static defaultProps = {
+    imageSize: 100,
+  };
+
   renderProfileImage(person) {
-    return <ProfileImage fallback={initials(person)} src={person.photo} size={100} className="inline-image" />;
+    const { imageSize } = this.props;
+    return <ProfileImage fallback={initials(person)} src={person.photo} size={imageSize} className="inline-image" />;
   }
 
   renderCompanyImage(company) {
+    const { imageSize } = this.props;
     return (
-      <div className="rounded-image inline-image" style={{width: '100px', height: '100px'}}>
-        <CompanyImage domain={company.domain} size={100} />
+      <div className="rounded-image inline-image" style={{width: `${imageSize}px`, height: `${imageSize}px`}}>
+        <CompanyImage domain={company.domain} size={imageSize} />
       </div>
     );
   }

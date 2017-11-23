@@ -65,10 +65,10 @@ export default class VCWiz extends React.Component {
   }
 
   render() {
-    const { page, showIntro, subtitle } = this.props;
+    const { page, showIntro, showLogin, subtitle } = this.props;
     return (
       <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
-        <Header subtitle={subtitle} showIntro={showIntro} />
+        <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} />
         <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})}>
           {this.renderHeader()}
           {this.renderBody()}
