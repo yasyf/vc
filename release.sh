@@ -3,7 +3,7 @@
 fetch_site() {
   URL="https://$MARKETING_DOMAIN"
   echo "Fetching $URL"
-  until $(curl --output /dev/null --silent --head --fail $URL); do
+  until $(curl --output /dev/null --silent -L --fail $URL); do
     echo "Waiting..."
     sleep 5
   done
