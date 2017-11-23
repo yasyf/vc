@@ -197,6 +197,11 @@ class Company < ActiveRecord::Base
     name.present? && description.present? && industry.present?
   end
 
+  def humanized_industry
+    return nil unless industry.present?
+    industry.map { |i| Competitor::INDUSTRIES[i.to_sym] }.join(', ')
+  end
+
   def latest_news
     @latest_news ||= news.order(created_at: :desc).limit(3)
   end

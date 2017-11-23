@@ -267,11 +267,6 @@ class Competitor < ApplicationRecord
     "https://www.crunchbase.com/organization/#{crunchbase_id}" if crunchbase_id.present?
   end
 
-  def humanized_industry
-    return nil unless industry.present?
-    industry.map { |i| INDUSTRIES[i.to_sym] }.join(', ')
-  end
-
   private
 
   def normalize_location
