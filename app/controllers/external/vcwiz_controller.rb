@@ -16,7 +16,7 @@ class External::VcwizController < External::ApplicationController
     component 'Discover'
     params.merge!(
       options: { us_only: 'true' },
-      filters: { fund_type: 'seed', location: session[:city] || 'San Francisco' },
+      filters: { fund_type: 'seed', location: session[:city] },
     )
     result_props 5
     render_default
