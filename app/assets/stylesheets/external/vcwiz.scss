@@ -391,6 +391,11 @@ i.reversed::before {
 
   .title {
     cursor: pointer;
+
+    .line-icon {
+      vertical-align: 0;
+      font-size: 1.3em;
+    }
   }
 }
 

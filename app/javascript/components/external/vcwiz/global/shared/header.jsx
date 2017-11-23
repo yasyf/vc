@@ -14,6 +14,7 @@ import LoginModal from '../login/login_modal';
 import Actions from '../actions';
 import classNames from 'classnames';
 import OutreachBar from './outreach_bar';
+import SettingsModal from '../settings/settings_modal';
 
 export default class Header extends React.Component {
   static defaultProps = {
@@ -22,6 +23,7 @@ export default class Header extends React.Component {
 
   state = {
     loginOpen: false,
+    settingsOpen: false,
     loginStage: 0,
     showIntro: true,
     founder: Store.get('founder', {}),
@@ -34,12 +36,14 @@ export default class Header extends React.Component {
   componentDidMount() {
     Actions.register('login', this.openLogin);
     Actions.register('signup', this.openSignup);
+    Actions.register('settings', this.openSettingsModal);
   }
 
   componentWillUnmount() {
     Store.unsubscribe(this.subscription);
     Actions.unregister('login');
     Actions.unregister('signup');
+    Actions.unregister('settings');
   }
 
   onClick = () => {
@@ -64,6 +68,14 @@ export default class Header extends React.Component {
     this.openLoginModal(e, 0);
   };
 
+  openSettingsModal = e => {
+    this.setState({settingsOpen: true});
+  };
+
+  closeSettingsModal = e => {
+    this.setState({settingsOpen: false});
+  };
+
   renderCount() {
     if (!this.state.founder.conversations) {
       return null;
@@ -79,6 +91,9 @@ export default class Header extends React.Component {
             <h5 className="subtitle nudge-middle">
               Your Conversations {this.renderCount()}
             </h5>
+          </a>
+          <a onClick={this.openSettingsModal}>
+            <i className="line-icon fi-widget"/>
           </a>
         </div>
       );
@@ -177,7 +192,7 @@ export default class Header extends React.Component {
     }
   }
 
-  renderModal() {
+  renderLoginModal() {
     if (!this.state.loginOpen) {
       return null;
     }
@@ -190,10 +205,23 @@ export default class Header extends React.Component {
     );
   }
 
+  renderSettingsModal() {
+    if (!this.state.settingsOpen) {
+      return null;
+    }
+    return (
+      <SettingsModal
+        isOpen={this.state.settingsOpen}
+        onClose={this.closeSettingsModal}
+      />
+    );
+  }
+
   render() {
     return (
       <div>
-        {this.renderModal()}
+        {this.renderLoginModal()}
+        {this.renderSettingsModal()}
         <header id="top-header">
           {this.renderHeader()}
           {this.renderBar()}

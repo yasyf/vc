@@ -27,7 +27,6 @@ export default class ResearchModal extends React.Component {
   }
 
   onTrackChange = id => update => {
-    flush();
     if (this.props.onTrackChange) {
       this.props.onTrackChange(update);
     } else {
