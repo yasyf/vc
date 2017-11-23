@@ -206,6 +206,38 @@ CREATE TABLE companies_users (
 
 
 --
+-- Name: competitions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE competitions (
+    id bigint NOT NULL,
+    a_id bigint NOT NULL,
+    b_id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: competitions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE competitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: competitions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE competitions_id_seq OWNED BY competitions.id;
+
+
+--
 -- Name: competitors; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1178,6 +1210,13 @@ ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq
 
 
 --
+-- Name: competitions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitions ALTER COLUMN id SET DEFAULT nextval('competitions_id_seq'::regclass);
+
+
+--
 -- Name: competitors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1382,6 +1421,14 @@ ALTER TABLE ONLY cards
 
 ALTER TABLE ONLY companies
     ADD CONSTRAINT companies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: competitions competitions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitions
+    ADD CONSTRAINT competitions_pkey PRIMARY KEY (id);
 
 
 --
@@ -1694,6 +1741,27 @@ CREATE INDEX index_companies_users_on_company_id_and_user_id ON companies_users 
 --
 
 CREATE INDEX index_companies_users_on_user_id_and_company_id ON companies_users USING btree (user_id, company_id);
+
+
+--
+-- Name: index_competitions_on_a_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_competitions_on_a_id ON competitions USING btree (a_id);
+
+
+--
+-- Name: index_competitions_on_a_id_and_b_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_competitions_on_a_id_and_b_id ON competitions USING btree (a_id, b_id);
+
+
+--
+-- Name: index_competitions_on_b_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_competitions_on_b_id ON competitions USING btree (b_id);
 
 
 --
@@ -2287,6 +2355,14 @@ ALTER TABLE ONLY intro_requests
 
 
 --
+-- Name: competitions fk_rails_10c7683510; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitions
+    ADD CONSTRAINT fk_rails_10c7683510 FOREIGN KEY (a_id) REFERENCES companies(id);
+
+
+--
 -- Name: pitches fk_rails_115ef0c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2332,6 +2408,14 @@ ALTER TABLE ONLY knowledges
 
 ALTER TABLE ONLY posts
     ADD CONSTRAINT fk_rails_285bce5540 FOREIGN KEY (investor_id) REFERENCES investors(id);
+
+
+--
+-- Name: competitions fk_rails_297510c89c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitions
+    ADD CONSTRAINT fk_rails_297510c89c FOREIGN KEY (b_id) REFERENCES companies(id);
 
 
 --
@@ -2691,6 +2775,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171121023523'),
 ('20171121095936'),
 ('20171122211959'),
-('20171123002740');
+('20171123002740'),
+('20171123005005');
 
 

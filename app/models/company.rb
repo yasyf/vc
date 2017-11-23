@@ -171,6 +171,16 @@ class Company < ActiveRecord::Base
     super || (create_tweeter!(username: twitter_username) if twitter_username.present?)
   end
 
+  def competitions
+    Competition.where(a: self).or(Competition.where(b: self))
+  end
+
+  def competitions=(companies)
+    companies.map do |company|
+      Competition.from_companies!(self, company)
+    end
+  end
+
   def self.searchable_columns
     [:name]
   end

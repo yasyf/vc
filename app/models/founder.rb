@@ -104,12 +104,12 @@ class Founder < ApplicationRecord
   end
 
   def create_company!(data)
-    # TODO: store competitors
     attrs = {
       founders: [self],
       name: data[:name],
       description: data[:description],
-      industry: Util.split_slice(data[:industry], Competitor::INDUSTRIES).keys
+      industry: Util.split_slice(data[:industry], Competitor::INDUSTRIES).keys,
+      competitions: Company.where(id: data[:companies])
     }
     if data[:domain].present?
       Company.where(domain: Util.parse_domain(data[:domain])).first_or_initialize.tap do |c|

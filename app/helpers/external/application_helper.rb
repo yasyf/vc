@@ -17,7 +17,7 @@ module External::ApplicationHelper
     case level.to_sym
       when :alert     then 'alert'
       when :success   then 'success'
-      when :investor      then 'warning'
+      when :info      then 'warning'
       when :error     then 'alert'
       when :secondary then 'secondary'
       else 'success'
