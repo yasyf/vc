@@ -8,12 +8,16 @@ class CompetitorListJob < ActiveJob::Base
   private
 
   def cache_list!(list)
-    return unless list.cache_key_attrs.present?
+    return if list.cache_key_attrs.nil?
     return if list.derived?
-    list.cache_values_span.each do |cache_values|
-      instance = list.new(nil, nil)
-      instance.cache_values = cache_values
-      instance.cache!
+    if list.cache_key_attrs.is_a?(TrueClass)
+      list.new(nil, nil).cache!
+    else
+      list.cache_values_span.each do |cache_values|
+        instance = list.new(nil, nil)
+        instance.cache_values = cache_values
+        instance.cache!
+      end
     end
   end
 end

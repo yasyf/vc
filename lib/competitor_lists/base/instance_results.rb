@@ -2,7 +2,7 @@ module CompetitorLists::Base::InstanceResults
   GET_LIMIT = 5
 
   def cache_values
-    @cache_values_override || self.class.cache_values(@founder, @request)
+    (@cache_values_override || self.class.cache_values(@founder, @request)).with_indifferent_access
   end
 
   def cache_values=(cache_values)
@@ -56,7 +56,7 @@ module CompetitorLists::Base::InstanceResults
 
   def result_count
     if cached?
-      count = Rails.cache.fetch(cache_key('count'))
+      count = Rails.application.redis_cache.fetch(cache_key('count'))
       return count unless count.nil?
     end
     fetch_result_count
@@ -86,7 +86,7 @@ module CompetitorLists::Base::InstanceResults
   end
 
   def fetch_cached_results
-    results = Rails.cache.fetch(cache_key('results'))
+    results = Rails.application.redis_cache.fetch(cache_key('results'))
     return results unless results.present?
     targets = targets_for_investors(results)
     results.each do |competitor|
@@ -102,14 +102,21 @@ module CompetitorLists::Base::InstanceResults
   def results(sort: nil, limit: GET_LIMIT, offset: 0, meta: false, json: nil)
     if cached?
       cached = fetch_cached_results
-      return cached unless cached.nil?
+      unless cached.nil?
+        @cached_results = true
+        return cached
+      end
     end
     fetch_results(limit, offset, meta, json: json, sort: sort)
   end
 
+  def was_cached?
+    @cached_results || false
+  end
+
   def cache!(limit: GET_LIMIT * 2, offset: 0)
     results = fetch_results(limit, offset, true)
-    Rails.cache.write(cache_key('results'), results)
-    Rails.cache.write(cache_key('count'), results.count)
+    Rails.application.redis_cache.write(cache_key('results'), results)
+    Rails.application.redis_cache.write(cache_key('count'), results.count)
   end
 end

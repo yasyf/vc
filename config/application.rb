@@ -32,5 +32,10 @@ module Drfvote
     APPS.each do |name|
       define_method("#{name}?") { Rails.env.test? || ENV['HEROKU_APP_NAME'] == name }
     end
+
+    if vcwiz?
+      REDIS_CACHE = ActiveSupport::Cache.lookup_store :redis_store, ENV['REDIS_CACHE_URL'], { expires_in: 1.week }
+      define_method(:redis_cache) { REDIS_CACHE }
+    end
   end
 end

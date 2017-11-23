@@ -40,7 +40,8 @@ module CompetitorLists::Base
         columns: meta_cols,
         count: result_count,
         title: title,
-        name: to_param
+        name: to_param,
+        cached: was_cached?,
       }
     end
   end

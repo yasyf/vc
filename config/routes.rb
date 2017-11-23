@@ -44,6 +44,7 @@ Rails.application.routes.draw do
         get 'filter'
         get 'search'
         get 'list/:list', action: :list, as: :list
+        get 'list/:list/:key/:value', action: :cached_list, as: :cached_list
         get 'outreach'
         get 'login'
         post 'login'

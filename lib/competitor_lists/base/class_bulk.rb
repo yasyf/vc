@@ -3,6 +3,10 @@ module CompetitorLists::Base::ClassBulk
     lists.find { |l| l.to_param == name.to_sym && l.eligible?(founder, request) }
   end
 
+  def get(name)
+    lists.find { |l| l.to_param == name.to_sym }
+  end
+
   def get_eligibles(founder, request)
     lists.select { |l| l.eligible? founder, request }
   end
@@ -39,7 +43,7 @@ module CompetitorLists::Base::ClassBulk
   end
 
   def cache_key(founder, request, name, overrides)
-    return nil unless cache_key_attrs.present?
+    return nil if cache_key_attrs.nil?
     keys = ['competitor_lists', cache_name, name]
     keys += cache_values(founder, request).merge(overrides).sort.map(&:last)
     keys.join('/')

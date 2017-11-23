@@ -1,4 +1,4 @@
-class CompetitorLists::MostRecentIndustry < CompetitorLists::MostRecent
+class CompetitorLists::MostRecentIn < CompetitorLists::MostRecent
   def self.derived?
     false
   end
@@ -8,11 +8,19 @@ class CompetitorLists::MostRecentIndustry < CompetitorLists::MostRecent
   end
 
   def self._eligible?(attrs)
-    false
+    attrs[:industry].present?
   end
 
   def self.cache_values_span
     Competitor::INDUSTRIES.keys.map { |i| { industry: i } }
+  end
+
+  def self.cache_key_attrs
+    {}
+  end
+
+  def self.cache_key_fallbacks
+    {}
   end
 
   def limited_sql
@@ -28,7 +36,7 @@ class CompetitorLists::MostRecentIndustry < CompetitorLists::MostRecent
 end
 
 (0...3).each do |count|
-  klass = Class.new(CompetitorLists::MostRecentIndustry) do
+  klass = Class.new(CompetitorLists::MostRecentIn) do
     define_singleton_method(:arg_count) { count }
 
     def self.derived?
@@ -40,16 +48,12 @@ end
         industry: Proc.new { |founder| founder.primary_company.industry[arg_count] }
       }
     end
-
-    def self._eligible?(attrs)
-      attrs[:industry].present?
-    end
   end
-  CompetitorLists.const_set("MostRecentIndustry#{count}", klass)
+  CompetitorLists.const_set("MostRecentInCompany#{count}", klass)
 end
 
-%w(bitcoin).each do |industry|
-  klass = Class.new(CompetitorLists::MostRecentIndustry) do
+%w(bitcoin ai arvr).each do |industry|
+  klass = Class.new(CompetitorLists::MostRecentIn) do
     define_singleton_method(:industry) { industry }
 
     def self.derived?
@@ -67,10 +71,6 @@ end
         industry: Proc.new { |request| industry }
       }
     end
-
-    def self._eligible?(attrs)
-      true
-    end
   end
-  CompetitorLists.const_set("MostRecentIndustry#{industry.titleize}", klass)
+  CompetitorLists.const_set("MostRecentIn#{industry.titleize}", klass)
 end

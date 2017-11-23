@@ -28,6 +28,6 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def lists
-    render json: Competitor.lists(current_external_founder, request)
+    render json: Competitor.lists(current_external_founder, request).shuffle
   end
 end

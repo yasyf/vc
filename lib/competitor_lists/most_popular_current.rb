@@ -4,7 +4,7 @@ class CompetitorLists::MostPopularCurrent < CompetitorLists::MostPopular
   end
 
   def self.eligible?(founder, request)
-    request.session[:city] != cache_values(founder, request)[:city] && _eligible?(city: request.session[:city])
+    request.present? && request.session[:city] != cache_values(founder, request)[:city] && _eligible?(city: request.session[:city])
   end
 
   def _sql

@@ -43,6 +43,13 @@ class External::VcwizController < External::ApplicationController
     render_default
   end
 
+  def cached_list
+    title cached_list_from_name.title
+    component 'List'
+    props list: cached_list_from_name.as_json(limit: 10, meta: true)
+    render_default
+  end
+
   def outreach
     current_external_founder.ensure_target_investors!
 

@@ -19,6 +19,7 @@ class Competitor < ApplicationRecord
   }.with_indifferent_access.freeze
 
   INDUSTRIES = {
+    arvr: 'AR/VR',
     bitcoin: 'Bitcoin',
     consumer: 'Consumer',
     enterprise: 'Enterprise',
@@ -55,6 +56,7 @@ class Competitor < ApplicationRecord
   }.with_indifferent_access.freeze
 
   RELATED_INDUSTRIES = {
+    arvr: ['Augmented Reality', 'Virtual Reality'],
     bitcoin: ['Blockchain', 'Virtual Currency'],
     saas: ['Software as a Service'],
     gaming: ['Video Games'],
@@ -65,7 +67,7 @@ class Competitor < ApplicationRecord
     ai: ['Machine Learning', 'Artificial Intelligence', 'Big Data'],
     enterprise: ['Enterprise Software', 'B2B'],
     healthcare: ['Health Care', 'Medical', 'Biotechnology', 'Pharmaceutical', 'Personal Health'],
-    media: ['Entertainment', 'Music', 'Video'],
+    media: ['Entertainment', 'Music', 'Video', 'Photography'],
     finance: ['FinTech', 'Financial Services'],
     energy: ['Electric Vehicle', 'Energy Management'],
     data: ['Analytics'],
@@ -73,6 +75,8 @@ class Competitor < ApplicationRecord
     security: ['Network Security', 'Cyber Security'],
     government: ['GovTech'],
   }.freeze
+
+  INVESTOR_TITLE = %w(Managing Partner Director Associate Principal CEO Founder Invest).map(&:downcase)
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
 
@@ -184,14 +188,23 @@ class Competitor < ApplicationRecord
   end
 
   def self.lists(founder, request)
-    CompetitorLists::Base::Base
-      .get_eligibles(founder, request)
-      .map { |l| l.new(founder, request).as_json(json: :list) }
-      .select { |l| l[:competitors].present? }
+    lists = CompetitorLists::Base::Base.get_eligibles(founder, request)
+    Parallel.map(lists, in_threads: lists.length) do |list|
+      ActiveRecord::Base.connection_pool.with_connection do
+        list.new(founder, request).as_json(json: :list)
+      end
+    end.select { |l| l[:competitors].present? }
   end
 
   def self.list(founder, request, name)
     CompetitorLists::Base::Base.get_if_eligible(founder, request, name)&.new(founder, request)
+  end
+
+
+  def self.cached_list(founder, request, name, cache_values)
+    CompetitorLists::Base::Base.get(name).new(founder, request).tap do |list|
+      list.cache_values = cache_values.symbolize_keys
+    end
   end
 
   def as_json(options = {})
