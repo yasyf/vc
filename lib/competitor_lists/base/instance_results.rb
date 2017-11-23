@@ -14,7 +14,7 @@ module CompetitorLists::Base::InstanceResults
   end
 
   def cached?
-    self.class.cache_key_attrs.present?
+    !self.class.cache_key_attrs.nil?
   end
 
   def count_sql

@@ -9,7 +9,7 @@ SitemapGenerator::Sitemap.create do
   add external_vcwiz_list_path(list: 'most_recent'), changefreq: :daily
   add external_vcwiz_list_path(list: 'most_popular_global'), changefreq: :daily
   Competitor.locations(nil, nil).each do |city|
-    add external_vcwiz_cached_list_path(list: 'most_popular_global', key: :city, value: city), changefreq: :weekly
+    add external_vcwiz_cached_list_path(list: 'most_popular', key: :city, value: city), changefreq: :weekly
   end
   Competitor::INDUSTRIES.each do |industry|
     add external_vcwiz_cached_list_path(list: 'most_recent_in', key: :industry, value: industry), changefreq: :weekly
