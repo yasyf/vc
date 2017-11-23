@@ -36,6 +36,7 @@ class FounderEnhanceJob < ApplicationJob
     founder.facebook ||= response.person.facebook.handle
     founder.twitter ||= response.person.twitter.handle
     founder.linkedin ||= response.person.linkedin.handle
+    founder.photo ||= response.person.avatar
   rescue Http::Clearbit::Error
   end
 

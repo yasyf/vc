@@ -1,11 +1,9 @@
-<%= title 'VCWiz Intro Request' %>
+<% content_for :body do %>
+  <p>
+    Welcome back to VCWiz.
+    Thanks for continuing to be a part of the community - this is your <%= @intro_request.investor.intro_requests.count.ordinalize %> incoming intro request.
+  </p>
 
-<% if @intro_request.accepted %>
-  <p>
-    You've confirmed <%= @intro_request.founder.name %>'s intro request! Look for an email soon :)
-  </p>
-<% else %>
-  <p>
-    You've denied <%= @intro_request.founder.name %>'s intro request!
-  </p>
+  <%= render partial: 'decision' %>
+  <%= render partial: 'footer' %>
 <% end %>

@@ -20,6 +20,7 @@ class Investor < ApplicationRecord
   has_many :entities, through: :person_entities
   has_many :emails
   has_many :posts, dependent: :destroy
+  has_many :intro_requests
   has_one :tweeter, as: :owner, dependent: :destroy
 
   validates :competitor, presence: true

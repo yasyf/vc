@@ -77,10 +77,16 @@ class External::VcwizController < External::ApplicationController
   def opt_in
     intro_request.investor.update! opted_in: optin?
     intro_request.decide! accept?
+
+    title 'Opt-In'
+    render_investor
   end
 
   def decide
     intro_request.decide! accept?
+
+    title 'Intro Decision'
+    render_investor
   end
 
   private
@@ -99,6 +105,12 @@ class External::VcwizController < External::ApplicationController
 
   def render_default
     render html: '', layout: 'vcwiz'
+  end
+
+  def render_investor
+    component 'Investor'
+    props investor: @intro_request.investor, founder: @intro_request.founder, company: @intro_request.company.as_json_search
+    render layout: 'vcwiz'
   end
 
   def redirect_login

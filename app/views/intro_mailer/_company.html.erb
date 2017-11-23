@@ -25,6 +25,9 @@
   <% if @company.location.present? %>
     <b>Location</b>: <%= @company.location %><br>
   <% end %>
+  <% if @company.industry.present? %>
+    <b>Industries</b>: <%= @company.humanized_industry %><br>
+  <% end %>
   <% if @request.pitch_deck.present? %>
     <b>Deck</b>: <a href="<%= @request.pitch_deck %>"><%= @company.name %> Pitch Deck</a><br>
   <% end %>

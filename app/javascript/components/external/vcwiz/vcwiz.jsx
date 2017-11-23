@@ -13,6 +13,7 @@ export default class VCWiz extends React.Component {
     header: null,
     modal: null,
     showIntro: false,
+    subtitle: 'Raise Your Seed Round',
   };
 
   componentWillMount() {
@@ -64,10 +65,10 @@ export default class VCWiz extends React.Component {
   }
 
   render() {
-    const { page, showIntro } = this.props;
+    const { page, showIntro, subtitle } = this.props;
     return (
       <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
-        <Header showIntro={showIntro} />
+        <Header subtitle={subtitle} showIntro={showIntro} />
         <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})}>
           {this.renderHeader()}
           {this.renderBody()}

@@ -5,7 +5,7 @@
 
 <% content_for :content do %>
   <% if @component_name.present? %>
-    <%= react_server_component(@component_name, @component_props || {}, class: 'full-screen') %>
+    <%= react_server_component(@component_name, (@component_props || {}).merge(bodyHtml: yield(:body)), class: 'full-screen') %>
   <% else %>
     <%= yield %>
   <% end %>

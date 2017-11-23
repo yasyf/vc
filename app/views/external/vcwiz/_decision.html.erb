@@ -1,0 +1,7 @@
+<p>
+  <% if @intro_request.accepted %>
+    You've now confirmed <%= @intro_request.founder.name %>'s intro request! Look for an email about <%= @intro_request.company.name %> soon :)
+  <% else %>
+    We've gone ahead and let <%= @intro_request.founder.name %> know that you aren't interested in speaking with them at this time.
+  <% end %>
+</p>

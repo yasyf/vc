@@ -1,16 +1,22 @@
-<%= title 'VCWiz Opt-In' %>
+<% content_for :body do %>
+  <p>
+    In case you're confused, you've just confirmed your VCWiz email preferences, as well as responded to <%= @intro_request.founder.first_name %>'s introduction request.
+  </p>
 
-<% if !@intro_request.investor.opted_in %>
-  <p>
-    Thanks for letting us know! You won't get any more emails from us.
-  </p>
-<% else %>
-  <p>
-    Thanks for letting us know! You're now registered to receive email introductions from VCWiz.
-  </p>
-  <% if @intro_request.accepted %>
+  <% if !@intro_request.investor.opted_in %>
     <p>
-      You've also confirmed <%= @intro_request.founder.name %>'s intro request! Look for an email soon :)
+      We're sad you won't be a part of the platform, but worry not - you won't get any more emails from us.
+      If you change your mind, please
+      <a target="_blank" href="mailto:<%= ENV['SUPPORT_EMAIL'] %>?subject=VCWiz Investor Issue - ${intro_request.investor.name}">reach out</a>!
     </p>
+  <% else %>
+    <p>
+      We're super excited to see you join the platfom! You're now registered to receive email introductions from VCWiz.
+      If you have any concerns, please
+      <a target="_blank" href="mailto:<%= ENV['SUPPORT_EMAIL'] %>?subject=VCWiz Investor Issue - ${intro_request.investor.name}">reach out</a>.
+    </p>
+
+    <%= render partial: 'decision' %>
+    <%= render partial: 'footer' %>
   <% end %>
 <% end %>

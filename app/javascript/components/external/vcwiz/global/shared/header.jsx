@@ -97,7 +97,7 @@ export default class Header extends React.Component {
           <div className="title left">
             <a href={DiscoverPath}>
               <h3><b>VCWiz</b></h3>
-              <h5 className="faded subtitle">Raise Your Seed Round</h5>
+              <h5 className="faded subtitle">{this.props.subtitle}</h5>
             </a>
           </div>
         </TopBarLeft>

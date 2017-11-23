@@ -382,7 +382,8 @@ CREATE TABLE founders (
     city character varying,
     time_zone character varying,
     bio text,
-    response_time integer
+    response_time integer,
+    photo character varying
 );
 
 
@@ -2689,6 +2690,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171120001408'),
 ('20171121023523'),
 ('20171121095936'),
-('20171122211959');
+('20171122211959'),
+('20171123002740');
 
 

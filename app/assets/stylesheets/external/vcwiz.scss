@@ -523,6 +523,57 @@ input.placeholded {
   }
 }
 
+.investor-page {
+  &-header {
+    .intro-header {
+      display: flex;
+      justify-content: center;
+    }
+
+    .arrows {
+      font-size: 50px;
+      line-height: 100px;
+      font-weight: bold;
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+    
+    .images {
+      text-align: center;
+
+      .fallback {
+        font-size: 26px;
+      }
+
+      .inline-image {
+        display: inline-block;
+
+        &:not(:first-child) {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  &-body {
+    background-color: $white;
+    margin: 0;
+    padding: 15px 50px;
+
+    .investor-portal-body {
+      width: 75%;
+    }
+
+    p {
+      margin-bottom: 0.5em;
+    }
+
+    h4 {
+      margin-top: 1em;
+    }
+  }
+}
+
 .filter-page, .search-page {
   &-header {
     padding: 0;
