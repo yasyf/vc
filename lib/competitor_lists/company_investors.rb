@@ -14,13 +14,12 @@ class CompetitorLists::CompanyInvestors < CompetitorLists::Base::Base
   end
 
   def self.cache_values_span
-    Founder
+    company_ids = Founder
       .where('logged_in_at > ?', 1.month.ago)
       .joins(:companies)
       .where('companies.primary = ?', true)
-      .joins('INNER JOIN competitions ON (competitions.a_id = companies.id OR competitions.b_id = companies.id)')
-      .pluck('companies.id')
-      .map { |v| { company_id: v.first } }
+      .pluck('DISTINCT companies.id')
+    Competition.for_companies(company_ids).pluck('DISTINCT companies.id').map { |v| { company_id: v } }
   end
 
   def self._sql(attrs)
