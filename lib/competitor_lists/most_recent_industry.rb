@@ -62,6 +62,12 @@ end
       }
     end
 
+    def self.cache_key_fallbacks
+      {
+        industry: Proc.new { |request| industry }
+      }
+    end
+
     def self._eligible?(attrs)
       true
     end
