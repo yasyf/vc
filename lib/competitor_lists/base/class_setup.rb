@@ -1,10 +1,10 @@
 module CompetitorLists::Base::ClassSetup
   def inherited(klass)
-    @lists << klass
+    @@lists << klass
   end
 
   def init
-    @lists = []
+    @@lists = []
     Dir["#{File.dirname(__FILE__)}/../*.rb"].each do |file|
       require_dependency file
     end
@@ -15,6 +15,6 @@ module CompetitorLists::Base::ClassSetup
   end
 
   def lists
-    @lists
+    @@lists
   end
 end

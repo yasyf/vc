@@ -13,8 +13,14 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
     Competitor.connection.select_value(sql) > 0
   end
 
+  def self.cache_values_span
+    Competitor.locations(nil, nil).map { |l| { city: l } }
+  end
+
   def self.cache_key_attrs
-    [:city]
+    {
+      city: Proc.new { |founder| founder.city }
+    }
   end
 
   def self.cache_key_fallbacks
@@ -36,6 +42,10 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
       .to_sql
   end
 
+  def _sql
+    self.class._sql(cache_values)
+  end
+
   def sort
     <<-SQL
       subquery.ti_sum DESC, subquery.c_cnt DESC
@@ -51,7 +61,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
   def with_order_subquery
     <<-SQL
       SELECT subquery.id, #{order_sql}
-      FROM (#{self.class._sql(cache_values)}) AS subquery
+      FROM (#{_sql}) AS subquery
       LIMIT 10
     SQL
   end

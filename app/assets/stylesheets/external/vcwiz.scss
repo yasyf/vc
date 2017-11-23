@@ -667,6 +667,10 @@ input.placeholded {
       padding-top: 50px;
       margin: auto;
       width: 100%;
+
+      .row:not(:first-child)  {
+        margin-top: 2.5em;
+      }
     }
 
     .card-wrapper {

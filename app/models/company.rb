@@ -172,7 +172,9 @@ class Company < ActiveRecord::Base
   end
 
   def competitions
-    Competition.where(a: self).or(Competition.where(b: self))
+    as = Competition.where(a: self).select('b_id')
+    bs = Competition.where(b: self).select('a_id')
+    Company.where(id: as).or(Company.where(id: bs))
   end
 
   def competitions=(companies)

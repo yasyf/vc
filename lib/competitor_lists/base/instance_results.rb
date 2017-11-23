@@ -2,11 +2,15 @@ module CompetitorLists::Base::InstanceResults
   GET_LIMIT = 5
 
   def cache_values
-    self.class.cache_values(@founder, @request)
+    @cache_values_override || self.class.cache_values(@founder, @request)
+  end
+
+  def cache_values=(cache_values)
+    @cache_values_override = cache_values
   end
 
   def cache_key(name)
-    self.class.cache_key(@founder, @request, name)
+    self.class.cache_key(@founder, @request, name, @cache_values_override || {})
   end
 
   def cached?
@@ -21,11 +25,12 @@ module CompetitorLists::Base::InstanceResults
   end
 
   def find_sql(limit, offset: 0, sort: nil)
+    sort_sql = sort && self.class.order_sql_from_sort(sort)
     self.class._base_sql(
       @founder,
       sql,
       '',
-      sort.present? ? self.class.order_sql_from_sort(sort) : self.order,
+      sort_sql.present? ? sort_sql : self.order,
       limit,
       offset,
       include_targets: sort && sort.include?(:stage)
@@ -33,7 +38,7 @@ module CompetitorLists::Base::InstanceResults
   end
 
   def find_with_meta_sql(limit, offset: 0, sort: nil)
-    sort_sql = self.class.order_sql_from_sort(sort)
+    sort_sql = sort && self.class.order_sql_from_sort(sort)
     self.class._base_sql(
       @founder,
       sql,
@@ -83,7 +88,7 @@ module CompetitorLists::Base::InstanceResults
 
   def fetch_cached_results
     results = Rails.cache.fetch(cache_key('results'))
-    return [] unless results.present?
+    return results unless results.present?
     targets = targets_for_investors(results)
     results.each do |competitor|
       meta = targets[competitor['id']]&.first
@@ -97,10 +102,10 @@ module CompetitorLists::Base::InstanceResults
 
   def results(sort: nil, limit: GET_LIMIT, offset: 0, meta: false, json: nil)
     if cached?
-      fetch_cached_results
-    else
-      fetch_results(limit, offset, meta, json: json, sort: sort)
+      cached = fetch_cached_results
+      return cached unless cached.nil?
     end
+    fetch_results(limit, offset, meta, json: json, sort: sort)
   end
 
   def cache!(limit: GET_LIMIT * 2, offset: 0)

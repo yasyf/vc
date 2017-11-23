@@ -82,10 +82,10 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     @overlap_cities ||= begin
       if params[:filters][:location].present?
         params[:filters][:location]
-      elsif @founder.city.present?
-        @founder.city
-      else
+      elsif @request.session[:city].present?
         @request.session[:city]
+      elsif @founder.present? && founder.city.present?
+        founder.city.present?
       end
     end
   end

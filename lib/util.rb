@@ -57,6 +57,10 @@ class Util
     Geocoder.search(ip_address(request.env)).first&.city
   end
 
+  def self.city_with_fallback(session, founder)
+    [session[:city], founder&.city, 'San Francisco'].find { |x| x }
+  end
+
   def self.split_slice(str, const)
     const.slice(*str.split(','))
   end

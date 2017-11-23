@@ -109,7 +109,8 @@ class Founder < ApplicationRecord
       name: data[:name],
       description: data[:description],
       industry: Util.split_slice(data[:industry], Competitor::INDUSTRIES).keys,
-      competitions: Company.where(id: data[:companies])
+      competitions: Company.where(id: data[:companies]),
+      primary: true,
     }
     if data[:domain].present?
       Company.where(domain: Util.parse_domain(data[:domain])).first_or_initialize.tap do |c|

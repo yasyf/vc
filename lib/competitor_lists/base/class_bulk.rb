@@ -1,10 +1,10 @@
 module CompetitorLists::Base::ClassBulk
   def get_if_eligible(founder, request, name)
-    @lists.find { |l| l.to_param == name.to_sym && l.eligible?(founder, request) }
+    lists.find { |l| l.to_param == name.to_sym && l.eligible?(founder, request) }
   end
 
   def get_eligibles(founder, request)
-    @lists.select { |l| l.eligible? founder, request }
+    lists.select { |l| l.eligible? founder, request }
   end
 
   def _eligible?(attrs)
@@ -23,10 +23,14 @@ module CompetitorLists::Base::ClassBulk
     {}
   end
 
+  def cache_values_span
+    []
+  end
+
   def cache_values(founder, request)
-    return {} unless cache_key_attrs.is_a?(Array)
-    cache_key_attrs.map do |a|
-      result = founder.present? ? founder.send(a).to_s : nil
+    return {} unless cache_key_attrs.is_a?(Hash)
+    cache_key_attrs.map do |a, fn|
+      result = founder.present? ? fn.call(founder) : nil
       if result.blank? && request.present? && cache_key_fallbacks[a].present?
         result = cache_key_fallbacks[a].call(request)
       end
@@ -34,10 +38,10 @@ module CompetitorLists::Base::ClassBulk
     end.to_h
   end
 
-  def cache_key(founder, request, name)
+  def cache_key(founder, request, name, overrides)
     return nil unless cache_key_attrs.present?
-    keys = ['competitor_lists', to_param, name]
-    keys += cache_values(founder, request).sort.map(&:last)
+    keys = ['competitor_lists', cache_name, name]
+    keys += cache_values(founder, request).merge(overrides).sort.map(&:last)
     keys.join('/')
   end
 
@@ -47,5 +51,13 @@ module CompetitorLists::Base::ClassBulk
 
   def to_param
     self.name.demodulize.underscore.to_sym
+  end
+
+  def cache_name
+    derived? ? superclass.cache_name : to_param
+  end
+
+  def derived?
+    superclass != CompetitorLists::Base::Base
   end
 end

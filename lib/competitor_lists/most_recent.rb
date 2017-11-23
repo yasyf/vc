@@ -21,17 +21,20 @@ class CompetitorLists::MostRecent < CompetitorLists::Base::Base
     SQL
   end
 
-  def distinct_sql
-    limited = <<-SQL
+  def limited_sql
+    <<-SQL
       SELECT investments.id
       FROM investments
       ORDER BY funded_at DESC NULLS LAST
       LIMIT 100
     SQL
+  end
+
+  def distinct_sql
     uniqued_on_company = <<-SQL
       SELECT DISTINCT ON(investments.company_id) investments.id
       FROM investments
-      INNER JOIN (#{limited}) AS limited ON limited.id = investments.id
+      INNER JOIN (#{limited_sql}) AS limited ON limited.id = investments.id
       #{join}
       GROUP BY investments.id
       ORDER BY investments.company_id DESC, #{sort}

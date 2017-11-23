@@ -179,7 +179,7 @@ class Competitor < ApplicationRecord
       WHERE ulocations ILIKE '#{query.present? ? sanitize_sql_like(query) : ''}%'
       GROUP BY ulocations
       ORDER BY COUNT(ulocations) DESC
-      LIMIT #{limit}
+      #{limit.present? ? "LIMIT #{limit}" : ''}
     SQL
   end
 
