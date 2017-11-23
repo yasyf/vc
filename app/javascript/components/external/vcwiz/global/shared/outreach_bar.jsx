@@ -42,6 +42,8 @@ export default class OutreachBar extends React.Component {
         return `${name} replied to your ${arg1 ? 'intro' : email}. Make sure you follow up!`;
       case 'investor_clicked':
         return <span>{name} clicked your link to <a href={arg2} target="_blank">{getDomain(arg2)}</a>. I'm sure they were impressed!</span>;
+      case 'intro_requested':
+        return `you requested an intro to ${name}.`;
       default:
         return null;
     }
