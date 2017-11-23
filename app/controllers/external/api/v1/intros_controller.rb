@@ -27,6 +27,7 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
   end
 
   def confirm
+    intro.update! preview_html: nil
     intro.send!
     intro.target_investor.update! stage: TargetInvestor::RAW_STAGES.keys.index(:intro)
     render json: intro

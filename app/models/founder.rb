@@ -212,6 +212,7 @@ class Founder < ApplicationRecord
   end
 
   def start_enhance_job
+    intro_requests.unscoped.update_all preview_html: nil
     FounderEnhanceJob.perform_later(self.id, augment: false) if ip_address_changed?
   end
 end

@@ -88,10 +88,6 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     current_external_founder.existing_target_investor_ids
   end
 
-  def recommendations_shown!
-    session[:recommendations_shown] = true
-  end
-
   def filter_params
     params.permit(:industry, :location, :fund_type)
   end

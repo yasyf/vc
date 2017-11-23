@@ -40,7 +40,13 @@
   <% end %>
 
   <%= csrf_meta_tags %>
-  <%= favicon_link_tag %>
+  <%= favicon_link_tag  %>
+  <%= favicon_link_tag 'favicon-16x16.png', rel: 'icon', sizes: '16x16', type: 'image/png' %>
+  <%= favicon_link_tag 'favicon-32x32.png', rel: 'icon', sizes: '32x32', type: 'image/png' %>
+  <%= favicon_link_tag 'apple-touch-icon.png', rel: 'apple-touch-icon', type: 'image/png' %>
+  <%= favicon_link_tag 'safari-pinned-tab.svg', rel: 'mask-icon', type: nil, color: '#3074EE' %>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#3074EE">
 </head>
 <body>
   <% foundation_flashes.each do |(type, message)| %>
