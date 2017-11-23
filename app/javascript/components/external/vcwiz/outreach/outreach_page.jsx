@@ -84,7 +84,7 @@ export default class OutreachPage extends React.Component {
     return (
       <Row>
         <Column large={5}>
-          <h3>Your Conversations</h3>
+          <h3>My Conversations</h3>
         </Column>
         <Column offsetOnLarge={4} large={3}>
           <div className="actions">

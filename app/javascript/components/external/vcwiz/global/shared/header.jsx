@@ -89,7 +89,7 @@ export default class Header extends React.Component {
         <div className="title right">
           <a href={OutreachPath}>
             <h5 className="subtitle nudge-middle">
-              Your Conversations {this.renderCount()}
+              My Conversations {this.renderCount()}
             </h5>
           </a>
           <a onClick={this.openSettingsModal}>
