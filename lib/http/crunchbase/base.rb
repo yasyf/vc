@@ -91,7 +91,8 @@ module Http::Crunchbase
       multi ? (data && data['items']) || [] : data
     end
 
-    def self._api_get(path, query)
+    def self._api_get(raw_path, query)
+      path = Addressable::URI.parse(raw_path).normalized_path
       response = get(path, query: query.merge(user_key: next_token))
       case response.code
         when 200

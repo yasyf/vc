@@ -139,7 +139,7 @@ class Company < ActiveRecord::Base
   end
 
   def param_name
-    CGI.escape(name.gsub(' ', '').parameterize)
+    name.gsub(' ', '').parameterize
   end
 
   def team
