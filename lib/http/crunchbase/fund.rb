@@ -8,7 +8,7 @@ module Http::Crunchbase
     end
 
     def description
-      get_in 'properties', 'description'
+      Util.fix_encoding(get_in('properties', 'description'))
     end
 
     def team

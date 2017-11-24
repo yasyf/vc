@@ -15,7 +15,7 @@ module Http::Crunchbase
     end
 
     def description
-      get_in 'properties', 'short_description'
+      Util.fix_encoding(get_in('properties', 'short_description'))
     end
 
     def investors

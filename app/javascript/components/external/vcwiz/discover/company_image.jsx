@@ -17,6 +17,14 @@ export default class CompanyImage extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   url() {
     const { domain, size } = this.props;
     return `//logo.clearbit.com/${domain}?size=${size}`;
@@ -37,12 +45,12 @@ export default class CompanyImage extends React.Component {
     }
     const url = this.url();
     imageExists(url).then(() => {
-      if (this.url() === url) {
+      if (this.mounted && this.url() === url) {
         this.setState({valid: true});
         this.props.onLoad();
       }
     }).catch(() => {
-      if (this.url() === url) {
+      if (this.mounted && this.url() === url) {
         this.setState({valid: false});
         this.props.onError();
       }

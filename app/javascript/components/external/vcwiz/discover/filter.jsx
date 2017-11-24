@@ -140,22 +140,23 @@ export default class Filter extends React.Component {
     return this.renderSelectWithProps({options, ...this.selectProps()});
   }
 
-  renderRemoteSelect() {
-    const { value, input, path } = this.props;
-    const OptionComponent = this.props.optionComponent;
+  remoteFetch = _.debounce((q, cb) => {
+    const { value, path } = this.props;
+    if (!q) {
+      cb(null, {options: value || []});
+    } else {
+      ffetch(`${path}?${buildQuery({q})}`).then(options => cb(null, {options}));
+    }
+  }, 300, {maxWait: 1000});
 
-    let loadOptions = (q) => {
-      if (!q) {
-        return new Promise(cb => cb({options: value || []}));
-      } else {
-        return ffetch(`${path}?${buildQuery({q})}`).then(options => ({options}));
-      }
-    };
+  renderRemoteSelect() {
+    const { input } = this.props;
+    const OptionComponent = this.props.optionComponent;
     let props = this.selectProps();
     if (OptionComponent) {
       props.optionRenderer = o => <OptionComponent input={input} {...o} />;
     }
-    return this.renderSelectWithProps({loadOptions, ...props});
+    return this.renderSelectWithProps({loadOptions: this.remoteFetch, ...props});
   }
 
   renderSelect() {
