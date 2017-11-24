@@ -42,8 +42,5 @@
     "CB_API_KEY": {
       "description": "CrunchBase API key",
     }
-  },
-  "scripts": {
-    "postdeploy": "./postdeploy.sh"
   }
 }
