@@ -75,6 +75,7 @@ export default class LoginModal extends React.Component {
   };
 
   loginWithGoogle = () => {
+    flush();
     Storage.set(StorageRestoreStateKey, this.state.restoreState);
     this.form.submit();
   };

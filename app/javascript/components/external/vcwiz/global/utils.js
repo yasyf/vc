@@ -48,6 +48,10 @@ export const ffetchCached = function(path) {
   return ffetch(path, 'GET', null, {cache: true});
 };
 
+export const flush = function() {
+  setTimeout(() => Storage.clearExpr(), 0);
+};
+
 export const csrfToken = function() {
   return window.gon.csrfToken;
 };

@@ -3,7 +3,7 @@ import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import {ffetch, flush, fullName, sendEvent, withDots} from '../utils';
+import {ffetch, fullName, sendEvent, withDots} from '../utils';
 import Actions from '../actions';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
