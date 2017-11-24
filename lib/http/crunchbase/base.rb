@@ -106,6 +106,8 @@ module Http::Crunchbase
         else
           raise Errors::APIError.new("#{response.code}: #{response.body}")
       end
+    rescue URI::InvalidURIError
+      nil
     end
 
     def self.base_cache_key
