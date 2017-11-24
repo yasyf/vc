@@ -15,6 +15,11 @@ class CompanyRelationshipsJob < ApplicationJob
     @company.crunchbase_id ||= @al_startup.crunchbase
     @cb_org = @company.crunchbase_org(TIMEOUT, raise_on_error: true)
 
+    if @al_startup.crunchbase != @company.crunchbase_id
+      @company.al_id = nil
+      @al_startup = Http::AngelList::Startup.new(nil)
+    end
+
     @company.set_extra_attributes!
 
     categories = @cb_org.categories

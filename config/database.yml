@@ -78,4 +78,4 @@ test:
 
 production:
   url: <%= ENV['DATABASE_URL'] %>
-  pool: 40
+  pool: 50
