@@ -110,7 +110,7 @@ export const getDomain = (url) => {
 };
 
 export const timestamp = () => Date.now();
-export const flattenFilters = filters => _.pickBy(_.mapValues(filters, f => _.map(f, 'value').join(',')), Boolean);
+export const flattenFilters = filters => _.pickBy(_.mapValues(filters, f => _.uniq(_.map(f, 'value')).join(',')), Boolean);
 export const withSeparators = (sepFn, a) => _.flatMap(_.zip(a, _.times(a.length - 1, sepFn)));
 export const withDots = a => withSeparators(i => <span key={`dot-${i}`} className="dot">·</span>, a);
 
@@ -149,4 +149,18 @@ export const withoutIndexes = (arr, idxs) => {
   const newArr = [...arr];
   _.pullAt(newArr, idxs);
   return newArr;
+};
+
+const filterOptionMatches = (value, filterValue) => value.toLowerCase().indexOf(filterValue) >= 0;
+
+export const filterOption = (option, filterValue) => {
+  if (!filterValue) return true;
+  const value = String(option.value);
+  const label = String(option.label);
+  const otherLabels = option.other_labels;
+  return (
+    filterOptionMatches(value, filterValue) ||
+    filterOptionMatches(label, filterValue) ||
+    (otherLabels && _.some(otherLabels, ov => filterOptionMatches(ov, filterValue)))
+  );
 };

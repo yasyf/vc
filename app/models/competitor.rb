@@ -74,7 +74,7 @@ class Competitor < ApplicationRecord
     iot: ['Internet of Things'],
     security: ['Network Security', 'Cyber Security'],
     government: ['GovTech'],
-  }.freeze
+  }.with_indifferent_access.freeze
 
   INVESTOR_TITLE = %w(Managing Partner Director Associate Principal CEO Founder Invest).map(&:downcase)
 
@@ -96,6 +96,10 @@ class Competitor < ApplicationRecord
 
   after_commit :start_crunchbase_job, on: :create
   before_validation :normalize_location
+
+  def self.full_industry_options
+    INDUSTRIES.map { |k, v| { value: k, other_labels: RELATED_INDUSTRIES[k], label: v } }
+  end
 
   def self.closest_industry(industry)
     distances = INDUSTRIES.flat_map do |k, friendly|

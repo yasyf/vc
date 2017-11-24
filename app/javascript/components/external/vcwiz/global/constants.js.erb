@@ -62,6 +62,7 @@ export const SupportEmail = '<%= ENV['SUPPORT_EMAIL'] %>';
 // Options
 
 export const ImportHeadersOptions = Object.freeze(<%= hash_to_options(ImportTask.headers).to_json %>);
+export const CompetitorFullIndustriesOptions = Object.freeze(<%= Competitor.full_industry_options.to_json %>);
 
 // API Paths
 

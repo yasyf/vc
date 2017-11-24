@@ -1,5 +1,5 @@
 import React from 'react';
-import {ffetch, buildQuery, withoutIndexes} from '../global/utils';
+import { ffetch, buildQuery, withoutIndexes, filterOption } from '../global/utils';
 import {SmallScreenSize} from '../global/constants.js.erb';
 import Select from '../global/fields/select';
 import { Button } from 'react-foundation';
@@ -65,6 +65,7 @@ export default class Filter extends React.Component {
     return {
       tetherClassName: "filter-select-menu",
       autofocus: true,
+      filterOption: filterOption,
       openOnFocus: true,
       closeOnSelect: false,
       onSelectResetsInput: false,

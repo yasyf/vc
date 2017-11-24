@@ -1,7 +1,7 @@
 import React from 'react';
 import {extend, flattenFilters, withSeparators} from '../global/utils';
 import {
-  CompetitorIndustriesOptions,
+  CompetitorFullIndustriesOptions,
   CompetitorFundTypesOptions,
   CompetitorsLocationsPath,
   CompaniesSearchPath,
@@ -74,7 +74,7 @@ export default class Filters extends React.Component {
     const { onlyLocal } = this.props;
     const filters = _.compact([
       this.renderFilter('fund_type', 'Stage', { options: CompetitorFundTypesOptions }),
-      this.renderFilter('industry', 'Industries', { options: CompetitorIndustriesOptions }),
+      this.renderFilter('industry', 'Industries', { options: CompetitorFullIndustriesOptions }),
       this.renderFilter('location', 'Cities', { path: CompetitorsLocationsPath }),
       this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }, false),
     ]);
