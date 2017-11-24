@@ -80,7 +80,7 @@ module Http::Crunchbase
       if (
         by_name.size == 1 &&
         by_name.first['properties']['primary_role'] == 'company' &&
-        Levenshtein.distance(by_name.first['properties']['name'].downcase, @company.name.downcase) <= 3
+        by_name.first['properties']['name'].strip.downcase == @company.name.downcase
       )
         return by_name.first if try_guess
         investors = self.class.api_get("/#{CGI.escape(by_name.first['properties']['permalink'])}/investors")
