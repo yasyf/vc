@@ -49,7 +49,10 @@ end
 
     def self.cache_key_attrs
       {
-        industry: Proc.new { |founder| founder.primary_company.industry[arg_count] }
+        industry: lambda do |founder|
+          return nil unless (company = founder.primary_company).present?
+          company.industry[arg_count]
+        end
       }
     end
   end

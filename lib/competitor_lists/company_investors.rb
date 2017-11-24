@@ -89,7 +89,10 @@ end
 
     def self.cache_key_attrs
       {
-        company_id: Proc.new { |founder| founder.primary_company.competitions.pluck('id')[arg_count] }
+        company_id: lambda do |founder|
+          return nil unless (company = founder.primary_company).present?
+          company.competitions.pluck('id')[arg_count]
+        end
       }
     end
 
