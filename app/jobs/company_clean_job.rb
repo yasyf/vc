@@ -4,8 +4,8 @@ class CompanyCleanJob < ApplicationJob
   queue_as :default
 
   def perform
-    fix_domain_cb_split!
     fix_incorrect_al_id!
+    fix_domain_cb_split!
   end
 
   private
