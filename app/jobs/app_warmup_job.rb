@@ -4,7 +4,7 @@ class AppWarmupJob < ApplicationJob
   def perform
     3.times do
       sleep 5
-      Http::Fetch.get_one "https://#{ENV['MARKETING_DOMAIN']}"
+      Http::Fetch.get_one "https://#{ENV['SITE_DOMAIN']}"
     end
   end
 end
