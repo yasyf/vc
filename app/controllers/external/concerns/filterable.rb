@@ -37,8 +37,8 @@ module External::Concerns
 
     def filtered_suggestions
       {
-        related: filter_params[:companies].present? && filtered_count == 0,
-        company_cities: filter_params[:location].present? && filtered_count == 0,
+        related: filter_params[:filters][:companies].present? && filtered_count == 0,
+        company_cities: filter_params[:filters][:location].present? && filtered_count == 0,
       }.select { |_, v| v }.keys
     end
 

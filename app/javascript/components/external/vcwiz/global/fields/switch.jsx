@@ -30,7 +30,11 @@ export default class Switch extends Input {
             checked={checked}
             {...rest}
           />
-          <label className={classNames('switch-paddle', {'glow-highlight': highlight})} htmlFor={this.props.name} onClick={this.onClick}>
+          <label
+            className={classNames('switch-paddle', {'glow-highlight': highlight && !checked})}
+            htmlFor={this.props.name}
+            onClick={this.onClick}
+          >
             <span className={`switch-${checked ? 'active' : 'inactive'}`}>
               {checked ? yesLabel : noLabel}
             </span>

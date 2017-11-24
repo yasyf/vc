@@ -9,7 +9,7 @@ export default class NullStateCell extends TextCell {
   renderValue() {
     return (
       <div className="null-state-cell">
-        <h5>No results found! Try broadening your search options.</h5>
+        <h5>No results found! Try enabling the recommended options in "More Filters" or broadening your search.</h5>
       </div>
     );
   }
