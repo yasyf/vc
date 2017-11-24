@@ -5,8 +5,6 @@ import {Button, Colors} from 'react-foundation';
 import Actions from '../actions';
 import {isLoggedIn} from '../utils';
 
-const nullRenderer = () => null;
-
 export default class Track extends React.Component {
   static defaultProps = {
     name: 'track',
@@ -29,7 +27,7 @@ export default class Track extends React.Component {
             scrollMenuIntoView={false}
             onChange={this.props.onChange}
             options={TargetInvestorStagesOptions}
-            arrowRenderer={this.props.value ? undefined : nullRenderer}
+            arrowRenderer={this.props.value ? undefined : null}
           />
         </div>
       );

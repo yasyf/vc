@@ -64,7 +64,7 @@ export default class Filter extends React.Component {
 
     return {
       tetherClassName: "filter-select-menu",
-      autofocus: true,
+      autoFocus: true,
       clearable: true,
       filterOption: filterOption,
       openOnFocus: true,
@@ -75,7 +75,7 @@ export default class Filter extends React.Component {
       placeholder: 'Start typing...',
       showLabel: false,
       multi: true,
-      arrowRenderer: nullRenderer,
+      arrowRenderer: null,
       menuRenderer: meta ? metaMenuRenderer : undefined,
       optionRenderer,
       optionComponent: OptionFactory(value),
