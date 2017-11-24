@@ -65,6 +65,7 @@ export default class Filter extends React.Component {
     return {
       tetherClassName: "filter-select-menu",
       autofocus: true,
+      clearable: true,
       filterOption: filterOption,
       openOnFocus: true,
       closeOnSelect: false,

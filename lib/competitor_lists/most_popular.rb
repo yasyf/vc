@@ -26,7 +26,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
 
   def self.cache_key_attrs
     {
-      city: Proc.new { |founder| founder.city }
+      city: Proc.new { |founder| founder.primary_company&.location || founder.city }
     }
   end
 
