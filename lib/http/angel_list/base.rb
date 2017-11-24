@@ -19,7 +19,7 @@ module Http::AngelList
 
     def self.find_id(query)
       results = api_get('/search', query: query, type: resource.titleize)
-      results.first['id'] if results.present?
+      results.first['id'] if results.present? && results.first['name'].strip.downcase == query.downcase
     end
 
     def self.search(query)
