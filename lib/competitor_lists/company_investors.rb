@@ -22,7 +22,7 @@ class CompetitorLists::CompanyInvestors < CompetitorLists::Base::Base
   end
 
   def self.cache_key_attrs
-    true
+    {}
   end
 
   def self.cache_values_span
