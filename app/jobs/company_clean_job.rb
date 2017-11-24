@@ -4,8 +4,8 @@ class CompanyCleanJob < ApplicationJob
   queue_as :default
 
   def perform
-    fix_incorrect_al_id!
     fix_domain_cb_split!
+    fix_incorrect_al_id!
   end
 
   private
@@ -42,7 +42,11 @@ class CompanyCleanJob < ApplicationJob
     scope.find_in_batches do |items|
       Parallel.each(items, in_threads: 32) do |item|
         ActiveRecord::Base.connection_pool.with_connection do
-          yield item
+          begin
+            yield item
+          rescue HTTP::AngelList::Errors::Error, Http::Crunchbase::Errors::Error => e
+            puts e
+          end
         end
       end
     end
