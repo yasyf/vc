@@ -42,10 +42,11 @@ class CompanyCleanJob < ApplicationJob
     scope.find_in_batches do |items|
       Parallel.each(items, in_threads: 32) do |item|
         ActiveRecord::Base.connection_pool.with_connection do
+          Rails.logger.info "FIXING: #{item}"
           begin
             yield item
-          rescue HTTP::AngelList::Errors::Error, Http::Crunchbase::Errors::Error => e
-            puts e
+          rescue Exception => e
+            Rails.logger.info "ERROR: #{e}"
           end
         end
       end
