@@ -39,7 +39,7 @@ class CompanyCleanJob < ApplicationJob
   end
 
   def in_batches(scope)
-    scope.find_in_batches(batch_size: 100) do |items|
+    scope.find_in_batches(batch_size: 50) do |items|
       Parallel.each(items, in_threads: 16) do |item|
         ActiveRecord::Base.connection_pool.with_connection do
           Rails.logger.info "Attempting to clean: #{item.inspect}"
