@@ -84,8 +84,7 @@ module Http::Crunchbase
       get_in 'relationships', 'websites', multi: true
     end
 
-    def self.api_get(raw_path, query = {}, multi = true)
-      path = URI.encode raw_path
+    def self.api_get(path, query = {}, multi = true)
       data = key_cached(query.merge(path: path)) do
         Retriable.retriable(on: Errors::APIError) { _api_get(path, query) }
       end
@@ -106,8 +105,6 @@ module Http::Crunchbase
         else
           raise Errors::APIError.new("#{response.code}: #{response.body}")
       end
-    rescue URI::InvalidURIError
-      nil
     end
 
     def self.base_cache_key

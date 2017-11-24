@@ -70,7 +70,7 @@ module Http::Crunchbase
         if company_id.present? && id_valid?
           data
         elsif data.present? && data['properties'].present?
-          self.class.api_get("/#{data['properties']['permalink']}", {}, false)
+          self.class.api_get("/#{CGI.escape(data['properties']['permalink'])}", {}, false)
         end
       end
     end
@@ -83,7 +83,7 @@ module Http::Crunchbase
         Levenshtein.distance(by_name.first['properties']['name'].downcase, @company.name.downcase) <= 3
       )
         return by_name.first if try_guess
-        investors = self.class.api_get("/#{by_name.first['properties']['permalink']}/investors")
+        investors = self.class.api_get("/#{CGI.escape(by_name.first['properties']['permalink'])}/investors")
         return by_name.first if investors&.find { |inv| SIGNAL_INVESTORS.include?(inv['properties']['name']) }.present?
       end
 
@@ -96,7 +96,7 @@ module Http::Crunchbase
       end
 
       by_name.find do |company_data|
-        investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
+        investors = self.class.api_get("/#{CGI.escape(company_data['properties']['permalink'])}/investors")
         investors&.find { |inv| SIGNAL_INVESTORS.include?(inv['properties']['name']) }.present?
       end
     end
