@@ -42,11 +42,11 @@ class CompanyCleanJob < ApplicationJob
     scope.find_in_batches do |items|
       Parallel.each(items, in_threads: 32) do |item|
         ActiveRecord::Base.connection_pool.with_connection do
-          Rails.logger.info "FIXING: #{item}"
+          Rails.logger.info "Attempting to clean: #{item.inspect}"
           begin
             yield item
           rescue Exception => e
-            Rails.logger.info "ERROR: #{e}"
+            Rails.logger.info "Error cleaning: #{e.inspect}"
           end
         end
       end
