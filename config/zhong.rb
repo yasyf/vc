@@ -41,7 +41,7 @@ Zhong.schedule do
 
     category 'vcwiz' do
       every(1.day, 'industry', at: '00:00') { PropagateIndustryJob.perform_later }
-      every(1.day, 'industry', at: '01:00') { CompanyCleanJob.perform_later }
+      every(1.day, 'clean', at: '01:00') { CompanyCleanJob.perform_later }
       every(1.hours, 'investors') { FindInvestorsJob.perform_later }
       every(12.hours, 'competitor_lists') { CompetitorListJob.perform_later }
     end
