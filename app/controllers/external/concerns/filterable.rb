@@ -43,11 +43,11 @@ module External::Concerns
     end
 
     def list_from_name
-      @list ||= Competitor.list(current_external_founder, request, list_params[:list]) or not_found
-    end
-
-    def cached_list_from_name
-      @list ||= Competitor.cached_list(current_external_founder, request, list_params[:list], { params[:key] => params[:value] }) or not_found
+      @list ||= if params[:key].present? && params[:value].present?
+        Competitor.param_list(current_external_founder, request, list_params[:list], { params[:key] => params[:value] })
+      else
+        Competitor.list(current_external_founder, request, list_params[:list])
+      end or not_found
     end
   end
 end

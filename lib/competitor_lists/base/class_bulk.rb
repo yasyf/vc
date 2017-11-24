@@ -53,6 +53,9 @@ module CompetitorLists::Base::ClassBulk
     self::TITLE
   end
 
+  def description
+  end
+
   def to_param
     self.name.demodulize.underscore.to_sym
   end

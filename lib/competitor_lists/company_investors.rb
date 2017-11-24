@@ -9,8 +9,20 @@ class CompetitorLists::CompanyInvestors < CompetitorLists::Base::Base
     "#{TITLE} in #{company.name}"
   end
 
+  def description
+    """
+      These are all the firms that invested in #{@founder.present? ? 'your competitor' : ''} #{company.name},
+      ordered by how recently they've made an investment.
+      It pays to keep an eye on the competition!
+    """
+  end
+
   def self._eligible?(attrs)
     false
+  end
+
+  def self.cache_key_attrs
+    true
   end
 
   def self.cache_values_span

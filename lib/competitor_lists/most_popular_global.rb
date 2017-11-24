@@ -3,6 +3,10 @@ class CompetitorLists::MostPopularGlobal < CompetitorLists::MostPopular
     "#{TITLE} on VCWiz"
   end
 
+  def self.description
+    'These are the most popular firms on the platform! Our users love talking to these investors.'
+  end
+
   def self._eligible?(attrs)
     true
   end

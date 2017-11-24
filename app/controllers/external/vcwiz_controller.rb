@@ -37,16 +37,10 @@ class External::VcwizController < External::ApplicationController
   end
 
   def list
-    title list_from_name.title
+    path = list_external_api_v1_competitors_path(list: list_from_name.to_param, key: params[:key], value: params[:value])
+    title list_from_name.title.titleize
     component 'List'
-    props list: list_from_name.as_json(limit: 10, meta: true)
-    render_default
-  end
-
-  def cached_list
-    title cached_list_from_name.title
-    component 'List'
-    props list: cached_list_from_name.as_json(limit: 10, meta: true)
+    props list: list_from_name.as_json(limit: 10, meta: true), path: path
     render_default
   end
 

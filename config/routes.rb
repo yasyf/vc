@@ -43,8 +43,7 @@ Rails.application.routes.draw do
         get 'discover'
         get 'filter'
         get 'search'
-        get 'list/:list', action: :list, as: :list
-        get 'list/:list/:key/:value', action: :cached_list, as: :cached_list
+        get 'list/:list(/:key/:value)', action: :list, as: :list
         get 'outreach'
         get 'login'
         post 'login'
@@ -92,7 +91,7 @@ Rails.application.routes.draw do
               get 'filter_count'
               get 'locations'
               get 'lists'
-              get 'list/:list', action: :list, as: :list
+              get 'list/:list(/:key/:value)', action: :list, as: :list
             end
           end
 

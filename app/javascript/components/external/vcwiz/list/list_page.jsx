@@ -1,18 +1,22 @@
 import React from 'react';
 import VCWiz from '../vcwiz';
 import Results from '../global/competitors/results';
-import {CompetitorsListPath} from '../global/constants.js.erb';
 import SectionWithDims from '../global/shared/section_with_dims';
 import Lists from '../discover/lists';
 
 export default class ListPage extends React.Component {
   renderHeader() {
-    let { title } = this.props;
-    return <h3>{title}</h3>;
+    let { heading, description } = this.props;
+    return (
+      <div>
+        <h3>{heading}</h3>
+        {description}
+      </div>
+    );
   }
 
   renderBody() {
-    let { columns, competitors, count, name } = this.props;
+    let { columns, competitors, count, name, path } = this.props;
 
     return (
       <SectionWithDims dimensionsKey="dimensions">
@@ -20,7 +24,7 @@ export default class ListPage extends React.Component {
           count={count}
           competitors={competitors}
           columns={columns}
-          source={{path: CompetitorsListPath.id(name), query: {}}}
+          source={{path: path, query: {}}}
           resultsId={1}
         />
       </SectionWithDims>

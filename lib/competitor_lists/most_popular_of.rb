@@ -3,6 +3,10 @@ class CompetitorLists::MostPopularOf < CompetitorLists::MostPopular
     "#{Competitor::FUND_TYPES[cache_values[:fund_type]]} Investors that are popular"
   end
 
+  def description
+    "These are the most popular #{Competitor::FUND_TYPES[cache_values[:fund_type]]} firms on VCWiz. Good call checking them out!"
+  end
+
   def self.derived?
     false
   end

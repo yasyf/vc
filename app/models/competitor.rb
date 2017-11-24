@@ -201,7 +201,7 @@ class Competitor < ApplicationRecord
   end
 
 
-  def self.cached_list(founder, request, name, cache_values)
+  def self.param_list(founder, request, name, cache_values)
     CompetitorLists::Base::Base.get(name).new(founder, request).tap do |list|
       list.cache_values = cache_values.symbolize_keys
     end

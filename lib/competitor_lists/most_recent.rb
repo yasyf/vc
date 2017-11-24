@@ -1,6 +1,10 @@
 class CompetitorLists::MostRecent < CompetitorLists::Base::Base
   TITLE = 'Firms that recently made investments'
 
+  def self.description
+    'These are the most recent investments made anywhere in the country. What a great way to keep tabs on venture activity!'
+  end
+
   def self.cache_key_attrs
     true
   end

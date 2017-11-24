@@ -30,6 +30,10 @@ module CompetitorLists::Base
       self.class.title
     end
 
+    def description
+      self.class.description
+    end
+
     def to_param
       self.class.to_param
     end
@@ -40,6 +44,8 @@ module CompetitorLists::Base
         columns: meta_cols,
         count: result_count,
         title: title,
+        heading: title.titleize,
+        description: description,
         name: to_param,
         cached: was_cached?,
       }

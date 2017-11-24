@@ -3,6 +3,10 @@ class CompetitorLists::MostRecentIn < CompetitorLists::MostRecent
     false
   end
 
+  def description
+    "These are some of the hottest, most recent investments in #{Competitor::INDUSTRIES[cache_values[:industry]]}. This space really seems to be heating up!"
+  end
+
   def title
     "#{TITLE} in #{Competitor::INDUSTRIES[cache_values[:industry]]}"
   end

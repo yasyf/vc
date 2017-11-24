@@ -5,6 +5,13 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
     "#{TITLE} in #{cache_values[:city]}"
   end
 
+  def description
+    """
+      These are the most popular firms in #{cache_values[:city]}!
+      People both on and off the VCWiz platform seem to prefer them for investment.
+    """
+  end
+
   def self._eligible?(attrs)
     return false unless attrs[:city].present?
     sql = <<-SQL
