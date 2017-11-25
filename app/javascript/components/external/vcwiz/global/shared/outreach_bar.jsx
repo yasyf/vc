@@ -51,10 +51,13 @@ export default class OutreachBar extends React.Component {
 
   renderReminder() {
     const { stats, conversations } = this.state.founder;
-    if (conversations.total && (_.isEmpty(stats) || !stats.emails)) {
+    if ((_.isEmpty(stats) || !stats.emails)) {
       return (
         <span>
-          You haven't sent any emails yet! Be sure to CC <b>{CCEmail}</b> in your emails to start tracking your investor outreach.
+          { conversations.total ? "You haven't sent any emails yet!" : null }
+          When you're ready, you can CC <b>{CCEmail}</b> in your investor emails to track your investor outreach.
+          VCWiz will automatically update your conversation progress.
+          Don't worry - VCWiz doesn't read the content of your e-mails.
         </span>
       );
     }
@@ -95,11 +98,14 @@ export default class OutreachBar extends React.Component {
   }
 
   renderBusy() {
-    const { conversations } = this.state.founder;
+    const { conversations, stats } = this.state.founder;
     if (conversations.total) {
+      if ((_.isEmpty(stats) || !stats.emails)) {
+        return null;
+      }
       return "You've been busy!";
     } else {
-      return "Looks like you haven't picked out any investors to reach out to. Browse for investors below, or start including VCWiz on your existing email chains.";
+      return "Looks like you haven't picked out any investors to reach out to. Browse for some investors below!";
     }
   }
 

@@ -173,9 +173,9 @@ export default class LoginModal extends React.Component {
   renderStage1() {
     const description = this.state.data.description;
     return [
-      <p className="info" key="text">Your Startup</p>,
+      <p className="info" key="text">What's your Startup?</p>,
       this.renderInput('name', 'Company Name'),
-      this.renderInput('description', 'Description (may be shown to investors)'),
+      this.renderInput('description', 'A short description that will help investors better understand your startup'),
       this.renderFilters(['industry', 'companies']),
       this.renderStandardButton(description && description.length > 50),
     ];
@@ -183,7 +183,7 @@ export default class LoginModal extends React.Component {
 
   renderStage2() {
     return [
-      <p className="info" key="text">Your Ideal Investor</p>,
+      <p className="info" key="text">Who's your ideal investor?</p>,
       this.renderFilters(['fund_type', 'location']),
       this.renderStandardButton(),
     ];

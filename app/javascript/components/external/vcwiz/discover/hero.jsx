@@ -76,9 +76,7 @@ export default class Hero extends React.Component {
         <div className="welcome">
           <h3><b>Discover Seed-Stage Investors</b></h3>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Aenean commodo viverra blandit. In hac habitasse platea dictumst.
-            Etiam mattis placerat augue ut scelerisque. In eget ultricies ipsum
+            Use the filters to browse through different groups of investors, or use the search tab to find an investor by name or firm.
           </p>
         </div>
         <Tabs

@@ -153,14 +153,13 @@ export default class Header extends React.Component {
           <div className="intro">
             <h2 className="subtitle">Raise your seed round with VCWiz.</h2>
             <p className="subtitle">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo viverra blandit.
-              In hac habitasse platea dictumst. Etiam mattis placerat augue ut scelerisque. In eget ultricies ipsum
+              VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors.
             </p>
           </div>
           <div className="benefits">
-            {this.renderBenefit('discover', 'magnifying-glass reversed', '1. Discover', 'Filter or search to find VCs.')}
+            {this.renderBenefit('discover', 'magnifying-glass reversed', '1. Discover', 'Browse or search to find investors.')}
             {this.renderBenefit('outreach', 'mail', '2. VCWiz Intros', 'Get introduced to participating investors.')}
-            {this.renderBenefit('track', 'check', '3. Track', 'All your conversations, organized.')}
+            {this.renderBenefit('track', 'check', '3. Track', 'Organize all your fundraising conversations.')}
           </div>
           <div className="button-wrapper">
             <Button onClick={this.openSignup} color={Colors.SUCCESS}>

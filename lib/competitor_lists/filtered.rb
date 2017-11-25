@@ -140,7 +140,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
   end
 
   def sql
-    _filtered.group('competitors.id').select("competitors.*#{match_sql}#{order_sql}").limit(1000).to_sql
+    _filtered.group('competitors.id').select("competitors.*#{match_sql}#{order_sql}").limit(500).to_sql
   end
 
   def order
