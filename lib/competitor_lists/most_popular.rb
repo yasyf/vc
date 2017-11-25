@@ -12,6 +12,10 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
     """
   end
 
+  def self.personalized?
+    true
+  end
+
   def self._eligible?(attrs)
     return false unless attrs[:city].present?
     sql = <<-SQL

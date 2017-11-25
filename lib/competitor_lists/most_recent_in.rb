@@ -47,6 +47,10 @@ end
       true
     end
 
+    def self.personalized?
+      true
+    end
+
     def self.cache_key_attrs
       {
         industry: lambda do |founder|

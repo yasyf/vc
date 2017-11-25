@@ -67,4 +67,8 @@ module CompetitorLists::Base::ClassBulk
   def derived?
     superclass != CompetitorLists::Base::Base
   end
+
+  def personalized?
+    false
+  end
 end

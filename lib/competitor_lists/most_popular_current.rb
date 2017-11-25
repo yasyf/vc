@@ -10,6 +10,10 @@ class CompetitorLists::MostPopularCurrent < CompetitorLists::MostPopular
     """
   end
 
+  def self.personalized?
+    true
+  end
+
   def self.eligible?(founder, request)
     request.present? && request.session[:city] != cache_values(founder, request)[:city] && _eligible?(city: request.session[:city])
   end

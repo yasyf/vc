@@ -48,6 +48,7 @@ module CompetitorLists::Base
         description: description,
         name: to_param,
         cached: was_cached?,
+        personalized: self.class.personalized?,
       }
     end
   end
