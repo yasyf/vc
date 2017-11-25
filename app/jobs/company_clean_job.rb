@@ -4,14 +4,14 @@ class CompanyCleanJob < ApplicationJob
   queue_as :default
 
   def perform
-    fix_incorrect_al_id!
     fix_domain_cb_split!
+    fix_incorrect_al_id!
   end
 
   private
 
   def fix_domain_cb_split!
-    in_batches(Company.where.not(crunchbase_id: nil).where(domain: nil)) do |company|
+    in_batches(Company.where.not(crunchbase_id: nil).where(domain: nil, description: nil)) do |company|
       next unless (url = company.crunchbase_org.url).present?
       domain = Util.parse_domain(url)
       begin
@@ -24,7 +24,7 @@ class CompanyCleanJob < ApplicationJob
   end
 
   def fix_incorrect_al_id!
-    in_batches(Company.where.not(crunchbase_id: nil).where(al_id: nil)) do |company|
+    in_batches(Company.where.not(crunchbase_id: nil, domain: nil, description: nil).where(al_id: nil)) do |company|
       al_id = Http::AngelList::Startup.find_id(company.name)
       next unless al_id.present?
       al_startup = Http::AngelList::Startup.new(al_id)
@@ -39,7 +39,7 @@ class CompanyCleanJob < ApplicationJob
   end
 
   def in_batches(scope)
-    scope.find_in_batches(batch_size: 50) do |items|
+    scope.order('RANDOM()').limit(1000).find_in_batches(batch_size: 50) do |items|
       Parallel.each(items, in_threads: 16) do |item|
         ActiveRecord::Base.connection_pool.with_connection do
           Rails.logger.info "Attempting to clean: #{item.inspect}"
