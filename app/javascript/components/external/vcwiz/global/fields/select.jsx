@@ -18,6 +18,14 @@ export class TetheredSelectWrap extends ReactSelect {
     return <Tether width={selectWidth} className={this.props.tetherClassName}>{menu}</Tether>;
   }
 
+  addValue(value) {
+    const valueArray = this.getValueArray(this.props.value);
+    const visibleOptions = this._visibleOptions.filter(val => !val.disabled);
+    const lastValueIndex = visibleOptions.indexOf(value);
+    this.setValue(valueArray.concat(value));
+  }
+
+
   componentDidUpdate(prevProps, prevState) {
     this.hasScrolledToOption = true;
     super.componentDidUpdate(prevProps, prevState);

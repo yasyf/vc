@@ -839,6 +839,7 @@ input.placeholded {
     padding-left: 0.5em;
     border-bottom: 1px solid $grey;
     display: flex;
+    cursor: pointer;
 
     &:first-of-type {
       border-top: 1px solid $grey;
@@ -851,6 +852,10 @@ input.placeholded {
 
     .checkbox {
       padding-right: 1.5em;
+    }
+
+    &.is-focused {
+      background-color: lighten($success, 35%);
     }
   }
 

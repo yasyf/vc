@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 const OptionFactory = (selected) =>
   class Option extends React.Component {
@@ -8,10 +9,22 @@ const OptionFactory = (selected) =>
       this.props.onSelect(this.props.option, event);
     };
 
+    onFocus = event => {
+      if (!this.props.isFocused) {
+        this.props.onFocus(this.props.option, event);
+      }
+    };
+
     render() {
-      const { children, option } = this.props;
+      const { isFocused, children, option } = this.props;
       return (
-        <div className="filter-option">
+        <div
+          className={classNames("filter-option", {'is-focused': isFocused})}
+          onFocus={this.onFocus}
+          onMouseEnter={this.onFocus}
+          onMouseDown={this.onFocus}
+          onMouseMove={this.onFocus}
+        >
           <div className="value" onClick={this.onChange}>{children}</div>
           <div className="checkbox">
             <input type="checkbox" checked={_.some(selected, option)} onChange={this.onChange} />

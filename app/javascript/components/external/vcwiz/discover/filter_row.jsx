@@ -5,7 +5,7 @@ import MoreFilters from './more_filters';
 export default class FilterRow extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextProps.count !== this.props.count
+      nextProps.initialCount !== this.props.initialCount
       || !_.isEqual(nextProps.filters, this.props.filters)
       || !_.isEqual(nextProps.options, this.props.options)
       || !_.isEqual(nextProps.suggestions, this.props.suggestions)
@@ -20,10 +20,10 @@ export default class FilterRow extends React.Component {
   };
 
   meta() {
-    if (!this.props.count) {
+    if (!this.props.initialCount) {
       return null;
     }
-    return `Filter Results (${this.props.count})`;
+    return `Filter Results (${this.props.initialCount})`;
   }
 
   render() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ffetch, buildQuery, withoutIndexes, filterOption } from '../global/utils';
+import { defaultMenuRenderer }  from 'react-select';
 import {SmallScreenSize} from '../global/constants.js.erb';
 import Select from '../global/fields/select';
 import { Button } from 'react-foundation';
@@ -7,7 +8,6 @@ import Highlighter from 'react-highlight-words';
 import inflection from 'inflection';
 import classNames from 'classnames';
 import OptionFactory from './option';
-import menuRenderer from './menu_renderer';
 import Store from '../global/store';
 
 export default class Filter extends React.Component {
@@ -57,7 +57,7 @@ export default class Filter extends React.Component {
     const nullRenderer = () => null;
     const metaMenuRenderer = (...args) => (
       <div className="options-with-meta">
-        <div className="options">{menuRenderer(...args)}</div>
+        <div className="options">{defaultMenuRenderer(...args)}</div>
         <div className="meta">{meta}</div>
       </div>
     );
