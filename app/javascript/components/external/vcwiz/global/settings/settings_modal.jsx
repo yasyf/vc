@@ -1,17 +1,15 @@
 import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
-import Input from '../fields/input';
-import Filters from '../../discover/filters';
-import {extend} from '../utils';
-import {SignupPath, LoginPath, CompaniesQueryPath, StorageRestoreStateKey} from '../constants.js.erb';
+import {extend, ffetch} from '../utils';
+import {FounderLocationsPath} from '../constants.js.erb';
 import Store from '../store';
+import AutoInput from '../fields/auto_input';
 
 export default class SettingsModal extends React.Component {
   constructor(props) {
     super(props);
 
     const { city } = Store.get('founder', {});
-
     this.state = {
       settings: {
         city,
@@ -19,8 +17,8 @@ export default class SettingsModal extends React.Component {
     };
   }
 
-  onChange = update => {
-    const settings = extend(this.state.settings, update);
+  onChange = name => value => {
+    const settings = extend(this.state.settings, {[name]: value});
     this.setState({settings});
   };
 
@@ -30,28 +28,16 @@ export default class SettingsModal extends React.Component {
 
   renderInput(name, placeholder) {
     return (
-      <Input
+      <AutoInput
         key={name}
         name={name}
-        placeholder={placeholder}
         value={this.state.settings[name]}
+        path={FounderLocationsPath}
+        placeholder={placeholder}
+        showLabel={true}
         wrap={false}
-        onChange={this.onChange}
+        onChange={this.onChange(name)}
       />
-    );
-  }
-
-  renderFilters(fields) {
-    return (
-      <div key="filters" className="filters">
-        <div className="filters-wrapper">
-          <Filters
-            showButton={false}
-            fields={fields}
-            onChange={this.onChange}
-          />
-        </div>
-      </div>
     );
   }
 

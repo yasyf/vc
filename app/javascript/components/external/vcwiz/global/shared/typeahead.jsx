@@ -5,6 +5,9 @@ export default class Typeahead extends React.Component {
   static defaultProps = {
     querySub: 'QUERY',
     minLength: 3,
+    initialValue: '',
+    onChange: _.noop,
+    onSelect: _.noop,
   };
 
   constructor(props) {
@@ -13,7 +16,7 @@ export default class Typeahead extends React.Component {
     this.state = {
       loaded: false,
       suggestions: [],
-      value: '',
+      value: props.initialValue,
     };
   }
 
@@ -22,7 +25,7 @@ export default class Typeahead extends React.Component {
     const Bloodhound = require('bloodhound-js');
     this.engine = new Bloodhound({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace(...this.props.dataFields),
+      datumTokenizer: this.props.dataFields ? Bloodhound.tokenizers.obj.whitespace(...this.props.dataFields) : Bloodhound.tokenizers.whitespace,
       identify: (o) => o.id,
       remote: {
         url: this.props.path,
@@ -33,9 +36,12 @@ export default class Typeahead extends React.Component {
   }
 
   onSuggestionsFetchRequested = ({ value }) => {
-    const sync = suggestions => this.setState({suggestions});
-    const async = suggestions => this.setState({suggestions: this.state.suggestions.concat(suggestions)});
-    this.engine.search(value, sync, async);
+    let suggestions = [];
+    const onResults = results => {
+      suggestions = suggestions.concat(results);
+      this.setState({suggestions});
+    };
+    this.engine.search(value, onResults, onResults);
   };
 
   onSuggestionsClearRequested = () => {
@@ -50,6 +56,7 @@ export default class Typeahead extends React.Component {
 
   onChange = (event, { newValue }) => {
     this.setState({value: newValue});
+    this.props.onChange(newValue);
   };
 
   render() {

@@ -47,7 +47,7 @@ export default class Filter extends React.Component {
   };
 
   selectProps() {
-    const { name, label, input, value, meta, onInputChange } = this.props;
+    const { name, input, value, meta, onInputChange } = this.props;
 
     const optionRenderer = o => <Highlighter
       highlightClassName='highlighter'

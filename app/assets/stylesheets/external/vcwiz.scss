@@ -1137,6 +1137,53 @@ mark.highlighter {
   }
 }
 
+.saved-auto-input {
+  .typeahead {
+    .react-autosuggest__input {
+      margin-bottom: 0;
+    }
+
+    .react-autosuggest__container {
+      position: relative;
+    }
+
+    .react-autosuggest__suggestions-container {
+      display: none;
+    }
+
+    .react-autosuggest__suggestions-container--open {
+      display: initial;
+      position: absolute;
+      background-color: $white;
+      padding-top: 0.5em;
+      width: 100%;
+
+      ul.react-autosuggest__suggestions-list {
+        list-style-type: none;
+        margin-bottom: 0.5em;
+        margin-left: 0;
+      }
+
+      li.react-autosuggest__suggestion {
+        cursor: pointer;
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+        width: 98%;
+        margin: auto;
+        font-size: 1.2em;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $light-grey;
+        }
+
+        &:hover {
+          background-color: $lightest-grey;
+        }
+      }
+    }
+  }
+}
+
 .track-button {
   .Select-control {
     cursor: pointer;

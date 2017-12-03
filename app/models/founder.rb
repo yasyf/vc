@@ -2,6 +2,7 @@ class Founder < ApplicationRecord
   include Concerns::Cacheable
   include Concerns::TimeZonable
   include Concerns::Eventable
+  include Concerns::Locationable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
@@ -23,6 +24,7 @@ class Founder < ApplicationRecord
   after_touch :start_touch_job
 
   action :competitor_clicked, :investor_clicked, :investor_targeted
+  locationable_with :city
 
   devise
 
@@ -152,10 +154,10 @@ class Founder < ApplicationRecord
 
   def as_json(options = {})
     super(options.reverse_merge(
-      only: [:id, :first_name, :last_name],
+      only: [:id, :first_name, :last_name, :city],
       methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats]
     )).reverse_merge(
-      target_investors: target_investors.includes(:intro_requests).order(updated_at: :desc).as_json(include: [], methods: [:intro_requests])
+      target_investors: target_investors.order(updated_at: :desc).as_json(include: [], methods: [:intro_requests])
     )
   end
 

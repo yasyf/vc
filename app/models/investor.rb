@@ -6,6 +6,7 @@ class Investor < ApplicationRecord
   include Concerns::Twitterable
   include Concerns::Ignorable
   include Concerns::TimeZonable
+  include Concerns::Locationable
 
   GENDERS = %w(unknown male female)
 
@@ -198,13 +199,6 @@ class Investor < ApplicationRecord
 
   def self.searchable_columns
     [:first_name, :last_name]
-  end
-
-  def self.locations(query, limit = 5)
-    scope = where.not(location: nil).select('location, count(investors.id) as cnt').group('location')
-    scope = scope.fuzzy_search(location: query) if query.present?
-    scope.order('cnt DESC').limit(limit)
-    connection.select_values scope.to_sql
   end
 
   def opted_out?

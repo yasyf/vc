@@ -113,8 +113,9 @@ Rails.application.routes.draw do
             end
           end
 
-          resource :founder do
+          resource :founder, only: [:show, :update] do
             post 'event'
+            get 'locations'
           end
         end
       end

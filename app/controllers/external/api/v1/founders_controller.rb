@@ -1,4 +1,6 @@
 class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
+  include External::ApplicationHelper
+
   before_action :authenticate_api_user!
 
   def show
@@ -15,6 +17,10 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
       founder.primary_company.update! founder_company_params[:company].merge(primary: true)
     end
     render json: founder
+  end
+
+  def locations
+    render json: arr_to_options(Founder.locations(params[:q]))
   end
 
   private
