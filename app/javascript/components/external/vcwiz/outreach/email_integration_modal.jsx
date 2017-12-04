@@ -1,14 +1,14 @@
 import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import {CCEmail, DemoEmail, GmailAuthPath, StorageRestoreStateKey} from '../global/constants.js.erb';
-import Storage from '../global/storage.js.erb';
+import {SessionStorage} from '../global/storage.js.erb';
 import Breadcrumb from '../global/breadcrumbs';
 import {currentPage} from '../global/utils';
 import {Button, Colors} from 'react-foundation';
 
 export default class EmailIntegrationModal extends React.Component {
   authWithGoogle = () => {
-    Storage.set(StorageRestoreStateKey, {
+    SessionStorage.set(StorageRestoreStateKey, {
       breadcrumb: Breadcrumb.peek(),
       location: currentPage(),
     });

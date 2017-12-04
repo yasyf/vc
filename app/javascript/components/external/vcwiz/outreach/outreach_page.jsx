@@ -6,7 +6,7 @@ import AddInvestorModal from './add_investor_modal';
 import { TargetInvestorsPath, StorageRestoreStateKey } from '../global/constants.js.erb';
 import {ffetch, replaceSort, timestamp} from '../global/utils';
 import Actions from '../global/actions';
-import Storage from '../global/storage.js.erb';
+import {LocalStorage} from '../global/storage.js.erb';
 import Store from '../global/store';
 import ImportInvestorsModal from './import_investors_modal';
 import SectionWithDims from '../global/shared/section_with_dims';
@@ -36,8 +36,8 @@ export default class OutreachPage extends React.Component {
 
   componentWillMount() {
     this.subscription = Store.subscribe(StorageRestoreStateKey, restoreState => this.setState({restoreState}));
-    if (!Storage.get(EmailInetegrationModalShown)) {
-      Storage.set(EmailInetegrationModalShown, true);
+    if (!LocalStorage.get(EmailInetegrationModalShown)) {
+      LocalStorage.set(EmailInetegrationModalShown, true);
       this.openEmailIntegrationModal();
     }
   }

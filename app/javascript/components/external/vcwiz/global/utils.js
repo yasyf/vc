@@ -2,7 +2,7 @@ import React from 'react';
 import 'whatwg-fetch';
 import parseDomain from 'parse-domain';
 import Dimensions from 'react-dimensions';
-import Storage from './storage.js.erb';
+import {LocalStorage} from './storage.js.erb';
 import { FounderEventNames, FounderEventPath } from './constants.js.erb';
 
 export const _ffetch = function(path, data, opts) {
@@ -18,12 +18,12 @@ export const _ffetch = function(path, data, opts) {
     opts.headers['Content-Type'] = 'application/json';
   } else if (opts.method === 'GET' && opts.cache) {
     delete opts.cache;
-    const cached = Storage.getExpr(path);
+    const cached = LocalStorage.getExpr(path);
     if (cached) {
       return new Promise(cb => cb(cached));
     } else {
       return fetch(path, opts).then(resp => resp.json()).then(res => {
-        Storage.setExpr(path, res, 3600);
+        LocalStorage.setExpr(path, res, 3600);
         return res;
       });
     }
@@ -49,7 +49,7 @@ export const ffetchCached = function(path) {
 };
 
 export const flush = function() {
-  setTimeout(() => Storage.clearExpr(), 0);
+  setTimeout(() => LocalStorage.clearExpr(), 0);
 };
 
 export const csrfToken = function() {

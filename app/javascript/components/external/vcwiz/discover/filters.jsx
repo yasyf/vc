@@ -6,7 +6,7 @@ import {
   CompetitorsLocationsPath,
   CompaniesSearchPath,
 } from '../global/constants.js.erb';
-import Storage from '../global/storage.js.erb';
+import {SessionStorage} from '../global/storage.js.erb';
 import Company from './company';
 import Filter from './filter';
 
@@ -27,7 +27,7 @@ export default class Filters extends React.Component {
   }
 
   componentDidMount() {
-    const filters = Storage.get(SessionStorageKey);
+    const filters = SessionStorage.get(SessionStorageKey);
     if (!_.isEmpty(filters) && (_.isEmpty(this.state.filters) || this.props.overwriteWithSaved)) {
       this.setState({filters});
       this.propagateOnChange(filters);
@@ -45,7 +45,7 @@ export default class Filters extends React.Component {
 
   onChange = (update) => {
     let filters = extend(this.state.filters, update);
-    Storage.set(SessionStorageKey, filters);
+    SessionStorage.set(SessionStorageKey, filters);
     this.setState({filters});
     this.propagateOnChange(filters);
   };

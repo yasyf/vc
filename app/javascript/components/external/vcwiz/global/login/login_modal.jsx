@@ -8,7 +8,7 @@ import {Button, Row, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
 import CompanyImage from '../../discover/company_image';
 import Breadcrumb from '../breadcrumbs';
-import Storage from '../storage.js.erb';
+import {SessionStorage} from '../storage.js.erb';
 import { canUseDOM } from 'exenv';
 
 const RequiredFields = [
@@ -76,7 +76,7 @@ export default class LoginModal extends React.Component {
 
   loginWithGoogle = () => {
     flush();
-    Storage.set(StorageRestoreStateKey, this.state.restoreState);
+    SessionStorage.set(StorageRestoreStateKey, this.state.restoreState);
     this.form.submit();
   };
 

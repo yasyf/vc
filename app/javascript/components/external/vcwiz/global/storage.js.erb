@@ -11,15 +11,22 @@ const StorageMock = {
   clearExpr: _.noop,
 };
 
-const Storage = {
-  _get: key => JSON.parse(window.sessionStorage.getItem(key)),
-  get: key => Storage._get(storageKey(key)),
-  _remove: key => window.sessionStorage.removeItem(key),
-  remove: key =>  Storage._remove(storageKey(key)),
-  _set: (key, value) => window.sessionStorage.setItem(key, JSON.stringify(value)),
-  set: (key, value) => Storage._set(storageKey(key), value),
-  getExpr: key => {
-    const got = Storage.get(key);
+class Storage {
+  constructor(storage) {
+    this.storage = storage;
+  }
+
+  _get = key => JSON.parse(this.storage.getItem(key));
+  get = key => this._get(storageKey(key));
+
+  _remove = key => this.storage.removeItem(key);
+  remove = key =>  this._remove(storageKey(key));
+
+  _set = (key, value) => this.storage.setItem(key, JSON.stringify(value));
+  set = (key, value) => this._set(storageKey(key), value);
+
+  getExpr = key => {
+    const got = this.get(key);
     if (got === null || got === undefined || got.value === undefined) {
       return null;
     }
@@ -27,40 +34,44 @@ const Storage = {
     if (expr > Date.now()) {
       return value;
     } else {
-      Storage.remove(key);
+      this.remove(key);
       return null;
     }
-  },
-  setExpr: (key, value, expr) => {
+  };
+
+  setExpr = (key, value, expr) => {
     try {
-      Storage.set(key, {value, expr: Date.now() + (expr * 1000)});
+      this.set(key, {value, expr: Date.now() + (expr * 1000)});
       return true;
     } catch (e) {
-      Storage.clearExpr();
+      this.clearExpr();
       return false;
     }
-  },
-  clearExpr: () => {
-    Object.keys(window.sessionStorage).forEach(key => {
-      const got = Storage._get(key);
+  };
+
+  clearExpr = () => {
+    Object.keys(this.storage).forEach(key => {
+      const got = this._get(key);
       if (got && got.expr) {
-        Storage._remove(key);
+        this._remove(key);
       }
     });
-  },
-};
+  };
+}
 
-const VolatileStorage = {
-  get: Storage.get,
-  set: Storage.set,
-  remove: Storage.remove,
-  getExpr: _.noop,
-  setExpr: _.noop,
-  clearExpr: _.noop,
-};
+class VolatileStorage extends Storage {
+  getExpr =  _.noop;
+  setExpr =  _.noop;
+  clearExpr =  _.noop;
+}
 
 <% if Rails.env.production? %>
-  export default window.sessionStorage ? Storage : StorageMock;
+  const StorageClass = Storage;
 <% else %>
-  export default VolatileStorage;
+  const StorageClass = VolatileStorage;
 <% end %>
+
+const SessionStorage = window.sessionStorage ? new StorageClass(window.sessionStorage) : StorageMock;
+const LocalStorage = window.localStorage ? new StorageClass(window.localStorage) : StorageMock;
+
+export { SessionStorage, LocalStorage };

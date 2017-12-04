@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import {currentPage, ffetch} from './global/utils';
 import Store from './global/store';
 import Actions from './global/actions';
-import Storage from './global/storage.js.erb';
+import {SessionStorage} from './global/storage.js.erb';
 import {StorageRestoreStateKey, FounderPath} from './global/constants.js.erb';
 import { canUseDOM } from 'exenv';
 
@@ -24,12 +24,12 @@ export default class VCWiz extends React.Component {
       return;
     }
 
-    const restoreState = Storage.get(StorageRestoreStateKey);
+    const restoreState = SessionStorage.get(StorageRestoreStateKey);
     if (restoreState) {
       if (currentPage() !== restoreState.location) {
         window.location = restoreState.location;
       } else {
-        Storage.remove(StorageRestoreStateKey);
+        SessionStorage.remove(StorageRestoreStateKey);
         Store.set(StorageRestoreStateKey, restoreState);
       }
     }

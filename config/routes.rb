@@ -37,6 +37,7 @@ Rails.application.routes.draw do
         get 'logout', to: 'auth#destroy'
         get 'auth/create', to: 'auth#create'
         get 'auth/enhance', to: 'auth#enhance'
+        get 'auth/failure', to: 'auth#failure'
       end
 
       scope controller: 'vcwiz', as: :vcwiz do
@@ -117,7 +118,6 @@ Rails.application.routes.draw do
 
           resource :founder, only: [:show, :update] do
             post 'event'
-            post 'sync_gmail'
             get 'locations'
           end
         end
@@ -135,6 +135,7 @@ Rails.application.routes.draw do
 
       devise_scope :internal_user do
         get 'auth/create', to: 'auth#create'
+        get 'auth/failure', to: 'auth#failure'
       end
 
       get 'team', to: 'welcome#select_team'

@@ -25,13 +25,15 @@ class External::AuthController < Devise::OmniauthCallbacksController
   def enhance
     auth = request.env['omniauth.auth']
     founder = Founder.from_omniauth(auth)
-    if founder != current_external_founder
+    if founder == current_external_founder
+      FounderGmailSyncJob.new(founder.id).enqueue(queue: :high)
+    else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'that user is not logged in'
     end
     redirect_to after_sign_in_path_for(current_external_founder)
   end
 
   def failure
-    redirect_to external_vcwiz_root_path
+    redirect_to external_founder_signed_in? ? after_sign_in_path_for(current_external_founder) : external_vcwiz_root_path
   end
 end
