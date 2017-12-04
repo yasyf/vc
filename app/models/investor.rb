@@ -46,6 +46,7 @@ class Investor < ApplicationRecord
   def self.from_addr(addr)
     found = where(email: addr.address).first
     return found if found.present?
+    return nil unless addr.name.present?
     first, last = Util.split_name(addr.name)
     potential = search(first_name: first, last_name: last).includes(:competitor)
     return nil unless potential.present?

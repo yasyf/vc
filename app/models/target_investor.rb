@@ -62,9 +62,14 @@ class TargetInvestor < ApplicationRecord
   end
 
   def self.from_addr(founder, addr, create: false)
-    first, last = Util.split_name(addr.name)
-    target = founder.target_investors.where(email: addr.address).first || founder.target_investors.search(first_name: first, last_name: last).first
-    return target if target.present?
+    found = founder.target_investors.where(email: addr.address).first
+    return found if found.present?
+
+    if addr.name.present?
+      first, last = Util.split_name(addr.name)
+      found = founder.target_investors.search(first_name: first, last_name: last).first
+      return found if found.present?
+    end
 
     investor = Investor.from_addr(addr)
     return nil unless investor.present?
@@ -79,7 +84,11 @@ class TargetInvestor < ApplicationRecord
     target = from_investor!(founder, investor) if investor.present?
     return target if target.present?
 
-    first, last = Util.split_name(addr.name)
+    first, last = if addr.name.present?
+      Util.split_name(addr.name)
+    else
+      [addr.local, nil]
+    end
     create! first_name: first, last_name: last, email: addr.address, note: 'imported from email'
   end
 
