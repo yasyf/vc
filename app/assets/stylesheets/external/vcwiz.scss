@@ -766,6 +766,10 @@ input.placeholded {
       padding-left: 5px;
       padding-right: 5px;
     }
+
+    .info {
+      color: darken($green, 30%);
+    }
   }
 
   &-body {
@@ -1337,6 +1341,20 @@ mark.highlighter {
     max-width: unset;
     margin-right: unset;
     margin-left: unset;
+  }
+}
+
+.email_integration-modal {
+  &-bottom {
+    .info {
+      h5 {
+        margin-top: 1em;
+      }
+
+      .button {
+        margin-top: 1.5em;
+      }
+    }
   }
 }
 

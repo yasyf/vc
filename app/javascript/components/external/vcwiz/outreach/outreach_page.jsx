@@ -3,10 +3,11 @@ import VCWiz from '../vcwiz';
 import Conversations from './conversations';
 import {Column, Row} from 'react-foundation';
 import AddInvestorModal from './add_investor_modal';
-import { TargetInvestorsPath } from '../global/constants.js.erb';
+import { TargetInvestorsPath, StorageRestoreStateKey } from '../global/constants.js.erb';
 import {ffetch, replaceSort, timestamp} from '../global/utils';
 import Actions from '../global/actions';
-import Storeage from '../global/storage.js.erb';
+import Storage from '../global/storage.js.erb';
+import Store from '../global/store';
 import ImportInvestorsModal from './import_investors_modal';
 import SectionWithDims from '../global/shared/section_with_dims';
 import EmailIntegrationModal from './email_integration_modal';
@@ -29,14 +30,20 @@ export default class OutreachPage extends React.Component {
       targets: this.props.targets,
       sort: props.sort,
       count: props.count,
+      restoreState: null,
     };
   }
 
-  componentDidMount() {
-    if (!Storeage.get(EmailInetegrationModalShown)) {
-      Storeage.set(EmailInetegrationModalShown, true);
+  componentWillMount() {
+    this.subscription = Store.subscribe(StorageRestoreStateKey, restoreState => this.setState({restoreState}));
+    if (!Storage.get(EmailInetegrationModalShown)) {
+      Storage.set(EmailInetegrationModalShown, true);
       this.openEmailIntegrationModal();
     }
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
   }
 
   onSort = (key, direction) => {
@@ -104,13 +111,26 @@ export default class OutreachPage extends React.Component {
     }
   }
 
+  renderInfo() {
+    const { restoreState } = this.state;
+    if (!restoreState || !restoreState.breadcrumb || restoreState.breadcrumb.name !== 'email_integration') {
+      return null;
+    }
+    return (
+      <p className="info">
+        The VCWiz Inbox Scanner has been enabled! As you send emails to investors, this tracker will update.
+      </p>
+    );
+  }
+
   renderHeader() {
     return (
       <Row>
-        <Column large={5}>
+        <Column large={8}>
           <h3>My Conversations</h3>
+          {this.renderInfo()}
         </Column>
-        <Column offsetOnLarge={4} large={3}>
+        <Column offsetOnLarge={1} large={3}>
           <div className="actions">
             <a onClick={this.openAddModal}>Add investor</a>
             <span className="sep">|</span>
