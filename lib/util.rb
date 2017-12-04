@@ -14,6 +14,7 @@ class Util
  end
 
   def self.fix_encoding(string, fallback_encoding = 'CP1252')
+    return nil if string.nil?
     begin
       clean_string(tidy_utf8(string))
     rescue ArgumentError, Encoding::UndefinedConversionError

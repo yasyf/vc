@@ -123,7 +123,7 @@ class Company < ActiveRecord::Base
   end
 
   def set_extra_attributes!
-    pitch&.set_snapshot!
+    pitch&.set_snapshot! if Rails.application.drfvote?
     set_crunchbase_attributes!
     set_angelist_attributes!
     set_competitors!
