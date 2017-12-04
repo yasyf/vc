@@ -40,7 +40,7 @@ class Util
   def self.normalize_city(city)
     if city.in?(['New York', 'New York City'])
       'New York'
-    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park'])
+    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park', 'South San Francisco'])
       'San Francisco'
     elsif city.in?(['Washington, DC', 'Washington DC', 'Washington'])
       'Washington, DC'

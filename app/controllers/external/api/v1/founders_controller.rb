@@ -13,8 +13,11 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
   end
 
   def update
-    if founder_company_params[:company].present?
-      founder.primary_company.update! founder_company_params[:company].merge(primary: true)
+    if founder_params.present?
+      founder.update! founder_params
+    end
+    if founder_company_params[:primary_company].present?
+      founder.primary_company.update! founder_company_params[:primary_company].merge(primary: true)
     end
     render json: founder
   end
@@ -30,7 +33,11 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
   end
 
   def founder_company_params
-    params.require(:founder).permit(company: [:name, :description, :industry, :verified])
+    params.require(:founder).permit(primary_company: [:name, :domain, :description])
+  end
+
+  def founder_params
+    params.require(:founder).permit(:city, :twitter, :linkedin, :homepage)
   end
 
   def founder

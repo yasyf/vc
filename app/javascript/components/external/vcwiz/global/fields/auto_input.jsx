@@ -4,6 +4,14 @@ import Typeahead from '../shared/typeahead';
 import Highlighter from 'react-highlight-words';
 
 export default class AutoInput extends Input {
+  onChange = value => {
+    const { name, onChange } = this.props;
+    if (!onChange) {
+      return;
+    }
+    onChange({[name]: value});
+  };
+
   getSuggestionValue = ({value}) => {
     return value;
   };
@@ -20,17 +28,16 @@ export default class AutoInput extends Input {
   };
 
   renderInput() {
-    const { value, path, placeholder, onSelect, onChange } = this.props;
+    const { value, onChange, ...rest } = this.props;
     return (
       <div className="saved-auto-input">
         <Typeahead
           initialValue={value}
-          path={path}
+          tetherClassName="saved-auto-input-tether"
           getSuggestionValue={this.getSuggestionValue}
           renderSuggestion={this.renderSuggestion}
-          placeholder={placeholder}
-          onChange={onChange}
-          onSelect={onSelect}
+          onChange={this.onChange}
+          {...rest}
         />
       </div>
     );

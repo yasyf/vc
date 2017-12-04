@@ -19,6 +19,7 @@ class Founder < ApplicationRecord
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
 
+  before_validation :normalize_city
   after_commit :start_augment_job, on: :create
   after_commit :start_enhance_job, on: :update
   after_touch :start_touch_job
@@ -152,12 +153,21 @@ class Founder < ApplicationRecord
     }
   end
 
+  def linkedin=(linkedin)
+    super linkedin.split('/')[4] || linkedin
+  end
+
+  def twitter=(twitter)
+    twitter = twitter&.split('/')&.last || twitter
+    super twitter&.first == '@' ? twitter[1..-1] : twitter
+  end
+
   def as_json(options = {})
     super(options.reverse_merge(
-      only: [:id, :first_name, :last_name, :city],
+      only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage],
       methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats]
     )).reverse_merge(
-      target_investors: target_investors.order(updated_at: :desc).as_json(include: [], methods: [:intro_requests])
+      target_investors: target_investors.includes(:intro_requests).order(updated_at: :desc).as_json(include: [], methods: [:intro_requests])
     )
   end
 
@@ -193,6 +203,10 @@ class Founder < ApplicationRecord
   end
 
   private
+
+  def normalize_city
+    self.city = Util.normalize_city(self.city) if self.city.present?
+  end
 
   def set_response_time!
     update! response_time: Util.average_response_time(emails, :investor_id)

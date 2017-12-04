@@ -203,6 +203,7 @@ p.tight {
     height: 35px;
     border-radius: 50%;
     border: 1px solid $grey;
+    opacity: 0.9;
 
     i {
       font-size: 30px;
@@ -1141,12 +1142,18 @@ mark.highlighter {
   .typeahead {
     .react-autosuggest__input {
       margin-bottom: 0;
-    }
 
-    .react-autosuggest__container {
-      position: relative;
+      &--open {
+        border-bottom: 0;
+      }
     }
+  }
+}
 
+.saved-auto-input-tether {
+  z-index: 1;
+
+  &.typeahead-tether {
     .react-autosuggest__suggestions-container {
       display: none;
     }
@@ -1155,22 +1162,21 @@ mark.highlighter {
       display: initial;
       position: absolute;
       background-color: $white;
-      padding-top: 0.5em;
+      padding-top: 0;
       width: 100%;
+      box-shadow: 0 0 1px 1px $grey inset;
 
       ul.react-autosuggest__suggestions-list {
         list-style-type: none;
-        margin-bottom: 0.5em;
+        margin-bottom: 0;
         margin-left: 0;
       }
 
       li.react-autosuggest__suggestion {
-        cursor: pointer;
-        padding-top: 0.2em;
-        padding-bottom: 0.2em;
+        padding: 0.3em;
         width: 98%;
         margin: auto;
-        font-size: 1.2em;
+        font-size: 1.1em;
 
         &:not(:last-child) {
           border-bottom: 1px solid $light-grey;
@@ -1239,6 +1245,116 @@ mark.highlighter {
 
     .line-icon {
       margin-right: 5px;
+    }
+  }
+}
+
+.typeahead-tether {
+  .react-autosuggest__suggestions-container {
+    padding-top: 20px;
+  }
+
+  .react-autosuggest__suggestion {
+    cursor: pointer;
+  }
+}
+
+.overlay-modal-wrapper {
+  position: relative;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+}
+
+.overlay-modal {
+  background-color: $lightest-grey;
+  min-height: 100%;
+
+  &-top {
+    padding: 30px 40px;
+    background-color: $white;
+
+    .inline-image {
+      border-radius: 0;
+
+      img {
+        border-radius: 0;
+      }
+    }
+  }
+
+  &-bottom {
+    padding: 30px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  a {
+    font-weight: 500;
+    color: $success-dark;
+  }
+
+  .title {
+    text-align: center;
+  }
+
+  .muted {
+    color: $grey;
+  }
+
+  .heading {
+    position: absolute;
+    padding-left: 10px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  .subheading {
+    position: relative;
+    left: 51px;
+    top: -31px;
+    color: $grey;
+
+    span {
+      margin-left: 10px;
+    }
+  }
+
+  span.dot {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+
+  .inline-image {
+    display: inline-block;
+  }
+
+  .row {
+    max-width: unset;
+    margin-right: unset;
+    margin-left: unset;
+  }
+}
+
+.settings-modal {
+  &-bottom {
+    padding-top: 0;
+
+    .fields {
+      .row {
+        margin-top: 1.5em;
+      }
+
+      input {
+        margin-bottom: 0;
+      }
+
+      textarea {
+        height: 5em;
+      }
     }
   }
 }
@@ -1321,96 +1437,6 @@ mark.highlighter {
 
   .emoji-mart-scroll {
     height: 250px;
-  }
-}
-
-.typeahead {
-  .react-autosuggest__suggestions-container {
-    padding-top: 20px;
-  }
-
-  .react-autosuggest__suggestion {
-    cursor: pointer;
-  }
-}
-
-.overlay-modal-wrapper {
-  position: relative;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  height: 100%;
-}
-
-.overlay-modal {
-  background-color: $lightest-grey;
-  min-height: 100%;
-
-  &-top {
-    padding: 40px;
-    background-color: $white;
-
-    .inline-image {
-      border-radius: 0;
-
-      img {
-        border-radius: 0;
-      }
-    }
-  }
-
-  &-bottom {
-    padding: 30px;
-  }
-
-  p {
-    margin-bottom: 0;
-  }
-
-  a {
-    font-weight: 500;
-    color: $success-dark;
-  }
-
-  .title {
-    text-align: center;
-  }
-
-  .muted {
-    color: $grey;
-  }
-
-  .heading {
-    position: absolute;
-    padding-left: 10px;
-    display: inline-block;
-    font-weight: bold;
-    font-size: larger;
-  }
-
-  .subheading {
-    position: relative;
-    left: 51px;
-    top: -31px;
-    color: $grey;
-
-    span {
-      margin-left: 10px;
-    }
-  }
-
-  span.dot {
-    margin-right: 5px;
-    margin-left: 5px;
-  }
-
-  .inline-image {
-    display: inline-block;
-  }
-
-  .row {
-    max-width: unset;
-    margin-right: unset;
-    margin-left: unset;
   }
 }
 

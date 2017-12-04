@@ -3,9 +3,11 @@ import TetherComponent from 'react-tether';
 
 export default class Tether extends React.Component {
   render() {
+    const { width, className, children } = this.props;
+    const clientWidth = this.props.width || (this.target ? this.target.clientWidth : undefined);
     return (
       <TetherComponent
-        className={this.props.className}
+        className={className}
         renderElementTo="body"
         attachment="top left"
         targetAttachment="top left"
@@ -16,9 +18,9 @@ export default class Tether extends React.Component {
         }]}
         optimizations={{ gpu: false }}
       >
-        <div></div>
-        <div style={{position: 'static', width: this.props.width}}>
-          {this.props.children}
+        <div ref={target => { this.target = target; }} />
+        <div style={{position: 'static', width: clientWidth}}>
+          {children}
         </div>
       </TetherComponent>
     );

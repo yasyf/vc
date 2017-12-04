@@ -115,7 +115,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def redirect_login
-    redirect_to omniauth_path('google_external', hd: cookies[:login_domain] || '*')
+    redirect_to omniauth_path('google_external', hd: params[:domain] || cookies[:login_domain] || '*')
   end
 
   def optin?

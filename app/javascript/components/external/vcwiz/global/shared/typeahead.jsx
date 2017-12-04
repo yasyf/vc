@@ -1,11 +1,12 @@
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
+import Tether from './tether';
+import classNames from 'classnames';
 
 export default class Typeahead extends React.Component {
   static defaultProps = {
     querySub: 'QUERY',
     minLength: 3,
-    initialValue: '',
     onChange: _.noop,
     onSelect: _.noop,
   };
@@ -16,7 +17,7 @@ export default class Typeahead extends React.Component {
     this.state = {
       loaded: false,
       suggestions: [],
-      value: props.initialValue,
+      value: props.initialValue || '',
     };
   }
 
@@ -59,20 +60,32 @@ export default class Typeahead extends React.Component {
     this.props.onChange(newValue);
   };
 
+  renderSuggestionsContainer = ({ containerProps , children, query }) => {
+    return (
+      <Tether className={classNames('typeahead-tether', this.props.tetherClassName)}>
+        <div {...containerProps} ref={containerProps.ref}>{children}</div>
+      </Tether>
+    );
+  };
+
   render() {
+    const { suggestions, value } = this.state;
+    const { getSuggestionValue, renderSuggestion, onBlur, placeholder } = this.props;
     return (
       <div className="typeahead">
         <Autosuggest
-          suggestions={this.state.suggestions}
+          suggestions={suggestions}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-          getSuggestionValue={this.props.getSuggestionValue}
-          renderSuggestion={this.props.renderSuggestion}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion}
           inputProps={{
-            value: this.state.value,
+            value,
+            placeholder,
+            onBlur,
             onChange: this.onChange,
-            placeholder: this.props.placeholder,
           }}
+          renderSuggestionsContainer={this.renderSuggestionsContainer}
           onSuggestionSelected={this.onSuggestionSelected}
           shouldRenderSuggestions={this.shouldRenderSuggestions}
         />

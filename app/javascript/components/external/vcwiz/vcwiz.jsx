@@ -39,8 +39,12 @@ export default class VCWiz extends React.Component {
     Actions.unregister('refreshFounder');
   }
 
-  refreshFounder = () => {
-    ffetch(FounderPath).then(founder => Store.set('founder', founder));
+  refreshFounder = founder => {
+    if (founder) {
+      Store.set('founder', founder);
+    } else {
+      ffetch(FounderPath).then(founder => Store.set('founder', founder));
+    }
   };
 
   renderHeader() {
