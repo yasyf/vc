@@ -6,13 +6,18 @@ import AddInvestorModal from './add_investor_modal';
 import { TargetInvestorsPath } from '../global/constants.js.erb';
 import {ffetch, replaceSort, timestamp} from '../global/utils';
 import Actions from '../global/actions';
+import Storeage from '../global/storage.js.erb';
 import ImportInvestorsModal from './import_investors_modal';
 import SectionWithDims from '../global/shared/section_with_dims';
+import EmailIntegrationModal from './email_integration_modal';
 
 const Modals = {
   ADD: 'Add',
   IMPORT: 'Import',
+  INTEGRATION: 'Integration',
 };
+
+const EmailInetegrationModalShown = 'EmailIntegrationModalShown';
 
 export default class OutreachPage extends React.Component {
   constructor(props) {
@@ -25,6 +30,13 @@ export default class OutreachPage extends React.Component {
       sort: props.sort,
       count: props.count,
     };
+  }
+
+  componentDidMount() {
+    if (!Storeage.get(EmailInetegrationModalShown)) {
+      Storeage.set(EmailInetegrationModalShown, true);
+      this.openEmailIntegrationModal();
+    }
   }
 
   onSort = (key, direction) => {
@@ -57,6 +69,10 @@ export default class OutreachPage extends React.Component {
     this.setState({openModal: Modals.IMPORT});
   };
 
+  openEmailIntegrationModal = () => {
+    this.setState({openModal: Modals.INTEGRATION});
+  };
+
   renderModal() {
     switch (this.state.openModal) {
       case Modals.ADD:
@@ -70,6 +86,14 @@ export default class OutreachPage extends React.Component {
       case Modals.IMPORT:
         return (
           <ImportInvestorsModal
+            isOpen={true}
+            onClose={this.onModalClose}
+            onResult={this.onModalResult}
+          />
+        );
+      case Modals.INTEGRATION:
+        return (
+          <EmailIntegrationModal
             isOpen={true}
             onClose={this.onModalClose}
             onResult={this.onModalResult}
@@ -91,6 +115,8 @@ export default class OutreachPage extends React.Component {
             <a onClick={this.openAddModal}>Add investor</a>
             <span className="sep">|</span>
             <a onClick={this.openImportModal}>Import</a>
+            <span className="sep">|</span>
+            <a onClick={this.openEmailIntegrationModal}>Email Integration</a>
           </div>
         </Column>
       </Row>
