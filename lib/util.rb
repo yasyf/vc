@@ -5,8 +5,8 @@ class Util
  end
 
   def self.split_name(name)
-    first, *rest = name.split(' ')
-    [first, rest.join(' ')]
+    first, *rest, last = name.split(' ').map(&:titleize)
+    [first, last]
   end
 
  def self.escape_sql_argument(arg)

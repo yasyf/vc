@@ -67,12 +67,15 @@ class External::VcwizController < External::ApplicationController
   def signup
     session[:signup_data] = signup_params
     cookies.permanent[:login_domain] = signup_params[:domain]
-    store_location_for(:external_founder, request.referer)
     redirect_login
   end
 
   def login
     redirect_login
+  end
+
+  def gmail_auth
+    redirect_gmail
   end
 
   def opt_in
@@ -114,7 +117,13 @@ class External::VcwizController < External::ApplicationController
     render layout: 'vcwiz'
   end
 
+  def redirect_gmail
+    store_location_for(:external_founder, request.referer)
+    redirect_to omniauth_path('gmail', login_hint: current_external_founder.email)
+  end
+
   def redirect_login
+    store_location_for(:external_founder, request.referer)
     redirect_to omniauth_path('google_external', hd: params[:domain] || cookies[:login_domain] || '*')
   end
 

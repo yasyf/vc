@@ -35,7 +35,8 @@ Rails.application.routes.draw do
     if Rails.application.vcwiz?
       devise_scope :external_founder do
         get 'logout', to: 'auth#destroy'
-        get 'auth/callback', to: 'auth#create'
+        get 'auth/create', to: 'auth#create'
+        get 'auth/enhance', to: 'auth#enhance'
       end
 
       scope controller: 'vcwiz', as: :vcwiz do
@@ -45,6 +46,7 @@ Rails.application.routes.draw do
         get 'search'
         get 'list/:list(/:key/:value)', action: :list, as: :list
         get 'outreach'
+        get 'gmail_auth'
         get 'login'
         post 'login'
         post 'signup'
@@ -115,6 +117,7 @@ Rails.application.routes.draw do
 
           resource :founder, only: [:show, :update] do
             post 'event'
+            post 'sync_gmail'
             get 'locations'
           end
         end
@@ -131,7 +134,7 @@ Rails.application.routes.draw do
       root 'welcome#index'
 
       devise_scope :internal_user do
-        get 'auth/callback', to: 'auth#create'
+        get 'auth/create', to: 'auth#create'
       end
 
       get 'team', to: 'welcome#select_team'

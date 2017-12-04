@@ -1,26 +1,15 @@
-module OmniAuth::Strategies
-  class GoogleInternal < GoogleOauth2
-    def name
-      :google_internal
-    end
-  end
-
-  class GoogleExternal < GoogleOauth2
-    def name
-      :google_external
-    end
-  end
-end
-
 Rails.application.config.middleware.use OmniAuth::Builder do
   if Rails.application.drfvote?
-    provider :google_internal, ENV['INTERNAL_GOOGLE_CLIENT_ID'], ENV['INTERNAL_GOOGLE_CLIENT_SECRET'],
+    provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'],
       hd: ENV['DOMAIN'], scope: 'userinfo.email,userinfo.profile,calendar.readonly,drive',
-      access_type: 'offline', prompt: 'consent', callback_path: '/auth/callback'
+      access_type: 'offline', prompt: 'consent', name: 'google_internal', callback_path: '/auth/create'
   end
 
   if Rails.application.vcwiz?
-    provider :google_external, ENV['EXTERNAL_GOOGLE_CLIENT_ID'], ENV['EXTERNAL_GOOGLE_CLIENT_SECRET'],
-      scope: 'userinfo.email,userinfo.profile', callback_path: '/auth/callback'
+    provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], name: 'google_external',
+      scope: 'userinfo.email,userinfo.profile', callback_path: '/auth/create'
+
+    provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], name: 'gmail',
+      scope: 'gmail.readonly', prompt: 'consent', include_granted_scopes: true, callback_path: '/auth/enhance'
   end
 end

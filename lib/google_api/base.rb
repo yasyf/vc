@@ -15,8 +15,8 @@ module GoogleApi
       secrets = Google::APIClient::ClientSecrets.new web: {
         access_token: @user.access_token,
         refresh_token: @user.refresh_token,
-        client_id: ENV['INTERNAL_GOOGLE_CLIENT_ID'],
-        client_secret: ENV['INTERNAL_GOOGLE_CLIENT_SECRET']
+        client_id: ENV['GOOGLE_CLIENT_ID'],
+        client_secret: ENV['GOOGLE_CLIENT_SECRET']
       }
       secrets.to_authorization.tap do |authorization|
         authorization.refresh!

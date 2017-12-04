@@ -22,6 +22,10 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
     render json: founder
   end
 
+  def sync_gmail
+    FounderGmailSyncJob.new(founder.id).enqueue(queue: :high)
+  end
+
   def locations
     render json: arr_to_options(Founder.locations(params[:q]))
   end

@@ -43,7 +43,12 @@ class Founder < ApplicationRecord
   end
 
   def self.from_omniauth(auth)
-    from_email(auth.info.email, auth.info.first_name, auth.info.last_name) if auth.present?
+    return nil unless auth.present?
+    from_email(auth.info.email, auth.info.first_name, auth.info.last_name).tap do |founder|
+      founder.photo ||= auth.info.image
+      founder.assign_attributes access_token: auth.credentials.token, refresh_token: auth.credentials.refresh_token
+      founder.save!
+    end
   end
 
   def self.from_email(email, first_name = nil, last_name = nil)
@@ -229,7 +234,8 @@ class Founder < ApplicationRecord
   end
 
   def start_enhance_job
-    intro_requests.unscoped.update_all preview_html: nil
+    return unless logged_in_at_changed?
+    IntroRequest.where(founder: self).update_all preview_html: nil
     FounderEnhanceJob.perform_later(self.id, augment: false) if ip_address_changed?
   end
 end

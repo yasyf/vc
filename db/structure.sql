@@ -415,7 +415,10 @@ CREATE TABLE founders (
     time_zone character varying,
     bio text,
     response_time integer,
-    photo character varying
+    photo character varying,
+    access_token character varying,
+    refresh_token character varying,
+    history_id bigint
 );
 
 
@@ -2776,6 +2779,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171121095936'),
 ('20171122211959'),
 ('20171123002740'),
-('20171123005005');
+('20171123005005'),
+('20171204091614'),
+('20171204092443');
 
 

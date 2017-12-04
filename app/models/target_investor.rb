@@ -61,12 +61,14 @@ class TargetInvestor < ApplicationRecord
     instance.tap(&:load_from_investor!)
   end
 
-  def self.from_addr(founder, addr)
-    target = founder.target_investors.where(email: addr.address).first || founder.target_investors.search(first_name: addr.name, last_name: addr.name).first
+  def self.from_addr(founder, addr, create: false)
+    first, last = Util.split_name(addr.name)
+    target = founder.target_investors.where(email: addr.address).first || founder.target_investors.search(first_name: first, last_name: last).first
     return target if target.present?
 
     investor = Investor.from_addr(addr)
-    founder.target_investors.where(investor: investor).first if investor.present?
+    return nil unless investor.present?
+    create ? from_investor!(founder, investor) : founder.target_investors.where(investor: investor).first
   end
 
   def self.from_addr!(founder, addr)

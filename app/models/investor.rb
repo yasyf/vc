@@ -44,7 +44,15 @@ class Investor < ApplicationRecord
   before_validation :normalize_location
 
   def self.from_addr(addr)
-    where(email: addr.address).first || search(first_name: addr.name, last_name: addr.name).first
+    found = where(email: addr.address).first
+    return found if found.present?
+    first, last = Util.split_name(addr.name)
+    potential = search(first_name: first, last_name: last).includes(:competitor)
+    return nil unless potential.present?
+    potential.each do |investor|
+      return investor if investor.competitor.domain == addr.domain
+    end
+    nil
   end
 
   def name

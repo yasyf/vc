@@ -1,12 +1,4 @@
 class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
-  PASS_PHRASES = [
-    'keep in touch',
-    'not interested',
-    'not right now',
-    'not a good fit',
-    'keep in touch',
-    'i can be helpful',
-  ]
   YES_PHRASES = %w(yes y yea yeah yup)
   NO_PHRASES = %w(no n nope)
 
@@ -62,12 +54,6 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   private
 
-  def to_targets
-    to_addrs.map do |to|
-      TargetInvestor.from_addr(founder_from_from, to)
-    end.compact
-  end
-
   def founder_from_from
     @founder_from_from ||= Founder.where(email: from_addr.address).first
   end
@@ -121,17 +107,11 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def intro_request_from_header
     token = hook_params['intro_request_token'] || (headers['X-Mailgun-Variables'] || {})['intro_request_token']
-    intro_request_from token
+    Messages.intro_request token
   end
 
   def intro_request_from_body
-    intro_request_from body
-  end
-
-  def intro_request_from(source)
-    return nil unless source.present?
-    match = /#{IntroRequest::TOKEN_MAGIC}([\w]{10})/.match(source)
-    IntroRequest.where(token: match[1]).first if match.present?
+    Messages.intro_request body
   end
 
   def handle_response(from, tos)
@@ -200,12 +180,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_incoming(founder, from)
-    stage =
-      if sentiment&.negative? && PASS_PHRASES.any? { |p| p.in?(text.downcase) }
-        TargetInvestor::RAW_STAGES.keys.index(:pass)
-      else
-        TargetInvestor::RAW_STAGES.keys.index(:respond)
-      end
+    stage = Messages.stage(text, sentiment)
     target = TargetInvestor.from_addr! founder, from
 
     if target.investor.present?
