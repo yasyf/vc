@@ -105,6 +105,7 @@ p.tight {
 
   &.disabled {
     background-color: $success-dark;
+    color: $white;
 
     &:focus, &:hover {
       background-color: $success-dark;
@@ -203,7 +204,7 @@ p.tight {
     height: 35px;
     border-radius: 50%;
     border: 1px solid $grey;
-    opacity: 0.9;
+    color: darken($grey, 25%);
 
     i {
       font-size: 30px;
@@ -1341,8 +1342,6 @@ mark.highlighter {
 
 .settings-modal {
   &-bottom {
-    padding-top: 0;
-
     .fields {
       .row {
         margin-top: 1.5em;
@@ -1387,19 +1386,43 @@ mark.highlighter {
       margin: auto;
 
       .button {
-        margin-top: 0.5em;
+        margin-top: 1.5em;
+      }
+
+      textarea {
+        height: 5em;
+      }
+
+      input.placeholded {
+        background-color: inherit;
+        width: unset;
+        margin: unset;
+      }
+
+      span.placeholder {
+        padding-left: 1em;
+        padding-right: 1em;
+      }
+
+      input.placeholded, span.placeholder {
+        border: 1px solid lighten($grey, 30%);
+        border-radius: 10px;
       }
     }
 
     .loader {
-      height: 200px;
-      width: 200px;
-      margin: auto;
-      padding-top: 10%;
+      padding-top: 13%;
+
+      h3 {
+        color: $success;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
     }
 
     p {
       padding-bottom: 1.25em;
+      text-align: left;
     }
 
     input {

@@ -52,7 +52,7 @@ export default class SettingsModal extends React.Component {
   };
 
   renderTop() {
-    return <h3>Your Settings</h3>;
+    return <h3>My Info</h3>;
   }
 
   inputProps(name, placeholder) {
@@ -83,6 +83,10 @@ export default class SettingsModal extends React.Component {
   renderBottom() {
     return (
       <div className="fields">
+        <p>
+          These fields will be used to generate your VCWiz intro requests!
+          If there's anything you'd prefer an investor not see, make sure you clear it out below.
+        </p>
         <Row>
           <Column large={6}>{this.renderInput('homepage', 'Your Personal Homepage')}</Column>
           <Column large={6}>{this.renderAutoInput('city', 'Your City')}</Column>

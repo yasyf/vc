@@ -8,6 +8,7 @@ import TextArea from '../global/fields/text_area';
 import Store from '../global/store';
 import Actions from '../global/actions';
 import Loader from '../global/shared/loader';
+import PlaceholderInput from '../global/fields/placeholder_input';
 
 const NumStages = 5;
 
@@ -30,6 +31,10 @@ export default class IntroModal extends React.Component {
         target_investor_id: this.props.item.id,
       });
     });
+  }
+
+  componentWillUnmount() {
+    window.clearInterval(this.interval);
   }
 
   startPolling = () => {
@@ -56,6 +61,10 @@ export default class IntroModal extends React.Component {
 
   renderInput(name, placeholder) {
     return <Input {...this.inputProps(name, placeholder)} />;
+  }
+
+  renderPlaceholderInput(name, placeholder) {
+    return <PlaceholderInput {...this.inputProps(name, placeholder)} />;
   }
 
   renderTextArea(name, placeholder) {
@@ -121,11 +130,15 @@ export default class IntroModal extends React.Component {
         Welcome to VCWiz Intro Requests! There's a few things we need from you.
         We'll give {first_name} a chance to review everything we collect here, and then get back to you with a response as fast as we can.
       </p>,
-      hasEmail
-        ? <p key="request">We'll send the intro request to {first_name}'s email on file, unless you'd prefer to specify one.</p>
-        : <p key="request">We need an email for {first_name}, since we don't have one on file!</p>
-      ,
-      this.renderInput('email', hasEmail ? 'Leave Blank For Default Email' : 'jane@demo.vc'),
+      <p key="request">
+        {
+          hasEmail
+            ? `We'll send the intro request to ${first_name}'s email on file, unless you'd prefer to specify one:`
+            : `We need an email for ${first_name}, since we don't have one on file:`
+        }
+        {' '}
+        {this.renderPlaceholderInput('email', hasEmail ? '<default email>' : '<enter email>')}
+      </p>,
       this.renderStandardButton(!hasEmail && !intro.email),
     ];
   }
@@ -145,10 +158,14 @@ export default class IntroModal extends React.Component {
 
   renderStage2() {
     const { intro } = this.state;
+    const { firm_name } = this.props.item;
     const { primary_company } = Store.get('founder', {});
     return [
       <p key="info">
-        Last one! We need a link to your pitch deck for {primary_company.name}.
+        Last one!
+        We need a link to your pitch deck for {primary_company.name}.
+        You should customize this deck for {firm_name}.
+        We recommend using a Dropbox or Google Drive link.
       </p>,
       this.renderInput('pitch_deck', 'http://www.example.com/deck.pdf'),
       this.renderStandardButton(!intro.pitch_deck || !getDomain(intro.pitch_deck)),
@@ -163,7 +180,7 @@ export default class IntroModal extends React.Component {
         Please check out the below preview, and hit send if you're happy with it!
         <br />
         We currently don't allow any customization,
-        but please <a target="_blank" href={`mailto:${SupportEmail}?subject=VCWiz Intro Request Issue - ${primary_company.name}`}>reach out</a> if you see something wrong!
+        but you can add and remove fields on the settings page to change what's included.
       </p>,
       <div key="preview" className="preview" dangerouslySetInnerHTML={{ __html: preview }} />,
       <Button color={Colors.SUCCESS} onClick={this.submit} key="button">
@@ -174,7 +191,12 @@ export default class IntroModal extends React.Component {
 
   renderBottom() {
     if (this.state.loading) {
-      return <div className="loader"><Loader /></div>;
+      return (
+        <div className="loader">
+          <h3>Loading Preview</h3>
+          <Loader spinner="BeatLoader" size={50} />
+        </div>
+      );
     }
     return <div className="intro-form">{this[`renderStage${this.state.stage}`]()}</div>;
   }

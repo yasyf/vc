@@ -17,9 +17,9 @@ export default class PlaceholderInput extends React.Component {
     }
   }
 
-  onChange = ({value}) => {
-    this.setState({value});
-    this.props.onChange(value);
+  onChange = update => {
+    this.setState({value: update[this.props.name]});
+    this.props.onChange(update);
   };
 
   onFocus = () => {
@@ -34,9 +34,8 @@ export default class PlaceholderInput extends React.Component {
     let {onChange, placeholder, ...rest} = this.props;
     let showInput = this.state.focused || this.state.value;
     return (
-      <span>
+      <span className="placeholder-input">
         <Input
-          name="value"
           className="placeholded"
           wrap={false}
           type=""
@@ -45,6 +44,7 @@ export default class PlaceholderInput extends React.Component {
           onChange={this.onChange}
           onBlur={this.onBlur}
           style={showInput ? undefined : {display: 'none'}}
+          autoComplete="off"
           {...rest}
         />
         <span

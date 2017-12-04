@@ -3,14 +3,15 @@ import TextCell from './text_cell';
 import PlaceholderInput from '../fields/placeholder_input';
 
 export default class PlaceholderCell extends TextCell {
-  onInputChange = value => {
-    this.onChange({[this.props.columnKey]: {value: value}});
+  onInputChange = update => {
+    this.onChange({[this.props.columnKey]: {value: update[this.props.columnKey]}});
   };
 
   renderValue() {
     return (
       <div className="placeholder-cell">
         <PlaceholderInput
+          name={this.props.columnKey}
           value={this.state.value}
           placeholder="Click to add note..."
           onChange={this.onInputChange}

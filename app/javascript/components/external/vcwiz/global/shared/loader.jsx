@@ -4,6 +4,7 @@ export default class Loader extends React.Component {
   static defaultProps = {
     size: 200,
     color: "#3074EE",
+    spinner: 'RingLoader',
   };
 
   constructor(props) {
@@ -18,10 +19,14 @@ export default class Loader extends React.Component {
     this.setState({hasMounted: true});
   }
 
+  getSpinner() {
+    return require('react-spinners')[this.props.spinner];
+  }
+
   render() {
     if (this.state.hasMounted) {
-      const RingLoader = require('react-spinners').RingLoader;
-      return <RingLoader {...this.props} />;
+      const Spinner = this.getSpinner();
+      return <Spinner {...this.props} />;
     } else {
       return null;
     }
