@@ -168,3 +168,14 @@ export const filterOption = (option, filterValue) => {
     (otherLabels && _.some(otherLabels, ov => filterOptionMatches(ov, filterValue)))
   );
 };
+
+export const humanizeList = list => {
+  if (list.length === 1) {
+    return _.first(list);
+  } else if (list.length === 2) {
+    return [<span key="first">{_.first(list)}</span>, <span key="and"> and </span>, <span key="last">{_.last(list)}</span>];
+  } else {
+    const initial = _.flatMap(_.initial(list), (s, i) => [<span key={`s-${i}`}>{s}</span>, <span key={`comma-${i}`}>, </span>]);
+    return initial.concat([<span key="and"> and </span>, <span key="last">{_.last(list)}</span>]);
+  }
+};

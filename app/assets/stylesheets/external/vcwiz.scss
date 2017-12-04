@@ -1479,6 +1479,12 @@ mark.highlighter {
       .button {
         margin-bottom: 0;
       }
+
+      p {
+        width: 75%;
+        margin: auto;
+        padding-bottom: 1em;
+      }
     }
   }
 
@@ -1506,10 +1512,20 @@ mark.highlighter {
       }
     }
 
-    .loader {
-      margin: auto;
+    .loader-wrapper {
+      text-align: center;
     }
 
+    .loader {
+      margin: auto;
+      padding-top: 13%;
+
+      h3 {
+        color: $success;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    }
     .import-header {
       min-width: 200px;
     }

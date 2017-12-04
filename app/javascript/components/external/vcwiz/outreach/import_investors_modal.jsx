@@ -2,10 +2,11 @@ import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import { TargetInvestorsBulkImportPath, TargetInvestorsBulkPollPath, ImportHeadersOptions } from '../global/constants.js.erb';
 import FileInput from '../global/fields/file_input';
-import {ffetch} from '../global/utils';
+import {ffetch, humanizeList} from '../global/utils';
 import update from 'immutability-helper';
 import Loader from '../global/shared/loader';
 import Select from 'react-select';
+import inflection from 'inflection';
 import {Button, Colors} from 'react-foundation';
 import { Line } from 'rc-progress';
 import Table from '../global/shared/table';
@@ -100,7 +101,10 @@ export default class ImportInvestorsModal extends React.Component {
   options(i) {
     let used = Object.values(this.state.headers);
     let options = _.reject(ImportHeadersOptions, o => used.includes(o.value));
-    if (this.state.headers[i]) {
+    if (used.includes('first_name') || used.includes('last_name')) {
+      _.remove(options, {value: 'name'});
+    }
+    if (i !== -1 && this.state.headers[i]) {
       options.push(_.find(ImportHeadersOptions, {value: this.state.headers[i]}));
     }
     return options;
@@ -115,10 +119,35 @@ export default class ImportInvestorsModal extends React.Component {
     }
   }
 
+  renderRemaining() {
+    const options = this.options(-1);
+    if (!options.length) {
+      return null;
+    }
+    return (
+      <span>
+        You can still assign the {humanizeList(options.map(({label}) => <b>{label}</b>))} {inflection.inflect('columns', options.length)}.
+      </span>
+    );
+  }
+
   renderButton() {
     if (this.state.stage === Stage.LOADED) {
+      const { total } = this.state;
       return (
         <div className="button-wrapper" key="button">
+          <p>
+            Below is a preview of your import (there's a total of {total} rows).
+            We've tried to figure out which of your columns match up with ours, but we need a little help!
+            Please use the dropdowns above each column to show us your setup.
+          </p>
+          <p>
+            We probably won't support all your columns, and you might not have all of ours.
+            {' '}
+            {this.renderRemaining()}
+            {' '}
+            Once you're finished, hit the button below!
+          </p>
           <Button color={Colors.SUCCESS} onClick={this.onClick}>
             Finish Import
           </Button>
@@ -167,6 +196,7 @@ export default class ImportInvestorsModal extends React.Component {
       <div className="main">
         <p>
           Already have a spreadsheet of investors? You can use this form to import them!
+          Please export them in CSV format before uploading.
         </p>
         <FileInput
           type="file"
@@ -182,8 +212,9 @@ export default class ImportInvestorsModal extends React.Component {
   renderLoader() {
     return (
       <div className="loader-wrapper">
-        <div className="loader" style={{width: 200, height: 200}}>
-          <Loader size={200} />
+        <div className="loader">
+          <h3>Loading Preview</h3>
+          <Loader spinner="BeatLoader" size={50} />
         </div>
       </div>
     );
