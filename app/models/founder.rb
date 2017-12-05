@@ -120,13 +120,14 @@ class Founder < ApplicationRecord
       primary: true,
     }
     attrs[:industry] = Util.split_slice(data[:industry], Competitor::INDUSTRIES).keys if data[:industry].present?
-    attrs[:competitions] = Company.where(id: data[:companies].split(', ')) if data[:companies].present?
     if data[:domain].present?
       Company.where(domain: Util.parse_domain(data[:domain])).first_or_initialize.tap do |c|
         c.update! attrs
       end
     else
       Company.create!(attrs)
+    end.tap do |company|
+      company.competitions = Company.where(id: data[:companies].split(', ')) if data[:companies].present?
     end
   end
 

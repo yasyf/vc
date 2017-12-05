@@ -10,6 +10,7 @@ import CompanyImage from '../../discover/company_image';
 import Breadcrumb from '../breadcrumbs';
 import {SessionStorage} from '../storage.js.erb';
 import { canUseDOM } from 'exenv';
+import TextArea from '../fields/text_area';
 
 const RequiredFields = [
   [],
@@ -130,16 +131,28 @@ export default class LoginModal extends React.Component {
     }
   }
 
+  inputProps(name, placeholder) {
+    return {
+      name: name,
+      placeholder: placeholder,
+      value: this.state.data[name],
+      wrap: false,
+      onChange: this.onChange,
+    };
+  }
+
   renderInput(name, placeholder) {
     return (
       <Row key={name} isColumn>
-        <Input
-          name={name}
-          placeholder={placeholder}
-          value={this.state.data[name]}
-          wrap={false}
-          onChange={this.onChange}
-        />
+        <Input {...this.inputProps(name, placeholder)} />
+      </Row>
+    );
+  }
+
+  renderTextArea(name, placeholder) {
+    return (
+      <Row key={name} isColumn>
+        <TextArea {...this.inputProps(name, placeholder)} />
       </Row>
     );
   }
@@ -175,7 +188,7 @@ export default class LoginModal extends React.Component {
     return [
       <p className="info" key="text">What's your Startup?</p>,
       this.renderInput('name', 'Company Name'),
-      this.renderInput('description', 'A short description that will help investors better understand your startup'),
+      this.renderTextArea('description', 'A short description that will help investors better understand your startup'),
       this.renderFilters(['industry', 'companies']),
       this.renderStandardButton(description && description.length > 50),
     ];

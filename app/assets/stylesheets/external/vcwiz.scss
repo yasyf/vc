@@ -33,6 +33,10 @@ html, body, .full-screen {
   width: 100%;
 }
 
+textarea[type='text'] {
+  height: 5em;
+}
+
 .full-width {
   width: 100%;
 }
@@ -1373,10 +1377,6 @@ mark.highlighter {
       input {
         margin-bottom: 0;
       }
-
-      textarea {
-        height: 5em;
-      }
     }
   }
 }
@@ -1410,10 +1410,6 @@ mark.highlighter {
 
       .button {
         margin-top: 1.5em;
-      }
-
-      textarea {
-        height: 5em;
       }
 
       input.placeholded {
