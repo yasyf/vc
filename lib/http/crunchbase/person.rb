@@ -37,15 +37,15 @@ module Http::Crunchbase
 
     def university
       degrees = get_in 'relationships', 'degrees', multi: true
-      return nil unless degrees.present?
-      degrees.last['relationships']['school']['properties']['name']
+      return nil unless degrees.present? && (school = degrees.last['relationships']['school']).present?
+      school['properties']['name']
     end
 
     def affiliated_companies
       %w(jobs advisory_roles).flat_map do |field|
         jobs = get_in 'relationships', field, multi: true
         if jobs.present?
-          jobs.map { |job| job['relationships']['organization']['properties'] }.compact.map { |props| props.slice('name', 'permalink') }
+          jobs.map { |job| job['relationships']['organization'] }.compact.map { |org| org['properties'].slice('name', 'permalink') }
         else
           []
         end
