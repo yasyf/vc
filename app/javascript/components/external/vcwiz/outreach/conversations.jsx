@@ -40,12 +40,16 @@ export default class Conversations extends React.Component {
           const target = _.find(target_investors, {id: item.id});
           switch (key) {
             case 'full_name':
-              return PartnerModal;
+              if (item.investor_id)
+                return PartnerModal;
+              break;
             case 'priority':
               return EmojiModal;
+              break;
             case 'intro_requests[0]':
               if (item['can_intro?'] && target.stage === _.first(TargetInvestorStagesKeys))
                 return IntroModal;
+              break;
           }
         }}
         table={ConversationsTable}

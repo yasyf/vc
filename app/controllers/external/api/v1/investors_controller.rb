@@ -16,6 +16,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored  Investor.find(params[:id])
   end
 
+  def interactions
+    render json: { interactions: Investor.find(params[:id]).interactions(current_external_founder) }
+  end
+
   def review
     render json: { review: Investor.find(params[:id]).review }
   end

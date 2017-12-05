@@ -120,7 +120,7 @@ class TargetInvestor < ApplicationRecord
   end
 
   def can_intro?
-    intro_requests.size == 0 && investor&.opted_in != false
+    intro_requests.size == 0 && investor.present? && investor.opted_in != false
   end
 
   def overlap

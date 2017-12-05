@@ -1,7 +1,10 @@
 import React from 'react';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
 import Store from '../store';
-import {ffetchCached, getDomain} from '../utils';
+import {
+  ffetch, ffetchCached, getDomain, humanizeList,
+  humanizeTravelStatus,
+} from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
 import IconLine from '../shared/icon_line';
@@ -26,6 +29,7 @@ export default class PartnerTab extends React.Component {
       target: _.find(target_investors, {investor_id: this.props.investor.id}),
       fetchedReview: false,
       review: null,
+      interactions: null,
     };
   }
 
@@ -45,6 +49,9 @@ export default class PartnerTab extends React.Component {
     if (this.props.investor.id) {
       ffetchCached(InvestorsPath.id(this.props.investor.id)).then(investor => {
         this.setState({investor});
+      });
+      ffetch(InvestorsPath.resource(this.props.investor.id, 'interactions')).then(({interactions}) => {
+        this.setState({interactions});
       });
     } else {
       this.setState({investor: this.props.investor});
@@ -244,6 +251,24 @@ export default class PartnerTab extends React.Component {
     )
   }
 
+  renderInteractions() {
+    const { investor, interactions } = this.state;
+    if (!interactions) {
+      return null;
+    }
+    const { first_name } = investor;
+    const { last_contact, travel_status, open_city, overlap } = interactions;
+    const fragments = _.compact([
+      last_contact && <span key="last_contact">You last contacted {first_name} {moment(last_contact).fromNow()}. </span>,
+      travel_status && <span key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}. </span>,
+      overlap && <span key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}! </span>,
+    ]);
+    if (!fragments.length) {
+      return null;
+    }
+    return <Row isColumn className="interactions">{fragments}</Row>;
+  }
+
   renderBody() {
     const { investor, review } = this.state;
     if (!investor) {
@@ -255,6 +280,7 @@ export default class PartnerTab extends React.Component {
       <div>
         {this.renderHeading()}
         {this.renderTweet()}
+        {this.renderInteractions()}
         <Row isColumn>
           <ReadMore onTruncate={this.onTruncate} lines={3}>
             {description}

@@ -179,3 +179,14 @@ export const humanizeList = list => {
     return initial.concat([<span key="and"> and </span>, <span key="last">{_.last(list)}</span>]);
   }
 };
+
+export const humanizeTravelStatus = (travelStatus, openCity) => {
+  switch (travelStatus) {
+    case 'working':
+      return `hard at work in ${openCity}`;
+    case 'work_traveling':
+      return `travelling for work in ${openCity}`;
+    case 'pleasure_traveling':
+      return `taking a vacation in ${openCity}`;
+  }
+};

@@ -70,6 +70,7 @@ Rails.application.routes.draw do
           resources :investors do
             member do
               get 'review'
+              get 'interactions'
             end
 
             collection do

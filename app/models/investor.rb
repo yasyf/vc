@@ -41,7 +41,7 @@ class Investor < ApplicationRecord
 
   before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
-  before_validation :normalize_location
+  before_validation :normalize_location, :set_first_name
 
   def self.from_addr(addr)
     found = where(email: addr.address).first
@@ -342,6 +342,18 @@ class Investor < ApplicationRecord
     end
   end
 
+  def interactions(founder)
+    intro_request = intro_requests.where(founder: founder).first
+    email = emails.where(founder: founder).order(created_at: :desc).first
+    overlap = founder_overlap(founder)
+    {
+      open_city: intro_request&.open_city,
+      travel_status: intro_request&.travel_status,
+      last_contact: email&.created_at,
+      overlap: overlap.present? ? overlap : nil,
+    }
+  end
+
   private
 
   def normalize_location
@@ -426,6 +438,12 @@ class Investor < ApplicationRecord
 
   def initials
     "#{first_name.first.upcase}#{last_name.first.upcase}"
+  end
+
+  def set_first_name
+    return unless self.first_name.blank? && self.last_name.blank?
+    count = self.class.where(competitor_id: self.competitor_id, first_name: 'Investor').count
+    self.first_name = count.present? ? "Investor #{count}" : 'Investor'
   end
 
   def titleize_role
