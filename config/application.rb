@@ -30,7 +30,7 @@ module Drfvote
     end
 
     APPS.each do |name|
-      define_method("#{name}?") { Rails.env.test? || ENV['HEROKU_APP_NAME'] == name }
+      define_method("#{name}?") { Rails.env.test? || ENV['HEROKU_APP_NAME'].start_with?(name) }
     end
 
     if vcwiz?
