@@ -45,7 +45,7 @@ class IntroMailer < ExternalMailer
   end
 
   def investor_email
-    @target.email.present? ? named_email(@target) : named_email(@investor)
+    @target&.email.present? ? named_email(@target) : named_email(@investor)
   end
 
   def add_headers!
