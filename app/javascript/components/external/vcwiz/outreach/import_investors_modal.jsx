@@ -10,6 +10,7 @@ import inflection from 'inflection';
 import {Button, Colors} from 'react-foundation';
 import { Line } from 'rc-progress';
 import Table from '../global/shared/table';
+import Actions from '../global/actions';
 
 const Stage = {
   START: 'START',
@@ -98,6 +99,11 @@ export default class ImportInvestorsModal extends React.Component {
     ffetch(TargetInvestorsBulkImportPath, 'POST', {id, headers}).then(this.startImportPolling);
   };
 
+  onClose = () => {
+    Actions.trigger('refreshFounder');
+    this.props.onClose();
+  };
+
   options(i) {
     let used = Object.values(this.state.headers);
     let options = _.reject(ImportHeadersOptions, o => used.includes(o.value));
@@ -156,7 +162,7 @@ export default class ImportInvestorsModal extends React.Component {
     } else if (this.state.stage === Stage.DONE) {
       return (
         <div className="button-wrapper" key="button">
-          <Button onClick={this.props.onClose}>
+          <Button onClick={this.onClose}>
             Close
           </Button>
         </div>

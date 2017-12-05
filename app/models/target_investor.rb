@@ -131,6 +131,7 @@ class TargetInvestor < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
+  alias_method :name, :full_name
 
   def title
     role.present? ? "#{role}, #{firm_name}" : firm_name
