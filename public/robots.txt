@@ -1,1 +1,1 @@
-Sitemap: http://vcwiz.co/sitemap.xml.gz
+Sitemap: https://vcwiz.co/sitemap.xml.gz

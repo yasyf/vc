@@ -68,7 +68,7 @@ end
     define_singleton_method(:industry) { industry }
 
     def self.eligible?(founder, request)
-      return true unless (company = founder.primary_company).present?
+      return true unless (company = founder&.primary_company).present?
       !company.industry.include?(industry)
     end
 
