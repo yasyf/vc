@@ -2,23 +2,11 @@ module IntroMailHelper
   VOWELS = %w(a e i o u)
 
   def investor(investor)
-    founder investor
+    Util.html_person(investor).html_safe
   end
 
   def founder(founder)
-    link = Founder::SOCIAL_KEYS.find { |k| founder.send(k).present? }
-    return founder.name unless link.present?
-    prefix = case link
-      when :linkedin
-        'https://www.linkedin.com/in/'
-      when :facebook
-        'https://fb.com/'
-      when :twitter
-        'https://twitter.com/'
-      else
-        ''
-    end
-    "<a href='#{prefix}#{founder.send(link)}'>#{founder.name}</a>".html_safe
+    Util.html_person(founder).html_safe
   end
 
   def role(investor)

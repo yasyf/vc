@@ -89,4 +89,20 @@ class Util
     end
     (average.to_f / 1.minute).minutes
   end
+
+ def self.html_person(person)
+   link = Founder::SOCIAL_KEYS.find { |k| person.send(k).present? }
+   return person.name unless link.present?
+   prefix = case link.to_sym
+     when :linkedin
+       'https://www.linkedin.com/in/'
+     when :facebook
+       'https://fb.com/'
+     when :twitter
+       'https://twitter.com/'
+     else
+       ''
+   end
+   "<a href='#{prefix}#{person.send(link)}'>#{person.name}</a>"
+ end
 end

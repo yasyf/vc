@@ -1,0 +1,27 @@
+<p>
+  Hey <%= @founder.first_name %>!
+</p>
+
+<p>
+  A quick update on your investor outreach.
+  <% if @stats[:emails] > 0 %>
+    This week, you sent <%= @stats[:emails] %> emails to <%= @stats[:investors] %> investors.
+  <% else %>
+    You didn't send any emails to investors this week! If this is wrong, please make sure you're CCing <b><%= ENV['MAILGUN_EMAIL'] %></b>, or enable the Inbox Scanner.
+  <% end %>
+  Overall, you've got an average response time of <%= distance_of_time_in_words @stats[:response_time] %>.
+</p>
+
+<p>
+  Here's what happened this week:
+  <ul>
+    <% @events.each do |event| %>
+    <li><%= event.describe.html_safe %></li>
+    <% end %>
+  </ul>
+</p>
+
+<p>
+  Cheers,<br>
+  VCWiz
+</p>

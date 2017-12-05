@@ -171,7 +171,7 @@ class Founder < ApplicationRecord
   def as_json(options = {})
     super(options.reverse_merge(
       only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage],
-      methods: [:drf?, :primary_company, :utc_offset, :conversations, :events, :stats]
+      methods: [:drf?, :primary_company, :utc_offset, :conversations, :events_with_meta, :stats]
     )).reverse_merge(
       target_investors: target_investors.includes(:intro_requests).order(updated_at: :desc).as_json(include: [], methods: [:intro_requests])
     )
@@ -189,23 +189,27 @@ class Founder < ApplicationRecord
     target_investors.create! TargetInvestor::DUMMY_ATTRS if target_investors.count == 0
   end
 
-  def stats
+  def stats(scope = Email.all)
     {
-      emails: emails.count,
-      investors: emails.count('DISTINCT investor_id'),
+      emails: emails.merge(scope).count,
+      investors: emails.merge(scope).count('DISTINCT investor_id'),
       response_time: response_time,
     }
   end
 
-  def events
+  def events(scope = Event.all)
     Event
       .where(subject_type: TargetInvestor.name)
       .where(action: %w(investor_opened investor_clicked intro_requested investor_replied))
+      .order(created_at: :desc)
+      .merge(scope)
+  end
+
+  def events_with_meta
+    events(Event.limit(3))
       .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
       .where('target_investors.founder_id = ?', id)
-      .order(created_at: :desc)
       .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name')
-      .limit(3)
   end
 
   private
