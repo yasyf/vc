@@ -332,7 +332,7 @@ class Investor < ApplicationRecord
 
   def review
     cached do
-      url = URI.escape "http://ec2-18-216-2-35.us-east-2.compute.amazonaws.com/api/investors/search?name=#{name}"
+      url = URI.escape "http://knapi-prod.us-east-2.elasticbeanstalk.com/api/investors/search?name=#{name}"
       value = HTTP::Fetch.get_one(url)
       return nil unless value.present?
       response = JSON.parse(value).with_indifferent_access
