@@ -584,6 +584,7 @@ input.placeholded {
       max-width: 350px;
       margin: auto;
       cursor: pointer;
+      box-shadow: 0 0 10px 1px lighten($grey, 25%);
 
       .card-section {
         position: relative;;

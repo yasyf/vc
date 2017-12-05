@@ -67,6 +67,11 @@ end
   klass = Class.new(CompetitorLists::MostRecentIn) do
     define_singleton_method(:industry) { industry }
 
+    def self.eligible?(founder, request)
+      return true unless (company = founder.primary_company).present?
+      !company.industry.include?(industry)
+    end
+
     def self.derived?
       true
     end

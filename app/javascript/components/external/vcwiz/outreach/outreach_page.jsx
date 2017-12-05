@@ -18,7 +18,7 @@ const Modals = {
   INTEGRATION: 'Integration',
 };
 
-const EmailInetegrationModalShown = 'EmailIntegrationModalShown';
+const EmailIntegrationModalShown = 'EmailIntegrationModalShown';
 
 export default class OutreachPage extends React.Component {
   constructor(props) {
@@ -36,8 +36,8 @@ export default class OutreachPage extends React.Component {
 
   componentWillMount() {
     this.subscription = Store.subscribe(StorageRestoreStateKey, restoreState => this.setState({restoreState}));
-    if (!LocalStorage.get(EmailInetegrationModalShown)) {
-      LocalStorage.set(EmailInetegrationModalShown, true);
+    if (!LocalStorage.get(EmailIntegrationModalShown)) {
+      LocalStorage.set(EmailIntegrationModalShown, true);
       this.openEmailIntegrationModal();
     }
   }
