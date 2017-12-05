@@ -33,7 +33,7 @@ module GoogleApi
           process_message message
         end
         unless response.next_page_token.present?
-          @user.update! history_id: h.history_id
+          @user.update! history_id: response.history_id
           break
         end
         response = list_histories response.next_page_token
