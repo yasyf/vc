@@ -12,14 +12,18 @@
   Overall, you've got an average response time of <%= distance_of_time_in_words @stats[:response_time] %>.
 </p>
 
-<p>
-  Here's what happened this week:
-  <ul>
-    <% @events.each do |event| %>
-    <li><%= event.describe.html_safe %></li>
-    <% end %>
-  </ul>
-</p>
+<% if @events.size > 0 %>
+  <p>
+    Here's what happened this week:
+    <ul>
+      <% @events.each do |event| %>
+      <li><%= event.describe.html_safe %></li>
+      <% end %>
+    </ul>
+  </p>
+<% else %>
+  <p>There isn't anything else to report for this week!</p>
+<% end %>
 
 <p>
   Cheers,<br>

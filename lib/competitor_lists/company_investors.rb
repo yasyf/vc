@@ -26,11 +26,7 @@ class CompetitorLists::CompanyInvestors < CompetitorLists::Base::Base
   end
 
   def self.cache_values_span
-    company_ids = Founder
-      .where('logged_in_at > ?', 1.month.ago)
-      .joins(:companies)
-      .where('companies.primary = ?', true)
-      .pluck('DISTINCT companies.id')
+    company_ids = Founder.active.pluck('DISTINCT companies.id')
     Competition.for_companies(company_ids).pluck('DISTINCT companies.id').map { |v| { company_id: v } }
   end
 

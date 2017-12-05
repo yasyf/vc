@@ -36,10 +36,11 @@ Zhong.schedule do
     category 'crawl' do
       every(4.days, 'investors.posts', at: '01:00') { CrawlPostsJob.perform_later }
       every(1.day, 'investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }
-      every((1.5).weeks, 'refresh', at: 'Monday 5:30') { RefreshJob.perform_later }
+      every(1.weeks, 'refresh', at: 'Monday 05:30') { RefreshJob.perform_later }
     end
 
     category 'vcwiz' do
+      every(1.weeks, 'summaries', at: 'Sunday 17:30') { FounderSummaryJob.perform_later }
       every(1.day, 'industry', at: '00:00') { PropagateIndustryJob.perform_later }
       every(1.day, 'clean', at: '01:00') { CompanyCleanJob.perform_later }
       every(1.hours, 'gmail') { FoundersGmailSyncJob.perform_later }
