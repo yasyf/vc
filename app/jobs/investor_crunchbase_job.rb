@@ -11,6 +11,7 @@ class InvestorCrunchbaseJob < ApplicationJob
     investor.populate_from_al!
     investor.crawl_homepage!
     investor.crawl_posts!
+    investor.fetch_news!
     investor.set_timezone!
     investor.set_gender!
     ignore_invalid { investor.save! } if investor.changed?

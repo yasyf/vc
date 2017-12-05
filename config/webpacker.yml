@@ -7,6 +7,7 @@ default: &default
   apps:
     drfvote: internal
     vcwiz: external
+    vcwiz-staging: external
 
   extensions:
     - .coffee
