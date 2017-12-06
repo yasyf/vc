@@ -7,7 +7,9 @@ export default class Typeahead extends React.Component {
   static defaultProps = {
     querySub: 'QUERY',
     minLength: 3,
+    useTether: true,
     onChange: _.noop,
+    onLoading: _.noop,
     onSelect: _.noop,
   };
 
@@ -40,8 +42,13 @@ export default class Typeahead extends React.Component {
     let suggestions = [];
     const onResults = results => {
       suggestions = suggestions.concat(results);
-      this.setState({suggestions});
+      this.setState({suggestions}, () => {
+        if (suggestions.length) {
+          this.props.onLoading(false);
+        }
+      });
     };
+    this.props.onLoading(true);
     this.engine.search(value, onResults, onResults);
   };
 
@@ -62,7 +69,7 @@ export default class Typeahead extends React.Component {
 
   renderSuggestionsContainer = ({ containerProps , children, query }) => {
     return (
-      <Tether className={classNames('typeahead-tether', this.props.tetherClassName)}>
+      <Tether className={classNames('typeahead', 'typeahead-tether', this.props.tetherClassName)}>
         <div {...containerProps} ref={containerProps.ref}>{children}</div>
       </Tether>
     );
@@ -70,7 +77,7 @@ export default class Typeahead extends React.Component {
 
   render() {
     const { suggestions, value } = this.state;
-    const { getSuggestionValue, renderSuggestion, onBlur, placeholder } = this.props;
+    const { getSuggestionValue, renderSuggestion, onBlur, placeholder, useTether } = this.props;
     return (
       <div className="typeahead">
         <Autosuggest
@@ -85,7 +92,7 @@ export default class Typeahead extends React.Component {
             onBlur,
             onChange: this.onChange,
           }}
-          renderSuggestionsContainer={this.renderSuggestionsContainer}
+          renderSuggestionsContainer={useTether ? this.renderSuggestionsContainer : undefined}
           onSuggestionSelected={this.onSuggestionSelected}
           shouldRenderSuggestions={this.shouldRenderSuggestions}
         />

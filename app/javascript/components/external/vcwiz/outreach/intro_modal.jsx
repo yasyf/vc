@@ -7,8 +7,8 @@ import {IntroRequestsPath, SupportEmail} from '../global/constants.js.erb';
 import TextArea from '../global/fields/text_area';
 import Store from '../global/store';
 import Actions from '../global/actions';
-import Loader from '../global/shared/loader';
 import PlaceholderInput from '../global/fields/placeholder_input';
+import StandardLoader from '../global/shared/standard_loader';
 
 const NumStages = 5;
 
@@ -191,12 +191,7 @@ export default class IntroModal extends React.Component {
 
   renderBottom() {
     if (this.state.loading) {
-      return (
-        <div className="loader">
-          <h3>Loading Preview</h3>
-          <Loader spinner="BeatLoader" size={50} />
-        </div>
-      );
+      return <StandardLoader text="Loading Preview" />;
     }
     return <div className="intro-form">{this[`renderStage${this.state.stage}`]()}</div>;
   }

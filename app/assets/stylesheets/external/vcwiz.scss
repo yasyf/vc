@@ -65,6 +65,21 @@ textarea[type='text'] {
   }
 }
 
+.standard-loader {
+  text-align: center;
+
+  .loader {
+    margin: auto;
+    padding-top: 13%;
+
+    .loading-text {
+      color: $success;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+  }
+}
+
 .scroll-shadow {
   background:
           linear-gradient(white 30%, hsla(0,0%,100%, 0)),
@@ -177,6 +192,10 @@ p.tight {
     font-size: 11px;
     text-align: center;
   }
+}
+
+.inline-image {
+  display: inline-block;
 }
 
 .modal-overlay {
@@ -553,8 +572,6 @@ input.placeholded {
 
 .lists {
   .inline-image {
-    display: inline-block;
-
     &:not(:first-child) {
       margin-left: 8px;
     }
@@ -632,8 +649,6 @@ input.placeholded {
       }
 
       .inline-image {
-        display: inline-block;
-
         &:not(:first-child) {
           margin-left: 10px;
         }
@@ -1164,41 +1179,51 @@ mark.highlighter {
   }
 }
 
-.saved-auto-input-tether {
+.typeahead {
+  .react-autosuggest__suggestions-container--open {
+    ul.react-autosuggest__suggestions-list {
+      list-style-type: none;
+      margin-bottom: 0;
+      margin-left: 0;
+    }
+  }
+
+  .react-autosuggest__suggestions-container {
+    padding-top: 20px;
+  }
+
+  .react-autosuggest__suggestion {
+    cursor: pointer;
+  }
+}
+
+.typeahead-tether {
   z-index: 1;
 
-  &.typeahead-tether {
-    .react-autosuggest__suggestions-container {
-      display: none;
-    }
+  .react-autosuggest__suggestions-container {
+    display: none;
+  }
 
-    .react-autosuggest__suggestions-container--open {
-      display: initial;
-      position: absolute;
-      background-color: $white;
-      padding-top: 0;
-      width: 100%;
-      box-shadow: 0 0 1px 1px $grey inset;
+  .react-autosuggest__suggestions-container--open {
+    display: initial;
+    position: absolute;
+    background-color: $white;
+    padding-top: 0;
+    width: 100%;
+    box-shadow: 0 0 1px 1px $grey inset;
 
-      ul.react-autosuggest__suggestions-list {
-        list-style-type: none;
-        margin-bottom: 0;
-        margin-left: 0;
+    li.react-autosuggest__suggestion {
+      padding: 0.3em;
+      width: 98%;
+      margin: auto;
+      font-size: 1.1em;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid $light-grey;
       }
 
-      li.react-autosuggest__suggestion {
-        padding: 0.3em;
-        width: 98%;
-        margin: auto;
-        font-size: 1.1em;
-
-        &:not(:last-child) {
-          border-bottom: 1px solid $light-grey;
-        }
-
-        &:hover {
-          background-color: $lightest-grey;
-        }
+      &:hover {
+        background-color: $lightest-grey;
       }
     }
   }
@@ -1294,16 +1319,6 @@ mark.highlighter {
   }
 }
 
-.typeahead-tether {
-  .react-autosuggest__suggestions-container {
-    padding-top: 20px;
-  }
-
-  .react-autosuggest__suggestion {
-    cursor: pointer;
-  }
-}
-
 .overlay-modal-wrapper {
   position: relative;
   overflow: auto;
@@ -1373,10 +1388,6 @@ mark.highlighter {
     margin-left: 5px;
   }
 
-  .inline-image {
-    display: inline-block;
-  }
-
   .row {
     max-width: unset;
     margin-right: unset;
@@ -1409,6 +1420,16 @@ mark.highlighter {
         margin-bottom: 0;
       }
     }
+  }
+}
+
+.add_investor-modal {
+  &-bottom {
+    input {
+      margin-bottom: 0;
+    }
+
+
   }
 }
 
@@ -1457,16 +1478,6 @@ mark.highlighter {
       input.placeholded, span.placeholder {
         border: 1px solid lighten($grey, 30%);
         border-radius: 10px;
-      }
-    }
-
-    .loader {
-      padding-top: 13%;
-
-      h3 {
-        color: $success;
-        font-weight: bold;
-        text-transform: uppercase;
       }
     }
 
@@ -1566,20 +1577,6 @@ mark.highlighter {
       }
     }
 
-    .loader-wrapper {
-      text-align: center;
-    }
-
-    .loader {
-      margin: auto;
-      padding-top: 13%;
-
-      h3 {
-        color: $success;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-    }
     .import-header {
       min-width: 200px;
     }

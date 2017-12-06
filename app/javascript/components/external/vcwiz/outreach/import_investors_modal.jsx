@@ -4,13 +4,13 @@ import { TargetInvestorsBulkImportPath, TargetInvestorsBulkPollPath, ImportHeade
 import FileInput from '../global/fields/file_input';
 import {ffetch, humanizeList} from '../global/utils';
 import update from 'immutability-helper';
-import Loader from '../global/shared/loader';
 import Select from 'react-select';
 import inflection from 'inflection';
 import {Button, Colors} from 'react-foundation';
 import { Line } from 'rc-progress';
 import Table from '../global/shared/table';
 import Actions from '../global/actions';
+import StandardLoader from '../global/shared/standard_loader';
 
 const Stage = {
   START: 'START',
@@ -227,14 +227,7 @@ export default class ImportInvestorsModal extends React.Component {
   }
 
   renderLoader() {
-    return (
-      <div className="loader-wrapper">
-        <div className="loader">
-          <h3>Loading Preview</h3>
-          <Loader spinner="BeatLoader" size={50} />
-        </div>
-      </div>
-    );
+    return <StandardLoader text="Loading Preview" />;
   }
 
   renderProgress() {
