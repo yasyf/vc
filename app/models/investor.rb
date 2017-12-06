@@ -377,7 +377,12 @@ class Investor < ApplicationRecord
   def import_news(news)
     self.competitor.companies.find_each do |company|
       if news.body.include?(company.name)
-        news.update! company: company
+        begin
+          news.update! company: company
+        rescue ActiveRecord::RecordInvalid
+          news.destroy!
+          next
+        end
         assign_company! company, no_replace: true
       end
     end
