@@ -380,7 +380,6 @@ class Investor < ApplicationRecord
         begin
           news.update! company: company
         rescue ActiveRecord::RecordInvalid
-          news.destroy!
           next
         end
         assign_company! company, no_replace: true
