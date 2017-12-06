@@ -105,4 +105,8 @@ class Util
    end
    "<a href='#{prefix}#{person.send(link)}'>#{person.name}</a>"
  end
+
+  def self.count_lines(filename)
+    `wc -l "#{filename}"`.strip.split(' ')[0].to_i
+  end
 end

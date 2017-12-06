@@ -1,5 +1,5 @@
 class ImportTask < ApplicationRecord
-  MAX_DISTANCE = 2
+  MAX_DISTANCE = 1
   HEADERS = {
     first_name: ['First Name'],
     last_name: ['Last Name'],
@@ -38,7 +38,7 @@ class ImportTask < ApplicationRecord
   end
 
   def preview!
-    csv = ::CSV.foreach(filename, headers: false)
+    csv = CSV.foreach(filename, headers: false, liberal_parsing: true).lazy
     headers = csv.first
     error! 'CSV is empty' and return unless headers.present?
 
@@ -57,7 +57,7 @@ class ImportTask < ApplicationRecord
     update!(
       headers: suggestions,
       samples: csv.drop(1).first(3),
-      total: csv.count - 1,
+      total:  Util.count_lines(filename) - 1,
       header_row: (headers if suggestions.present?),
     )
   end
@@ -67,15 +67,19 @@ class ImportTask < ApplicationRecord
   end
 
   def import!
-    ::CSV.foreach(filename) do |raw|
-      increment! :imported
-      next if header_row? && imported == 1
-      import_row! raw
+    File.open(filename) do |f|
+      f.each_line.lazy.drop(header_row? ? 1 : 0).each_with_index do |line, i|
+        begin
+          CSV.parse(line, liberal_parsing: false) do |raw|
+            TargetInvestorImportRowJob.perform_later(self.id, raw)
+          end
+        rescue CSV::MalformedCSVError
+          with_lock { self.reload.errored << i and save! }
+          bump_imported!
+        end
+      end
     end
-    update! complete: true
   end
-
-  private
 
   def import_row!(raw)
     row = raw
@@ -86,22 +90,34 @@ class ImportTask < ApplicationRecord
       .with_indifferent_access
     name = (row[:name] || '').split(' ')
     email = Mail::Address.new(row[:email]).address rescue nil
-    TargetInvestor.create!(
-      founder: founder,
-      first_name: row[:first_name] || name.first,
-      last_name: row[:last_name] || name.drop(1).join(' '),
-      firm_name: row[:firm],
-      role: row[:role],
-      email: email,
-      note: row[:note]
-    )
+    Founder.no_touching do
+      TargetInvestor.create!(
+        founder: founder,
+        first_name: row[:first_name] || name.first,
+        last_name: row[:last_name] || name.drop(1).join(' '),
+        firm_name: row[:firm],
+        role: row[:role],
+        email: email,
+        note: row[:note]
+      )
+    end
   rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
-    self.errored << raw
+    with_lock { self.reload.duplicates << raw and save! }
+    save!
     nil
+  ensure
+    bump_imported!
+    update! complete: true if self.reload.imported == self.total
   end
 
-  def error!(message, rows = [])
-    update! error_message: message, errored: rows
+  private
+
+  def bump_imported!
+    self.class.increment_counter :imported, self.id
+  end
+
+  def error!(message)
+    update! error_message: message
   end
 
   def bucket_path

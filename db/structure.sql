@@ -455,9 +455,10 @@ CREATE TABLE import_tasks (
     total integer,
     imported integer,
     error_message character varying,
-    errored jsonb[] DEFAULT '{}'::jsonb[],
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    errored integer[] DEFAULT '{}'::integer[],
+    duplicates jsonb[] DEFAULT '{}'::jsonb[]
 );
 
 
@@ -2803,6 +2804,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171123005005'),
 ('20171204091614'),
 ('20171204092443'),
-('20171206074352');
+('20171206074352'),
+('20171206103132');
 
 

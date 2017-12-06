@@ -1102,7 +1102,7 @@ mark.highlighter {
     span.placeholder {
       display: block;
       line-height: 75px;
-      color: $light-grey;
+      color: darken($light-grey, 20%);
     }
 
     input.placeholded, span.placeholder {

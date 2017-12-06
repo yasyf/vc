@@ -57,12 +57,12 @@ export default class ImportInvestorsModal extends React.Component {
   };
 
   startImportPolling = () => {
-    this.startPolling(this.state.id, ({imported, complete, errored}) => {
+    this.startPolling(this.state.id, ({imported, complete, duplicates, errored}) => {
       if (imported !== this.state.imported) {
         this.setState({imported});
       }
       if (complete) {
-        this.setState({errored, stage: Stage.DONE});
+        this.setState({errored, duplicates, stage: Stage.DONE});
         return true;
       } else {
         return false;
@@ -110,6 +110,10 @@ export default class ImportInvestorsModal extends React.Component {
     if (used.includes('first_name') || used.includes('last_name')) {
       _.remove(options, {value: 'name'});
     }
+    if (used.includes('name')) {
+      _.remove(options, {value: 'first_name'});
+      _.remove(options, {value: 'last_name'});
+    }
     if (i !== -1 && this.state.headers[i]) {
       options.push(_.find(ImportHeadersOptions, {value: this.state.headers[i]}));
     }
@@ -128,7 +132,7 @@ export default class ImportInvestorsModal extends React.Component {
   renderRemaining() {
     const options = this.options(-1);
     if (!options.length) {
-      return null;
+      return <span>You've assigned all the columns!</span>;
     }
     return (
       <span>
@@ -143,16 +147,17 @@ export default class ImportInvestorsModal extends React.Component {
       return (
         <div className="button-wrapper" key="button">
           <p>
-            Below is a preview of your import (there's a total of {total} rows).
-            We've tried to figure out which of your columns match up with ours, but we need a little help!
-            Please use the dropdowns above each column to show us your setup.
+            Below is a preview of your import. There's a total of {total} rows.
           </p>
           <p>
+            We've tried to figure out which of your columns match up with ours, but we need a little help!
+            Please use the dropdowns above each column to show us your setup.
             We probably won't support all your columns, and you might not have all of ours.
+          </p>
+          <p>
             {' '}
             {this.renderRemaining()}
             {' '}
-            Once you're finished, hit the button below!
           </p>
           <Button color={Colors.SUCCESS} onClick={this.onClick}>
             Finish Import
@@ -237,20 +242,40 @@ export default class ImportInvestorsModal extends React.Component {
     );
   }
 
-  renderErrors() {
-    const { errored, headerRow } = this.state;
-    if (!errored) {
+  renderDuplicates() {
+    const { duplicates, headerRow } = this.state;
+    if (!duplicates.length) {
       return null;
     }
-    return <Table headers={headerRow} rows={errored} headerClass="error-header" />;
+    return (
+      <div>
+        <p>There were {duplicates.length} duplicates (shown below), which were not imported.</p>
+        <Table headers={headerRow} rows={duplicates} headerClass="error-header" />
+      </div>
+    );
+  }
+
+  renderErrors() {
+    const { errored } = this.state;
+    if (!errored.length) {
+      return 'There were no errors.';
+    } else {
+      return (
+        <span>
+          There {inflection.inflect('were', errored.length, 'was')} {errored.length} {inflection.inflect('errors', errored.length)}.
+          {' '}
+          {inflection.inflect('Lines', errored.length)} {humanizeList(errored)} {inflection.inflect('are', errored.length, 'is')} invalid!
+        </span>
+      );
+    }
   }
 
   renderDone() {
-    const { imported, errored } = this.state;
+    const { imported } = this.state;
     return (
       <div className="main">
-        We successfully imported <b>{imported}</b> investors. There were {errored.length || 'no'} errors.
-        {this.renderErrors()}
+        We successfully imported <b>{imported}</b> investors. {this.renderErrors()}
+        {this.renderDuplicates()}
       </div>
     )
   }
