@@ -17,7 +17,8 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def interactions
-    render json: { interactions: Investor.find(params[:id]).interactions(current_external_founder) }
+    interactions = external_founder_signed_in? ? Investor.find(params[:id]).interactions(current_external_founder) : {}
+    render json: { interactions: interactions }
   end
 
   def review
