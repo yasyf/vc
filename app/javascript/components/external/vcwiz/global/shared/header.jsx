@@ -155,6 +155,7 @@ export default class Header extends React.Component {
             <h2 className="subtitle">Raise your seed round with VCWiz.</h2>
             <p className="subtitle">
               VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors.
+              Sign up for conversation tracking, email integrations, and personalized recommendations!
             </p>
           </div>
           <div className="benefits">
