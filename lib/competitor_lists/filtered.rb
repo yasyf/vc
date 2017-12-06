@@ -30,9 +30,9 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
       INNER JOIN competitors on investors.competitor_id = competitors.id
       WHERE
         #{[
-          first_name && "investors.first_name % '#{first_name}'",
-          last_name && "investors.last_name % '#{last_name}'",
-          firm_name && "competitors.name % '#{firm_name}'",
+          first_name && "((investors.first_name % '#{first_name}') OR (investors.first_name ILIKE '#{first_name}%'))",
+          last_name && "((investors.last_name % '#{last_name}') OR (investors.last_name ILIKE '#{last_name}%'))",
+          firm_name && "((competitors.name % '#{firm_name}') OR (competitors.name ILIKE '#{firm_name}%'))",
         ].compact.join(' AND ')}
       ORDER BY rank DESC
     SQL

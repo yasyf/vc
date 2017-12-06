@@ -15,10 +15,29 @@ class FounderEnhanceJob < ApplicationJob
       update_location_info founder
     end
 
-    founder.save! if founder.changed?
+    begin
+      founder.save! if founder.changed?
+    rescue ActiveRecord::RecordInvalid => e
+      raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
+      attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
+      other = Founder.where(attrs).first
+      raise if other.logged_in_at.present?
+      migrate_founder(founder, other)
+    end
   end
 
   private
+
+  def migrate_founder(founder, other)
+    other.companies.find_each do |company|
+      founder.companies << company unless founder.companies.include?(company)
+    end
+    other.entities.find_each do |entity|
+      founder.entities << entity unless founder.entities.include?(entity)
+    end
+    other.destroy!
+    founder.save!
+  end
 
   def update_location_info(founder)
     founder.city = Http::Freegeoip.new(founder.ip_address).locate['city'] if founder.ip_address.present?

@@ -22,6 +22,7 @@ export default class ImageTextCell extends TextCell {
   }
 
   renderImage() {
+    // TODO: hover to delete
     return (
       <ProfileImage
         src={this.state.src}

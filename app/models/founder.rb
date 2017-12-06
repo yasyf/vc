@@ -8,16 +8,20 @@ class Founder < ApplicationRecord
 
   has_and_belongs_to_many :companies, -> { distinct }
   has_many :notes
-  has_many :import_tasks
+  has_many :import_tasks, dependent: :destroy
   has_many :emails, dependent: :destroy
   has_many :intro_requests, -> { where(pending: false) }, dependent: :destroy
   has_many :target_investors, dependent: :destroy
-  has_many :person_entities, as: :person
+  has_many :person_entities, as: :person, dependent: :destroy
   has_many :entities, through: :person_entities
 
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email, uniqueness: { allow_nil: true }
+  validates :facebook, uniqueness: { allow_nil: true }
+  validates :twitter, uniqueness: { allow_nil: true }
+  validates :linkedin, uniqueness: { allow_nil: true }
+  validates :homepage, uniqueness: { allow_nil: true }
 
   before_validation :normalize_city
   after_commit :start_augment_job, on: :create

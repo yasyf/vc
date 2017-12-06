@@ -1635,10 +1635,31 @@ ALTER TABLE ONLY votes
 
 
 --
+-- Name: companies_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX companies_name_gin_trgm_idx ON companies USING gin (name gin_trgm_ops);
+
+
+--
 -- Name: companies_to_tsvector_idx; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX companies_to_tsvector_idx ON companies USING gin (to_tsvector('english'::regconfig, (name)::text));
+
+
+--
+-- Name: competitors_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX competitors_name_gin_trgm_idx ON competitors USING gin (name gin_trgm_ops);
+
+
+--
+-- Name: founders_city_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX founders_city_gin_trgm_idx ON founders USING gin (city gin_trgm_ops);
 
 
 --
@@ -2314,24 +2335,24 @@ CREATE INDEX index_votes_on_user_id ON votes USING btree (user_id);
 
 
 --
--- Name: trgm_first_name_indx; Type: INDEX; Schema: public; Owner: -
+-- Name: investors_first_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX trgm_first_name_indx ON investors USING gist (first_name gist_trgm_ops);
-
-
---
--- Name: trgm_last_name_indx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX trgm_last_name_indx ON investors USING gist (last_name gist_trgm_ops);
+CREATE INDEX investors_first_name_gin_trgm_idx ON investors USING gin (first_name gin_trgm_ops);
 
 
 --
--- Name: trgm_name_indx; Type: INDEX; Schema: public; Owner: -
+-- Name: investors_last_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX trgm_name_indx ON competitors USING gist (name gist_trgm_ops);
+CREATE INDEX investors_last_name_gin_trgm_idx ON investors USING gin (last_name gin_trgm_ops);
+
+
+--
+-- Name: investors_location_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX investors_location_gin_trgm_idx ON investors USING gin (location gin_trgm_ops);
 
 
 --
@@ -2781,6 +2802,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171123002740'),
 ('20171123005005'),
 ('20171204091614'),
-('20171204092443');
+('20171204092443'),
+('20171206074352');
 
 
