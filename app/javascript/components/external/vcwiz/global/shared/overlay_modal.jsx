@@ -48,7 +48,7 @@ export default class OverlayModal extends React.Component {
     if (!this.props.showClose) {
       return null;
     }
-    return <div className="close-icon" onClick={this.props.onClose}><i className="fi-x" /></div>;
+    return <div className="close-icon" onClick={this.props.onClose}>x</div>;
   }
 
   render() {

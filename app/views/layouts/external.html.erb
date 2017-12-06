@@ -26,6 +26,7 @@
   <![endif]-->
 
   <%= include_gon(camel_case: true, init: true) %>
+  <script>window.flashes = <%= foundation_flashes.to_json.html_safe %>;</script>
   <script>window.WebpackerReactQueue = [];</script>
   <% if Rails.env.production? && content_for?(:logrocket) %>
     <%= logrocket_key(yield(:logrocket)) %>
@@ -46,14 +47,6 @@
   <meta name="theme-color" content="#3074EE">
 </head>
 <body>
-  <% foundation_flashes.each do |(type, message)| %>
-    <div class="callout <%= type %>" data-closable>
-      <h5><%= message %></h5>
-      <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  <% end %>
   <%= content_for?(:content) ? yield(:content) : yield %>
 </body>
 </html>

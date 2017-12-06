@@ -14,8 +14,13 @@ class External::AuthController < Devise::OmniauthCallbacksController
         session.delete(:signup_data)
         founder.ensure_target_investors!
       end
-      cookies.permanent[:login_domain] = founder.domain
-      sign_in_and_redirect founder, event: :authentication
+      if founder.primary_company.blank? && session[:signup_data].blank?
+        set_flash_message :alert, :failure, kind: 'Google', reason: "you don't have an account yet"
+        redirect_to external_vcwiz_root_path
+      else
+        cookies.permanent[:login_domain] = founder.domain
+        sign_in_and_redirect founder, event: :authentication
+      end
     else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'an error occurred'
       redirect_to external_vcwiz_root_path
@@ -27,6 +32,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
     founder = Founder.from_omniauth(auth)
     if founder == current_external_founder
       FounderGmailSyncJob.new(founder.id).enqueue(queue: :high)
+      flash[:success] = 'The VCWiz Inbox Scanner has been enabled! As you send emails to investors, this tracker will update.'
     else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'that user is not logged in'
     end

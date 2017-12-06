@@ -15,6 +15,7 @@ import Actions from '../actions';
 import classNames from 'classnames';
 import OutreachBar from './outreach_bar';
 import SettingsModal from '../settings/settings_modal';
+import Flash from './flash';
 
 export default class Header extends React.Component {
   static defaultProps = {
@@ -181,6 +182,10 @@ export default class Header extends React.Component {
     );
   }
 
+  renderFlashes() {
+    return window.flashes.map((flash, i) => <Flash key={i} {...flash} />);
+  }
+
   renderBar() {
     if (!this.props.showIntro) {
       return null;
@@ -223,6 +228,7 @@ export default class Header extends React.Component {
         {this.renderSettingsModal()}
         <header id="top-header">
           {this.renderHeader()}
+          {this.renderFlashes()}
           {this.renderBar()}
         </header>
       </div>

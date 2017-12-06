@@ -111,24 +111,11 @@ export default class OutreachPage extends React.Component {
     }
   }
 
-  renderInfo() {
-    const { restoreState } = this.state;
-    if (!restoreState || !restoreState.breadcrumb || restoreState.breadcrumb.name !== 'email_integration') {
-      return null;
-    }
-    return (
-      <p className="info">
-        The VCWiz Inbox Scanner has been enabled! As you send emails to investors, this tracker will update.
-      </p>
-    );
-  }
-
   renderHeader() {
     return (
       <Row>
         <Column large={8}>
           <h3>My Conversations</h3>
-          {this.renderInfo()}
         </Column>
         <Column large={4}>
           <div className="actions">

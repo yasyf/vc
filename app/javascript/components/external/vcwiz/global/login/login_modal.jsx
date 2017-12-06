@@ -204,11 +204,12 @@ export default class LoginModal extends React.Component {
 
   renderStage3() {
     return [
-      <p className="info" key="text">Login with your company email address to secure your account</p>,
+      <p className="info" key="text">Login with your company email address to secure your account.</p>,
       <HiddenForm key="form" data={this.state.data} formRef={form => { this.form = form; }} path={this.state.path} />,
-      <Button color={Colors.SUCCESS} onClick={this.loginWithGoogle} key="button">
-        Login with Google
-      </Button>,
+      <div key="button" className="text-center">
+        <Button className="google" onClick={this.loginWithGoogle}>
+        </Button>
+      </div>,
     ];
   }
 

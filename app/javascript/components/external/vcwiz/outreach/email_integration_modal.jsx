@@ -38,7 +38,7 @@ export default class EmailIntegrationModal extends React.Component {
           Don't worry, VCWiz will never read any of your emails! It only looks at senders and recipients.
         </p>
         <Button color={Colors.SUCCESS} onClick={this.authWithGoogle}>
-          Enable Inbox Scanner
+          Enable Inbox Scanner With Google
         </Button>
       </div>
     );

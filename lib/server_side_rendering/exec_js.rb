@@ -1,6 +1,8 @@
 # this is heavily influenced by react-rails:
 # https://github.com/reactjs/react-rails/blob/master/lib/react/server_rendering/exec_js_renderer.rb
 class ServerSideRendering::ExecJs
+  include External::ApplicationHelper
+
   JS_TEMPLATE = <<~JS
     var execJsGlobal = {};
     var global = global || this;
@@ -29,6 +31,7 @@ class ServerSideRendering::ExecJs
     js_code = <<~JS
       (function() {
         #{gon_data}
+        window.flashes = #{foundation_flashes.to_json};
         var component = execJsGlobal.Components["#{component_name}"];
         var element = execJsGlobal.React.createElement(component, #{props.to_json});
         var html = execJsGlobal.ReactDOMServer.renderToString(element);

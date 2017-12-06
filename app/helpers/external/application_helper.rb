@@ -29,7 +29,7 @@ module External::ApplicationHelper
       return nil if messages.blank?
       type = foundation_flash_type level
       Array.wrap(messages).map do |m|
-        [type, m]
+        {type: type, message: m}
       end
     end.compact
   end

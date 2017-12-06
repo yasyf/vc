@@ -18,6 +18,8 @@ $red: #E8441E;
 $purple: #AE2CFF;
 $dark: #363844;
 
+$top-bar: #113277;
+
 $discover: #D97FF2;
 $discover-icon: #9D47B4;
 
@@ -36,6 +38,24 @@ html, body, .full-screen {
 
 textarea[type='text'] {
   height: 5em;
+}
+
+div.callout {
+  margin-bottom: 0;
+  box-shadow: 0 0 10px 1px $success;
+  background-color: $top-bar !important;
+
+  h5 {
+    margin-bottom: 0;
+  }
+
+  &.success {
+    color: lighten($green, 25%);
+  }
+
+  &.alert {
+    color: lighten($red, 25%);
+  }
 }
 
 .full-width {
@@ -117,6 +137,12 @@ body.ReactModal__Body--open {
 
 p.tight {
   margin-bottom: 5px;
+}
+
+.button.google {
+  background: url(image_path("btn_google_signin_dark_normal_web.png")) no-repeat center;
+  width: 191px;
+  height: 46px;
 }
 
 .button.success {
@@ -229,14 +255,10 @@ p.tight {
     border-radius: 50%;
     border: 1px solid $grey;
     color: darken($grey, 25%);
-
-    i {
-      font-size: 30px;
-      cursor: pointer;
-      position: relative;
-      bottom: 6px;
-      left: 6px;
-    }
+    text-align: center;
+    line-height: 25px;
+    font-size: xx-large;
+    cursor: pointer;
   }
 }
 
@@ -424,7 +446,7 @@ i.reversed::before {
 
 #top-bar {
   height: 85px;
-  background: #113277;
+  background: $top-bar;
 
   .title {
     cursor: pointer;
