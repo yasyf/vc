@@ -18,6 +18,7 @@ const Stage = {
   LOADED: 'LOADED',
   IMPORTING: 'IMPORTING',
   DONE: 'DONE',
+  ERROR: 'ERROR',
 };
 
 export default class ImportInvestorsModal extends React.Component {
@@ -30,6 +31,7 @@ export default class ImportInvestorsModal extends React.Component {
     headers: {},
     total: 1,
     imported: 0,
+    error_message: null,
   };
 
   componentWillUnmount() {
@@ -47,7 +49,11 @@ export default class ImportInvestorsModal extends React.Component {
   };
 
   startLoadingPolling = id => {
-    this.startPolling(id, ({id, samples, headers, header_row, total}) => {
+    this.startPolling(id, ({id, samples, headers, header_row, total, error_message}) => {
+      if (error_message) {
+        this.setState({error_message, stage: Stage.ERROR});
+        return true;
+      }
       if (!total) {
         return false;
       }
@@ -277,7 +283,17 @@ export default class ImportInvestorsModal extends React.Component {
         We successfully imported <b>{imported}</b> investors. {this.renderErrors()}
         {this.renderDuplicates()}
       </div>
-    )
+    );
+  }
+
+  renderError() {
+    const { error_message } = this.state;
+    return (
+      <div className="main">
+        <p>We're unable to complete your import, due to the following error.</p>
+        <p className="error">{error_message}</p>
+      </div>
+    );
   }
 
   renderBottom() {
@@ -292,6 +308,8 @@ export default class ImportInvestorsModal extends React.Component {
         return this.renderProgress();
       case Stage.DONE:
         return this.renderDone();
+      case Stage.ERROR:
+        return this.renderError();
       default:
         return null;
     }

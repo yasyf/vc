@@ -1519,6 +1519,10 @@ mark.highlighter {
       p {
         margin-bottom: 1rem;
       }
+
+      p.error {
+        color: $red;
+      }
     }
 
     .progress-wrapper {

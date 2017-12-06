@@ -1,5 +1,6 @@
 class ImportTask < ApplicationRecord
   MAX_DISTANCE = 1
+  MAX_ROWS = 300
   HEADERS = {
     first_name: ['First Name'],
     last_name: ['Last Name'],
@@ -40,7 +41,10 @@ class ImportTask < ApplicationRecord
   def preview!
     csv = CSV.foreach(filename, headers: false, liberal_parsing: true).lazy
     headers = csv.first
-    error! 'CSV is empty' and return unless headers.present?
+    error! 'Your CSV is empty.' and return unless headers.present?
+
+    total = Util.count_lines(filename) - 1
+    error! "Your CSV is too large! There are #{total} rows, which is larger than the maximum of #{MAX_ROWS}." and return if total > MAX_ROWS
 
     suggestions = headers.each_with_index.with_object({}) do |(header, i), suggestions|
       next unless header.present?
@@ -57,7 +61,7 @@ class ImportTask < ApplicationRecord
     update!(
       headers: suggestions,
       samples: csv.drop(1).first(3),
-      total:  Util.count_lines(filename) - 1,
+      total:  total,
       header_row: (headers if suggestions.present?),
     )
   end
