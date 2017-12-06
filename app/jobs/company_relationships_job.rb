@@ -123,7 +123,9 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.board_members_and_advisors.each do |person|
-      id = person['relationships']['person']['properties']['permalink']
+      person = person['relationships']['person']
+      next unless person.present?
+      id = person['properties']['permalink']
       competitor = competitor_from_person_id(id)
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       if (investor = Investor.from_crunchbase(id)).present?
