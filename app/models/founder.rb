@@ -168,7 +168,7 @@ class Founder < ApplicationRecord
   end
 
   def linkedin=(linkedin)
-    super linkedin.split('/')[4] || linkedin
+    super (linkedin && linkedin.split('/')[4]) || linkedin
   end
 
   def twitter=(twitter)
