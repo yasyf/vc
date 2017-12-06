@@ -74,7 +74,7 @@ class ImportTask < ApplicationRecord
     File.open(filename) do |f|
       f.each_line.lazy.drop(header_row? ? 1 : 0).each_with_index do |line, i|
         begin
-          CSV.parse(line, liberal_parsing: false) do |raw|
+          CSV.parse(line, liberal_parsing: true) do |raw|
             TargetInvestorImportRowJob.perform_later(self.id, raw)
           end
         rescue CSV::MalformedCSVError
