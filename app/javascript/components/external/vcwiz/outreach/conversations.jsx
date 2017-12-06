@@ -52,6 +52,7 @@ export default class Conversations extends React.Component {
               break;
           }
         }}
+        isFaded={row => row.stage === _.last(TargetInvestorStagesKeys)}
         table={ConversationsTable}
         {...rest}
       />

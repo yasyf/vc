@@ -32,6 +32,7 @@ export default class FixedTable extends React.Component {
         cell={
           <CellComponent
             data={this.props.array}
+            isFaded={this.props.isFaded}
             onClick={(trackClicks && this.onCellClick(key)) || undefined}
             {...props}
           />

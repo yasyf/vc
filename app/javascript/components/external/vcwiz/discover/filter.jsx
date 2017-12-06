@@ -69,7 +69,6 @@ export default class Filter extends React.Component {
       filterOption: filterOption,
       openOnFocus: true,
       closeOnSelect: false,
-      onSelectResetsInput: false,
       scrollMenuIntoView: false,
       name: name,
       placeholder: 'Start typing...',

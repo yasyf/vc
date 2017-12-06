@@ -50,7 +50,7 @@ class External::VcwizController < External::ApplicationController
     targets = current_external_founder
       .target_investors
       .includes(*External::Api::V1::TargetInvestorsController::INCLUDES)
-      .order(updated_at: :desc)
+      .order(stage: :asc, updated_at: :desc)
       .limit(10)
       .as_json
 

@@ -2,6 +2,7 @@ import React from 'react';
 import {Cell} from 'fixed-data-table-2';
 import {Textfit} from 'react-textfit';
 import ReactPlaceholder from 'react-placeholder';
+import classNames from 'classnames';
 
 let TextCellFactory = (superclass) => class extends superclass {
   static defaultProps = {
@@ -14,6 +15,7 @@ let TextCellFactory = (superclass) => class extends superclass {
     super(props);
 
     this.state = {
+      faded: false,
       loading: true,
       value: null,
     };
@@ -33,9 +35,10 @@ let TextCellFactory = (superclass) => class extends superclass {
   updateValue(props) {
     let row = props.data.getSync(props.rowIndex);
     if (row) {
-      this.setState({loading: false, ...this.processRow(props, row)});
+      const faded = props.isFaded ? props.isFaded(row) : false;
+      this.setState({loading: false, faded, ...this.processRow(props, row)});
     } else {
-      this.setState({loading: true});
+      this.setState({loading: true, faded: false});
     }
   }
 
@@ -57,9 +60,9 @@ let TextCellFactory = (superclass) => class extends superclass {
     }
     return (
       <Textfit mode="single" min={this.props.min} max={this.props.max}>
-        <div className="textfit-cell">
+        <span className="textfit-cell">
           {this.state.value}
-        </div>
+        </span>
       </Textfit>
     );
   }
@@ -76,10 +79,11 @@ let TextCellFactory = (superclass) => class extends superclass {
 
   render() {
     const { height, width, columnKey, rowIndex } = this.props;
+    const { faded } = this.state;
     return (
       <ReactPlaceholder {...this.placeholderProps()}>
         <Cell {...{height, width, columnKey, rowIndex}}>
-          <div className="cell-wrapper" onClick={this.onClick}>
+          <div className={classNames('cell-wrapper', {faded})} onClick={this.onClick}>
             {this.renderValue()}
           </div>
         </Cell>

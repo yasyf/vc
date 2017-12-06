@@ -130,7 +130,7 @@ export default class OutreachPage extends React.Component {
           <h3>My Conversations</h3>
           {this.renderInfo()}
         </Column>
-        <Column offsetOnLarge={1} large={3}>
+        <Column large={4}>
           <div className="actions">
             <a onClick={this.openAddModal}>Add investor</a>
             <span className="sep">|</span>

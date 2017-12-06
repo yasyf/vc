@@ -14,6 +14,10 @@ export default class Track extends React.Component {
     Actions.trigger('signup');
   };
 
+  renderOption = option => {
+    return <span className={`track-option-${option.value.substr(2)}`}>{option.label}</span>;
+  };
+
   render() {
     if (isLoggedIn()) {
       return (
@@ -25,9 +29,12 @@ export default class Track extends React.Component {
             multi={false}
             searchable={false}
             scrollMenuIntoView={false}
-            onChange={this.props.onChange}
+            tetherClassName="track-select-tether"
             options={TargetInvestorStagesOptions}
             arrowRenderer={this.props.value ? undefined : null}
+            optionRenderer={this.renderOption}
+            valueRenderer={this.renderOption}
+            onChange={this.props.onChange}
           />
         </div>
       );

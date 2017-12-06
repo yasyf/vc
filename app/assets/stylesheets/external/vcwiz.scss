@@ -15,6 +15,7 @@ $secondary-dark: darken(#2ADBC4, 10%);
 $green: #34BF20;
 $blue: #0D71E9;
 $red: #E8441E;
+$purple: #AE2CFF;
 $dark: #363844;
 
 $discover: #D97FF2;
@@ -1052,7 +1053,6 @@ mark.highlighter {
   .textfit-cell {
     width: 95%;
     height: 100%;
-    white-space: normal;
   }
 
   .text-block, .media-block {
@@ -1064,6 +1064,10 @@ mark.highlighter {
     cursor: pointer;
     padding-top: 10px;
     padding-bottom: 10px;
+  }
+
+  .faded {
+    opacity: 0.3;
   }
 
   .track-cell {
@@ -1197,6 +1201,33 @@ mark.highlighter {
         }
       }
     }
+  }
+}
+
+.track-option {
+  &-added, &-intro {
+    color: $success;
+  }
+
+  &-waiting, &-respond {
+    color: $purple;
+  }
+
+  &-pitch, &-interested {
+    color: $green;
+  }
+
+  &-pass, &-removed {
+    color: $red;
+  }
+}
+
+.track-select-tether {
+  .Select-menu-outer {
+    width: calc(100% - 1em);
+    border-radius: 5%;
+    overflow: hidden;
+    margin-left: 0.5em;
   }
 }
 

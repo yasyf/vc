@@ -22,7 +22,6 @@ export default class ImageTextCell extends TextCell {
   }
 
   renderImage() {
-    // TODO: hover to delete
     return (
       <ProfileImage
         src={this.state.src}
@@ -42,10 +41,11 @@ export default class ImageTextCell extends TextCell {
           width: `calc(95% - ${this.props.size}px - 1rem)`
         }}>
           <Textfit mode="single" min={this.props.min} max={this.props.max}>
-            <div className="textfit-cell">
+            <span className="textfit-cell">
               {this.state.value}
-              <div className="subheading">{this.state.subValue}</div>
-            </div>
+              {this.state.subValue && <br />}
+              <span className="subheading">{this.state.subValue}</span>
+            </span>
           </Textfit>
         </div>
       </div>

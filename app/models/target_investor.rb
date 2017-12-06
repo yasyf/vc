@@ -10,9 +10,9 @@ class TargetInvestor < ApplicationRecord
   INVESTOR_FIELDS = %w(firm_name first_name last_name)
 
   DUMMY_ATTRS = {
-    firm_name: 'Demo Capital',
-    first_name: 'Jane',
-    last_name: 'Risk',
+    firm_name: 'Example Firm',
+    first_name: 'Demo',
+    last_name: 'Investor',
     role: 'Managing Partner',
     stage: 0,
     industry: [:saas, :ai, :food],
@@ -31,6 +31,7 @@ class TargetInvestor < ApplicationRecord
     pitch: ['Pitching', :pitching],
     interested: ['Committed', :committed],
     pass: ['Passed', :passed],
+    removed: ['Not Interested', :removed],
   }
 
   STAGES_WITH_CATEGORIES = RAW_STAGES.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h
