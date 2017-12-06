@@ -19,6 +19,6 @@ class CompetitorLists::MostPopularCurrent < CompetitorLists::MostPopular
   end
 
   def _sql
-    self.class._sql(city: request.session[:city])
+    self.class._sql(city: @request.session[:city])
   end
 end
