@@ -37,7 +37,7 @@ module Http::Crunchbase
 
     def university
       degrees = get_in 'relationships', 'degrees', multi: true
-      return nil unless degrees.present? && (school = degrees.last['relationships']['school']).present?
+      return nil unless degrees.present? && degrees.last.present? && (school = degrees.last['relationships']['school']).present?
       school['properties']['name']
     end
 
