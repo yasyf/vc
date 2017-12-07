@@ -6,9 +6,7 @@ class CardSyncJob < ApplicationJob
   def perform(team, card_data, deep: false, quiet: true)
     card_data = card_data.with_indifferent_access
 
-    users = users_from_card_data team, card_data
     list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
-
     card = Card.where(trello_id: card_data[:trello_id]).first_or_initialize
     card.company ||= Company.where(name: card_data[:name]).first_or_initialize
 
@@ -17,7 +15,7 @@ class CardSyncJob < ApplicationJob
 
     company.team = team
     card.list = list
-    company.users = users if users.present?
+    company.users = users if (users = users_from_card_data(team, card)).present?
     company.save!
 
     if (pitch&.card != card) && card_data[:pitch_on].present?
@@ -76,8 +74,8 @@ class CardSyncJob < ApplicationJob
     end
   end
 
-  def users_from_card_data(team, card_data)
-    ::Trello::Card.find(card_data[:id]).members.map do |member|
+  def users_from_card_data(team, card)
+    card.members.map do |member|
       User.from_trello(member.id).tap do |user|
         if user.present?
           user.team ||= team

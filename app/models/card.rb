@@ -42,6 +42,10 @@ class Card < ApplicationRecord
     trello_card.add_comment "**[DRFBot]** #{comment}"
   end
 
+  def members
+    @members ||= trello_card.members
+  end
+
   private
 
   def trello_card
