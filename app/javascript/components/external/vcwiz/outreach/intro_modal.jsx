@@ -112,11 +112,11 @@ export default class IntroModal extends React.Component {
     );
   }
 
-  renderStandardButton(disabled = false) {
+  renderStandardButton(disabled = false, text = null) {
     const { stage } = this.state;
     return (
       <Button color={Colors.SUCCESS} onClick={disabled ? undefined : this.nextStage} isDisabled={disabled} key="button">
-        Continue to Step {stage + 2} of {NumStages}
+        {text || `Continue to Step ${stage + 2} of ${NumStages}`}
       </Button>
     );
   }
@@ -147,12 +147,13 @@ export default class IntroModal extends React.Component {
     const { intro } = this.state;
     const { first_name, firm_name } = this.props.item;
     const founder = Store.get('founder', {});
+    const charsRemaining = (intro.context && intro.context.length < 50) && `Your context needs ${50 - intro.context.length} more characters.`;
     return [
       <p key="info">
         Please provide a brief context blurb, which helps customize the email for this particular investor.
       </p>,
       this.renderTextArea('context', `Hey ${first_name}! My name is ${founder.first_name} and I think ${founder.primary_company.name} is a great fit for ${firm_name} because...`),
-      this.renderStandardButton(!intro.context || intro.context.length < 50),
+      this.renderStandardButton(!intro.context || intro.context.length < 50, charsRemaining),
     ];
   }
 

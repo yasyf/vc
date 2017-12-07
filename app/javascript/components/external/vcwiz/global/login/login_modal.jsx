@@ -185,12 +185,13 @@ export default class LoginModal extends React.Component {
 
   renderStage1() {
     const description = this.state.data.description;
+    const charsRemaining = (description && description.length < 50) && `Your description needs ${50 - description.length} more characters.`;
     return [
       <p className="info" key="text">What's your Startup?</p>,
       this.renderInput('name', 'Company Name'),
       this.renderTextArea('description', 'A short description that will help investors better understand your startup'),
       this.renderFilters(['industry', 'companies']),
-      this.renderStandardButton(description && description.length > 50),
+      this.renderStandardButton(description && description.length > 50, charsRemaining),
     ];
   }
 
@@ -213,13 +214,13 @@ export default class LoginModal extends React.Component {
     ];
   }
 
-  renderStandardButton(isEnabled = true) {
+  renderStandardButton(isEnabled = true, text = null) {
     const { stage } = this.state;
     const enabled = isEnabled && _.every(_.map(RequiredFields[stage], f => this.state.data[f]), Boolean);
     return (
       <Row key="button" isColumn>
         <Button color={Colors.SUCCESS} onClick={enabled ? this.nextStage : undefined} isDisabled={!enabled}>
-          Continue to Step {stage + 2} of {NumStages}
+          {text || `Continue to Step ${stage + 2} of ${NumStages}`}
         </Button>
       </Row>
     );
