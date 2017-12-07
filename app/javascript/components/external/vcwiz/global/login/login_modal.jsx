@@ -2,7 +2,10 @@ import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import Input from '../fields/input';
 import Filters from '../../discover/filters';
-import {buildQuery, extend, ffetch, flush, merge, currentPage} from '../utils';
+import {
+  buildQuery, extend, ffetch, flush, merge, currentPage,
+  getDomain,
+} from '../utils';
 import {SignupPath, LoginPath, CompaniesQueryPath, StorageRestoreStateKey} from '../constants.js.erb';
 import {Button, Row, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
@@ -44,7 +47,7 @@ export default class LoginModal extends React.Component {
   }
 
   lookupDomain() {
-    ffetch(`${CompaniesQueryPath}?${buildQuery({domain: this.state.data.domain})}`).then(company => {
+    ffetch(`${CompaniesQueryPath}?${buildQuery({domain: getDomain(this.state.data.domain)})}`).then(company => {
       if (!company) {
         return;
       }
@@ -176,7 +179,7 @@ export default class LoginModal extends React.Component {
     const continueText = (company && company.name) ? company.name : data.domain;
     return [
       <p className="info" key="text">Some Quick Info</p>,
-      this.renderInput('domain', 'Your Company Domain'),
+      this.renderInput('domain', 'Your Company Website'),
       <Button color={Colors.SUCCESS} onClick={this.nextStage} key="button">
         {this.state.data.domain ? `Continue With ${continueText}` : "I Don't Have One Yet"}
       </Button>,

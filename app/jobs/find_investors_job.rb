@@ -1,4 +1,5 @@
 class FindInvestorsJob < ApplicationJob
+  include Concerns::Ignorable
   include Concerns::CacheIgnorable
   queue_as :low
 
@@ -66,7 +67,7 @@ class FindInvestorsJob < ApplicationJob
         end
         investor[f] = maxes if maxes.present?
       end
-      investor.save! if investor.changed?
+      ignore_invalid { investor.save! if investor.changed? }
     end
   end
 end

@@ -168,7 +168,7 @@ class Company < ActiveRecord::Base
   end
 
   def tweeter
-    super || (create_tweeter!(username: twitter_username) if twitter_username.present?)
+    super || (Tweeter.where(username: twitter_username).first_or_create!(owner: self) if twitter_username.present?)
   end
 
   def competitions

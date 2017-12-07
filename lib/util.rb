@@ -73,6 +73,7 @@ class Util
     end || url
 
     parsed = parsed[4..-1] if parsed&.starts_with?('www.')
+    parsed = parsed.split('@').last if parsed.present?
     parsed
   end
 

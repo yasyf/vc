@@ -55,7 +55,7 @@ end
       {
         industry: lambda do |founder|
           return nil unless (company = founder.primary_company).present?
-          company.industry[arg_count]
+          company.industry && company.industry[arg_count]
         end
       }
     end
