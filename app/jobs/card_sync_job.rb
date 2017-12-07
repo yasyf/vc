@@ -15,7 +15,10 @@ class CardSyncJob < ApplicationJob
 
     company.team = team
     card.list = list
-    company.users = users if (users = users_from_card_data(team, card)).present?
+
+    users = users_from_card_data(team, card)
+    company.users = users if users.present?
+
     company.save!
 
     if (pitch&.card != card) && card_data[:pitch_on].present?
