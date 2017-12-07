@@ -114,10 +114,14 @@ export default class OutreachPage extends React.Component {
   renderHeader() {
     return (
       <Row>
-        <Column large={8}>
+        <Column large={7}>
           <h3>My Conversations</h3>
+          <p className="info">
+            This conversation tracker will help you keep tabs on your outreach to investors.
+            Add investors by finding firms on the homepage, or check out the buttons to the right for other ways to update the tracker.
+          </p>
         </Column>
-        <Column large={4}>
+        <Column large={5}>
           <div className="actions">
             <a onClick={this.openAddModal}>Add investor</a>
             <span className="sep">|</span>
