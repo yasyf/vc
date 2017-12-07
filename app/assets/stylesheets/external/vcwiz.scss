@@ -50,11 +50,11 @@ div.callout {
   }
 
   &.success {
-    color: lighten($green, 25%);
+    color: lighten($green, 10%);
   }
 
   &.alert {
-    color: lighten($red, 25%);
+    color: lighten($red, 10%);
   }
 }
 
