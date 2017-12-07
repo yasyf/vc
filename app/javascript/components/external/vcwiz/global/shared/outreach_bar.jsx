@@ -125,7 +125,7 @@ export default class OutreachBar extends React.Component {
 
   renderConversation(key) {
     const { conversations } = this.state.founder;
-    const firms = conversations.recents[key] || [];
+    const firms = _.uniq(conversations.recents[key] || []);
     const show = _.map(_.take(firms, 4), (f, i) => <div key={i}>{f}</div>);
     const left = firms.length - show.length;
     return (
