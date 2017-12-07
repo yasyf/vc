@@ -147,6 +147,7 @@ class Pitch < ApplicationRecord
         google_drive.find(escaped_name, in_folders: team.snapshot_folder_ids)
       end || google_drive.find("#{escaped_name} Snapshot", excludes: team.exclude_folder_ids)
     end&.web_view_link
+    self.class.where(snapshot: self.snapshot).update_all snapshot: nil
   end
 
   def cache_unless_voting(options = {})

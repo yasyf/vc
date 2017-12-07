@@ -21,7 +21,7 @@ class CardSyncJob < ApplicationJob
 
     company.save!
 
-    if (pitch&.card != card) && card_data[:pitch_on].present?
+    if card_data[:pitch_on].present? && (pitch&.card != card || (pitch&.decided? && pitch&.when != card_data[:pitch_on]))
       pitch = Pitch.new(company: company, card: card, when: card_data[:pitch_on])
     end
 

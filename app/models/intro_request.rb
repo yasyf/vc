@@ -21,7 +21,7 @@ class IntroRequest < ApplicationRecord
   after_commit :create_email!, on: :create
 
   def self.from_target_investor(target_investor)
-    where(target_investor: target_investor).first_or_initialize.tap do |intro|
+    where(target_investor: target_investor).first_or_create! do |intro|
       intro.update_attributes(
         investor: target_investor.investor,
         founder: target_investor.founder,
