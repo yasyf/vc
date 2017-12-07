@@ -23,7 +23,12 @@ module GoogleApi
     private
 
     def sync_partial!
-      response = list_histories
+      begin
+        response = list_histories
+      rescue Google::Apis::ClientError
+        sync_full! and return
+      end
+
       return unless response.history.present?
       loop do
         message_ids = response.history.flat_map do |history|
