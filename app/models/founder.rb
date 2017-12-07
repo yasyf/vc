@@ -149,11 +149,11 @@ class Founder < ApplicationRecord
   end
 
   def admin?
-    domain == ENV['DOMAIN']
+    email == "#{ENV['ADMIN']}@#{ENV['DOMAIN']}"
   end
 
   def drf?
-    cached { companies.any?(&:funded?) } || admin? || Rails.env.development?
+    cached { companies.any?(&:funded?) } || domain == ENV['DOMAIN'] || Rails.env.development?
   end
 
   def primary_company

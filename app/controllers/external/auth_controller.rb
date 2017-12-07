@@ -14,7 +14,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
         session.delete(:signup_data)
         founder.ensure_target_investors!
       end
-      if founder.primary_company.blank? && session[:signup_data].blank?
+      if founder.primary_company.blank? && session[:signup_data].blank? && !founder.admin?
         set_flash_message :alert, :failure, kind: 'Google', reason: "you don't have an account yet! Please sign up below"
         redirect_to external_vcwiz_root_path
       else
