@@ -32,6 +32,33 @@ export default class ImageTextCell extends TextCell {
     );
   }
 
+  renderTextfit() {
+    if (this.state.subValue) {
+      return (
+        [
+          <Textfit key="value" mode="multi" min={this.props.min} max={this.props.max}>
+            <div className="textfit-cell">
+              {this.state.value}
+            </div>
+          </Textfit>,
+          <Textfit key="subValue" mode="multi" min={this.props.min} max={this.props.max}>
+            <div className="textfit-cell subheading">
+              {this.state.subValue}
+            </div>
+          </Textfit>
+        ]
+      );
+    } else {
+      return (
+        <Textfit key="value" mode="multi" min={this.props.min} max={this.props.max}>
+          <div className="textfit-cell" style={{height: (this.props.size * 2) - 15}}>
+            {this.state.value}
+          </div>
+        </Textfit>
+      );
+    }
+  }
+
   renderValue() {
     return (
       <div className="image-text-cell">
@@ -40,13 +67,7 @@ export default class ImageTextCell extends TextCell {
           marginLeft: `calc(${this.props.size}px + 0.5rem)`,
           width: `calc(95% - ${this.props.size}px - 1rem)`
         }}>
-          <Textfit mode="multi" min={this.props.min} max={this.props.max}>
-            <div className="textfit-cell">
-              {this.state.value}
-              {this.state.subValue && <br />}
-              <span className="subheading">{this.state.subValue}</span>
-            </div>
-          </Textfit>
+          {this.renderTextfit()}
         </div>
       </div>
     )

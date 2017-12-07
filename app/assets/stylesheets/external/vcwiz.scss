@@ -1102,7 +1102,6 @@ mark.highlighter {
   .textfit-cell {
     display: flex;
     align-items: center;
-    height: 45px;
   }
 
   .text-block, .media-block {
@@ -1455,7 +1454,7 @@ mark.highlighter {
 .email_integration-modal {
   &-bottom {
     .info {
-      h5 {
+      h4 {
         margin-top: 1em;
       }
 

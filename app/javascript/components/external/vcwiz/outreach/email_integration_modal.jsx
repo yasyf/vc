@@ -59,12 +59,12 @@ export default class EmailIntegrationModal extends React.Component {
           VCWiz can automatically track your email conversations with investors!
           Allowing VCWiz to integrate with your email will give you access to detailed email analytics, without having to manually update your tracker.
         </p>
-        <h5>VCWiz CC Address</h5>
+        <h4>VCWiz CC Address</h4>
         <p>
           You can start by simply CCing <b>{CCEmail}</b> on any email you send to investors.
           Give it a try with <a target="_blank" href={`mailto:${DemoEmail}?subject=VCWiz Test&cc=${CCEmail}`}>{DemoEmail}</a> now!
         </p>
-        <h5>VCWiz Inbox Scanner</h5>
+        <h4>VCWiz Inbox Scanner</h4>
         <p>
           If you don't want the annoyance of adding VCWiz to every email, you can give us permission to scan your Gmail inbox.
           We will automatically detect emails back and forth with investors, and add them to your tracker.
