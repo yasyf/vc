@@ -27,7 +27,7 @@ module External::ReactServerHelper
   end
 
   def react_server_component_div(name, props, options)
-    body = ServerSideRendering::Render.render name, props
+    body = ServerSideRendering::Render.render request, name, props
     Webpacker::React::Component.new(name).hydrate(body, props, options.reverse_merge(id: 'react-root-component'))
   end
 

@@ -8,7 +8,7 @@ class ServerSideRendering::Render
     end
   end
 
-  def self.render(component_name, props)
-    renderer.render component_name, props
+  def self.render(request, component_name, props)
+    renderer.render request, component_name, props
   end
 end

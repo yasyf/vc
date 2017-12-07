@@ -27,11 +27,11 @@ class ServerSideRendering::ExecJs
     Gon::Base.render_data(camel_case: true, init: true, need_tag: false)
   end
 
-  def render(component_name, props)
+  def render(request, component_name, props)
     js_code = <<~JS
       (function() {
         #{gon_data}
-        window.flashes = #{foundation_flashes.to_json};
+        window.flashes = #{foundation_flashes(current_request: request).to_json};
         var component = execJsGlobal.Components["#{component_name}"];
         var element = execJsGlobal.React.createElement(component, #{props.to_json});
         var html = execJsGlobal.ReactDOMServer.renderToString(element);

@@ -24,8 +24,8 @@ module External::ApplicationHelper
     end
   end
 
-  def foundation_flashes
-    flash.flat_map do |level, messages|
+  def foundation_flashes(current_request: nil)
+    (current_request || request).flash.flat_map do |level, messages|
       return nil if messages.blank?
       type = foundation_flash_type level
       Array.wrap(messages).map do |m|
