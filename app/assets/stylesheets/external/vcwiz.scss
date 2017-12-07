@@ -1420,6 +1420,30 @@ mark.highlighter {
   }
 }
 
+.welcome-modal {
+  &-bottom {
+    .info {
+      h4 {
+        margin-top: 1em;
+      }
+
+      p {
+        margin-bottom: 1em;
+      }
+
+      p.tight {
+        margin-bottom: 0;
+      }
+
+      .fake-track-button {
+        width: 100px;
+        padding: 10px;
+        margin: 0.5em 1em 1em;
+      }
+    }
+  }
+}
+
 .email_integration-modal {
   &-bottom {
     .info {

@@ -20,6 +20,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
         redirect_to external_vcwiz_root_path
       else
         cookies.permanent[:login_domain] = founder.domain
+        session[:new_login] = true
         sign_in_and_redirect founder, event: :authentication
       end
     else

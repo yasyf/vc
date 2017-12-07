@@ -12,6 +12,11 @@ class External::VcwizController < External::ApplicationController
   end
 
   def discover
+    if session[:new_login].present?
+      session.delete(:new_login)
+      props is_new_login: true
+    end
+
     title 'Discover'
     component 'Discover'
     params.merge!(
@@ -112,7 +117,8 @@ class External::VcwizController < External::ApplicationController
   end
 
   def props(props)
-    @component_props = props.keep_if { |k, v| !v.nil? }
+    @component_props ||= {}
+    @component_props.merge!(props.keep_if { |k, v| !v.nil? })
   end
 
   def render_default
