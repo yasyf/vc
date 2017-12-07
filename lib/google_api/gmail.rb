@@ -33,7 +33,7 @@ module GoogleApi
       return unless response.history.present?
       loop do
         message_ids = response.history.flat_map do |history|
-          history.messages_added.reject { |ma| ma.message.label_ids.include?('DRAFT') }.map { |ma| ma.message.id }
+          history.messages_added.reject { |ma| ma.message.label_ids&.include?('DRAFT') }.map { |ma| ma.message.id }
         end.uniq
         get_messages(message_ids) do |message|
           process_message message
