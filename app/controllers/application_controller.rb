@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     gon.user_context = context
 
     Raven.user_context(context)
-    Raven.extra_context(params: params.to_unsafe_h, url: request.url, session: session.to_h)
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url, session: session.to_hash)
   end
 
   def flash_warning(warning)
