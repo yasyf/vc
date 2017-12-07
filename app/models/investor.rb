@@ -346,7 +346,7 @@ class Investor < ApplicationRecord
   def interactions(founder)
     email_scope = emails.where(founder: founder).order(created_at: :desc)
     incoming_email = email_scope.where(direction: :incoming).first
-    last_opened_email = email_scope.where(direction: :outgoing).joins(:tracking_pixels).where('tracking_pixels.opened_at IS NOT NULL').first
+    last_opened_email = email_scope.where(direction: :outgoing).joins(:tracking_pixel).where('tracking_pixels.opened_at IS NOT NULL').first
     outgoing_openable = last_opened_email || intro_requests.where(founder: founder).first
     overlap = founder_overlap(founder)
     {
