@@ -83,6 +83,7 @@ gem 'activerecord-precount'
 gem 'sitemap_generator'
 gem 'parallel'
 gem 'addressable'
+gem 'browser'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

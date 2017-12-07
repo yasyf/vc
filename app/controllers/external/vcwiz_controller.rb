@@ -93,6 +93,14 @@ class External::VcwizController < External::ApplicationController
     render_investor
   end
 
+  def pixel
+    pixel = TrackingPixel.where(token: params[:token]).first!
+    pixel.target_investor&.investor_opened! pixel.intro_request&.id, pixel.email_id
+    PixelHitJob.perform_later(pixel.id, DateTime.now.to_s, Util.ip_address(request.env), request.user_agent)
+    expires_now
+    send_file Rails.root.join('public', 'pixel.png'), type: 'image/png', disposition: 'inline'
+  end
+
   private
 
   def title(title)

@@ -98,6 +98,13 @@ class Message
     @to ||= Mail::Address.new header('To')
   end
 
+  def date
+    @date ||= begin
+      date = header('Date')
+      date.present? ? DateTime.parse(date) : DateTime.now
+    end
+  end
+
   %w(cc bcc).each do |s|
     define_method(s) do
       unless instance_variable_defined?("@#{s}")
@@ -118,7 +125,7 @@ class Message
   end
 
   def headers
-    @headers ||= @message.payload.headers.map { |h| [h.name, h.value] }.to_h
+    @headers ||= @message.payload.headers.map { |h| [h.name, h.value] }.to_h.with_indifferent_access
   end
 
   def header(name)
@@ -177,8 +184,11 @@ class Message
         sentiment_magnitude: sentiment&.magnitude,
         body: text,
         subject: subject,
+        created_at: date,
       )
-      target.investor_replied! intro_request&.id, email.id
+      target.investor_replied!(intro_request&.id, email.id).tap do |event|
+        event.update! created_at: date
+      end
     end
     target.email ||= from.address
     target.stage = stage
@@ -201,7 +211,8 @@ class Message
         sentiment_score: sentiment&.score,
         sentiment_magnitude: sentiment&.magnitude,
         body: text,
-        subject: subject
+        subject: subject,
+        created_at: date,
       ) if target.investor.present?
       target.email ||= addr.address
       target.stage = stage

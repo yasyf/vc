@@ -1,24 +1,24 @@
 class IntroRequest < ApplicationRecord
+  include Concerns::Openable
+  include Concerns::Tokenable
+
   TOKEN_MAGIC = 'VCWIZ_INTRO_'
-  DEVICE_TYPES = %w(desktop mobile tablet other unknown)
   MAX_IN_FLIGHT = 5
 
   belongs_to :investor
   belongs_to :company
   belongs_to :founder
   belongs_to :target_investor
+  has_one :email
 
   validates :investor, presence: true, uniqueness: { scope: [:founder, :company] }
   validates :company, presence: true
   validates :founder, presence: true
-  validates :token, presence: true
 
   validate :limit_outstanding_requests, on: :create
 
-  enum open_device_type: DEVICE_TYPES
-
   before_validation :check_opt_out!, on: :create
-  before_validation :set_token!, on: :create
+  after_commit :create_email!, on: :create
 
   def self.from_target_investor(target_investor)
     where(target_investor: target_investor).first_or_initialize.tap do |intro|
@@ -60,16 +60,6 @@ class IntroRequest < ApplicationRecord
   def add_domain!(url)
     self.click_domains << URI.parse(url).host
     save!
-  end
-
-  def travel_status
-    if open_country.blank?
-      nil
-    elsif open_country != 'US'
-      :pleasure_traveling
-    else
-      investor.travel_status open_city
-    end
   end
 
   def clicked?(url)
@@ -118,6 +108,21 @@ class IntroRequest < ApplicationRecord
 
   private
 
+  def create_email!
+    message = IntroMailer.request_preview_email(self)
+    Email.create!(
+      intro_request: self,
+      founder: founder,
+      investor: investor,
+      company: company,
+      direction: :outgoing,
+      old_stage: TargetInvestor::RAW_STAGES.keys.index(:added),
+      new_stage: TargetInvestor::RAW_STAGES.keys.index(:intro),
+      body: message.body,
+      subject: message.subject,
+    )
+  end
+
   def limit_outstanding_requests
     if self.class.unscoped.where(founder: founder, accepted: nil).count > MAX_IN_FLIGHT - 1
       errors.add(:base, 'too many outstanding requests')
@@ -126,9 +131,5 @@ class IntroRequest < ApplicationRecord
 
   def check_opt_out!
     self.accepted = false if investor.opted_out?
-  end
-
-  def set_token!
-    self.token ||= SecureRandom.hex.first(10).upcase
   end
 end

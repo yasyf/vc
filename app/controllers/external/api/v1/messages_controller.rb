@@ -29,7 +29,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   def open
     return head :ok unless intro_request.present?
     return head :ok unless recipient.address == intro_request.investor.email
-    recipient_target.investor_opened! intro_request.id
+    recipient_target.investor_opened! intro_request.id, intro_request.email_id
     intro_request.update!(
       opened_at: DateTime.now,
       open_city: hook_params['city'],
@@ -91,6 +91,10 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def body
     create_params['body-plain']
+  end
+
+  def date
+    create_params[:Date].present? ? DateTime.parse(create_params[:Date]) : DateTime.now
   end
 
   def headers
@@ -168,7 +172,8 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
       sentiment_score: sentiment&.score,
       sentiment_magnitude: sentiment&.magnitude,
       body: text,
-      subject: create_params[:Subject]
+      subject: create_params[:Subject],
+      created_at: date,
     ) if target.investor.present?
 
     target.stage = stage
@@ -195,9 +200,12 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
         sentiment_score: sentiment&.score,
         sentiment_magnitude: sentiment&.magnitude,
         body: text,
-        subject: create_params[:Subject]
+        subject: create_params[:Subject],
+        created_at: date,
       )
-      target.investor_replied! intro_request&.id, email.id
+      target.investor_replied!(intro_request&.id, email.id).tap do |event|
+        event.update! created_at: date
+      end
     end
 
     target.email ||= from.address
@@ -210,7 +218,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_params
-    params.permit(:To, :From, :Cc, :Subject, 'stripped-text', 'body-plain', 'message-headers')
+    params.permit(:To, :From, :Cc, :Subject, :Date, 'stripped-text', 'body-plain', 'message-headers')
   end
 
   def demo_params

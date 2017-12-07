@@ -1020,6 +1020,42 @@ ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 
 
 --
+-- Name: tracking_pixels; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE tracking_pixels (
+    id bigint NOT NULL,
+    email_id bigint NOT NULL,
+    token character varying NOT NULL,
+    open_city character varying,
+    open_country character varying,
+    open_device_type integer,
+    opened_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: tracking_pixels_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tracking_pixels_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tracking_pixels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tracking_pixels_id_seq OWNED BY tracking_pixels.id;
+
+
+--
 -- Name: tweeters; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1361,6 +1397,13 @@ ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regcl
 
 
 --
+-- Name: tracking_pixels id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tracking_pixels ALTER COLUMN id SET DEFAULT nextval('tracking_pixels_id_seq'::regclass);
+
+
+--
 -- Name: tweeters id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1593,6 +1636,14 @@ ALTER TABLE ONLY target_investors
 
 ALTER TABLE ONLY teams
     ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tracking_pixels tracking_pixels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tracking_pixels
+    ADD CONSTRAINT tracking_pixels_pkey PRIMARY KEY (id);
 
 
 --
@@ -2259,6 +2310,20 @@ CREATE UNIQUE INDEX index_teams_on_name ON teams USING btree (name);
 
 
 --
+-- Name: index_tracking_pixels_on_email_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_tracking_pixels_on_email_id ON tracking_pixels USING btree (email_id);
+
+
+--
+-- Name: index_tracking_pixels_on_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_tracking_pixels_on_token ON tracking_pixels USING btree (token);
+
+
+--
 -- Name: index_tweeters_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2457,6 +2522,14 @@ ALTER TABLE ONLY cards
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT fk_rails_4f7e384dec FOREIGN KEY (intro_request_id) REFERENCES intro_requests(id);
+
+
+--
+-- Name: tracking_pixels fk_rails_586fbe02f8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tracking_pixels
+    ADD CONSTRAINT fk_rails_586fbe02f8 FOREIGN KEY (email_id) REFERENCES emails(id);
 
 
 --
@@ -2805,6 +2878,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171204091614'),
 ('20171204092443'),
 ('20171206074352'),
-('20171206103132');
+('20171206103132'),
+('20171207112536');
 
 

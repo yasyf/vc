@@ -49,6 +49,7 @@ Rails.application.routes.draw do
         get 'outreach'
         get 'gmail_auth'
         get 'login'
+        get 'pixel/:token.png', action: :pixel, as: :pixel
         post 'login'
         post 'signup'
 
