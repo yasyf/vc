@@ -176,10 +176,14 @@ class Founder < ApplicationRecord
     super twitter&.first == '@' ? twitter[1..-1] : twitter
   end
 
+  def scanner_enabled?
+    history_id.present?
+  end
+
   def as_json(options = {})
     super(options.reverse_merge(
       only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage],
-      methods: [:drf?, :primary_company, :utc_offset, :conversations, :events_with_meta, :stats]
+      methods: [:drf?, :primary_company, :utc_offset, :conversations, :events_with_meta, :stats, :scanner_enabled?]
     )).reverse_merge(
       target_investors: target_investors.includes(:intro_requests).order(stage: :asc, updated_at: :desc).as_json(include: [], methods: [:intro_requests])
     )

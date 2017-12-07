@@ -26,6 +26,11 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
     render json: arr_to_options(Founder.locations(params[:q]))
   end
 
+  def disable_scanner
+    founder.update! history_id: nil
+    render json: founder
+  end
+
   private
 
   def event_params

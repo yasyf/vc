@@ -31,6 +31,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
     auth = request.env['omniauth.auth']
     founder = Founder.from_omniauth(auth)
     if founder == current_external_founder
+      founder.update! history_id: 0
       FounderGmailSyncJob.new(founder.id).enqueue(queue: :high)
       flash[:success] = 'The VCWiz Inbox Scanner has been enabled! As you send emails to investors, this tracker will update.'
     else

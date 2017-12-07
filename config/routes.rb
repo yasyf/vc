@@ -118,6 +118,7 @@ Rails.application.routes.draw do
           end
 
           resource :founder, only: [:show, :update] do
+            post 'disable_scanner'
             post 'event'
             get 'locations'
           end
