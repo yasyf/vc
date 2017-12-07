@@ -1,0 +1,24 @@
+<p>
+  Hey <%= @founder.first_name %>!
+</p>
+
+<p>
+  Thanks for signing up for VCWiz—we're so excited to have you on board!
+  You can use the tool at <a href="https://<%= ENV['MARKETING_DOMAIN'] %>"><%= ENV['MARKETING_DOMAIN'] %></a> to search and filter firms, research individual investors, and plan your outreach.
+</p>
+
+<p>
+  VCWiz can help facilitate introductions from right in the app, and can even scan your email (if you want!) to keep the Conversations Tracker up-to-date.
+  Check out the <a href="<%= external_vcwiz_outreach_url %>">Conversations Tracker</a> page for more details.
+</p>
+
+<p>
+  If you have any questions, feel free to email Yasyf
+  (<a href="mailto:<%= ENV['SUPPORT_EMAIL'] %>?subject=VCWiz Feedback From <%= @founder.name %>"><%= ENV['SUPPORT_EMAIL'] %></a>),
+  the creator of VCWiz.
+</p>
+
+<p>
+  Cheers,<br>
+  VCWiz
+</p>

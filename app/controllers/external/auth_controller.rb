@@ -13,6 +13,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
         founder.create_company! session[:signup_data].with_indifferent_access
         session.delete(:signup_data)
         founder.ensure_target_investors!
+        SummaryMailer.welcome_founder_email(founder).deliver_later
       end
       if founder.primary_company.blank? && session[:signup_data].blank? && !founder.admin?
         set_flash_message :alert, :failure, kind: 'Google', reason: "you don't have an account yet! Please sign up below"
