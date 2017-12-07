@@ -8,23 +8,18 @@ class News < ApplicationRecord
 
   before_validation :set_meta!, on: :create
 
-  attr_accessor :body
+  attr_writer :body
 
   def as_json(options = {})
     super options.reverse_merge(only: [:id, :title, :url, :description, :published_at])
   end
 
+  def body
+    @body ||= Http::Fetch.get_one(url)
+  end
+
   def page
-    @page ||= begin
-      if @body.present?
-        MetaInspector.new(url, document: @body)
-      else
-        MetaInspector.new(url, download_images: false).tap do |page|
-          raise ActiveRecord::RecordInvalid.new(self) unless page.response.status == 200
-          @body = Util.fix_encoding(page.to_s)
-        end
-      end
-    end
+    @page ||= MetaInspector.new(url, document: body)
   rescue MetaInspector::Error
     raise ActiveRecord::RecordInvalid.new(self)
   end
