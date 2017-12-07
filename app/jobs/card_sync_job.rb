@@ -17,7 +17,7 @@ class CardSyncJob < ApplicationJob
 
     company.team = team
     card.list = list
-    company.users = users
+    company.users = users if users.present?
     company.save!
 
     if (pitch&.card != card) && card_data[:pitch_on].present?
@@ -53,7 +53,6 @@ class CardSyncJob < ApplicationJob
 
   private
 
-
   def try_save!(company)
     if company.changed?
       begin
@@ -78,15 +77,18 @@ class CardSyncJob < ApplicationJob
   end
 
   def users_from_card_data(team, card_data)
-    card_data.delete(:members).map do |member|
-      User.from_trello(member[:id]).tap do |user|
+    ::Trello::Card.find(card_data[:id]).members.map do |member|
+      User.from_trello(member.id).tap do |user|
         if user.present?
           user.team ||= team
-          user.trello_id = member[:id]
-          user.cached_name ||= member[:full_name]
+          user.trello_id = member.id
+          user.cached_name ||= member.full_name
           user.save! if user.changed?
         end
       end
     end.compact
+  rescue ::Trello::Error => e
+    Rails.logger.warn e
+    []
   end
 end

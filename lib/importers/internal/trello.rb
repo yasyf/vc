@@ -41,7 +41,6 @@ module Importers::Internal
         trello_id: card.id,
         name: clean_name(card.name),
         trello_list_id: card.list_id,
-        members: card.members,
         closed: card.closed,
       }
       begin
