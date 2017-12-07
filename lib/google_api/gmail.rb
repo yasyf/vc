@@ -75,7 +75,8 @@ module GoogleApi
         @gmail.batch do |batch|
           ids.each do |id|
             batch.public_send("get_user_#{s}", @user.email, id) do |res, err|
-              block.call(res) unless err.present?
+              raise err if err.present?
+              block.call(res)
             end
           end
         end
@@ -144,11 +145,11 @@ class Message
   end
 
   def text
-    @text ||= part('text/plain').body
+    @text ||= part('text/plain').data
   end
 
   def html
-    @html ||= part('text/html').body
+    @html ||= part('text/html').data
   end
 
   def sentiment
