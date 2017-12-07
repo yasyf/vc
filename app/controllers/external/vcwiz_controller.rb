@@ -50,6 +50,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def outreach
+    flash_warning 'VCWiz is still processing your inbox. Check back soon!' if current_external_founder.scanner_pending?
     current_external_founder.ensure_target_investors!
 
     targets = current_external_founder

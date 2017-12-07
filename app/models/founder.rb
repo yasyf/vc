@@ -180,6 +180,10 @@ class Founder < ApplicationRecord
     history_id.present?
   end
 
+  def scanner_pending?
+    history_id == 0
+  end
+
   def as_json(options = {})
     super(options.reverse_merge(
       only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage],

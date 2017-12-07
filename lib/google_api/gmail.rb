@@ -26,7 +26,8 @@ module GoogleApi
       begin
         response = list_histories
       rescue Google::Apis::ClientError
-        sync_full! and return
+        sync_full!
+        return
       end
 
       return unless response.history.present?
@@ -47,7 +48,7 @@ module GoogleApi
 
     def sync_full!
       response = list_threads
-      @user.update! history_id: response.threads.first.history_id
+      history_id = response.threads.first.history_id
       loop do
         thread_ids = response.threads.map(&:id)
         get_threads(thread_ids)  do |thread|
@@ -56,6 +57,7 @@ module GoogleApi
         break unless response.next_page_token.present?
         response = list_threads response.next_page_token
       end
+      @user.update! history_id: history_id
     end
 
     def process_thread(thread)

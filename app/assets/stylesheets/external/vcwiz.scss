@@ -15,6 +15,7 @@ $secondary-dark: darken(#2ADBC4, 10%);
 $green: #34BF20;
 $blue: #0D71E9;
 $red: #E8441E;
+$yellow: #FFD339;
 $purple: #AE2CFF;
 $dark: #363844;
 
@@ -55,6 +56,10 @@ div.callout {
 
   &.alert {
     color: lighten($red, 10%);
+  }
+
+  &.warning {
+    color: lighten($yellow, 10%);
   }
 }
 
