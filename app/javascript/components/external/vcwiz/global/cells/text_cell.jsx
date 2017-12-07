@@ -59,10 +59,10 @@ let TextCellFactory = (superclass) => class extends superclass {
       return null;
     }
     return (
-      <Textfit mode="single" min={this.props.min} max={this.props.max}>
-        <span className="textfit-cell">
+      <Textfit mode="multi" min={this.props.min} max={this.props.max}>
+        <div className="textfit-cell">
           {this.state.value}
-        </span>
+        </div>
       </Textfit>
     );
   }

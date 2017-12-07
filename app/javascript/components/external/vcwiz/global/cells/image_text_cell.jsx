@@ -40,12 +40,12 @@ export default class ImageTextCell extends TextCell {
           marginLeft: `calc(${this.props.size}px + 0.5rem)`,
           width: `calc(95% - ${this.props.size}px - 1rem)`
         }}>
-          <Textfit mode="single" min={this.props.min} max={this.props.max}>
-            <span className="textfit-cell">
+          <Textfit mode="multi" min={this.props.min} max={this.props.max}>
+            <div className="textfit-cell">
               {this.state.value}
               {this.state.subValue && <br />}
               <span className="subheading">{this.state.subValue}</span>
-            </span>
+            </div>
           </Textfit>
         </div>
       </div>

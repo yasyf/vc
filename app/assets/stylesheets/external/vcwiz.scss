@@ -1066,6 +1066,10 @@ mark.highlighter {
   width: 100%;
   height: 100%;
 
+  .public_fixedDataTableCell_wrap2, .public_fixedDataTableCell_wrap3, .public_fixedDataTableCell_cellContent {
+    width: inherit;
+  }
+
   .floating-image {
     position: absolute;
     top: 25%;
@@ -1096,8 +1100,9 @@ mark.highlighter {
   }
 
   .textfit-cell {
-    width: 95%;
-    height: 100%;
+    display: flex;
+    align-items: center;
+    height: 45px;
   }
 
   .text-block, .media-block {
@@ -1107,8 +1112,6 @@ mark.highlighter {
 
   .cell-wrapper {
     cursor: pointer;
-    padding-top: 10px;
-    padding-bottom: 10px;
   }
 
   .faded {
