@@ -72,7 +72,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     @overlap_industries ||= begin
       if params[:filters][:industry].present?
         params[:filters][:industry]
-      elsif @founder.present? && @founder.primary_company.present?
+      elsif @founder.present? && @founder.primary_company.present? && @founder.primary_company.industry.present?
         @founder.primary_company.industry.join(',')
       end
     end

@@ -24,8 +24,8 @@ class CompanyRelationshipsJob < ApplicationJob
 
     categories = @cb_org.categories
     @company.industry = categories
+                          .select { |c| c }
                           .map { |c| c['properties']['name'] }
-                          .compact
                           .map { |i| Competitor.closest_industry(i) }
                           .compact
                           .uniq if categories.present?
