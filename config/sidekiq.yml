@@ -1,4 +1,4 @@
-:concurrency: 6
+:concurrency: 10
 :queues:
   - now
   - high
