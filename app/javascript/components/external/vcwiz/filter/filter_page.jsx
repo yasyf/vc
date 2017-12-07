@@ -58,8 +58,7 @@ export default class FilterPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      (prevProps.showFilters !== this.props.showFilters && !_.isEmpty(_.compact(this.props.filters)))
-      || (prevProps.showSearch !== this.props.showSearch && !_.isEmpty(_.compact(this.props.search)))
+      (this.props.showFilters && !prevProps.showFilters)
       || buildQuery(this.queryParams()) !== buildQuery(this.queryParams(prevState))
     ) {
       this.fetchNumInvestors();
