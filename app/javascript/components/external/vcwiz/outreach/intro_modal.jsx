@@ -45,7 +45,7 @@ export default class IntroModal extends React.Component {
           this.setState({loading: false, preview: preview_html})
         }
       });
-    }, 1000);
+    }, 2000);
   };
 
   inputProps(name, placeholder) {

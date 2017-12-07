@@ -3,7 +3,7 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
 
   def index
     target_investor = TargetInvestor.find(params[:target_investor_id])
-    intro = IntroRequest.from_target_investor(target_investor).tap(&:save!)
+    intro = IntroRequest.from_target_investor(target_investor)
     render json: intro.as_json(methods: [])
   end
 
