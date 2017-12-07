@@ -96,6 +96,7 @@ group :production do
   gem 'connection_pool'
   gem 'hive_geoip2'
   gem 'skylight'
+  gem 'scout_apm'
 end
 
 group :development, :staging do
