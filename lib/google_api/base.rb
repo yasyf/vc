@@ -11,7 +11,7 @@ module GoogleApi
     end
 
     def user_authorization
-      return nil unless @user.present? && @user.access_token.present? && @user.refresh_token.present?
+      return nil unless @user.present? && @user.access_token.present?
       secrets = Google::APIClient::ClientSecrets.new web: {
         access_token: @user.access_token,
         refresh_token: @user.refresh_token,
@@ -19,7 +19,9 @@ module GoogleApi
         client_secret: ENV['GOOGLE_CLIENT_SECRET']
       }
       secrets.to_authorization.tap do |authorization|
+        return unless @user.refresh_token.present?
         authorization.refresh!
+        @user.update! access_token: authorization.access_token
       end
     end
 
