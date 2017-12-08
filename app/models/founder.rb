@@ -54,7 +54,8 @@ class Founder < ApplicationRecord
     return nil unless auth.present?
     from_email(auth.info.email, auth.info.first_name, auth.info.last_name).tap do |founder|
       founder.photo ||= auth.info.image
-      founder.assign_attributes access_token: auth.credentials.token, refresh_token: auth.credentials.refresh_token
+      founder.access_token = auth.credentials.token
+      founder.refresh_token = auth.credentials.refresh_token if auth.credentials.refresh_token.present?
       founder.save!
     end
   end
