@@ -369,6 +369,7 @@ class Investor < ApplicationRecord
       travel_status: outgoing_openable&.travel_status,
       last_contact: incoming_email&.created_at,
       overlap: overlap.present? ? overlap : nil,
+      path: founder.path_to(self)
     })
   end
 
