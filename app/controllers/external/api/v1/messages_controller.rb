@@ -111,11 +111,11 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def intro_request_from_header
     token = hook_params['intro_request_token'] || (headers['X-Mailgun-Variables'] || {})['intro_request_token']
-    Messages.intro_request token
+    Message.intro_request token
   end
 
   def intro_request_from_body
-    Messages.intro_request body
+    Message.intro_request body
   end
 
   def handle_response(from, tos)
@@ -185,7 +185,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_incoming(founder, from)
-    stage = Messages.stage(text, sentiment)
+    stage = Message.stage(text, sentiment)
     target = TargetInvestor.from_addr! founder, from
 
     if target.investor.present?
