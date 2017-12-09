@@ -1,5 +1,5 @@
 class AppWarmupJob < ApplicationJob
-  queue_as :now
+  queue_as :long_now
 
   def perform
     3.times do
