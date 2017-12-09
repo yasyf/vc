@@ -1,5 +1,5 @@
 class CompetitorListJob < ActiveJob::Base
-  queue_as :default
+  queue_as :long
 
   def perform
     CompetitorLists::Base::Base.lists.each { |list| cache_list! list }

@@ -1,5 +1,5 @@
 class FounderSummaryJob < ApplicationJob
-  queue_as :low
+  queue_as :long
 
   def perform
     Founder.active.select('id').find_each do |founder|
