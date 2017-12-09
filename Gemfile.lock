@@ -97,6 +97,7 @@ GEM
       railties (>= 3.2, < 5.2)
     equalizer (0.0.11)
     erubi (1.7.0)
+    excon (0.59.0)
     execjs (2.7.0)
     factory_bot (4.8.2)
       activesupport (>= 3.0.0)
@@ -300,6 +301,13 @@ GEM
     mustermann (1.0.1)
     naught (1.1.0)
     nenv (0.3.0)
+    neography (1.8.0)
+      excon (>= 0.33.0)
+      json (>= 1.7.7)
+      multi_json (>= 1.3.2)
+      os (>= 0.9.6)
+      rake (>= 0.8.7)
+      rubyzip (>= 1.0.0)
     nestful (1.1.3)
     nesty (1.0.2)
     netrc (0.11.0)
@@ -634,6 +642,7 @@ DEPENDENCIES
   metainspector
   mini_racer
   minitest (~> 5.10, != 5.10.2)
+  neography
   omniauth
   omniauth-google-oauth2
   ox (>= 2.1.2)
