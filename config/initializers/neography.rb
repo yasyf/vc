@@ -15,4 +15,4 @@ else
   end
 end
 
-Graph.init!
+Graph.init! if Rails.application.vcwiz?
