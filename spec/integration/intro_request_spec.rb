@@ -86,6 +86,8 @@ RSpec.describe 'intro request', type: :request do
   end
 
   it 'tracks responses and recognizes passes' do
+    expect(Neography::Rest).to receive(:find_nodes_labeled)
+
     expect do
       post external_api_v1_message_path, params: {
         From: @investor2.email,
