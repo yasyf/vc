@@ -75,7 +75,13 @@ module GoogleApi
         @gmail.batch do |batch|
           ids.each do |id|
             batch.public_send("get_user_#{s}", @user.email, id) do |res, err|
-              raise err if err.present?
+              if err.present?
+                if err.is_a? Google::Apis::ClientError
+                  Rails.logger.warn err
+                else
+                  raise err
+                end
+              end
               block.call(res)
             end
           end
