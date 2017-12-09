@@ -1,7 +1,7 @@
 class InvestorCrunchbaseJob < ApplicationJob
   include Concerns::Ignorable
 
-  queue_as :default
+  queue_as :long
 
   def perform(investor_id)
     investor = Investor.find(investor_id)

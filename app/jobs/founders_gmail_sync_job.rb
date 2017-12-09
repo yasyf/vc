@@ -1,5 +1,5 @@
 class FoundersGmailSyncJob < ApplicationJob
-  queue_as :default
+  queue_as :long
 
   def perform
     Founder.active(1.year.ago).where.not(history_id: nil).pluck(:id).each do |id|
