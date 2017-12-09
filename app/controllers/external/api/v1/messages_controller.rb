@@ -64,9 +64,9 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def to_addrs
     @to_addrs ||= begin
-      tos = create_params[:To].split(', ').map { |s| Mail::Address.new(s) }
+      tos = Mail::AddressList.new(create_params[:To]).addresses
       if create_params[:Cc].present?
-        tos += create_params[:Cc].split(', ').map { |s| Mail::Address.new(s) }
+        tos += Mail::AddressList.new(create_params[:Cc]).addresses
       end
       tos.delete_if { |a| a.address == ENV['MAILGUN_EMAIL'] }
       tos

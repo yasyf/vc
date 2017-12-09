@@ -112,6 +112,10 @@ class Investor < ApplicationRecord
     self.time_zone = timezone.name
   end
 
+  def add_entities!(owner, entities)
+    owner.entities.concat entities.reject { |e| owner.entities.include?(e) }
+  end
+
   def crawl_homepage!
     return unless self.homepage.present?
     body = Http::Fetch.get_one self.homepage
@@ -119,7 +123,7 @@ class Investor < ApplicationRecord
       self.homepage = nil
       return
     end
-    self.entities.concat Entity.from_html(body)
+    add_entities! self, Entity.from_html(body)
     self.competitor.companies.find_each do |company|
       if body.include?(company.name)
         assign_company! company, featured: true
@@ -139,7 +143,7 @@ class Investor < ApplicationRecord
       rescue ActiveRecord::RecordInvalid
         next
       end
-      post.entities.concat Entity.from_html(body)
+      add_entities! post, Entity.from_html(body)
       meta[:categories].each do |category|
         entity = Entity.from_name(category)
         next unless entity.present?
@@ -344,18 +348,22 @@ class Investor < ApplicationRecord
   end
 
   def interactions(founder)
+    interactions = {
+      entities: n_popular_entities(10, Entity.where.not(wiki: nil)).sample(3)
+    }
+    return interactions unless founder.present?
     email_scope = emails.where(founder: founder).order(created_at: :desc)
     incoming_email = email_scope.where(direction: :incoming).first
     last_opened_email = email_scope.where(direction: :outgoing).joins(:tracking_pixel).where('tracking_pixels.opened_at IS NOT NULL').first
     outgoing_openable = last_opened_email || intro_requests.where(founder: founder).first
     overlap = founder_overlap(founder)
-    {
+    interactions.merge({
       opened_at: outgoing_openable&.opened_at,
       open_city: outgoing_openable&.open_city,
       travel_status: outgoing_openable&.travel_status,
       last_contact: incoming_email&.created_at,
       overlap: overlap.present? ? overlap : nil,
-    }
+    })
   end
 
   private
@@ -417,10 +425,10 @@ class Investor < ApplicationRecord
     Entity.find(ids)
   end
 
-  def n_popular_entities(n = 3)
+  def n_popular_entities(n = 3, scope = Entity.all)
     popular = post_entities(n)
     return popular unless (count = popular.count) < n
-    Entity.where(id: entities.order(person_entities_count: :desc).limit(n - count)).or(popular)
+    Entity.where(id: entities.order(person_entities_count: :desc).limit(n - count)).or(popular).merge(scope)
   end
 
   def post_entities(n = 3)

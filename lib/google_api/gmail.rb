@@ -117,7 +117,7 @@ class Message
     define_method(s) do
       unless instance_variable_defined?("@#{s}")
         string = header(s.capitalize)
-        result = string.present? ? string.split(', ').map { |a| Mail::Address.new(a) } : []
+        result = string.present? ? Mail::AddressList.new(string).addresses : []
         instance_variable_set("@#{s}", result)
       end
       instance_variable_get("@#{s}")

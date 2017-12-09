@@ -23,7 +23,7 @@ class Entity < ApplicationRecord
       next if (name = normalize(e.name)).length < 3
       where(name: name).first_or_create! do |entity|
         entity.category = e.type
-        entity.wiki = e.metadata['wiki']
+        entity.wiki = e.metadata['wikipedia_url']
         entity.mid = e.metadata['mid']
       end
     end.compact

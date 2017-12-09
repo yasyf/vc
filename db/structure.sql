@@ -2205,6 +2205,13 @@ CREATE INDEX index_notes_on_subject_type_and_subject_id ON notes USING btree (su
 
 
 --
+-- Name: index_person_entities_on_entity_and_person; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_person_entities_on_entity_and_person ON person_entities USING btree (entity_id, person_type, person_id);
+
+
+--
 -- Name: index_person_entities_on_entity_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2879,6 +2886,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171204092443'),
 ('20171206074352'),
 ('20171206103132'),
-('20171207112536');
+('20171207112536'),
+('20171209084559');
 
 

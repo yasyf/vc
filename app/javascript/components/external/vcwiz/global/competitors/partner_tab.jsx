@@ -259,11 +259,12 @@ export default class PartnerTab extends React.Component {
       return null;
     }
     const { first_name } = investor;
-    const { last_contact, travel_status, open_city, overlap } = interactions;
+    const { last_contact, travel_status, open_city, overlap, entities } = interactions;
     const fragments = _.compact([
       last_contact && <span key="last_contact">You last contacted {first_name} {moment(last_contact).fromNow()}. </span>,
       travel_status && <span key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}. </span>,
       overlap && <span key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}! </span>,
+      entities && !overlap && <span key="entities">{first_name} often talks about {humanizeList(overlap.map(o => <b>{o.name}</b>))}. </span>,
     ]);
     if (!fragments.length) {
       return null;
