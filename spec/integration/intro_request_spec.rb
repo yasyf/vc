@@ -86,8 +86,8 @@ RSpec.describe 'intro request', type: :request do
   end
 
   it 'tracks responses and recognizes passes' do
-    expect(Graph).to receive(:get)
-    expect(Graph).to receive(:connect)
+    expect(Graph).to receive(:get).exactly(4).times
+    expect(Graph).to receive(:connect).twice
 
     expect do
       post external_api_v1_message_path, params: {
