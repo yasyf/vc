@@ -152,8 +152,12 @@ class Message
     @html ||= part('text/html').data
   end
 
+  def reply_text
+    @reply_text ||= EmailReplyParser.parse_reply(text)
+  end
+
   def sentiment
-    @sentiment ||= GoogleCloud::Language.new(text).sentiment
+    @sentiment ||= GoogleCloud::Language.new(Util.fix_encoding(reply_text)).sentiment
   end
 
   def intro_request
@@ -178,7 +182,7 @@ class Message
   def process_incoming!(founder)
     target = TargetInvestor.from_addr(founder, from, create: true)
     return unless target.present?
-    stage = Messages.stage(text, sentiment)
+    stage = Messages.stage(reply_text, sentiment)
     if target.investor.present?
       email = Email.create!(
         intro_request: intro_request,
@@ -190,7 +194,7 @@ class Message
         new_stage: stage,
         sentiment_score: sentiment&.score,
         sentiment_magnitude: sentiment&.magnitude,
-        body: text,
+        body: reply_text,
         subject: subject,
         created_at: date,
       )
@@ -218,7 +222,7 @@ class Message
         new_stage: stage,
         sentiment_score: sentiment&.score,
         sentiment_magnitude: sentiment&.magnitude,
-        body: text,
+        body: reply_text,
         subject: subject,
         created_at: date,
       ) if target.investor.present?
