@@ -11,6 +11,7 @@ services:
   - postgresql
   - memcached
   - redis-server
+  - neo4j
 addons:
   postgresql: "9.6"
   apt:
