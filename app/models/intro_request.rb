@@ -94,7 +94,9 @@ class IntroRequest < ApplicationRecord
       send_decision!
     else
       target_investor&.intro_requested! self.id
-      if investor.opted_in?
+      if investor.demo?
+        decide! true
+      elsif investor.opted_in?
         IntroMailer.request_email(self).deliver_later
       else
         IntroMailer.opt_in_email(self).deliver_later

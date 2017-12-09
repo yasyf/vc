@@ -215,6 +215,10 @@ class Investor < ApplicationRecord
     [:first_name, :last_name]
   end
 
+  def demo?
+    email == ENV['DEMO_EMAIL']
+  end
+
   def opted_out?
     opted_in == false
   end
