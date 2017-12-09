@@ -5,6 +5,7 @@ RSpec.describe 'intro request', type: :request do
   before do
     allow(GoogleCloud::Language).to receive_message_chain(:client, :document, :sentiment) { OpenStruct.new(score: -1, magnitude: 1) }
     allow_any_instance_of(IntroMailer).to receive(:set_mailgun_options!)
+    allow_any_instance_of(Neography::Rest).to receive(:find_nodes_labeled)
 
     @founder = FactoryBot.create(:founder, :with_companies)
     @company = @founder.primary_company
@@ -86,8 +87,6 @@ RSpec.describe 'intro request', type: :request do
   end
 
   it 'tracks responses and recognizes passes' do
-    expect(Neography::Rest).to receive(:find_nodes_labeled)
-
     expect do
       post external_api_v1_message_path, params: {
         From: @investor2.email,
