@@ -114,7 +114,7 @@ class Investor < ApplicationRecord
 
   def add_entities!(owner, entities)
     entities.each do |entity|
-      ignore_unique { owner.entities << entity }
+      ignore_unique { PersonEntity.create!(person: owner, entity: entity) }
     end
   end
 

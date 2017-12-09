@@ -34,8 +34,8 @@ class Founder < ApplicationRecord
 
   devise
 
-  def self.active
-    where('logged_in_at > ?', 1.month.ago).joins(:companies).where('companies.primary = ?', true)
+  def self.active(since = 1.month.ago)
+    where('logged_in_at > ?', since).joins(:companies).where('companies.primary = ?', true)
   end
 
   def self.find_or_create_from_social!(first_name, last_name, social, context: nil)
