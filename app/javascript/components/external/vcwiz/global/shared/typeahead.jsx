@@ -40,16 +40,16 @@ export default class Typeahead extends React.Component {
 
   onSuggestionsFetchRequested = ({ value }) => {
     let suggestions = [];
-    const onResults = results => {
+    const onResults = alwaysFire => results => {
       suggestions = suggestions.concat(results);
       this.setState({suggestions}, () => {
-        if (suggestions.length) {
+        if (alwaysFire || suggestions.length) {
           this.props.onLoading(false);
         }
       });
     };
     this.props.onLoading(true);
-    this.engine.search(value, onResults, onResults);
+    this.engine.search(value, onResults(false), onResults(true));
   };
 
   onSuggestionsClearRequested = () => {
