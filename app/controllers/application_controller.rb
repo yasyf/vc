@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def json?
+    request.format == 'application/json'
+  end
+
   def set_csrf_token
     gon.csrf_token = form_authenticity_token
   end
