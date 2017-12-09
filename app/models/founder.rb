@@ -3,6 +3,7 @@ class Founder < ApplicationRecord
   include Concerns::TimeZonable
   include Concerns::Eventable
   include Concerns::Locationable
+  include Concerns::Graphable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 

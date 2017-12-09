@@ -94,6 +94,7 @@ class Message
   end
 
   def process_incoming!(founder)
+    founder.connect_from_addr!(from, :email)
     target = TargetInvestor.from_addr(founder, from, create: true)
     return unless target.present?
     stage = self.class.stage(reply_text, sentiment)
@@ -123,6 +124,7 @@ class Message
 
   def process_outgoing!(founder)
     recipients.each do |addr|
+      founder.connect_to_addr!(addr, :email)
       target = TargetInvestor.from_addr(founder, addr, create: true)
       next unless target.present?
       stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
