@@ -145,11 +145,11 @@ class Message
   end
 
   def text
-    @text ||= part('text/plain').data
+    @text ||= part('text/plain')&.data || ''
   end
 
   def html
-    @html ||= part('text/html').data
+    @html ||= part('text/html')&.data || ''
   end
 
   def reply_text
@@ -176,7 +176,7 @@ class Message
   private
 
   def part(type)
-    @message.payload.parts.find { |part| part.mime_type == type}.body
+    @message.payload.parts.find { |part| part.mime_type == type}&.body
   end
 
   def process_incoming!(founder)
