@@ -29,7 +29,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   def open
     return head :ok unless intro_request.present?
     return head :ok unless recipient.address == intro_request.investor.email
-    recipient_target.investor_opened! intro_request.id, intro_request.email.id
+    recipient_target.investor_opened! intro_request.id, intro_request&.email.id
     intro_request.update!(
       opened_at: DateTime.now,
       open_city: hook_params['city'],

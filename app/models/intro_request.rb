@@ -18,7 +18,6 @@ class IntroRequest < ApplicationRecord
   validate :limit_outstanding_requests, on: :create
 
   before_validation :check_opt_out!, on: :create
-  after_commit :create_email!, on: :create
 
   def self.from_target_investor(target_investor)
     where(target_investor: target_investor).first_or_create! do |intro|
@@ -109,9 +108,8 @@ class IntroRequest < ApplicationRecord
     IntroRequestPreviewJob.perform_later(self.id)
   end
 
-  private
-
-  def create_email!
+  def email!
+    return email if email.present?
     message = IntroMailer.request_preview_email(self)
     Email.create!(
       intro_request: self,
@@ -125,6 +123,8 @@ class IntroRequest < ApplicationRecord
       subject: message.subject,
     )
   end
+
+  private
 
   def limit_outstanding_requests
     if self.class.unscoped.where(founder: founder, accepted: nil).count > MAX_IN_FLIGHT - 1

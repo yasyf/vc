@@ -10,6 +10,7 @@ class IntroMailer < ExternalMailer
 
   def request_email(request)
     set_instance_vars! request
+    @email = request.email!
     mail to: investor_email, subject: "#{@company.name} <> #{@competitor.name}"
   end
 
@@ -20,6 +21,7 @@ class IntroMailer < ExternalMailer
 
   def intro_email(request)
     set_instance_vars! request
+    @email = request.email!
     mail to: [investor_email, founder_email], subject: "#{@company.name} <> #{@competitor.name}"
   end
 
