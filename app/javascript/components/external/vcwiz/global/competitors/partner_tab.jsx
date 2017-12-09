@@ -2,8 +2,8 @@ import React from 'react';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
 import Store from '../store';
 import {
-  ffetch, ffetchCached, getDomain, humanizeList,
-  humanizeTravelStatus, isLoggedIn
+  ffetch, ffetchCached, fullName, getDomain, humanizeList,
+  humanizeTravelStatus, isLoggedIn,
 } from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
@@ -253,18 +253,41 @@ export default class PartnerTab extends React.Component {
     )
   }
 
+  renderPath() {
+    const { investor, interactions } = this.state;
+    const { first_name } = investor;
+    const { path } = interactions;
+    if (!path) {
+      return null;
+    }
+    const { direct, first_hop_via, through } = path;
+    if (direct) {
+      return <span key="path">You are connected with {first_name} by {first_hop_via}.</span>;
+    } else if (through.length === 1) {
+      const { name, email } = through[0];
+      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
+      return <span key="path">You have a connection to {first_name} through {link}.</span>
+    } else {
+      const { name, email } = through[0];
+      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
+      const nextName = through[1].name;
+      return <span key="path">You have a connection to {first_name} through {nextName}, who {link} knows.</span>
+    }
+  }
+
   renderInteractions() {
     const { investor, interactions } = this.state;
     if (!interactions) {
       return null;
     }
     const { first_name } = investor;
-    const { last_contact, travel_status, open_city, overlap, entities } = interactions;
+    const { last_contact, travel_status, open_city, overlap, entities, path } = interactions;
     const fragments = _.compact([
+      this.renderPath(),
       last_contact && <span key="last_contact">You last contacted {first_name} {moment(last_contact).fromNow()}. </span>,
       travel_status && <span key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}. </span>,
-      overlap && <span key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}! </span>,
-      entities && !overlap && <span key="entities">{first_name} often talks about {humanizeList(overlap.map(o => <b>{o.name}</b>))}. </span>,
+      overlap && overlap.length && <span key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}! </span>,
+      entities.length && (!overlap || !overlap.length) && <span key="entities">{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}. </span>,
     ]);
     if (!fragments.length) {
       return null;

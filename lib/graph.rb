@@ -7,7 +7,7 @@ class Graph
     @relationship_indexes ||= server.list_relationship_indexes
   end
 
-  def self.shortest_path(n1, n2, limit = 4)
+  def self.shortest_path(n1, n2, limit = 3)
     n1.shortest_path_to(n2).depth(limit).rels.to_a
   end
 
