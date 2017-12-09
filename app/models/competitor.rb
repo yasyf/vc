@@ -102,6 +102,7 @@ class Competitor < ApplicationRecord
   end
 
   def self.closest_industry(industry)
+    return nil unless industry.present?
     distances = INDUSTRIES.flat_map do |k, friendly|
       ([friendly] + (RELATED_INDUSTRIES[k] || [])).map do |s|
         [Levenshtein.distance(s, industry) / [k.length, industry.length].max.to_f, k]
