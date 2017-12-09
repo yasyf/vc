@@ -67,7 +67,7 @@ module GoogleApi
     end
 
     def process_message(message)
-      FounderGmailMessageSyncJob.perform_later(@user, message.to_json) if message.present?
+      FounderGmailMessageSyncJob.perform_later(@user.id, message.to_json) if message.present?
     end
 
     %w(thread message).each do |s|
