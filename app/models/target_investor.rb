@@ -1,6 +1,7 @@
 class TargetInvestor < ApplicationRecord
   include Concerns::AttributeSortable
   include Concerns::Eventable
+  include Concerns::Graphable
 
   belongs_to :investor, counter_cache: true
   belongs_to :founder, touch: true
