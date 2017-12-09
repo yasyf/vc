@@ -39,6 +39,7 @@ class IntroRequest < ApplicationRecord
     return unless decided?
     if accepted
       IntroMailer.intro_email(self).deliver_later
+      founder.connect_to! target_investor&.email.present? ? target_investor : investor, :email
     else
       if investor.opted_in?
         IntroMailer.no_intro_email(self).deliver_later
