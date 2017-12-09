@@ -1,6 +1,5 @@
 class Investor < ApplicationRecord
   extend Concerns::Ignorable
-
   include Concerns::AttributeSortable
   include Concerns::Cacheable
   include Concerns::Twitterable
@@ -113,7 +112,9 @@ class Investor < ApplicationRecord
   end
 
   def add_entities!(owner, entities)
-    owner.entities.concat entities.reject { |e| owner.entities.include?(e) }
+    entities.each do |entity|
+      ignore_unique { owner.entities << entity }
+    end
   end
 
   def crawl_homepage!
