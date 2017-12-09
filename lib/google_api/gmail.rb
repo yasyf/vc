@@ -38,8 +38,8 @@ module GoogleApi
         get_messages(message_ids) do |message|
           process_message message
         end
+        @user.update! history_id: response.history_id
         unless response.next_page_token.present?
-          @user.update! history_id: response.history_id
           break
         end
         response = list_histories response.next_page_token

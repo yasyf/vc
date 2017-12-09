@@ -248,7 +248,7 @@ class Founder < ApplicationRecord
   end
 
   def start_touch_job
-    FounderRefreshJob.perform_later(self.id) if Rails.env.production?
+    FounderRefreshJob.perform_later(self.id)
   end
 
   def start_augment_job
