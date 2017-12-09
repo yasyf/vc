@@ -114,7 +114,7 @@ class Investor < ApplicationRecord
 
   def add_entities!(owner, entities)
     entities.each do |entity|
-      ignore_unique { PersonEntity.create!(person: owner, entity: entity) }
+      ignore_unique { PersonEntity.first_or_create!(person: owner, entity: entity) }
     end
   end
 
@@ -149,7 +149,7 @@ class Investor < ApplicationRecord
       meta[:categories].each do |category|
         entity = Entity.from_name(category)
         next unless entity.present?
-        post.person_entities.where(entity: entity, person: self).first_or_create!(featured: true)
+        PersonEntity.where(entity: entity, person: post).first_or_create!(featured: true)
       end if meta[:categories].present?
     end
   end
@@ -317,7 +317,9 @@ class Investor < ApplicationRecord
   def scrape_tweets!
     return unless tweeter.present?
     return if tweeter.private?
-    tweeter.latest_tweets
+    tweeter.latest_tweets.each do |tweet|
+      add_entities! self, Entity.from_text(tweet.text)
+    end
   rescue Twitter::Error::Unauthorized # private account
     tweeter.update! private: true
     nil

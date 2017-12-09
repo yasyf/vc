@@ -11,10 +11,14 @@ class Entity < ApplicationRecord
     where(name: name).first_or_create!(category: 'OTHER')
   end
 
-  def self.from_html(body)
-    cloud = GoogleCloud::Language.new(body, format: :html)
+  def self.from_text(body, format: :text)
+    cloud = GoogleCloud::Language.new(body, format: format)
     return [] unless cloud.present? && (entities = cloud.entities).present?
     from_cloud entities.proper
+  end
+
+  def self.from_html(body)
+    from_text body, format: :html
   end
 
   def self.from_cloud(entities)
