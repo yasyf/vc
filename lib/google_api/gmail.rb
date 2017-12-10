@@ -69,6 +69,7 @@ module GoogleApi
     end
 
     def process_message(message)
+      return unless message.present?
       @pool.perform do
         ActiveRecord::Base.connection_pool.with_connection do
           Message.new(message).process!(@user)
