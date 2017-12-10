@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import OutreachBar from './outreach_bar';
 import SettingsModal from '../settings/settings_modal';
 import Flash from './flash';
+import Tether from './tether';
 
 export default class Header extends React.Component {
   static defaultProps = {
@@ -27,11 +28,16 @@ export default class Header extends React.Component {
     settingsOpen: false,
     loginStage: 0,
     showIntro: true,
+    showFlashes: true,
     founder: Store.get('founder', {}),
   };
 
   componentWillMount() {
-    this.subscription = Store.subscribe('founder', founder => this.setState({founder}));
+    this.founderSubscription = Store.subscribe('founder', founder => this.setState({founder}));
+    this.lastClickSubscription = Store.subscribe('lastClick', e => {
+      if (this.state.showFlashes)
+        this.setState({showFlashes: false});
+    });
   }
 
   componentDidMount() {
@@ -41,7 +47,8 @@ export default class Header extends React.Component {
   }
 
   componentWillUnmount() {
-    Store.unsubscribe(this.subscription);
+    Store.unsubscribe(this.founderSubscription);
+    Store.unsubscribe(this.lastClickSubscription);
     Actions.unregister('login');
     Actions.unregister('signup');
     Actions.unregister('settings');
@@ -77,6 +84,11 @@ export default class Header extends React.Component {
     this.setState({settingsOpen: false});
   };
 
+  toggleFlashes = e => {
+    this.setState({showFlashes: !this.state.showFlashes});
+    e.stopPropagation();
+  };
+
   renderCount() {
     if (!this.state.founder.conversations) {
       return null;
@@ -88,6 +100,7 @@ export default class Header extends React.Component {
     if (isLoggedIn()) {
       return (
         <div className="title right">
+          {this.renderAlert()}
           <a href={OutreachPath}>
             <h5 className="subtitle nudge-middle">
               My Conversations {this.renderCount()}
@@ -184,7 +197,33 @@ export default class Header extends React.Component {
   }
 
   renderFlashes() {
-    return window.flashes.map((flash, i) => <Flash key={i} {...flash} />);
+    const { showFlashes } = this.state;
+    if (!showFlashes) {
+      return null;
+    }
+    return (
+      <div className="flashes-alert">
+        <div className="arrow"/>
+        <div className="wrapper">
+          {window.flashes.map((flash, i) => <Flash key={i} {...flash} showClose={false} />)}
+        </div>
+      </div>
+    );
+  }
+
+  renderAlert() {
+    if (!window.flashes.length) {
+      return null;
+    }
+    return [
+      <a key="icon" className="alert-icon" onClick={this.toggleFlashes}>
+        <i className={classNames('line-icon', 'fi-alert', window.flashes[0].type)}/>
+      </a>,
+      <Tether key="flashes" targetClassName="flashes-alert-tether-target">
+        {this.renderFlashes()}
+      </Tether>,
+    ];
+
   }
 
   renderBar() {
@@ -229,7 +268,6 @@ export default class Header extends React.Component {
         {this.renderSettingsModal()}
         <header id="top-header">
           {this.renderHeader()}
-          {this.renderFlashes()}
           {this.renderBar()}
         </header>
       </div>

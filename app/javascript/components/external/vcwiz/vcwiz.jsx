@@ -16,6 +16,10 @@ export default class VCWiz extends React.Component {
     subtitle: 'Raise Your Seed Round',
   };
 
+  onClick = e => {
+    Store.set('lastClick', e);
+  };
+
   componentWillMount() {
     Store.set('founder', window.gon.founder);
     Actions.register('refreshFounder', this.refreshFounder);
@@ -83,7 +87,7 @@ export default class VCWiz extends React.Component {
   render() {
     const { page, showIntro, showLogin, subtitle } = this.props;
     return (
-      <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
+      <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)} onClick={this.onClick}>
         <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} />
         <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})}>
           {this.renderHeader()}
