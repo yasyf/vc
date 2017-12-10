@@ -30,6 +30,7 @@ export default class ResearchModal extends React.Component {
     if (this.props.onTrackChange) {
       this.props.onTrackChange(update);
     } else {
+      Actions.trigger('flash', {type: 'success', message: `${this.props.item.name} has been added to your conversation tracker!`});
       ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}}).then(() => {
         Actions.trigger('refreshFounder');
       });
