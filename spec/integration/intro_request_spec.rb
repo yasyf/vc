@@ -47,6 +47,9 @@ RSpec.describe 'intro request', type: :request do
   end
 
   it 'makes the intro' do
+    expect(Graph).to receive(:get).exactly(4).times
+    expect(Graph).to receive(:connect).twice
+    
     intro_request = FactoryBot.create(:intro_request, founder: @founder, company: @company, investor: @investor)
 
     perform_enqueued_jobs do
