@@ -164,7 +164,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     founder.connect_to! target, :email if target.last_name.present?
 
     if target.investor.present?
-      Email.where(email_id: create_params['Message-Id']).first_or_create!(
+      email = Email.where(email_id: create_params['Message-Id']).first_or_create!(
         intro_request: intro_request,
         founder: founder,
         investor: target.investor,

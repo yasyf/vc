@@ -80,7 +80,8 @@ RSpec.describe 'intro request', type: :request do
       post external_api_v1_message_path, params: {
         To: @investor2.email,
         From: @founder.email,
-        'stripped-text': 'hi'
+        'stripped-text': 'hi',
+        'Message-Id': 'foobar',
       }
       expect(response).to be_success
     end.to change { TargetInvestor.count }.by(1)
@@ -99,7 +100,8 @@ RSpec.describe 'intro request', type: :request do
       post external_api_v1_message_path, params: {
         From: @investor2.email,
         To: @founder.email,
-        'stripped-text': 'hello'
+        'stripped-text': 'hello',
+        'Message-Id': 'foobar2',
       }
       expect(response).to be_success
     end.to change { TargetInvestor.count }.by(1)
@@ -113,7 +115,8 @@ RSpec.describe 'intro request', type: :request do
       post external_api_v1_message_path, params: {
         From: @investor2.email,
         To: @founder.email,
-        'stripped-text': 'sorry, not interested right now.'
+        'stripped-text': 'sorry, not interested right now.',
+        'Message-Id': 'foobar3',
       }
       expect(response).to be_success
     end.to_not change { TargetInvestor.count }
