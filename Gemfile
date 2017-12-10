@@ -86,6 +86,7 @@ gem 'addressable'
 gem 'browser'
 gem 'neography'
 gem 'email_reply_parser'
+gem 'workers'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

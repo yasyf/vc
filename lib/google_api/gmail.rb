@@ -10,6 +10,7 @@ module GoogleApi
       @gmail.authorization = authorization
       @gmail.quota_user = @user.id.to_s
       @gmail.user_ip = @user.ip_address.to_s
+      @pool = Workers::Pool.new(logger: Rails.logger, on_exception: proc { |e| Raven.capture_exception(e) })
     end
 
     def sync!
@@ -18,6 +19,7 @@ module GoogleApi
       else
         sync_full!
       end
+      @pool.dispose
     end
 
     private
@@ -67,7 +69,11 @@ module GoogleApi
     end
 
     def process_message(message)
-      FounderGmailMessageSyncJob.perform_later(@user.id, message.to_json) if message.present?
+      @pool.perform do
+        ActiveRecord::Base.connection_pool.with_connection do
+          Message.new(message).process!(@user)
+        end
+      end
     end
 
     %w(thread message).each do |s|

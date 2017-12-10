@@ -1,6 +1,6 @@
 class Graph
   def self.server
-    @neo = Neography::Rest.new
+    Thread.current[:neo] ||= Neography::Rest.new
   end
 
   def self.relationship_indexes
