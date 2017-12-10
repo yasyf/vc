@@ -262,16 +262,16 @@ export default class PartnerTab extends React.Component {
     }
     const { direct, first_hop_via, through } = path;
     if (direct) {
-      return <span key="path">You are connected with {first_name} by {first_hop_via}.</span>;
+      return <span key="path">You are connected with {first_name} by {first_hop_via}. </span>;
     } else if (through.length === 1) {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
-      return <span key="path">You have a connection to {first_name} through {link}.</span>
+      return <span key="path">You have a connection to {first_name} through {link}. </span>
     } else {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
       const nextName = through[1].name;
-      return <span key="path">You have a connection to {first_name} through {nextName}, who {link} knows.</span>
+      return <span key="path">You have a connection to {first_name} through {nextName}, who {link} knows. </span>
     }
   }
 
