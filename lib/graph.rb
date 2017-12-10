@@ -27,8 +27,12 @@ class Graph
   end
 
   def self.add(name, email)
-    Neography::Node.create({name: name, email: email}, server).tap do |node|
+    node = Neography::Node.create({name: name, email: email}, server)
+    begin
       node.set_labels('Person')
+    rescue Neography::BadInputException
+      node.del
+      find email
     end
   end
 
