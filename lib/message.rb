@@ -89,6 +89,8 @@ class Message
     else
       process_incoming!(founder)
     end
+  rescue Mail::Field::IncompleteParseError
+    # ignored
   end
 
   private
