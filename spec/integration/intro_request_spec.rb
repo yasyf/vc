@@ -48,7 +48,7 @@ RSpec.describe 'intro request', type: :request do
 
   it 'makes the intro' do
     expect(Graph).to receive(:get).exactly(2).times
-    expect(Graph).to receive(:connect).twice
+    expect(Graph).to receive(:connect).once
 
     intro_request = FactoryBot.create(:intro_request, founder: @founder, company: @company, investor: @investor)
 
@@ -74,7 +74,7 @@ RSpec.describe 'intro request', type: :request do
 
   it 'tracks outreach' do
     expect(Graph).to receive(:get).exactly(2).times
-    expect(Graph).to receive(:connect).twice
+    expect(Graph).to receive(:connect).once
 
     expect do
       post external_api_v1_message_path, params: {
