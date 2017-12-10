@@ -39,7 +39,6 @@ class CompetitorCrunchbaseJob < ApplicationJob
     end
 
     al_fund.roles.each do |person|
-      next unless person['role'] == 'founder' || (title = person['title']&.downcase) && Competitor::INVESTOR_TITLE.any? { |t| title.include?(t) }
       Investor.from_angelist(person['id'])
     end
 
