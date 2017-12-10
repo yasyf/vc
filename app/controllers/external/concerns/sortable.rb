@@ -7,7 +7,7 @@ module External::Concerns
 
     def sorts
       SORTS.keys.tap do |keys|
-        keys.delete('sort') unless external_founder_signed_in?
+        keys.delete(:stage) unless external_founder_signed_in?
       end.map { |x| [x, sort_params[x].to_i || 0] }.to_h
     end
 

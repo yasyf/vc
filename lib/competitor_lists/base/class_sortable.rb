@@ -5,7 +5,7 @@ module CompetitorLists::Base::ClassSortable
     last_response: 'last_response',
     hq: 'COALESCE(hq, location[1])',
     fund_type: { asc: 'fund_type[1]', desc: 'fund_type[array_length(fund_type, 1)]' },
-    stage: "COALESCE(stage, #{TargetInvestor::STAGES.length})",
+    stage: "COALESCE(stage, #{TargetInvestor::STAGES.length - 1})",
   }
 
   def order_sql_from_sort(sort)
