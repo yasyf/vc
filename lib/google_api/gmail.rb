@@ -88,8 +88,9 @@ module GoogleApi
                 else
                   raise err
                 end
+              else
+                block.call(res)
               end
-              block.call(res)
             end
           end
         end
