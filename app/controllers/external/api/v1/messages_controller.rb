@@ -163,20 +163,23 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
     founder.connect_to! target, :email if target.last_name.present?
 
-    Email.create!(
-      intro_request: intro_request,
-      founder: founder,
-      investor: target.investor,
-      company: founder.primary_company,
-      direction: :outgoing,
-      old_stage: target.stage,
-      new_stage: stage,
-      sentiment_score: sentiment&.score,
-      sentiment_magnitude: sentiment&.magnitude,
-      body: text,
-      subject: create_params[:Subject],
-      created_at: date,
-    ) if target.investor.present?
+    if target.investor.present?
+      Email.where(email_id: create_params['Message-Id']).first_or_create!(
+        intro_request: intro_request,
+        founder: founder,
+        investor: target.investor,
+        company: founder.primary_company,
+        direction: :outgoing,
+        old_stage: target.stage,
+        new_stage: stage,
+        sentiment_score: sentiment&.score,
+        sentiment_magnitude: sentiment&.magnitude,
+        body: text,
+        subject: create_params[:Subject],
+        created_at: date,
+      )
+      return unless email.id_previously_changed?
+    end
 
     target.stage = stage
     target.save!
@@ -193,7 +196,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     founder.connect_from! target, :email if target.last_name.present?
 
     if target.investor.present?
-      email = Email.create!(
+      email = Email.where(email_id: create_params['Message-Id']).first_or_create!(
         intro_request: intro_request,
         founder: founder,
         investor: target.investor,
@@ -207,6 +210,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
         subject: create_params[:Subject],
         created_at: date,
       )
+      return unless email.id_previously_changed?
       target.investor_replied!(intro_request&.id, email.id).tap do |event|
         event.update! created_at: date
       end
@@ -222,7 +226,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_params
-    params.permit(:To, :From, :Cc, :Subject, :Date, 'stripped-text', 'body-plain', 'message-headers')
+    params.permit(:To, :From, :Cc, :Subject, :Date, 'stripped-text', 'body-plain', 'message-headers', 'Message-Id')
   end
 
   def demo_params

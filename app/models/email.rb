@@ -8,6 +8,7 @@ class Email < ApplicationRecord
   validates :investor, presence: true
   validates :company, presence: true
   validates :founder, presence: true
+  validates :email_id, uniqueness: { allow_nil: true }
 
   enum direction: %w(incoming outgoing) # from the founder's perspective
 

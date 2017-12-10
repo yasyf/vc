@@ -66,6 +66,10 @@ class Message
     @html ||= part('text/html')&.data || ''
   end
 
+  def id
+    @message.id
+  end
+
   def reply_text
     @reply_text ||= EmailReplyParser.parse_reply(text)
   end
@@ -103,7 +107,7 @@ class Message
     return unless target.present?
     stage = self.class.stage(reply_text, sentiment)
     if target.investor.present?
-      email = Email.create!(
+      email = Email.where(email_id: id).first_or_create!(
         intro_request: intro_request,
         founder: founder,
         investor: target.investor,
@@ -117,6 +121,7 @@ class Message
         subject: subject,
         created_at: date,
       )
+      return unless email.id_previously_changed?
       target.investor_replied!(intro_request&.id, email.id).tap do |event|
         event.update! created_at: date
       end
@@ -132,20 +137,23 @@ class Message
       target = TargetInvestor.from_addr(founder, addr, create: true)
       next unless target.present?
       stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
-      Email.create!(
-        intro_request: intro_request,
-        founder: founder,
-        investor: target.investor,
-        company: founder.primary_company,
-        direction: :outgoing,
-        old_stage: target.stage,
-        new_stage: stage,
-        sentiment_score: sentiment&.score,
-        sentiment_magnitude: sentiment&.magnitude,
-        body: reply_text,
-        subject: subject,
-        created_at: date,
-      ) if target.investor.present?
+      if target.investor.present?
+        email = Email.where(email_id: id).first_or_create!(
+          intro_request: intro_request,
+          founder: founder,
+          investor: target.investor,
+          company: founder.primary_company,
+          direction: :outgoing,
+          old_stage: target.stage,
+          new_stage: stage,
+          sentiment_score: sentiment&.score,
+          sentiment_magnitude: sentiment&.magnitude,
+          body: reply_text,
+          subject: subject,
+          created_at: date,
+        )
+        return unless email.id_previously_changed?
+      end
       target.email ||= addr.address
       target.stage = stage
       target.save!

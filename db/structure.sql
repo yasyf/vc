@@ -299,7 +299,8 @@ CREATE TABLE emails (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     intro_request_id bigint,
-    subject text
+    subject text,
+    email_id character varying
 );
 
 
@@ -1883,6 +1884,13 @@ CREATE INDEX index_emails_on_company_id ON emails USING btree (company_id);
 
 
 --
+-- Name: index_emails_on_email_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_emails_on_email_id ON emails USING btree (email_id);
+
+
+--
 -- Name: index_emails_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2887,6 +2895,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171206074352'),
 ('20171206103132'),
 ('20171207112536'),
-('20171209084559');
+('20171209084559'),
+('20171210093034');
 
 

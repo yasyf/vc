@@ -121,6 +121,7 @@ class IntroRequest < ApplicationRecord
       new_stage: TargetInvestor::RAW_STAGES.keys.index(:intro),
       body: message.body,
       subject: message.subject,
+      email_id: self.cache_key,
     )
   end
 
