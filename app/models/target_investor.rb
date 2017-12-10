@@ -57,10 +57,12 @@ class TargetInvestor < ApplicationRecord
   scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
 
   def self.from_investor!(founder, investor)
-    existing = founder.target_investors.where(investor: investor)
+    existing = TargetInvestor.where(founder: founder, investor: investor)
     return existing.first if existing.present?
     instance = self.new(investor: investor, founder: founder)
     instance.tap(&:load_from_investor!)
+  rescue ActiveRecord::RecordNotUnique
+    TargetInvestor.where(founder: founder, investor: investor).first!
   end
 
   def self.from_addr(founder, addr, create: false)
