@@ -90,7 +90,7 @@ class Message
   private
 
   def part(type)
-    @message.payload.parts.find { |part| part.mime_type == type}&.body
+    @message.payload.parts&.find { |part| part.mime_type == type}&.body
   end
 
   def process_incoming!(founder)
