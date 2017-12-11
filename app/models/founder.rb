@@ -218,16 +218,15 @@ class Founder < ApplicationRecord
   def events(scope = Event.all)
     Event
       .where(subject_type: TargetInvestor.name)
+      .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
+      .where('target_investors.founder_id = ?', id)
       .where(action: %w(investor_opened investor_clicked intro_requested investor_replied))
       .order(created_at: :desc)
       .merge(scope)
   end
 
   def events_with_meta
-    events(Event.limit(3))
-      .joins('INNER JOIN target_investors ON events.subject_id = target_investors.id')
-      .where('target_investors.founder_id = ?', id)
-      .select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name')
+    events(Event.limit(3)).select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name')
   end
 
   private
