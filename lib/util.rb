@@ -91,9 +91,10 @@ class Util
     (average.to_f / 1.minute).minutes
   end
 
- def self.html_person(person)
+ def self.html_person(person, only_first: false)
+   name = only_first ? person.first_name : person.name
    link = Founder::SOCIAL_KEYS.find { |k| person.send(k).present? }
-   return person.name unless link.present?
+   return name unless link.present?
    prefix = case link.to_sym
      when :linkedin
        'https://www.linkedin.com/in/'
@@ -104,7 +105,7 @@ class Util
      else
        ''
    end
-   "<a href='#{prefix}#{person.send(link)}'>#{person.name}</a>"
+   "<a href='#{prefix}#{person.send(link)}'>#{name}</a>"
  end
 
   def self.count_lines(filename)

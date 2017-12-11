@@ -21,3 +21,10 @@ Hey <%= @investor.first_name %>!
   <span class="bolder">Click <a href="<%= external_vcwiz_opt_in_url(optin: true, accept: false, token: @request.token) %>">here</a> to opt-in, but decline the intro request for <%= @company.name %>.</span><br />
   <span class="bolder">Click <a href="<%= external_vcwiz_opt_in_url(optin: false, accept: false, token: @request.token) %>">here</a> if you'd rather not get intro requests through VCWiz.</span><br />
 </p>
+
+<p>
+  Cheers,<br>
+  VCWiz
+</p>
+
+<%= render partial: 'pixel' %>

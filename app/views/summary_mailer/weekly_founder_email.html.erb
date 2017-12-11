@@ -1,31 +1,60 @@
-<p>
-  Hey <%= @founder.first_name %>!
-</p>
-
-<p>
-  A quick update on your investor outreach.
-  <% if @stats[:emails] > 0 %>
-    This week, you sent <%= @stats[:emails] %> emails to <%= @stats[:investors] %> investors.
-  <% else %>
-    You didn't send any emails to investors this week! If this is wrong, please make sure you're CCing <b><%= ENV['MAILGUN_EMAIL'] %></b>, or enable the Inbox Scanner.
-  <% end %>
-  Overall, you've got an average response time of <%= distance_of_time_in_words @stats[:response_time] %>.
-</p>
-
-<% if @events.size > 0 %>
-  <p>
-    Here's what happened this week:
-    <ul>
-      <% @events.each do |event| %>
-      <li><%= event.describe.html_safe %></li>
-      <% end %>
-    </ul>
-  </p>
-<% else %>
-  <p>There isn't anything else to report for this week!</p>
+<% content_for :preview do %>
+  Your VCWiz weekly roundup. You talked to <%= @stats[:investors] %> investors this week!
 <% end %>
 
-<p>
-  Cheers,<br>
-  VCWiz
-</p>
+<% content_for :header do %>
+  Your Weekly Investor Outreach Roundup
+<% end %>
+
+<% content_for :subheader do %>
+  <%= ["You've been busy!", 'What a machine!', 'Beast mode!', 'Look at all those emails!'].sample %>
+<% end %>
+
+<% content_for :content do %>
+  <div>
+    Hey <%= @founder.first_name %>!
+    <% if @stats[:emails] > 0 %>
+      Here's a quick recap of your outreach to investors over the past week.
+      If there's anything else you'd like to see on this screen, please respond to this email and let us know!
+    <% else %>
+      You didn't send any emails to investors this week!
+      If this is wrong, please make sure you're CCing <b><%= ENV['MAILGUN_EMAIL'] %></b>, or enable the Inbox Scanner <a href="<%= external_vcwiz_outreach_url %>">here</a>.
+    <% end %>
+  </div>
+<% end %>
+
+<% content_for :left_header do %>
+  Events
+<% end %>
+
+<% content_for :left_content do %>
+  <% if @events.size > 0 %>
+    <% @events.each do |event| %>
+      <div class="event">
+        <div class="image">
+          <img src="<%= event.subject.investor&.photo %>" align="middle" width="40" />
+        </div>
+        <div>
+          <p><%= event.describe.html_safe %></p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p>None!</p>
+  <% end %>
+<% end %>
+
+<% content_for :right_header do %>
+  Stats
+<% end %>
+
+<% content_for :right_content do %>
+  <b>Emails Sent</b>
+  <p><%= @stats[:emails] %></p>
+  <b>Investors Contacted</b>
+  <p><%= @stats[:investors] %></p>
+  <b>Intros Requested</b>
+  <p><%= @requests %></p>
+  <b>Average Response Time</b>
+  <div><%= distance_of_time_in_words @stats[:response_time] %></div>
+<% end %>

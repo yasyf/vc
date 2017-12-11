@@ -19,7 +19,7 @@ class Event < ApplicationRecord
 
   def describe
     email_s = meta[:email_subject] ?  "email (#{meta[:email_subject]})" : 'email'
-    name_s = subject.investor.present? ? Util.html_person(subject.investor) : subject.name
+    name_s = subject.investor.present? ? Util.html_person(subject.investor, only_first: true) : subject.first_name
     case action.to_sym
       when :investor_opened
         "#{name_s} opened your #{arg1 ? 'intro' : email_s}."
