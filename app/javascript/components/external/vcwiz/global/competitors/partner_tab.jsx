@@ -267,11 +267,18 @@ export default class PartnerTab extends React.Component {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
       return <span key="path">You have a connection to {first_name} through {link}. </span>
+    } else if (through.length === 2) {
+      const { name, email } = through[0];
+      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
+      const lastName = through[1].name;
+      return <span key="path">You have a connection to {first_name} through {lastName}, via {link}. </span>;
     } else {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
-      const nextName = through[1].name;
-      return <span key="path">You have a connection to {first_name} through {nextName}, who {link} knows. </span>
+      const middleName = through[1].name;
+      const lastParts = through[2].name.split(' ');
+      const lastName = `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
+      return <span key="path">You have a connection to {first_name} through {middleName} and {lastName}, via {link}. </span>;
     }
   }
 
