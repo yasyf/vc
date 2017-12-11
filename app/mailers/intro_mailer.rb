@@ -5,6 +5,7 @@ class IntroMailer < ExternalMailer
 
   def opt_in_email(request)
     set_instance_vars! request
+    @email = request.email!
     mail to: investor_email, subject: "#{@company.name} <> #{@competitor.name}"
   end
 
