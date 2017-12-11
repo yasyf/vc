@@ -54,7 +54,7 @@ export default class OutreachBar extends React.Component {
     if ((_.isEmpty(stats) || !stats.emails)) {
       return (
         <span>
-          { conversations.total ? "You haven't sent any emails yet!" : null }
+          { conversations.total ? "You haven't sent any emails yet! " : null }
           When you're ready, you can CC <b>{CCEmail}</b> in your investor emails to track your investor outreach.
           VCWiz will automatically update your conversation progress.
           Don't worry&mdash;VCWiz doesn't read the content of your e-mails.
