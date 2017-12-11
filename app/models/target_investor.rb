@@ -93,7 +93,7 @@ class TargetInvestor < ApplicationRecord
     else
       [addr.local, nil]
     end
-    create! first_name: first, last_name: last, email: addr.address, note: 'imported from email'
+    create! founder: founder, first_name: first, last_name: last, email: addr.address, note: 'imported from email'
   end
 
   def load_from_investor!

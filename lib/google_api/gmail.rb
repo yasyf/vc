@@ -39,7 +39,7 @@ module GoogleApi
         end.uniq
         get_messages(message_ids) do |message|
           process_message message
-        end
+        end if message_ids.present?
         @user.update! history_id: response.history_id
         unless response.next_page_token.present?
           break
@@ -55,7 +55,7 @@ module GoogleApi
         thread_ids = response.threads.map(&:id)
         get_threads(thread_ids)  do |thread|
           process_thread thread
-        end
+        end if thread_ids.present?
         break unless response.next_page_token.present?
         response = list_threads response.next_page_token
       end
