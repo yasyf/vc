@@ -10,7 +10,7 @@ module GoogleApi
       @gmail.authorization = authorization
       @gmail.quota_user = @user.id.to_s
       @gmail.user_ip = @user.ip_address.to_s
-      @pool = Workers::Pool.new(logger: Rails.logger, on_exception: proc { |e| Raven.capture_exception(e) })
+      @pool = Workers::Pool.new(logger: Rails.logger, on_exception: proc { |e| Raven.capture_exception(e) }, size: 10)
     end
 
     def sync!
@@ -19,7 +19,7 @@ module GoogleApi
       else
         sync_full!
       end
-      @pool.dispose
+      @pool.dispose(30)
     end
 
     private
