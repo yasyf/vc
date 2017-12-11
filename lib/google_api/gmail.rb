@@ -19,6 +19,7 @@ module GoogleApi
       else
         sync_full!
       end
+    ensure
       @pool.dispose(30)
     end
 
