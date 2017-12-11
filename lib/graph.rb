@@ -8,6 +8,7 @@ class Graph
   end
 
   def self.shortest_path(n1, n2, limit = 3)
+    return nil unless n1.present? && n2.present?
     n1.shortest_path_to(n2).depth(limit).rels.to_a
   end
 
@@ -32,7 +33,7 @@ class Graph
       node.set_labels('Person')
     rescue Neography::BadInputException
       node.del
-      find email
+      get name, email
     end
   end
 
