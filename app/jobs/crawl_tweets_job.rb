@@ -1,6 +1,6 @@
 class CrawlTweetsJob < ApplicationJob
   include Concerns::Batchable
-  queue_as :default
+  queue_as :long
 
   MAX_DELAY = 3.hours
   LIMIT_FACTOR = 4
