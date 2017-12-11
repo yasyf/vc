@@ -1,24 +1,31 @@
-<p>
-  Hey <%= @founder.first_name %>!
-</p>
+<% content_for :preview do %>
+  Welcome to VCWiz! This email will help you get started.
+<% end %>
 
-<p>
-  Thanks for signing up for VCWiz—we're so excited to have you on board!
-  You can use the tool at <a href="https://<%= ENV['MARKETING_DOMAIN'] %>"><%= ENV['MARKETING_DOMAIN'] %></a> to search and filter firms, research individual investors, and plan your outreach.
-</p>
+<% content_for :header do %>
+  Welcome to VCWiz!
+<% end %>
 
-<p>
-  VCWiz can help facilitate introductions from right in the app, and can even scan your email (if you want!) to keep the Conversations Tracker up-to-date.
-  Check out the <a href="<%= external_vcwiz_outreach_url %>">Conversations Tracker</a> page for more details.
-</p>
+<% content_for :subheader do %>
+  We can't wait to help you dive in <%= @founder.first_name %>
+<% end %>
 
-<p>
-  If you have any questions, feel free to email Yasyf
-  (<a href="mailto:<%= ENV['SUPPORT_EMAIL'] %>?subject=VCWiz Feedback From <%= @founder.name %>"><%= ENV['SUPPORT_EMAIL'] %></a>),
-  the creator of VCWiz.
-</p>
+<% content_for :content do %>
+  <div>
+    <p>
+      Thanks for signing up for VCWiz—we're so excited to have you on board!
+      You can use the tool at <a href="https://<%= ENV['MARKETING_DOMAIN'] %>"><%= ENV['MARKETING_DOMAIN'] %></a> to search and filter firms, research individual investors, and plan your outreach.
+    </p>
 
-<p>
-  Cheers,<br>
-  VCWiz
-</p>
+    <p>
+      VCWiz can help facilitate introductions from right in the app, and can even scan your email (if you want!) to keep the Conversations Tracker up-to-date.
+      Check out the <a href="<%= external_vcwiz_outreach_url(host: ENV['MARKETING_DOMAIN']) %>">Conversations Tracker page</a> for more details.
+    </p>
+
+    <p>
+      If you have any questions, feel free to email Yasyf
+      (<a href="mailto:<%= ENV['SUPPORT_EMAIL'] %>?subject=VCWiz Feedback From <%= @founder.name %>"><%= ENV['SUPPORT_EMAIL'] %></a>),
+      the creator of VCWiz.
+    </p>
+  </div>
+<% end %>

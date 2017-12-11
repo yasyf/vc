@@ -15,7 +15,7 @@
     Hey <%= @founder.first_name %>!
     <% if @stats[:emails] > 0 %>
       Here's a quick recap of your outreach to investors over the past week.
-      If there's anything else you'd like to see on this screen, please respond to this email and let us know!
+      If there's anything else you'd like to see on this screen, please respond to this email and let us know.
     <% else %>
       You didn't send any emails to investors this week!
       If this is wrong, please make sure you're CCing <b><%= ENV['MAILGUN_EMAIL'] %></b>, or enable the Inbox Scanner <a href="<%= external_vcwiz_outreach_url %>">here</a>.
@@ -38,6 +38,7 @@
           <p><%= event.describe.html_safe %></p>
         </div>
       </div>
+      <div class="clearfix"></div>
     <% end %>
   <% else %>
     <p>None!</p>
