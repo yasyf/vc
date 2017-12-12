@@ -25,7 +25,7 @@ export default class WelcomeModal extends React.Component {
     this.setState({moved: extend(this.state.moved, {[i + 1]: false})});
     this.timeout = setTimeout(() => {
       this.setState({moved: extend(this.state.moved, {[ii + 1]: true})});
-    }, 3 * 1000);
+    }, 2.5 * 1000);
   };
 
   renderTop() {
