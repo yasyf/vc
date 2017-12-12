@@ -81,7 +81,7 @@ export default class Hero extends React.Component {
           </p>
         </div>
         <Tabs
-          tabs={['Browse Investors', 'Find an Investor']}
+          tabs={['Filter Investors', 'Search for an Investor']}
           panels={[null, null]}
           onTabChange={this.onTabChange}
         />

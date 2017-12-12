@@ -26,6 +26,7 @@ const Panel = ({ children, selected }) => (
 export default class Tabs extends React.Component {
   static defaultProps = {
     onTabChange: _.noop,
+    scrollShadows: false,
   };
 
   constructor(props) {
@@ -47,11 +48,11 @@ export default class Tabs extends React.Component {
   };
 
   renderTabs() {
-    const { tabs } = this.props;
+    const { tabs, scrollShadows } = this.props;
     const { selected } = this.state;
     return (
       <div className="tab-list-wrapper">
-        <ul className="tab-list" role="tablist">
+        <ul className={classNames('tab-list', {'horizontal-scroll-shadow': scrollShadows})} role="tablist">
           {tabs.map((t, i) =>
             <Tab key={i} onClick={this.onClick(i)} selected={i === selected}>{t}</Tab>
           )}

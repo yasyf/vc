@@ -140,10 +140,11 @@ export default class ResearchModal extends React.Component {
 
     return (
       <Tabs
-        onTabChange={this.onTabChange}
+        scrollShadows={true}
         defaultIndex={defaultIndex}
         tabs={partners.map(fullName)}
         panels={partners.map(p => <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />)}
+        onTabChange={this.onTabChange}
       />
     );
   }

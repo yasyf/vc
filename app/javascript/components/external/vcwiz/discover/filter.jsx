@@ -87,10 +87,11 @@ export default class Filter extends React.Component {
 
   renderSelected() {
     const { name, value } = this.props;
+    const { dimensions } = this.state;
     if (!value || !value.length) {
       return null;
     }
-    const display = _.map(_.take(value, this.state.dimensions > SmallScreenSize ? 2 : 1), 'label');
+    const display = _.map(_.take(value, dimensions && dimensions.width > SmallScreenSize ? 2 : 1), 'label');
     const remaining = value.length - display.length;
     return (
       <div className="selected-wrapper">

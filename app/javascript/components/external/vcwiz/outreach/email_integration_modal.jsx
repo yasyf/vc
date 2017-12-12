@@ -1,11 +1,10 @@
 import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
-import {CCEmail, DemoEmail, GmailAuthPath, StorageRestoreStateKey, FounderDisableScannerPath} from '../global/constants.js.erb';
+import {CCEmail, DemoEmail, GmailAuthPath, FounderDisableScannerPath} from '../global/constants.js.erb';
 import {SessionStorage} from '../global/storage.js.erb';
-import Breadcrumb from '../global/breadcrumbs';
 import Store from '../global/store';
 import Actions from '../global/actions';
-import {currentPage, ffetch} from '../global/utils';
+import {saveCurrentRestoreState, ffetch} from '../global/utils';
 import {Button, Colors} from 'react-foundation';
 
 export default class EmailIntegrationModal extends React.Component {
@@ -22,10 +21,7 @@ export default class EmailIntegrationModal extends React.Component {
   }
 
   authWithGoogle = () => {
-    SessionStorage.set(StorageRestoreStateKey, {
-      breadcrumb: Breadcrumb.peek(),
-      location: currentPage(),
-    });
+    saveCurrentRestoreState();
     window.location.href = GmailAuthPath;
   };
 

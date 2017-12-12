@@ -153,6 +153,15 @@ div.flashes-alert {
   background-attachment: local, local, scroll, scroll;
 }
 
+.horizontal-scroll-shadow {
+  background:
+          linear-gradient(to right, $lightest-grey 1%, hsla(0, 0%, 100%, 0)),
+          linear-gradient(to right, hsla(0, 0%, 100%, 0), $lightest-grey 99%) 0 100%,
+          linear-gradient(to right, $grey, hsla(0, 0%, 100%, 0) 1%),
+          linear-gradient(to left, $grey, hsla(0, 0%, 100%, 0) 1%);
+  background-attachment: local, local, scroll, scroll;
+}
+
 .glow-highlight {
   animation: pulse 2s infinite;
 }
@@ -1833,6 +1842,8 @@ mark.highlighter {
       margin-bottom: 0;
       margin-left: 0;
       border: unset;
+      overflow-x: auto;
+      overflow-y: hidden;
     }
 
     .tab-panel {

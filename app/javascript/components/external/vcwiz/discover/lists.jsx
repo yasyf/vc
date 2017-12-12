@@ -74,7 +74,8 @@ export default class Lists extends React.Component {
   };
 
   renderList = ({title, name, competitors, count}, i, arr) => {
-    let displayCompetitors = _.take(competitors, this.state.dimensions.width > SmallScreenSize ? 5 : 3);
+    const { dimensions } = this.state;
+    let displayCompetitors = _.take(competitors, dimensions && dimensions.width > SmallScreenSize ? 5 : 3);
     return (
       <Column large={4} key={name} isLast={i === arr.length - 1}>
         <div className="card-wrapper">

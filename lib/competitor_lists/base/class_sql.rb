@@ -19,7 +19,7 @@ module CompetitorLists::Base::ClassSql
         LEFT OUTER JOIN investments ON investments.investor_id = investors.id
         WHERE
           investors.competitor_id = #{competitors_table}.id
-          AND lower(investors.role) ILIKE ANY (ARRAY[#{Competitor::INVESTOR_TITLE.map { |t| "'%#{t}%'" }.join(', ')}])
+          AND LOWER(investors.role) ILIKE ANY (ARRAY[#{Competitor::INVESTOR_TITLE.map { |t| "'%#{t}%'" }.join(', ')}])
         GROUP BY investors.id
         ORDER BY
           MAX(investments.funded_at) DESC NULLS LAST,

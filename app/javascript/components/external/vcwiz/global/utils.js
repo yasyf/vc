@@ -2,8 +2,9 @@ import React from 'react';
 import 'whatwg-fetch';
 import parseDomain from 'parse-domain';
 import Dimensions from 'react-dimensions';
-import {LocalStorage} from './storage.js.erb';
-import { FounderEventNames, FounderEventPath } from './constants.js.erb';
+import { LocalStorage, SessionStorage } from './storage.js.erb';
+import { FounderEventNames, FounderEventPath, StorageRestoreStateKey } from './constants.js.erb';
+import Breadcrumb from './breadcrumbs';
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
@@ -189,4 +190,12 @@ export const humanizeTravelStatus = (travelStatus, openCity) => {
     case 'pleasure_traveling':
       return `taking a vacation in ${openCity}`;
   }
+};
+
+export const saveCurrentRestoreState = () => {
+  console.log('here');
+  SessionStorage.set(StorageRestoreStateKey, {
+    breadcrumb: Breadcrumb.peek(),
+    location: currentPage(),
+  });
 };
