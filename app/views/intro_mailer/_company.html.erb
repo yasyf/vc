@@ -1,5 +1,5 @@
 <blockquote>
-  <p><%= @request.context %></p>
+  <p><i><%= @request.context %></i></p>
 </blockquote>
 
 <p>
@@ -27,9 +27,6 @@
   <% end %>
   <% if @company.industry.present? %>
     <b>Industries</b>: <%= @company.humanized_industry %><br>
-  <% end %>
-  <% if @request.pitch_deck.present? %>
-    <b>Deck</b>: <a href="<%= @request.pitch_deck %>"><%= @company.name %> Pitch Deck</a><br>
   <% end %>
   <% if @company.domain.present? %>
     <b>Website</b>: <a href="http://<%= @company.domain %>"><%= @company.domain %></a><br>

@@ -2,7 +2,7 @@
 
 <hr />
 
-<h3>Your Response</h3>
+<h3>Your Response to <%= @founder.first_name %></h3>
 
 <p>
   Click <a href="<%= external_vcwiz_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
@@ -15,3 +15,4 @@
 </p>
 
 <%= render partial: 'pixel' %>
+<%= render partial: 'investor_footer' %>

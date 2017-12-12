@@ -41,7 +41,7 @@ export default class IntroModal extends React.Component {
 
   startPolling = () => {
     this.interval = window.setInterval(() => {
-      ffetch(IntroRequestsPath.id(this.state.id)).then(({ preview_html }) => {
+      ffetch(IntroRequestsPath.id(this.state.intro.id)).then(({ preview_html }) => {
         if (preview_html)  {
           window.clearInterval(this.interval);
           this.setState({loading: false, preview: preview_html})
