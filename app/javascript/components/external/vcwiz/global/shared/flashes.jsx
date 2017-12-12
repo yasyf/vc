@@ -49,8 +49,7 @@ export default class Flashes extends React.Component {
       <div className="flashes-alert">
         <div className="arrow"/>
         <div className="wrapper">
-          {flashes.map(
-            (flash, i) => <Flash key={i} {...flash} showClose={false}/>)}
+          {_.reverse(flashes.map((flash, i) => <Flash key={i} {...flash} showClose={false}/>))}
         </div>
       </div>
     );

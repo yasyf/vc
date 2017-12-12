@@ -101,6 +101,7 @@ export default class IntroModal extends React.Component {
     const { intro } = this.state;
     ffetch(IntroRequestsPath.resource(intro.id, 'confirm'), 'POST').then(() => {
       Actions.trigger('refreshFounder');
+      Actions.trigger('flash', {type: 'success', message: `An intro to ${fullName(this.props.item)} has been requested.`});
     });
     this.props.onClose();
   };
