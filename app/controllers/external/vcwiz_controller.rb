@@ -12,7 +12,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def discover
-    if session[:new_login].present?
+    if params[:new_login].present? || session[:new_login].present?
       session.delete(:new_login)
       props is_new_login: true
     end
