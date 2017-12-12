@@ -59,7 +59,7 @@ class Util
   end
 
   def self.city_with_fallback(session, founder)
-    [session[:city], founder&.city, 'San Francisco'].find { |x| x }
+    normalize_city [session[:city], founder&.city, 'San Francisco'].find { |x| x }
   end
 
   def self.split_slice(str, const)
