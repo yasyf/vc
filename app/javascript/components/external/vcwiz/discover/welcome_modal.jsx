@@ -30,7 +30,7 @@ export default class WelcomeModal extends React.Component {
 
   renderTop() {
     const { first_name } = Store.get('founder', {});
-    return <h3>Welcome to <span className="highlight">VCWiz</span> {first_name}!</h3>;
+    return <h3>Welcome to VCWiz {first_name}!</h3>;
   }
 
   renderSlide1() {

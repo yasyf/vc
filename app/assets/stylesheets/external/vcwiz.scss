@@ -1517,7 +1517,7 @@ mark.highlighter {
 
 .welcome-modal {
   span.highlight {
-    color: $success-dark;
+    font-weight: bold;
   }
 
   &-top {
@@ -1533,7 +1533,8 @@ mark.highlighter {
 
     .slick-list {
       height: 62vh;
-      max-height: 500px;
+      min-height: 500px;
+      max-height: 600px;
     }
 
     .slide-1 {
