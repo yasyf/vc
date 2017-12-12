@@ -43,6 +43,9 @@ class Store {
 
   unsubscribe = ({key, id}) => {
     const existing = this.subscriptions.get(key);
+    if (!existing) {
+      return;
+    }
     existing.delete(id);
     if (existing.size === 0) {
       this.subscriptions.delete(key);

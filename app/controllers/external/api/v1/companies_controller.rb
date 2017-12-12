@@ -8,7 +8,7 @@ class External::Api::V1::CompaniesController < External::Api::V1::ApiV1Controlle
   end
 
   def query
-    render json: Company.where(domain: params[:domain]).first
+    render json: (Company.where(domain: params[:domain]).first if params[:domain].present?)
   end
 
   def search
