@@ -1,0 +1,30 @@
+$size: 325px;
+$length: 4s;
+
+$lengths: (
+  1: 124,
+  2: 133,
+  3: 125,
+  4: 148,
+  5: 93,
+  6: 227,
+);
+
+.tutorials {
+  .tutorial {
+    width: $size;
+    height: $size;
+    margin: auto;
+  }
+
+  @for $i from 1 through length(map-keys($lengths)) {
+    @keyframes tutorial-#{$i} {
+      30%, 100% { background-position: -($size * map-get($lengths, $i)); }
+    }
+
+    .tutorial-#{$i} {
+      background-image: url(image_path("tutorials/VCWiz#{$i}.png"));
+      animation: tutorial-#{$i} ($length * 3) steps(map-get($lengths, $i)) (($length * 1.05) * (($i % 3) - 0.95)) infinite;
+    }
+  }
+}

@@ -1,46 +1,95 @@
 import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import Store from '../global/store';
-import {Button, Colors} from 'react-foundation';
+import { MagnifyingGlassImagePath, MeetingImagePath } from '../global/constants.js.erb';
+import {Row, Column} from 'react-foundation';
+import Slider from 'react-slick';
+import Tutorial from './tutorial';
 
 export default class WelcomeModal extends React.Component {
+  state = {
+    moved: false
+  };
+
+  onMouseMove = () => {
+    clearTimeout(this.timeout);
+    this.setState({moved: true});
+  };
+
+  beforeChange = () => {
+    clearTimeout(this.timeout);
+    this.setState({moved: false});
+    this.timeout = setTimeout(() => {
+      this.setState({moved: true});
+    }, 3 * 1000);
+  };
+
   renderTop() {
     const { first_name } = Store.get('founder', {});
-    return <h3>Welcome to VCWiz {first_name}!</h3>;
+    return <h3>Welcome to <span className="highlight">VCWiz</span> {first_name}!</h3>;
+  }
+
+  renderSlide1() {
+    return (
+      <div className="slide-1">
+        <h3>We're so excited to help you on your fundraising journey!</h3>
+        <Row>
+          <Column large={6}>
+            <div className="large-icon">
+              <h4><span className="highlight">Discover</span> potential investors and get the inside scoop</h4>
+              <img className="reversed" src={MagnifyingGlassImagePath} />
+            </div>
+          </Column>
+          <Column large={6}>
+            <div className="large-icon">
+              <h4><span className="highlight">Track</span> your relationships with new and old investors</h4>
+              <img src={MeetingImagePath} />
+            </div>
+          </Column>
+        </Row>
+      </div>
+    )
+  }
+
+  renderSlide2() {
+    const { moved } = this.state;
+    return (
+      <div className="slide-2" onMouseMove={this.onMouseMove}>
+        <h3>Discover</h3>
+        <div className="tutorials-wrapper">
+          <Tutorial n={1} playing={moved} caption="Select your filters or search terms" />
+          <div className="caret" />
+          <Tutorial n={2} playing={moved} caption="Explore your personalized results and select interesting firms" />
+          <div className="caret" />
+          <Tutorial n={3} playing={moved} caption="Learn more about individual investors and add them to your wishlist" />
+        </div>
+      </div>
+    )
+  }
+
+  renderSlide3() {
+    const { moved } = this.state;
+    return (
+      <div className="slide-3" onMouseMove={this.onMouseMove}>
+        <h3>Track</h3>
+        <div className="tutorials-wrapper">
+          <Tutorial n={4} playing={moved} caption="Keep track of your investor outreach with a glance" />
+          <div className="caret" />
+          <Tutorial n={5} playing={moved} caption="Have your tracker automatically update and show mutual connections with email integration" />
+          <div className="caret" />
+          <Tutorial n={6} playing={moved} caption="Organize your fundraising process" />
+        </div>
+      </div>
+    )
   }
 
   renderBottom() {
     return (
-      <div className="info">
-        <p>
-          Welcome to VCWiz! We're so excited to help you on your fundraising journey.
-        </p>
-        <h4>Research & Discovery</h4>
-        <p>
-          This page will help you discover investors to raise your round from.
-          We've compiled the most comprehensive database of investors on the internet, including data on the types of investments individual partners at firms like to make.
-          We've also partnered with <a href="https://knowyourvc.com/" target="_blank">Know Your VC</a> to incorporate reviews from other founders!
-        </p>
-        <p>
-          In the middle section of this page, you can filter investors by categories like city, fund type, and industry, or search by partner or firm name.
-          Below the filters section, you'll find lists of investors which have been curated just for you!
-        </p>
-        <h4>Outreach</h4>
-        <p className="tight">
-          VCWiz also has a full conversation tracker built in, which can help facilitate introductions to investors, as well as track your outreach.
-          As you discover promising investors, use the "Track" button to add them to your tracker.
-        </p>
-        <p className="tight">
-          It looks like this:
-          <Button color={Colors.SECONDARY} className="fake-track-button">
-            Track
-          </Button>
-        </p>
-        <p>
-          You can also import existing spreadsheets of investors, and automatically sync your conversations with your email account.
-          Check out the "My Conversations" page for more details!
-        </p>
-      </div>
+      <Slider dots={true} lazyLoad={false} infinite={false} adaptiveHeight={false} beforeChange={this.beforeChange}>
+        {this.renderSlide1()}
+        {this.renderSlide2()}
+        {this.renderSlide3()}
+      </Slider>
     );
   }
 

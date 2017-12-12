@@ -35,8 +35,8 @@ class Store {
     this.subscriptions.set(key, existing);
 
     const value = this.get(key);
-    if (value)
-      fn(value);
+    if (value !== undefined)
+      delayedFn(value);
 
     return {key, id};
   };

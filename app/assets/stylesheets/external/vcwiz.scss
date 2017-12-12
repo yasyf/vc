@@ -1,5 +1,6 @@
 @import "fonts";
 @import "tabs";
+@import "tutorials";
 
 $white: #FFFFFF;
 $black: #000000;
@@ -181,7 +182,7 @@ p.tight {
 }
 
 .button.google {
-  background: url(image_path("btn_google_signin_dark_normal_web.png")) no-repeat center;
+  background: url(image_path("login/btn_google_signin_dark_normal_web.png")) no-repeat center;
   width: 191px;
   height: 46px;
 }
@@ -315,7 +316,7 @@ p.tight {
   z-index: 1;
 }
 
-i.reversed::before {
+img.reversed, i.reversed::before {
   -moz-transform: scaleX(-1);
   -o-transform: scaleX(-1);
   -webkit-transform: scaleX(-1);
@@ -412,7 +413,7 @@ i.reversed::before {
     margin: auto;
     height: 90%;
     width: 95%;
-    background: url(image_path("vcwiz-bg-transparent.png")) no-repeat center;
+    background: url(image_path("bg/vcwiz-bg-transparent.png")) no-repeat center;
     background-size: contain;
   }
 
@@ -1481,24 +1482,92 @@ mark.highlighter {
 }
 
 .welcome-modal {
+  span.highlight {
+    color: $success-dark;
+  }
+
+  &-top {
+    padding: 20px 30px;
+  }
+
   &-bottom {
-    .info {
+    padding-top: 15px;
+
+    h3, h4, h5 {
+      text-align: center;
+    }
+
+    .slide-1 {
+      h3 {
+        margin-bottom: 1.5em;
+      }
+
       h4 {
-        margin-top: 1em;
+        margin-bottom: 2em;
+      }
+    }
+
+    .slide-2, .slide-3 {
+      h3 {
+        text-align: left;
+        margin-bottom: 0.5em;
       }
 
-      p {
-        margin-bottom: 1em;
+      h5 {
+        margin-top: 0.5em;
       }
 
-      p.tight {
-        margin-bottom: 0;
+      .tutorials-wrapper {
+        display: flex;
+        justify-content: center;
+
+        .tutorials {
+          margin-left: 1em;
+          margin-right: 1em;
+        }
+
+        .caret {
+          width: 50px;
+          background: url(image_path("icons/arrow.png")) no-repeat center;
+          background-size: contain;
+        }
+      }
+    }
+
+    .large-icon {
+      text-align: center;
+
+      img {
+        width: 50%;
+        margin: auto;
+      }
+    }
+
+    .slick-prev:before, .slick-next:before {
+      color: $black;
+      font-size: 40px;
+    }
+
+    .slick-prev, .slick-next {
+      height: 40px;
+      width: 40px;
+    }
+
+    .slick-active, .slick-dots li button, .slick-dots li button:before {
+      height: 25px;
+      width: 25px;
+    }
+
+    .slick-dots {
+      bottom: -3em;
+
+      li button:before {
+        font-size: 25px;
+        line-height: 25px;
       }
 
-      .fake-track-button {
-        width: 100px;
-        padding: 10px;
-        margin: 0.5em 1em 1em;
+      li.slick-active button:before {
+        color: $success-dark;
       }
     }
   }
