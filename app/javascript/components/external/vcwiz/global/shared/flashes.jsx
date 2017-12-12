@@ -63,7 +63,7 @@ export default class Flashes extends React.Component {
     }
     return [
       <a key="icon" className="alert-icon" onClick={this.toggleFlashes}>
-        <i className={classNames('line-icon', 'fi-alert', flashes[0].type)}/>
+        <i className={classNames('line-icon', 'fi-alert', _.last(flashes).type)}/>
       </a>,
       <Tether key="flashes" targetClassName="flashes-alert-tether-target" className="flashes-alert-tether">
         {this.renderFlashes()}
