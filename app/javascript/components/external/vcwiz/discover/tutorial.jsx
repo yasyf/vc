@@ -1,5 +1,4 @@
 import React from 'react';
-import Store from '../global/store';
 
 export default class Tutorial extends React.Component {
   static defaultProps = {
