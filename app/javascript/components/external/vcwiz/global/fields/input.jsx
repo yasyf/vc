@@ -6,25 +6,28 @@ export default class Input extends React.Component {
     type: 'text',
     showLabel: false,
     onBlur: _.noop,
+    debounced: false,
+    managed: false,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      value: this.props.value || '',
+      value: props.value || '',
+      valueNonce: props.valueNonce,
       lastValue: null,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value && nextProps.value !== this.props.value) {
-      this.setState({value: nextProps.value});
+    if (nextProps.value && (this.props.managed || nextProps.valueNonce !== this.state.valueNonce)) {
+      this.setState({value: nextProps.value, valueNonce: nextProps.valueNonce});
     }
   }
 
   inputProps() {
-    const {wrap, inputRef, formRef, showLabel, ...rest} = this.props;
+    const {wrap, inputRef, formRef, showLabel, debounced, managed, valueNonce, ...rest} = this.props;
     return {
       ...rest,
       onChange: this.onChange,
@@ -49,12 +52,20 @@ export default class Input extends React.Component {
 
   onChange = (event) => {
     let value = event.target.value;
-    this.setState({value});
-    this.submit();
+    this.setState({value}, () => {
+      if (this.props.debounced) {
+        this.submit();
+      }
+    });
+    if (!this.props.debounced) {
+      this.props.onChange({[this.props.name]: value});
+    }
   };
 
   onBlur = () => {
-    this.submit.flush();
+    if (this.props.debounced) {
+      this.submit.flush();
+    }
     this.props.onBlur();
   };
 

@@ -14,6 +14,7 @@ export default class PlaceholderCell extends TextCell {
           name={this.props.columnKey}
           value={this.state.value}
           placeholder="Click to add note..."
+          multiline={true}
           onChange={this.onInputChange}
         />
       </div>

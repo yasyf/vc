@@ -1,4 +1,4 @@
-import {timestamp} from './utils';
+import {nullOrUndef, timestamp} from './utils';
 
 class Store {
   constructor() {
@@ -35,7 +35,7 @@ class Store {
     this.subscriptions.set(key, existing);
 
     const value = this.get(key);
-    if (value !== undefined)
+    if (!nullOrUndef(value))
       delayedFn(value);
 
     return {key, id};

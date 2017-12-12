@@ -45,6 +45,7 @@ export default class Select extends Input {
   static defaultProps = {
     ...Input.defaultProps,
     clearable: false,
+    managed: true,
   };
 
   onChange = (option) => {

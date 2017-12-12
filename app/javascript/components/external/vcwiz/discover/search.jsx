@@ -10,6 +10,7 @@ export default class Search extends React.Component {
         <PlaceholderInput
           name={name}
           value={this.props.value[name]}
+          debounced={true}
           placeholder={description}
           onChange={this.props.onChange}
         />

@@ -1,7 +1,12 @@
 import React from 'react';
 import Input from './input';
+import TextArea from './text_area';
 
 export default class PlaceholderInput extends React.Component {
+  static defaultProps = {
+    multiline: false,
+  };
+
   constructor(props) {
     super(props);
 
@@ -31,16 +36,17 @@ export default class PlaceholderInput extends React.Component {
   };
 
   render() {
-    let {onChange, placeholder, ...rest} = this.props;
+    let {onChange, placeholder, multiline, ...rest} = this.props;
     let showInput = this.state.focused || this.state.value;
+    const InputComponent = multiline ? TextArea : Input;
     return (
       <span className="placeholder-input">
-        <Input
+        <InputComponent
           className="placeholded"
           wrap={false}
           type=""
           inputRef={input => { this.input = input }}
-          value={this.state.value}
+          value={this.props.value}
           onChange={this.onChange}
           onBlur={this.onBlur}
           style={showInput ? undefined : {display: 'none'}}

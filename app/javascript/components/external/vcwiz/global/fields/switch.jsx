@@ -8,6 +8,7 @@ export default class Switch extends Input {
     yesLabel: 'Yes',
     noLabel: 'No',
     highlight: false,
+    managed: true,
   };
 
   onClick = () => {

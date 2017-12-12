@@ -2,7 +2,7 @@ import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import {Button, Colors} from 'react-foundation';
 import Input from '../global/fields/input';
-import {extend, ffetch, fullName, getDomain} from '../global/utils';
+import {extend, ffetch, fullName, getDomain, timestamp} from '../global/utils';
 import {IntroRequestsPath, SupportEmail} from '../global/constants.js.erb';
 import TextArea from '../global/fields/text_area';
 import Store from '../global/store';
@@ -21,14 +21,16 @@ export default class IntroModal extends React.Component {
       stage: 0,
       loading: false,
       preview: null,
+      valueNonce: timestamp(),
     };
   }
 
   componentDidMount() {
     ffetch(`${IntroRequestsPath}?target_investor_id=${this.props.item.id}`).then(intro => {
       this.setState({
-        ...intro,
+        intro,
         target_investor_id: this.props.item.id,
+        valueNonce: timestamp(),
       });
     });
   }
@@ -55,6 +57,7 @@ export default class IntroModal extends React.Component {
       placeholder: placeholder,
       value: this.state.intro[name],
       wrap: false,
+      valueNonce: this.state.valueNonce,
       onChange: this.onChange,
     };
   }
