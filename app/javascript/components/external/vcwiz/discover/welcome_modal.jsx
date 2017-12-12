@@ -5,22 +5,26 @@ import { MagnifyingGlassImagePath, MeetingImagePath } from '../global/constants.
 import {Row, Column} from 'react-foundation';
 import Slider from 'react-slick';
 import Tutorial from './tutorial';
+import {extend} from '../global/utils';
 
 export default class WelcomeModal extends React.Component {
   state = {
-    moved: false
+    moved: {}
   };
 
-  onMouseMove = () => {
+  onMouseMove = (i) => () => {
+    const { moved } = this.state;
     clearTimeout(this.timeout);
-    this.setState({moved: true});
+    if (!moved[i]) {
+      this.setState({moved: extend(moved, {[i]: true})});
+    }
   };
 
-  beforeChange = () => {
+  beforeChange = (i, ii) => {
     clearTimeout(this.timeout);
-    this.setState({moved: false});
+    this.setState({moved: extend(this.state.moved, {[i + 1]: false})});
     this.timeout = setTimeout(() => {
-      this.setState({moved: true});
+      this.setState({moved: extend(this.state.moved, {[ii + 1]: true})});
     }, 3 * 1000);
   };
 
@@ -53,15 +57,16 @@ export default class WelcomeModal extends React.Component {
 
   renderSlide2() {
     const { moved } = this.state;
+    const playing = moved[2] || false;
     return (
-      <div className="slide-2" onMouseMove={this.onMouseMove}>
+      <div className="slide-2" onMouseMove={this.onMouseMove(2)}>
         <h3>Discover</h3>
         <div className="tutorials-wrapper">
-          <Tutorial n={1} playing={moved} caption="Select your filters or search terms" />
+          <Tutorial n={1} playing={playing} caption="Select your filters or search terms" />
           <div className="caret" />
-          <Tutorial n={2} playing={moved} caption="Explore your personalized results and select interesting firms" />
+          <Tutorial n={2} playing={playing} caption="Explore your personalized results and select interesting firms" />
           <div className="caret" />
-          <Tutorial n={3} playing={moved} caption="Learn more about individual investors and add them to your wishlist" />
+          <Tutorial n={3} playing={playing} caption="Learn more about individual investors and add them to your wishlist" />
         </div>
       </div>
     )
@@ -69,15 +74,16 @@ export default class WelcomeModal extends React.Component {
 
   renderSlide3() {
     const { moved } = this.state;
+    const playing = moved[3] || false;
     return (
-      <div className="slide-3" onMouseMove={this.onMouseMove}>
+      <div className="slide-3" onMouseMove={this.onMouseMove(3)}>
         <h3>Track</h3>
         <div className="tutorials-wrapper">
-          <Tutorial n={4} playing={moved} caption="Keep track of your investor outreach with a glance" />
+          <Tutorial n={4} playing={playing} caption="Keep track of your investor outreach with a glance" />
           <div className="caret" />
-          <Tutorial n={5} playing={moved} caption="Have your tracker automatically update and show mutual connections with email integration" />
+          <Tutorial n={5} playing={playing} caption="Have your tracker automatically update and show mutual connections with email integration" />
           <div className="caret" />
-          <Tutorial n={6} playing={moved} caption="Organize your fundraising process" />
+          <Tutorial n={6} playing={playing} caption="Organize your fundraising process" />
         </div>
       </div>
     )
