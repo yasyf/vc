@@ -193,7 +193,6 @@ export const humanizeTravelStatus = (travelStatus, openCity) => {
 };
 
 export const saveCurrentRestoreState = () => {
-  console.log('here');
   SessionStorage.set(StorageRestoreStateKey, {
     breadcrumb: Breadcrumb.peek(),
     location: currentPage(),

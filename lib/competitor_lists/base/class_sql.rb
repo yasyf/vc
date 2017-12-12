@@ -13,25 +13,40 @@ module CompetitorLists::Base::ClassSql
   end
 
   def partners_sql(competitors_table = 'competitors')
+    all_results = <<-SQL
+      SELECT id, role
+      FROM investors
+      WHERE investors.competitor_id = #{competitors_table}.id
+    SQL
+    ids = <<-SQL
+      WITH
+        partners_results AS (#{all_results}),
+        filtered_partners_results AS (
+          SELECT * FROM partners_results
+          WHERE LOWER(partners_results.role) ILIKE ANY (ARRAY[#{Competitor::INVESTOR_TITLE.map { |t| "'%#{t}%'" }.join(', ')}])
+        )
+      SELECT id FROM filtered_partners_results
+      UNION
+      SELECT id FROM partners_results
+      WHERE NOT EXISTS (SELECT * FROM filtered_partners_results)
+    SQL
     partners_sql = <<-SQL
-        SELECT investors.id, investors.first_name, investors.last_name
-        FROM investors
-        LEFT OUTER JOIN investments ON investments.investor_id = investors.id
-        WHERE
-          investors.competitor_id = #{competitors_table}.id
-          AND LOWER(investors.role) ILIKE ANY (ARRAY[#{Competitor::INVESTOR_TITLE.map { |t| "'%#{t}%'" }.join(', ')}])
-        GROUP BY investors.id
-        ORDER BY
-          MAX(investments.funded_at) DESC NULLS LAST,
-          COUNT(investments.id) DESC,
-          investors.featured DESC
-        LIMIT 15
+      SELECT investors.id, investors.first_name, investors.last_name
+      FROM investors
+      INNER JOIN (#{ids}) AS ids ON investors.id = ids.id
+      LEFT OUTER JOIN investments ON investments.investor_id = investors.id
+      GROUP BY investors.id
+      ORDER BY
+        MAX(investments.funded_at) DESC NULLS LAST,
+        COUNT(investments.id) DESC,
+        investors.featured DESC
+      LIMIT 15
     SQL
     <<-SQL
-        LEFT JOIN LATERAL (
-          SELECT array_agg(partners) AS partners_arr
-          FROM (#{partners_sql}) AS partners
-        ) AS partners ON true
+      LEFT JOIN LATERAL (
+        SELECT array_agg(partners) AS partners_arr
+        FROM (#{partners_sql}) AS partners
+      ) AS partners ON true
     SQL
   end
 
