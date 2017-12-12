@@ -11,14 +11,16 @@ export default class Tutorial extends React.Component {
   };
 
   componentWillMount() {
-    this.subscription = Store.subscribe('isReady', () => {
-      this.setState({loaded: true});
-    });
-    this.setState({loaded: Store.get('isReady', false)});
+    this.interval = setInterval(() => {
+      if (document.readyState === 'complete') {
+        this.setState({loaded: true});
+        clearInterval(this.interval);
+      }
+    }, 500);
   }
 
   componentWillUnmount() {
-    Store.unsubscribe(this.subscription);
+    clearInterval(this.interval);
   }
 
   render() {

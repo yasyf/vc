@@ -28,15 +28,6 @@ export default class VCWiz extends React.Component {
       return;
     }
 
-    document.onreadystatechange = () => {
-      if (document.readyState === 'complete') {
-        Store.set('isReady', true);
-      }
-    };
-    if (document.readyState === 'complete') {
-      Store.set('isReady', true);
-    }
-
     const restoreState = SessionStorage.get(StorageRestoreStateKey);
     if (restoreState) {
       if (currentPage() !== restoreState.location) {
