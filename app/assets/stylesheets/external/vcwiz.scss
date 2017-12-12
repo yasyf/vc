@@ -1533,6 +1533,7 @@ mark.highlighter {
 
     .slick-list {
       height: 62vh;
+      max-height: 500px;
     }
 
     .slide-1 {
@@ -1578,7 +1579,7 @@ mark.highlighter {
       text-align: center;
 
       img {
-        width: 50%;
+        width: 35%;
         margin: auto;
       }
     }

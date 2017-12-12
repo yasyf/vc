@@ -3,7 +3,7 @@ import OverlayModal from '../global/shared/overlay_modal';
 import {Button, Colors} from 'react-foundation';
 import Input from '../global/fields/input';
 import {extend, ffetch, fullName, getDomain, timestamp} from '../global/utils';
-import {IntroRequestsPath, SupportEmail} from '../global/constants.js.erb';
+import {IntroRequestsPath} from '../global/constants.js.erb';
 import TextArea from '../global/fields/text_area';
 import Store from '../global/store';
 import Actions from '../global/actions';

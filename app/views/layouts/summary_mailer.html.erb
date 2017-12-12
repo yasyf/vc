@@ -219,6 +219,9 @@
     #headerImage{
       height:auto;
       max-width:600px;
+      height: 150px;
+      width: 600px;
+      object-fit: cover;
     }
     /* ========== Body Styles ========== */
     /**
@@ -541,7 +544,7 @@
                 <tr>
                   <td valign="top" class="bodyContent">
                     <h1><%= yield(:header) %></h1>
-                    <h3><%= yield(:subheader) %></h3>
+                    <h3 style="margin-bottom: 1.5em;"><%= yield(:subheader) %></h3>
                     <%= yield(:content) %>
                   </td>
                 </tr>
