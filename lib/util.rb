@@ -45,9 +45,21 @@ class Util
       'San Francisco'
     elsif city.in?(['Washington, DC', 'Washington DC', 'Washington'])
       'Washington, DC'
+    elsif city.in?(['Miami', 'Miami Beach', 'Miami Springs'])
+      'Miami'
+    elsif city.in?(['Chicago', 'Chicago Heights', 'Chicago Park'])
+      'Chicago'
     else
       city
     end
+  end
+
+  def self.hub_city(session, founder)
+   [
+     founder&.primary_company&.location,
+     founder&.city,
+     session[:city],
+   ].compact.map { |x| normalize_city(x) }.find { |x| Competitor.hub?x }
   end
 
   def self.ip_address(env)

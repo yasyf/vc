@@ -1910,6 +1910,10 @@ mark.highlighter {
 
 // Hacks
 
+.Select-menu-outer {
+  z-index: 2;
+}
+
 div.fixedDataTableRowLayout_rowWrapper > div.fixedDataTableLayout_header > div > div:nth-child(2) {
   background-color: $header-grey;
 }

@@ -79,6 +79,7 @@ class Competitor < ApplicationRecord
   INVESTOR_TITLE = %w(Managing Partner Director Associate Principal CEO Founder Invest).map(&:downcase)
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
+  HUB_THRESHOLD = 50
 
   sort :industry
   sort :fund_type
@@ -113,6 +114,10 @@ class Competitor < ApplicationRecord
     else
       nil
     end
+  end
+
+  def self.hub?(location)
+    where('competitors.location && ?', "{#{location}}").count > HUB_THRESHOLD
   end
 
   def self.create_from_name!(name)

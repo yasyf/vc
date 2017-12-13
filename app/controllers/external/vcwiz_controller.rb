@@ -16,12 +16,18 @@ class External::VcwizController < External::ApplicationController
       session.delete(:new_login)
       props is_new_login: true
     end
+    company = current_external_founder&.primary_company
 
     title 'Discover'
     component 'Discover'
     params.merge!(
       options: { us_only: true },
-      filters: { fund_type: 'seed' },
+      filters: {
+        fund_type: 'seed',
+        industry: company&.industry&.join(','),
+        location: Util.hub_city(session, current_external_founder),
+        companies: company&.competitions&.map(&:id)&.join(',')
+      },
     )
     apply_suggestions!
     result_props 5

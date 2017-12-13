@@ -49,6 +49,9 @@ export default class LoginModal extends React.Component {
   lookupDomain() {
     ffetch(`${CompaniesQueryPath}?${buildQuery({domain: getDomain(this.state.data.domain)})}`).then(company => {
       if (!company) {
+        if (!_.isEmpty(this.state.company)) {
+          this.setState({company: {}, data: {}});
+        }
         return;
       }
       const { name, description, industry } = company;
@@ -194,7 +197,7 @@ export default class LoginModal extends React.Component {
       this.renderInput('name', 'Company Name'),
       this.renderTextArea('description', 'A short description that will help investors better understand your startup'),
       this.renderFilters(['industry', 'companies']),
-      this.renderStandardButton(description && description.length >= 50, charsRemaining),
+      this.renderStandardButton(description && description.length > 50, charsRemaining),
     ];
   }
 

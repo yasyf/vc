@@ -81,7 +81,7 @@ export default class ImportInvestorsModal extends React.Component {
     ffetch(TargetInvestorsBulkImportPath, 'POST', file, { form: true }).then(
       ({id, error}) => {
         if (error) {
-          console.log(message);
+          this.setState({error, stage: Stage.ERROR});
         } else {
           this.startLoadingPolling(id);
         }

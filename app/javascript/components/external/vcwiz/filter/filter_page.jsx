@@ -77,7 +77,6 @@ export default class FilterPage extends React.Component {
       if (this.props.applySuggestions) {
         newState.options = suggestions;
       }
-      console.log(newState);
       this.setState(newState);
       this.props.onQueryChange(query, count);
     });
