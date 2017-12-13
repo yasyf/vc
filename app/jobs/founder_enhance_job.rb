@@ -40,7 +40,7 @@ class FounderEnhanceJob < ApplicationJob
   end
 
   def update_location_info(founder)
-    founder.city = Http::Freegeoip.new(founder.ip_address).locate['city'] if founder.ip_address.present?
+    founder.city = Geocoder.search(founder.ip_address).city if founder.ip_address.present?
     founder.time_zone = Http::GoogleMaps.new.timezone(founder.city).name if founder.city.present?
   end
 

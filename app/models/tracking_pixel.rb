@@ -14,9 +14,9 @@ class TrackingPixel < ApplicationRecord
   end
 
   def ip_address=(ip_address)
-    location = Http::Freegeoip.new(ip_address).locate
-    self.open_city = location['city']
-    self.open_country = location['country_code']
+    location = Geocoder.search(ip_address)
+    self.open_city = location.city
+    self.open_country = location.country_code
   end
 
   def user_agent=(user_agent)
