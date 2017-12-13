@@ -25,10 +25,17 @@ export default class Flashes extends React.Component {
         this.setState({showFlashes: false});
       }
     });
+    this.subscription2 = Store.subscribe('lastScroll', e => {
+      const { showFlashes } = this.state;
+      if (showFlashes) {
+        this.setState({showFlashes: false});
+      }
+    });
   }
 
   componentWillUnmount() {
     Store.unsubscribe(this.subscription);
+    Store.unsubscribe(this.subscription2);
   }
 
   addFlash = flash => {

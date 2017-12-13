@@ -20,6 +20,10 @@ export default class VCWiz extends React.Component {
     Store.set('lastClick', e);
   };
 
+  onScroll = e => {
+    Store.set('lastScroll', e);
+  };
+
   componentWillMount() {
     Store.set('founder', window.gon.founder);
     Actions.register('refreshFounder', this.refreshFounder);
@@ -27,6 +31,8 @@ export default class VCWiz extends React.Component {
     if (!canUseDOM) {
       return;
     }
+
+    window.addEventListener('scroll', this.onScroll, true);
 
     const restoreState = SessionStorage.get(StorageRestoreStateKey);
     if (restoreState) {
@@ -87,9 +93,9 @@ export default class VCWiz extends React.Component {
   render() {
     const { page, showIntro, showLogin, subtitle } = this.props;
     return (
-      <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)} onClick={this.onClick}>
+      <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
         <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} />
-        <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})}>
+        <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})} onClick={this.onClick}>
           {this.renderHeader()}
           {this.renderBody()}
           {this.renderFooter()}

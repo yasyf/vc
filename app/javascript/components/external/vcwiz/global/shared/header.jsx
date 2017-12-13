@@ -88,7 +88,6 @@ export default class Header extends React.Component {
     if (isLoggedIn()) {
       return (
         <div className="title right">
-          <Flashes />
           <a href={OutreachPath}>
             <h5 className="subtitle nudge-middle">
               My Conversations {this.renderCount()}
@@ -122,6 +121,7 @@ export default class Header extends React.Component {
               <h3><b>VCWiz</b></h3>
               <h5 className="faded subtitle">{this.props.subtitle}</h5>
             </a>
+            <Flashes />
           </div>
         </TopBarLeft>
         <TopBarRight>

@@ -64,7 +64,8 @@ div.flashes-alert {
   div.wrapper {
     position: relative;
     opacity: 0.97;
-    left: -45%;
+    left: -5%;
+    max-width: 27em;
     border: 1px solid $alert-dropdown;
     background: $alert-dropdown;
     padding: 0.5em;
@@ -347,10 +348,6 @@ img.reversed, i.reversed::before {
 
     &.left {
       padding-left: 2vw;
-    }
-
-    &.right {
-      padding-right: 2vw;
 
       a.alert-icon {
         margin-right: 1em;
@@ -367,6 +364,10 @@ img.reversed, i.reversed::before {
       .fi-alert.warning {
         color: $yellow;
       }
+    }
+
+    &.right {
+      padding-right: 2vw;
     }
 
     a {
@@ -1427,7 +1428,7 @@ mark.highlighter {
   }
 
   .tweet {
-    margin-bottom: 1.5em;
+    margin-bottom: 1em;
 
     .line-icon {
       margin-right: 5px;
@@ -1436,6 +1437,7 @@ mark.highlighter {
 
   .interactions {
     margin-bottom: 1em;
+    font-weight: bold;
   }
 }
 
@@ -1901,7 +1903,7 @@ mark.highlighter {
 
   .competitor-info {
     .description {
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       max-height: 30vh;
       overflow: auto;
     }

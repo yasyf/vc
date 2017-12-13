@@ -140,7 +140,7 @@ export default class PartnerTab extends React.Component {
         <h5>Social</h5>
         {this.renderIconLine('book-bookmark', university && university.name)}
         {this.renderIconLine('home', location)}
-        {this.renderIconLine('list', '', al_url, 'angel.co')}
+        {this.renderIconLine('list', '', al_url, al_url && _.last(al_url.split('/')))}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
         {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}
         {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
@@ -288,10 +288,11 @@ export default class PartnerTab extends React.Component {
       return null;
     }
     const { first_name } = investor;
-    const { last_contact, travel_status, open_city, overlap, entities, path } = interactions;
+    const { last_contact, travel_status, opened_at, open_city, overlap, entities, path } = interactions;
     const fragments = _.compact([
       this.renderPath(),
-      last_contact && <span key="last_contact">You last contacted {first_name} {moment(last_contact).fromNow()}. </span>,
+      last_contact && <span key="last_contact">You last heard from {first_name} {moment(last_contact).fromNow()}. </span>,
+      opened_at && !last_contact && <span key="last_contact">You emailed {first_name} {moment(opened_at).fromNow()}. </span>,
       travel_status && <span key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}. </span>,
       overlap && overlap.length && <span key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}! </span>,
       entities.length && (!overlap || !overlap.length) && <span key="entities">{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}. </span>,
