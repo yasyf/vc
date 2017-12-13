@@ -20,9 +20,10 @@ class External::VcwizController < External::ApplicationController
     title 'Discover'
     component 'Discover'
     params.merge!(
-      options: { us_only: 'true' },
-      filters: { fund_type: 'seed', location: Util.city_with_fallback(session, current_external_founder) },
+      options: { us_only: true },
+      filters: { fund_type: 'seed' },
     )
+    apply_suggestions!
     result_props 5
     render_default
   end
@@ -170,7 +171,7 @@ class External::VcwizController < External::ApplicationController
 
   def result_props(limit)
     props(
-      competitors: filtered(sort: sorts, limit: limit, meta: true),
+      competitors: filtered_results(sort: sorts, limit: limit, meta: true),
       count: filtered_count,
       suggestions: filtered_suggestions,
       filters: full_filters,

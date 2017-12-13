@@ -21,9 +21,9 @@ export default class Search extends React.Component {
   render() {
     return (
       <div className="search">
-        {this.renderSearchLine('firm_name', 'Firm Name...')}
         {this.renderSearchLine('first_name', 'First Name...')}
         {this.renderSearchLine('last_name', 'Last Name...')}
+        {this.renderSearchLine('firm_name', 'Firm Name...')}
       </div>
     )
   }

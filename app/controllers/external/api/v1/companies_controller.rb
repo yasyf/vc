@@ -14,8 +14,9 @@ class External::Api::V1::CompaniesController < External::Api::V1::ApiV1Controlle
   def search
     render json: [] and return unless params[:q].present?
     companies = Company.where(team: nil).or(Company.where('capital_raised > ?', 0))
+    companies = companies.order('domain IS NOT NULL DESC')
     companies = companies.fuzzy_search(name: params[:q])
-    companies = companies.order(capital_raised: :desc).limit(LIMIT).map(&:as_json_search)
+    companies = companies.order(capital_raised: :desc, domain: :asc).limit(LIMIT).map(&:as_json_search)
     render json: records_to_options(companies)
   end
 end

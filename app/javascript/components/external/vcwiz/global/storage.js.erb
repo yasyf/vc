@@ -1,4 +1,5 @@
 import {StoragePrefix} from './constants.js.erb';
+import CookieStorage from 'js-cookie';
 
 export const storageKey = (key) => `${StoragePrefix}::${key}`;
 
@@ -74,4 +75,4 @@ class VolatileStorage extends Storage {
 const SessionStorage = window.sessionStorage ? new StorageClass(window.sessionStorage) : StorageMock;
 const LocalStorage = window.localStorage ? new StorageClass(window.localStorage) : StorageMock;
 
-export { SessionStorage, LocalStorage };
+export { SessionStorage, LocalStorage, CookieStorage };

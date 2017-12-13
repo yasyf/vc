@@ -73,12 +73,12 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     al_fund.investments.each do |investment|
       startup = investment['startup']
+      next unless startup.present?
       retry_record_errors do
         c = Company.where(al_id: startup['id']).first_or_create! do |c|
           c.name = startup['name']
           c.domain = startup['company_url']
         end
-
         c.investments.where(competitor: competitor).first_or_create!
       end
     end

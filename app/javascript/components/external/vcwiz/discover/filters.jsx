@@ -6,11 +6,11 @@ import {
   CompetitorsLocationsPath,
   CompaniesSearchPath,
 } from '../global/constants.js.erb';
-import {SessionStorage} from '../global/storage.js.erb';
+import {CookieStorage} from '../global/storage.js.erb';
 import Company from './company';
 import Filter from './filter';
 
-const SessionStorageKey = 'Filters';
+const CookieStorageKey = 'filters';
 
 export default class Filters extends React.Component {
   static defaultProps = {
@@ -26,28 +26,17 @@ export default class Filters extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const filters = SessionStorage.get(SessionStorageKey);
-    if (!_.isEmpty(filters) && (_.isEmpty(this.state.filters) || this.props.overwriteWithSaved)) {
-      this.setState({filters});
-      this.propagateOnChange(filters);
-    }
-  }
-
   onInputChange = (name, val) => {
     let inputs = extend(this.state.inputs, {[name]: val});
     this.setState({inputs});
   };
 
-  propagateOnChange = filters => {
-    this.props.onChange(flattenFilters(filters));
-  };
-
   onChange = (update) => {
-    let filters = extend(this.state.filters, update);
-    SessionStorage.set(SessionStorageKey, filters);
+    const filters = extend(this.state.filters, update);
+    const flattened = flattenFilters(filters);
+    CookieStorage.set(CookieStorageKey, flattened);
     this.setState({filters});
-    this.propagateOnChange(filters);
+    this.props.onChange(flattened);
   };
 
   renderFilter(name, label, optionProps, showMeta = true) {

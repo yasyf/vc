@@ -41,7 +41,7 @@ class Util
   def self.normalize_city(city)
     if city.in?(['New York', 'New York City'])
       'New York'
-    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park', 'South San Francisco', 'San Francisco Bay Area'])
+    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park', 'South San Francisco', 'San Francisco Bay Area', 'Oakland'])
       'San Francisco'
     elsif city.in?(['Washington, DC', 'Washington DC', 'Washington'])
       'Washington, DC'
@@ -55,11 +55,7 @@ class Util
   end
 
   def self.city(request)
-    Geocoder.search(ip_address(request.env)).first&.city
-  end
-
-  def self.city_with_fallback(session, founder)
-    normalize_city [session[:city], founder&.city, 'San Francisco'].find { |x| x }
+    normalize_city Geocoder.search(ip_address(request.env)).first&.city
   end
 
   def self.split_slice(str, const)

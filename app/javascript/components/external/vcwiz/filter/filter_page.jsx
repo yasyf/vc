@@ -19,6 +19,7 @@ export default class FilterPage extends React.Component {
     onQueryChange: _.noop,
     showFilters: true,
     showSearch: true,
+    applySuggestions: false,
   };
 
   constructor(props) {
@@ -41,8 +42,9 @@ export default class FilterPage extends React.Component {
   }
 
   queryParams(state = null) {
+    const { applySuggestions } = this.props;
     let { search, filters, options, sort } = state || this.state;
-    const params = { options, sort };
+    const params = { options, sort, apply_suggestions: applySuggestions };
     if (this.props.showSearch) {
       params.search = search;
     }
@@ -58,8 +60,11 @@ export default class FilterPage extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      (this.props.showFilters && !prevProps.showFilters)
-      || buildQuery(this.queryParams()) !== buildQuery(this.queryParams(prevState))
+      this.state.resultsId === prevState.resultsId
+      && (
+        (this.props.showFilters && !prevProps.showFilters)
+        || buildQuery(this.queryParams()) !== buildQuery(this.queryParams(prevState))
+      )
     ) {
       this.fetchNumInvestors();
     }
@@ -68,7 +73,12 @@ export default class FilterPage extends React.Component {
   fetchNumInvestors() {
     const query = this.query();
     ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count, suggestions}) => {
-      this.setState({count, suggestions, resultsId: timestamp(), competitors: null});
+      const newState = {count, suggestions, resultsId: timestamp(), competitors: null};
+      if (this.props.applySuggestions) {
+        newState.options = suggestions;
+      }
+      console.log(newState);
+      this.setState(newState);
       this.props.onQueryChange(query, count);
     });
   }
@@ -95,7 +105,6 @@ export default class FilterPage extends React.Component {
   renderFilterRow() {
     return (
       <FilterRow
-        overwriteWithSaved={this.props.overwriteWithSavedFilters}
         onFiltersChange={this.onFiltersChange}
         onOptionChange={this.onOptionChange}
         initialFilters={this.props.filters}

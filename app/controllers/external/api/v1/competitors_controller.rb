@@ -10,7 +10,8 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def filter
-    competitors = filtered(sort: sorts, limit: limit, offset: page * limit, meta: true)
+    apply_suggestions! if apply_suggestions?
+    competitors = filtered_results(sort: sorts, limit: limit, offset: page * limit, meta: true)
     render json: competitors
   end
 
@@ -20,6 +21,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def filter_count
+    apply_suggestions! if apply_suggestions?
     render json: { count: filtered_count, suggestions: filtered_suggestions }
   end
 
@@ -29,5 +31,11 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
 
   def lists
     render json: Competitor.lists(current_external_founder, request).sort_by { |l| [l[:personalized] ? 0 : 1, rand] }
+  end
+
+  private
+
+  def apply_suggestions?
+    params[:apply_suggestions] == 'true'
   end
 end

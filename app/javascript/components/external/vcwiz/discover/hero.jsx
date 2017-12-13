@@ -1,5 +1,5 @@
 import React from 'react';
-import {FilterPath, SearchPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
+import {FilterPath, SearchPath} from '../global/constants.js.erb';
 import Tabs from '../global/tabs/tabs';
 import FilterPage from '../filter/filter_page';
 import inflection from 'inflection';
@@ -50,13 +50,13 @@ export default class Hero extends React.Component {
       <div>
         <FilterPage
           {...this.props}
-          overwriteWithSavedFilters={true}
           showFilters={this.state.tab === TabIndex.FILTER}
           showSearch={this.state.tab === TabIndex.SEARCH}
           onQueryChange={this.onQueryChange}
           rowHeight={60}
           industryLimit={2}
           overflowY="hidden"
+          applySuggestions={true}
           render={(header, body) => (
             <div>
               {header}

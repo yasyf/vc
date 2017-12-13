@@ -17,7 +17,7 @@ export default class CompanyImage extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.mounted = true;
   }
 

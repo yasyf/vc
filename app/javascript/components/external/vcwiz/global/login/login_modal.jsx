@@ -194,7 +194,7 @@ export default class LoginModal extends React.Component {
       this.renderInput('name', 'Company Name'),
       this.renderTextArea('description', 'A short description that will help investors better understand your startup'),
       this.renderFilters(['industry', 'companies']),
-      this.renderStandardButton(description && description.length > 50, charsRemaining),
+      this.renderStandardButton(description && description.length >= 50, charsRemaining),
     ];
   }
 

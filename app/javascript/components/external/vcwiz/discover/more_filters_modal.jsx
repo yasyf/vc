@@ -9,7 +9,7 @@ export default class MoreFiltersModal extends React.Component {
       <Switch
         name={name}
         value={options[name]}
-        highlight={suggestions.includes(name)}
+        highlight={suggestions[name]}
         onChange={onChange}
         label={label}
         description={description}

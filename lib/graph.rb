@@ -1,4 +1,6 @@
 class Graph
+  include Concerns::Ignorable
+
   def self.server
     Thread.current[:neo] ||= Neography::Rest.new
   end
@@ -38,7 +40,7 @@ class Graph
   end
 
   def self.find(email)
-    results = server.find_nodes_labeled('Person', {email: email})
+    results = retry_([Excon::Error::Socket]) { server.find_nodes_labeled('Person', {email: email}) }
     Neography::Node.load(results.first, server) if results.present?
   end
 
