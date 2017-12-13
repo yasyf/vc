@@ -20,12 +20,12 @@ class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controlle
   end
 
   def voting_status
-    company = Company.includes(:votes).find(params[:id])
-    unless company.votes.present?
+    company = Company.includes(pitches: :votes).find(params[:id])
+    unless company.pitch.votes.present?
       render json: { status: :not_started }
       return
     end
-    users = company.missing_vote_users
+    users = company.pitch.missing_vote_users
     if users.present?
       render json: { status: :missing_users, users: users }
     else

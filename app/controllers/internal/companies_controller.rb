@@ -52,7 +52,7 @@ class Internal::CompaniesController < Internal::ApplicationController
     return companies unless params[:filter].present?
 
     filtered = companies.search(params[:filter])
-    if filtered.count > 0
+    if filtered.count('DISTINCT id') > 0
       filtered
     else
       flash_warning "No matches found for '#{params[:filter]}'!"
