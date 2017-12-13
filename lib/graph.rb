@@ -1,5 +1,5 @@
 class Graph
-  include Concerns::Ignorable
+  extend Concerns::Ignorable
 
   def self.server
     Thread.current[:neo] ||= Neography::Rest.new
