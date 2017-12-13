@@ -27,7 +27,7 @@ const OptionFactory = (selected) =>
         >
           <div className="value" onClick={this.onChange}>{children}</div>
           <div className="checkbox">
-            <input type="checkbox" checked={_.some(selected, option)} onChange={this.onChange} />
+            <input type="checkbox" checked={_.some(selected, {value: option.value})} onChange={this.onChange} />
           </div>
         </div>
       );

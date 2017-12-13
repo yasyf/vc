@@ -60,7 +60,6 @@ export default class Filters extends React.Component {
   }
 
   render() {
-    const { onlyLocal } = this.props;
     const filters = _.compact([
       this.renderFilter('fund_type', 'Stage', { options: CompetitorFundTypesOptions }),
       this.renderFilter('industry', 'Industries', { options: CompetitorFullIndustriesOptions }),

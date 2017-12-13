@@ -38,7 +38,7 @@ export default class Filter extends React.Component {
   onChange = update => {
     const { value, name } = this.props;
     const updateValue = update[name][0];
-    const index = _.findIndex(value, updateValue);
+    const index = _.findIndex(value, {value: updateValue.value});
     if (index !== -1) {
       this.props.onChange({[name]: withoutIndexes(value, [index])});
     } else {
