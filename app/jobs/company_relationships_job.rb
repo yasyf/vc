@@ -11,7 +11,7 @@ class CompanyRelationshipsJob < ApplicationJob
     @company.al_id ||= Http::AngelList::Startup.find_id(@company.name)
     @al_startup = @company.angelist_startup(TIMEOUT)
 
-    @company.crunchbase_id ||= Http::Crunchbase::Organization.find_domain_id(@company.domain, types: 'company')
+    @company.crunchbase_id = Http::Crunchbase::Organization.find_domain_id(@company.domain, types: 'company')
     @company.crunchbase_id ||= @al_startup.crunchbase
     @cb_org = @company.crunchbase_org(TIMEOUT, raise_on_error: true)
 

@@ -116,7 +116,7 @@ export default class ResearchModal extends React.Component {
     let { al_url, cb_url, crunchbase_id, facebook, twitter, domain } = this.props.item;
     return (
       <div className="competitor-social">
-        {this.renderIconLine('list', '', al_url, 'angel.co')}
+        {this.renderIconLine('list', '', al_url,  al_url && _.last(al_url.split('/')))}
         {this.renderIconLine('info', '', cb_url, crunchbase_id)}
         {this.renderIconLine('web', domain, 'http://')}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
