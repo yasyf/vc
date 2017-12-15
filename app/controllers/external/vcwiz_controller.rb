@@ -140,7 +140,7 @@ class External::VcwizController < External::ApplicationController
   end
 
   def redirect_gmail
-    store_location_for(:external_founder, request.referer)
+    store_location_for(:external_founder, request.referer || external_vcwiz_outreach_path)
     redirect_to omniauth_path('gmail', login_hint: current_external_founder.email)
   end
 
