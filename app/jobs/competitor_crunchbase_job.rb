@@ -39,9 +39,11 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor.fund_type = (competitor.fund_type || []) + cb_fund.fund_types
     competitor.save! if competitor.changed?
 
-    FUND_TYPE_KEYWORDS.each do |fund_type, keywords|
-      if keywords.any? { |w| competitor.description.downcase.include?(w) } && !competitor.fund_type.include?(fund_type.to_s)
-        competitor.fund_type << fund_type.to_s
+    if competitor.description.present?
+      FUND_TYPE_KEYWORDS.each do |fund_type, keywords|
+        if keywords.any? { |w| competitor.description.downcase.include?(w) } && !competitor.fund_type.include?(fund_type.to_s)
+          competitor.fund_type << fund_type.to_s
+        end
       end
     end
 
