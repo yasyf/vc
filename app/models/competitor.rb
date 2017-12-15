@@ -20,7 +20,7 @@ class Competitor < ApplicationRecord
 
   INDUSTRIES = {
     arvr: 'AR/VR',
-    bitcoin: 'Bitcoin',
+    bitcoin: 'Blockchain',
     consumer: 'Consumer',
     enterprise: 'Enterprise',
     ecommerce: 'E-Commerce',
@@ -47,7 +47,7 @@ class Competitor < ApplicationRecord
     hardware: 'Hardware',
     gaming: 'Gaming',
     space: 'Space',
-    data: 'Data',
+    data: 'Big Data',
     transportation: 'Transportation',
     marketplace: 'Marketplace',
     security: 'Security',
@@ -57,23 +57,24 @@ class Competitor < ApplicationRecord
 
   RELATED_INDUSTRIES = {
     arvr: ['Augmented Reality', 'Virtual Reality'],
-    bitcoin: ['Blockchain', 'Virtual Currency'],
+    bitcoin: ['Bitcoin', 'Crypto', 'Virtual Currency'],
     saas: ['Software as a Service'],
     gaming: ['Video Games'],
     transportation: ['Public Transportation', 'Ride Sharing'],
     mobile: ['Mobile Devices', 'Telecommunications', 'Mobile Apps'],
     food: ['Food and Beverage', 'Food Delivery', 'Nutrition', 'Food', 'Restaurants'],
     social: ['Social', 'Messaging', 'Social Media'],
-    ai: ['Machine Learning', 'Artificial Intelligence', 'Big Data'],
+    ai: ['Machine Learning', 'Artificial Intelligence'],
     enterprise: ['Enterprise Software', 'B2B'],
-    healthcare: ['Health Care', 'Medical', 'Biotechnology', 'Pharmaceutical', 'Personal Health'],
+    healthcare: ['Health Care', 'Medical', 'Personal Health'],
     media: ['Entertainment', 'Music', 'Video', 'Photography'],
     finance: ['FinTech', 'Financial Services'],
     energy: ['Electric Vehicle', 'Energy Management'],
-    data: ['Analytics'],
+    data: ['Analytics', 'Data'],
     iot: ['Internet of Things'],
     security: ['Network Security', 'Cyber Security'],
     government: ['GovTech'],
+    lifesci: ['Biotechnology', 'Pharmaceutical'],
   }.with_indifferent_access.freeze
 
   INVESTOR_TITLE = %w(Managing Partner Director Associate Principal CEO Founder Invest).map(&:downcase)
@@ -99,7 +100,7 @@ class Competitor < ApplicationRecord
   before_validation :normalize_location
 
   def self.full_industry_options
-    INDUSTRIES.map { |k, v| { value: k, other_labels: RELATED_INDUSTRIES[k], label: v } }
+    INDUSTRIES.sort.map { |k, v| { value: k, other_labels: RELATED_INDUSTRIES[k], label: v } }
   end
 
   def self.closest_industry(industry)

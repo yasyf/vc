@@ -4,13 +4,13 @@ import {withDots} from '../utils';
 
 export default class Labels extends React.Component {
   render() {
-    let {items, translate, extraClass, plain} = this.props;
+    let { items, translate, extraClass, plain, max } = this.props;
 
     if (!items) {
       return null;
     }
 
-    let nodes = items.map(i =>
+    let nodes = _.take(items, max).map(i =>
       <span className={classNames({label: !plain}, extraClass)} key={i}>
         {translate[i] || i}
       </span>
@@ -25,4 +25,5 @@ export default class Labels extends React.Component {
 
 Labels.defaultProps = {
   translate: {},
+  max: 3,
 };

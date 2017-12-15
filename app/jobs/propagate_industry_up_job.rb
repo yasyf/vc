@@ -1,6 +1,14 @@
 class PropagateIndustryUpJob < ApplicationJob
   INDUSTRY_THRESHOLD = 0.05
   MAX_INDUSTRIES = 10
+  INDUSTRY_DEPENDENCIES = {
+    ecommerce: :consumer,
+    cleantech: :energy,
+    gaming: :consumer,
+    government: :enterprise,
+    security: :enterprise,
+    saas: :enterprise,
+  }
 
   queue_as :low
 
@@ -45,10 +53,15 @@ class PropagateIndustryUpJob < ApplicationJob
         frequencies = industries.each_with_object(Hash.new(0)) do |i, h|
           h[i] += 1
         end
-        top = industries
-          .uniq
+        top = frequencies
+          .keys
           .select { |i| frequencies[i] > INDUSTRY_THRESHOLD * result['c_count'] }
           .sort { |i| frequencies[i] }.first(MAX_INDUSTRIES)
+        INDUSTRY_DEPENDENCIES.each do |k, v|
+          if top.include?(k.to_s) && !top.include?(v.to_s)
+            top << v.to_s
+          end
+        end
         klass.update(result['id'], industry: top)
       end
     end

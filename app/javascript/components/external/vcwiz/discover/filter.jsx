@@ -95,7 +95,7 @@ export default class Filter extends React.Component {
     const remaining = value.length - display.length;
     return (
       <div className="selected-wrapper">
-        <div className="button selected">
+        <div className="button selected" onClick={this.onClick}>
           {display.join(', ')}{remaining ? `, +${remaining} ${inflection.inflect('others', remaining)}` : null}
         </div>
       </div>
