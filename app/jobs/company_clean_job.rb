@@ -1,7 +1,7 @@
 class CompanyCleanJob < ApplicationJob
   include Concerns::Ignorable
 
-  queue_as :default
+  queue_as :long
 
   def perform
     fix_domain_cb_split!
