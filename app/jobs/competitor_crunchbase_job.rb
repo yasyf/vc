@@ -1,6 +1,13 @@
 class CompetitorCrunchbaseJob < ApplicationJob
   include Concerns::Ignorable
 
+  FUND_TYPE_KEYWORDS = {
+    seed: %w(seed),
+    preseed: %w(pre-seed preseed),
+    accelerator: %w(accelerator),
+    angel: %w(angel),
+  }
+
   queue_as :default
 
   def perform(competitor_id)
@@ -29,7 +36,14 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor.twitter = al_fund.twitter || cb_fund.twitter
     competitor.domain = al_fund.url || cb_fund.url
     competitor.al_url = al_fund.angellist_url
+    competitor.fund_type = (competitor.fund_type || []) + cb_fund.fund_types
     competitor.save! if competitor.changed?
+
+    FUND_TYPE_KEYWORDS.each do |fund_type, keywords|
+      if keywords.any? { |w| competitor.description.downcase.include?(w) } && !competitor.fund_type.include?(fund_type.to_s)
+        competitor.fund_type << fund_type.to_s
+      end
+    end
 
     if (team = cb_fund.team).present?
       team.each do |job|

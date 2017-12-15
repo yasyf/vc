@@ -2,6 +2,14 @@ module Http::Crunchbase
   class Fund < Base
     base_uri 'https://api.crunchbase.com/v3.1/organizations'
 
+    TYPES = {
+      accelerator: :accelerator,
+      incubator: :accelerator,
+      venture_capital: :venture,
+      micro_vc: :preseed,
+      angel_group: :angel,
+    }
+
     def initialize(permalink, timeout = nil, raise_on_error = true)
       @permalink = permalink
       super timeout, raise_on_error
@@ -42,6 +50,10 @@ module Http::Crunchbase
       else
         get_in 'relationships', 'investments', multi: true
       end
+    end
+
+    def fund_types
+      (get_in('properties', 'investor_type') || []).map { |t| TYPES[t.to_sym] }.compact
     end
 
     private

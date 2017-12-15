@@ -12,6 +12,7 @@ class Competitor < ApplicationRecord
   FUND_TYPES = {
     accelerator: 'Accelerator',
     angel: 'Angel',
+    preseed: 'Pre-Seed',
     seed: 'Seed',
     series_A: 'Series A',
     series_B: 'Series B',

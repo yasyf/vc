@@ -51,8 +51,8 @@ module Importers::External
       investment = Investment.where(row.slice(:company, :competitor)).first_or_initialize
       investment.investor ||= row[:investor] if row[:investor].present?
       investment.funded_at = row[:funded_at]
-      investment.funding_type = row[:series] == 'Seed' ? :seed : :venture
-      investment.series = row[:series] == 'Seed' ? nil : row[:series]
+      investment.funding_type = row[:series].downcase == 'seed' ? :seed : :venture
+      investment.series = row[:series].downcase == 'seed' ? nil : row[:series]
       investment.featured = row[:featured]
       investment.save!
     end
