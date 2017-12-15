@@ -17,16 +17,18 @@ class Http::GoogleMaps
   end
 
   def lat_lng(location)
-    geocode(location).first['geometry']['location']
+    result = geocode(location).first
+    result['geometry']['location'] if result.present?
   end
 
   def timezone(loc)
     hash = loc.is_a?(String) ? lat_lng(loc) : loc
+    return nil unless hash.present?
     location = "#{hash['lat']},#{hash['lng']}"
     tzinfo = key_cached(service: :timezone, location: location) do
       get(Timezone).query(location: location)
     end
-    return unless tzinfo.present? && tzinfo['timeZoneId'].present?
+    return nil unless tzinfo.present? && tzinfo['timeZoneId'].present?
     ActiveSupport::TimeZone[tzinfo['timeZoneId']]
   end
 
