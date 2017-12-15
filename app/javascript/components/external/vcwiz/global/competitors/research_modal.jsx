@@ -1,7 +1,7 @@
 import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import {ffetch, fullName, sendEvent, withDots} from '../utils';
 import Actions from '../actions';
@@ -30,7 +30,7 @@ export default class ResearchModal extends React.Component {
     if (this.props.onTrackChange) {
       this.props.onTrackChange(update);
     } else {
-      Actions.trigger('flash', {type: 'success', message: `${this.props.item.name} has been added to your conversation tracker!`});
+      Actions.trigger('flash', {type: 'success', message: `${this.props.item.name} has been added to your conversation tracker!`, link: OutreachPath});
       ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}}).then(() => {
         Actions.trigger('refreshFounder');
       });

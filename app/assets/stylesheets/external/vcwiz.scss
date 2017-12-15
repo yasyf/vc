@@ -76,6 +76,7 @@ div.flashes-alert {
     margin: 0;
     padding: 0.5em;
     user-select: none;
+    cursor: pointer;
 
     &:not(:first-child) {
       margin-top: 1em;

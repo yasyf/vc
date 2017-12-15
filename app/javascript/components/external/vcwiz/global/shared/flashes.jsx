@@ -38,6 +38,11 @@ export default class Flashes extends React.Component {
     Store.unsubscribe(this.subscription2);
   }
 
+  onClose = i => () => {
+    const { flashes } = this.state;
+    this.setState({flashes: _.without(flashes, flashes[i])});
+  };
+
   addFlash = flash => {
     this.setState({flashes: this.state.flashes.concat([flash]), showFlashes: true, ignoreNextClick: true})
   };
@@ -56,7 +61,7 @@ export default class Flashes extends React.Component {
       <div className="flashes-alert">
         <div className="arrow"/>
         <div className="wrapper">
-          {_.reverse(flashes.map((flash, i) => <Flash key={i} {...flash} showClose={false}/>))}
+          {_.reverse(flashes.map((flash, i) => <Flash key={i} {...flash} showClose={false} onClose={this.onClose(i)}/>))}
         </div>
       </div>
     );

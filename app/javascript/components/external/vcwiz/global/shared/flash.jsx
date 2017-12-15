@@ -12,6 +12,16 @@ export default class Flash extends React.Component {
 
   onClose = () => {
     this.setState({closed: true});
+    this.props.onClose();
+  };
+
+  onClick = () => {
+    const { link } = this.props;
+    if (!link) {
+      this.onClose();
+    } else {
+      window.location.href = link;
+    }
   };
 
   renderCloseButton() {
@@ -26,7 +36,7 @@ export default class Flash extends React.Component {
   }
 
   render() {
-    const { type, message } = this.props;
+    const { type, message, link } = this.props;
     const { closed } = this.state;
 
     if (closed) {
@@ -34,7 +44,7 @@ export default class Flash extends React.Component {
     }
     return (
       <div className={classNames('callout', type)}>
-        <div>{message}</div>
+        <div onClick={this.onClick}>{message}</div>
         {this.renderCloseButton()}
       </div>
     );
