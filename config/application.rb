@@ -18,6 +18,7 @@ module Drfvote
     config.eager_load_paths << Rails.root.join('lib')
     config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
     config.active_record.schema_format = :sql
+    config.active_record.cache_timestamp_format = :nsec
     config.exceptions_app = self.routes
 
     config.generators do |g|
