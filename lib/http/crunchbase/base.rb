@@ -93,7 +93,7 @@ module Http::Crunchbase
 
     def self._api_get(raw_path, query)
       path = Addressable::URI.parse(raw_path).normalized_path
-      response = get(path, query: query.merge(user_key: next_token))
+      response = get(path, query: query.merge(user_key: next_token), open_timeout: @timeout, read_timeout: @timeout)
       case response.code
         when 200
           response.parsed_response['data']
@@ -106,6 +106,8 @@ module Http::Crunchbase
         else
           raise Errors::APIError.new("#{response.code}: #{response.body}")
       end
+    rescue Timeout::Error
+      raise Errors::Timeout.new(raw_path)
     end
 
     def self.base_cache_key
@@ -131,13 +133,7 @@ module Http::Crunchbase
     end
 
     def get_in(*path, multi: false)
-      if @timeout.present?
-        Timeout::timeout(@timeout) { get_in_raw(path, multi) }
-      else
-        get_in_raw(path, multi)
-      end
-    rescue Timeout::Error
-      raise Errors::Timeout.new(path)
+      get_in_raw(path, multi)
     end
 
     def search_for_data

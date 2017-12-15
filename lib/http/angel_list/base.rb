@@ -117,16 +117,12 @@ module Http::AngelList
           end
         end
       end
+    rescue Timeout::Error
+      raise Errors::Timeout.new(path)
     end
 
     def self.api_get(path, query = {})
-      if @timeout.present?
-        Timeout::timeout(@timeout) { _api_get(path, query) }
-      else
-        _api_get(path, query)
-      end
-    rescue Timeout::Error
-      raise Errors::Timeout.new(path)
+      _api_get(path, query)
     end
   end
 end
