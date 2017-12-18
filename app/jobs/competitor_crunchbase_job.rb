@@ -49,8 +49,8 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (team = cb_fund.team).present?
       team.each do |job|
-        next unless job['relationships']['person'].present?
-        Investor.from_crunchbase( job['relationships']['person']['properties']['permalink'])
+        next unless (person = job.person).present?
+        Investor.from_crunchbase( person.permalink)
       end
     end
 
@@ -60,24 +60,21 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (investments = cb_fund.investments(deep: true)).present?
       investments.each do |investment|
-        next unless investment['relationships'].present?
-        partners = investment['relationships']['partners'].map do |partner|
-          Investor.from_crunchbase(partner['properties']['permalink'])
+        partners = investment.partners.map do |partner|
+          Investor.from_crunchbase(partner.permalink)
         end
-        funding_round = investment['relationships']['funding_round']
-        next unless funding_round.present? && funding_round['relationships'].present?
-        company = funding_round['relationships']['funded_organization']
+        company = investment.funding_round&.funded_organization
         next unless company.present?
         retry_record_errors do
-          c = Company.where(crunchbase_id: company['properties']['permalink']).first_or_create! do |c|
-            c.name = company['properties']['name']
+          c = Company.where(crunchbase_id: company.permalink).first_or_create! do |c|
+            c.name = company.name
           end
 
           cc = c.investments.where(competitor: competitor).first_or_initialize
-          cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
-          cc.funding_type = funding_round['properties']['funding_type']
-          cc.series = funding_round['properties']['series']
-          cc.round_size = funding_round['properties']['money_raised_usd']
+          cc.funded_at = (investment.announced_on || funding_round.announced_on).to_date
+          cc.funding_type = funding_round.funding_type
+          cc.series = funding_round.series
+          cc.round_size = funding_round.money_raised_usd
           if partners.present? && (investor = partners.first).present?
             cc.investor = investor
             cc.featured = true

@@ -11,43 +11,43 @@ module Http::Crunchbase
     end
 
     def name
-      get_in 'properties', 'name'
+     response.name
     end
 
     def description
-      Util.fix_encoding(get_in('properties', 'short_description'))
+      Util.fix_encoding(response.short_description)
     end
 
     def investors
-      get_in 'relationships', 'investors', multi: true
+      response.investors
     end
 
     def founders
-      get_in 'relationships', 'founders', multi: true
+      response.founders
     end
 
     def board_members_and_advisors
-      get_in 'relationships', 'board_members_and_advisors', multi: true
+      response.board_members_and_advisors
     end
 
     def funding_rounds
-      get_in 'relationships', 'funding_rounds', multi: true
+      response.funding_rounds
     end
 
     def categories
-      get_in 'relationships', 'categories', multi: true
+      response.categories
     end
 
     def has_investor?(name)
-      investors&.find { |inv| inv.present? && (inv['properties']['name'] == name || inv['properties']['permalink'] == name) }.present?
+      investors.any? { |inv| inv.name == name || inv.permalink == name }
     end
 
     def total_funding
-      get_in 'properties', 'total_funding_usd'
+     response.total_funding_usd
     end
 
     def location
-      get_in 'relationships', 'headquarters', 'item', 'properties', 'city'
+      response.headquarters.city
     end
 
     def self.find_investor_id(name)
@@ -69,22 +69,22 @@ module Http::Crunchbase
         data = fetch_data
         if company_id.present? && id_valid?
           data
-        elsif data.present? && data['properties'].present?
-          self.class.api_get("/#{data['properties']['permalink']}", {}, false)
+        elsif data.present?
+          self.class.api_get("/#{data.permalink}", {}, false)
         end
       end
     end
 
     def fetch_from_name(try_guess)
-      by_name = self.class.api_get("/", name: @company.name)
+      by_name = self.class.api_get('/', name: @company.name)
       if (
         by_name.size == 1 &&
-        by_name.first['properties']['primary_role'] == 'company' &&
-        by_name.first['properties']['name'].strip.downcase == @company.name.downcase
+        by_name.first.primary_role == 'company' &&
+        by_name.first.name.strip.downcase == @company.name.downcase
       )
         return by_name.first if try_guess
-        investors = self.class.api_get("/#{by_name.first['properties']['permalink']}/investors")
-        return by_name.first if investors&.find { |inv| SIGNAL_INVESTORS.include?(inv['properties']['name']) }.present?
+        investors = self.class.api_get("/#{by_name.first.permalink}/investors")
+        return by_name.first if investors&.find { |inv| SIGNAL_INVESTORS.include?(inv.name) }.present?
       end
 
       return nil unless try_guess
@@ -96,8 +96,8 @@ module Http::Crunchbase
       end
 
       by_name.find do |company_data|
-        investors = self.class.api_get("/#{company_data['properties']['permalink']}/investors")
-        investors&.find { |inv| SIGNAL_INVESTORS.include?(inv['properties']['name']) }.present?
+        investors = self.class.api_get("/#{company_data.permalink}/investors")
+        investors&.find { |inv| SIGNAL_INVESTORS.include?(inv.name) }.present?
       end
     end
 
@@ -114,7 +114,7 @@ module Http::Crunchbase
         return self.class.api_get("/#{company_id}", {}, false)
       end
       if @company.domain.present?
-        data = self.class.api_get("/", domain_name: @company.domain).first
+        data = self.class.api_get('/', domain_name: @company.domain).first
         return data if data.present?
       end
       fetch_from_name(id_valid?)

@@ -4,14 +4,6 @@ module GoogleApi
   class Gmail < Base
     SCOPES = [Google::Apis::GmailV1::AUTH_GMAIL_READONLY]
 
-    def self.pool
-      @pool ||= Workers::Pool.new(logger: Rails.logger, on_exception: proc { |e| Raven.capture_exception(e) }, size: 2)
-    end
-
-    def self.kill_pool
-      @pool.dispose(30) if instance_variable_defined?(:@pool)
-    end
-
     def initialize(user)
       @user = user
       @gmail = Google::Apis::GmailV1::GmailService.new
@@ -76,11 +68,7 @@ module GoogleApi
 
     def process_message(message)
       return unless message.present?
-      self.class.pool.perform do
-        ActiveRecord::Base.connection_pool.with_connection do
-          Message.new(message).process!(@user)
-        end
-      end
+      Message.new(message).process!(@user)
     end
 
     %w(thread message).each do |s|

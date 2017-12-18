@@ -24,9 +24,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
     categories = @cb_org.categories
     @company.industry = categories
-                          .select { |c| c }
-                          .map { |c| c['properties']['name'] }
-                          .map { |i| Competitor.closest_industry(i) }
+                          .map { |c| Competitor.closest_industry(c.name) }
                           .compact
                           .uniq if categories.present?
 
@@ -81,8 +79,7 @@ class CompanyRelationshipsJob < ApplicationJob
   def add_cb_founders
     return unless (founders = @cb_org.founders).present?
     founders.each do |founder|
-      next unless founder['properties'].present?
-      person = Http::Crunchbase::Person.new(founder['properties']['permalink'], TIMEOUT)
+      person = Http::Crunchbase::Person.new(founder.permalink, TIMEOUT)
       next unless person.found?
       social = Founder::SOCIAL_KEYS.map { |k| [k, person.public_send(k)] }.to_h
       ignore_record_errors do
@@ -94,27 +91,27 @@ class CompanyRelationshipsJob < ApplicationJob
 
   def add_cb_investors
     @cb_org.investors.each do |competitor|
-      next if competitor['type'] == 'Person'
+      next if competitor.type == 'Person'
       ignore_invalid do
-        competitor = Competitor.from_crunchbase! competitor['properties']['permalink'], competitor['properties']['name']
+        competitor = Competitor.from_crunchbase! competitor.permalink, competitor.name
         competitor.investments.where(company: @company).first_or_create!
       end
     end
 
     @cb_org.funding_rounds.each do |funding_round|
-      next unless funding_round['relationships'].present?
-      funding_round['relationships']['investments'].each do |investment|
-        investor = investment['relationships']['investors']
+      funding_round.investments.each do |investment|
         next unless investor.present?
-        next if investor['type'] == 'Person'
-        partner = investment['relationships']['partners'].first
-        competitor = Competitor.from_crunchbase! investor['properties']['permalink'], investor['properties']['name']
+        investor = investment.investors
+        next unless investor.present?
+        next if investor.type == 'Person'
+        partner = investment.partners.first
+        competitor = Competitor.from_crunchbase! investor.permalink, investor.name
         cc = competitor.investments.where(company: @company).first_or_initialize
-        cc.funded_at = (investment['properties']['announced_on'] || funding_round['properties']['announced_on']).to_date
-        cc.funding_type = funding_round['properties']['funding_type']
-        cc.series = funding_round['properties']['series']
-        cc.round_size = funding_round['properties']['money_raised_usd']
-        if partner.present? && (investor = Investor.from_crunchbase(partner['properties']['permalink'])).present?
+        cc.funded_at = (investment.announced_on || funding_round.announced_on).to_date
+        cc.funding_type = funding_round.funding_type
+        cc.series = funding_round.series
+        cc.round_size = funding_round.money_raised_usd
+        if partner.present? && (investor = Investor.from_crunchbase(partner.permalink)).present?
           cc.investor = investor
           cc.featured = true
         end
@@ -123,9 +120,9 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.board_members_and_advisors.each do |person|
-      person = person['relationships']['person']
+      person = person.person
       next unless person.present?
-      id = person['properties']['permalink']
+      id = person.permalink
       competitor = competitor_from_person_id(id)
       next unless competitor.present? && (cc = competitor.investments.where(company: @company).first).present?
       if (investor = Investor.from_crunchbase(id)).present?

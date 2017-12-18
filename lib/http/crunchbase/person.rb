@@ -8,20 +8,20 @@ module Http::Crunchbase
     end
 
     def first_name
-      get_in 'properties', 'first_name'
+     response.first_name
     end
 
     def last_name
-      get_in 'properties', 'last_name'
+     response.last_name
     end
 
     def bio
-      bio = get_in('properties', 'bio')
+      bio = response.bio
       self.class.markdown.render(Util.fix_encoding(bio)) if bio.present?
     end
 
     def gender
-      gender = get_in('properties', 'gender')
+      gender = response.gender
       return nil unless gender.present?
       gender.downcase.to_sym.in?(Investor::GENDERS) ? gender.downcase : nil
     end
@@ -32,45 +32,31 @@ module Http::Crunchbase
 
     def blog
       site = website_of_type('blog')
-      site['properties']['url'] if site.present?
+      site.url if site.present?
     end
 
     def university
-      degrees = get_in 'relationships', 'degrees', multi: true
-      return nil unless degrees.present? && degrees.last.present? && (school = degrees.last['relationships']['school']).present?
-      school['properties']['name']
+      response.degrees.last&.school&.name
     end
 
     def affiliated_companies
       %w(jobs advisory_roles).flat_map do |field|
-        jobs = get_in 'relationships', field, multi: true
-        if jobs.present?
-          jobs.map { |job| job['relationships']['organization']['properties'] }.compact.map { |org| org.slice('name', 'permalink') }
-        else
-          []
-        end
+        response.rel(field).map { |job| job.organization.properties.slice('name', 'permalink') }
       end
     end
 
     def affiliation
       return nil unless found?
       @affiliation ||= begin
-        aff = get_in 'relationships', 'primary_affiliation'
-        aff = aff['item'] if aff.present?
-        org =  aff['relationships']['organization'] if aff.present? && aff['relationships'].present?
-        OpenStruct.new({
-          role: aff['properties']['title'],
-          name: org['properties']['name'],
-          permalink: org['properties']['permalink'],
-        }) if aff.present? && org.present?
+        org = response.primary_affiliation.organization
+        OpenStruct.new({role: org.title, name: org.name, permalink: org.permalink})
       end
     end
 
     def location
       return nil unless found?
       @location ||= begin
-        loc = get_in 'relationships', 'primary_location', 'item', 'properties'
-        OpenStruct.new(loc) if loc.present?
+        OpenStruct.new(response.primary_location.properties)
       end
     end
 
@@ -81,7 +67,7 @@ module Http::Crunchbase
     private
 
     def self.base_cache_key
-      "http/crunchbase/people"
+      'http/crunchbase/people'
     end
 
     def search_for_data

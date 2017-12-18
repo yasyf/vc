@@ -16,20 +16,20 @@ module Http::Crunchbase
     end
 
     def permalink
-      get_in 'properties', 'permalink'
+      response.permalink
     end
 
     def crunchbase_url
-      path = get_in 'properties', 'web_path'
+      path = response.web_path
       "https://www.crunchbase.com/#{path}" if path.present?
     end
 
     def url
-      get_in 'properties', 'homepage_url'
+      response.homepage_url
     end
 
     def image
-      get_in 'properties', 'profile_image_url'
+      response.profile_image_url
     end
 
     def twitter
@@ -47,21 +47,20 @@ module Http::Crunchbase
 
     def homepage
       site = website_of_type('homepage')
-      site['properties']['url'] if site.present? && !site.include?('google.com')
+      site.url if site.present? && !site.url.include?('google.com')
     end
 
     def news
-      news = get_in 'relationships', 'news', multi: true
-      news.select(&:present?).map { |n| n['properties'].slice('url', 'posted_on') }
+      response.news.map { |n| n.properties.slice('url', 'posted_on') }
     end
 
     def self.find_id(query)
       result = api_get('/', query).first
-      result && result['properties']['permalink']
+      result&.permalink
     end
 
     def found?
-      search_for_data.present?
+      response.present?
     rescue Errors::APIError
       @raise_on_error ? raise : false
     end
@@ -70,25 +69,30 @@ module Http::Crunchbase
 
     def extract_website_id(name, index)
       site = website_of_type(name)
-      return nil unless site.present?
-      url = site['properties']['url']&.split('/')
+      url = site&.url&.split('/')
       return nil unless url.present? && url.length > [3, index].max
       url[index].downcase.split(/[?#]/).first
     end
 
     def website_of_type(type)
-      websites&.find { |site| site['properties'].present? && site['properties']['website_type'] == type }
+      websites&.find { |site| site.website_type == type }
     end
 
     def websites
-      get_in 'relationships', 'websites', multi: true
+      response.websites
     end
 
     def self.api_get(path, query = {}, multi = true)
       data = key_cached(query.merge(path: path)) do
         Retriable.retriable(on: Errors::APIError) { _api_get(path, query) }
       end
-      multi ? (data && data['items']) || [] : data
+      if multi
+        return [] unless data.present? && data['items'].present?
+        data['items'].map { |resp| ApiObject.new(resp) }
+      else
+        return nil unless data.present?
+        ApiObject.new(data)
+      end
     end
 
     def self._api_get(raw_path, query)
@@ -122,18 +126,8 @@ module Http::Crunchbase
       @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::StripDown)
     end
 
-    def get_in_raw(path, multi)
-      return (multi ? [] : nil) unless found?
-      current = search_for_data
-      while path.present?
-        current = current[path.shift]
-        return (multi ? [] : nil) if current.nil?
-      end
-      multi ? (current['items'] || []) : current
-    end
-
-    def get_in(*path, multi: false)
-      get_in_raw(path, multi)
+    def response
+      @response ||= search_for_data
     end
 
     def search_for_data

@@ -21,6 +21,7 @@ class Http::Fetch
   end
 
   def self.get_advanced(url, headers)
+    return nil unless url.present?
     resp = Curl::Easy.perform(url) do |curl|
       curl.headers.merge!(headers)
     end

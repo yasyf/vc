@@ -16,27 +16,25 @@ module Http::Crunchbase
     end
 
     def description
-      Util.fix_encoding(get_in('properties', 'description'))
+      Util.fix_encoding(response.description)
     end
 
     def team
-      get_in 'relationships', 'featured_team', multi: true
+      response.featured_team
     end
 
     def locations
-      offices = get_in 'relationships', 'offices', multi: true
-      return [] unless offices.present?
-      offices.map { |office| office['properties']['city'] }
+      response.offices.map(&:city)
     end
 
     def hq
-      get_in('relationships', 'headquarters', 'item', 'properties', 'city')
+      response.headquarters.city
     end
 
     def country
-      code = get_in('relationships', 'headquarters', 'item', 'properties', 'country_code2')
+      code = response.headquarters.country_code2
       return code if code.present?
-      name = get_in('relationships', 'headquarters', 'item', 'properties', 'country')
+      name = response.headquarters.country
       Country.find_country_by_name(name)&.alpha2 if name.present?
     end
 
@@ -48,12 +46,12 @@ module Http::Crunchbase
       if deep && found?
         self.class.api_get("/#{@permalink}/investments")
       else
-        get_in 'relationships', 'investments', multi: true
+        response.relationships
       end
     end
 
     def fund_types
-      (get_in('properties', 'investor_type') || []).map { |t| TYPES[t.to_sym] }.compact
+      (response.investor_type || []).map { |t| TYPES[t.to_sym] }.compact
     end
 
     private
