@@ -20,9 +20,9 @@ module Http::Crunchbase
       result = relationships[name.to_s]
       if result.is_a?(Array)
         children result
-      elsif result&.key?('items')
+      elsif result.is_a?(Hash) && result.key?('items')
         children result['items']
-      else
+      elsif result.is_a?(Hash) && result.key?('item')
         child result['item']
       end
     end

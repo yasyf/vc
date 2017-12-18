@@ -8,4 +8,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'AR'
   inflect.acronym 'SaaS'
   inflect.acronym 'IoT'
+  inflect.acronym 'VCWiz'
 end
