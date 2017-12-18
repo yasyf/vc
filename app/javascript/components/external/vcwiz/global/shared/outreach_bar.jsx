@@ -50,6 +50,9 @@ export default class OutreachBar extends React.Component {
   };
 
   renderReminder() {
+    if (this.state.founder['scanner_enabled?']) {
+      return;
+    }
     const { stats, conversations } = this.state.founder;
     if ((_.isEmpty(stats) || !stats.emails)) {
       return (
