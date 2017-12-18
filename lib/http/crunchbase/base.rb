@@ -75,11 +75,11 @@ module Http::Crunchbase
     end
 
     def website_of_type(type)
-      websites&.find { |site| site.website_type == type }
+      websites.find { |site| site.website_type == type }
     end
 
     def websites
-      response.websites
+      response.websites || []
     end
 
     def self.api_get(path, query = {}, multi = true)
@@ -127,7 +127,7 @@ module Http::Crunchbase
     end
 
     def response
-      @response ||= search_for_data
+      @response ||= search_for_data || OpenStruct.new
     end
 
     def search_for_data

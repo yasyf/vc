@@ -20,15 +20,15 @@ module Http::Crunchbase
     end
 
     def team
-      response.featured_team
+      response.featured_team || []
     end
 
     def locations
-      response.offices.map(&:city)
+      response.offices&.map(&:city) || []
     end
 
     def hq
-      response.headquarters.city
+      response.headquarters&.city
     end
 
     def country
@@ -46,7 +46,7 @@ module Http::Crunchbase
       if deep && found?
         self.class.api_get("/#{@permalink}/investments")
       else
-        response.relationships
+        response.investments || []
       end
     end
 

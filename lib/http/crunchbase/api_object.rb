@@ -17,8 +17,10 @@ module Http::Crunchbase
     alias_method :prop, :get_property
 
     def get_relationship(name)
-      result = (relationships[name.to_s] || {})
-      if relationships[name.to_s]&.key?('items')
+      result = relationships[name.to_s]
+      if result.is_a?(Array)
+        children result
+      elsif result&.key?('items')
         children result['items']
       else
         child result['item']

@@ -19,11 +19,11 @@ module Http::Crunchbase
     end
 
     def investors
-      response.investors
+      response.investors || []
     end
 
     def founders
-      response.founders
+      response.founders || []
     end
 
     def board_members_and_advisors
@@ -31,15 +31,15 @@ module Http::Crunchbase
     end
 
     def funding_rounds
-      response.funding_rounds
+      response.funding_rounds || []
     end
 
     def categories
-      response.categories
+      response.categories || []
     end
 
     def has_investor?(name)
-      investors.any? { |inv| inv.name == name || inv.permalink == name }
+      investors&.any? { |inv| inv.name == name || inv.permalink == name }
     end
 
     def total_funding
@@ -47,7 +47,7 @@ module Http::Crunchbase
     end
 
     def location
-      response.headquarters.city
+      response.headquarters&.city
     end
 
     def self.find_investor_id(name)
