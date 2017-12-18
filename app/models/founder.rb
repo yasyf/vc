@@ -27,7 +27,6 @@ class Founder < ApplicationRecord
   before_validation :normalize_city
   after_commit :start_augment_job, on: :create
   after_commit :start_enhance_job, on: :update
-  after_touch :start_touch_job
 
   action :competitor_clicked, :investor_clicked, :investor_targeted
   locationable_with :city
@@ -245,10 +244,6 @@ class Founder < ApplicationRecord
       .pluck(:stage, :firm_name)
       .group_by { |v| TargetInvestor::CATEGORIES[v.first] }
       .transform_values { |v| v.map(&:last) }
-  end
-
-  def start_touch_job
-    FounderRefreshJob.perform_later(self.id)
   end
 
   def start_augment_job

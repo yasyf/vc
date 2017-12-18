@@ -48,6 +48,7 @@ class TargetInvestor < ApplicationRecord
 
   before_save :record_stage_change, :check_investor, :check_competitor
   after_commit :fetch_email!, on: :create
+  after_commit :refresh_founder!, on: :create
 
   sort :industry
   sort :fund_type
@@ -161,6 +162,10 @@ class TargetInvestor < ApplicationRecord
 
   def fetch_email!
     InvestorEmailJob.perform_later(investor.id) if investor.present? && investor.email.blank?
+  end
+
+  def refresh_founder!
+    FounderRefreshJob.perform_later(founder_id)
   end
 
   def check_investor

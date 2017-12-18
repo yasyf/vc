@@ -1,4 +1,4 @@
-class External::VcwizController < External::ApplicationController
+class External::VCWizController < External::ApplicationController
   include External::Concerns::Filterable
   include External::Concerns::Sortable
   include External::ApplicationHelper
