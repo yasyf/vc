@@ -51,7 +51,7 @@ module Http::Crunchbase
     end
 
     def news
-      response.news.map { |n| n.properties.slice('url', 'posted_on') }
+      response.news&.map { |n| n.properties.slice('url', 'posted_on') } || []
     end
 
     def self.find_id(query)

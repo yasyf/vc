@@ -99,7 +99,7 @@ class CompanyRelationshipsJob < ApplicationJob
     end
 
     @cb_org.funding_rounds.each do |funding_round|
-      funding_round.investments.each do |investment|
+      (funding_round.investments || []).each do |investment|
         investor = investment.investors
         next unless investor.present?
         next if investor.type == 'Person'
