@@ -24,6 +24,8 @@ module Http::Crunchbase
         children result['items']
       elsif result.is_a?(Hash) && result.key?('item')
         child result['item']
+      elsif result.is_a?(Hash)
+        child result
       end
     end
 

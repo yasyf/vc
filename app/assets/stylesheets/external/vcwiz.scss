@@ -13,16 +13,22 @@ textarea[type='text'] {
 }
 
 div.flashes-alert {
-  position: relative;
-  right: 2.5em;
-  top: 0.5em;
-  z-index: 1;
+  @include only-desktop {
+    position: relative;
+    right: 2.5em;
+    top: 0.5em;
+    z-index: 1;
+  }
 
   &-tether-target {
     display: inline-block;
   }
 
   .arrow {
+    @include on-mobile {
+      visibility: hidden;
+    }
+
     width: 0;
     height: 0;
     border-left: 15px solid transparent;
@@ -323,6 +329,10 @@ img.reversed, i.reversed::before {
     &.left {
       padding-left: 2vw;
 
+      @include on-mobile {
+        padding: 1em;
+      }
+
       a.alert-icon {
         margin-right: 1em;
       }
@@ -418,15 +428,31 @@ img.reversed, i.reversed::before {
     position: absolute;
 
     .intro {
-      width: 70%;
+      @include only-desktop {
+        width: 70%;
+      }
+
+      @include on-mobile {
+        h2.subtitle {
+          margin-bottom: 3px;
+        }
+      }
     }
 
     & > div:not(:last-child) {
       margin-bottom: 3em;
+
+      @include on-mobile {
+        margin-bottom: 1.5em;
+      }
     }
   }
 
   .button-wrapper {
+    @include on-mobile {
+      margin-top: 1em;
+    }
+
     button {
       border-radius: 5px;
       margin: auto;
@@ -448,6 +474,10 @@ img.reversed, i.reversed::before {
       vertical-align: middle;
       display: inline-block;
       margin-right: 1em;
+
+      @include on-mobile {
+        margin-bottom: 0.5em;
+      }
 
       .badge {
         width: 4em;
@@ -1911,6 +1941,7 @@ mark.highlighter {
       font-weight: bold;
       text-align: center;
       margin-bottom: 10px;
+      font-size: large;
     }
   }
 

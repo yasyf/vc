@@ -10,6 +10,7 @@ export default class Flashes extends React.Component {
     showFlashes: true,
     ignoreNextClick: false,
     flashes: window.flashes,
+    alert: true,
   };
 
   componentDidMount() {
@@ -68,18 +69,26 @@ export default class Flashes extends React.Component {
   }
 
   render() {
+    const { alert } = this.props;
     const { flashes } = this.state;
     if (!flashes.length) {
       return null;
     }
-    return [
-      <a key="icon" className="alert-icon" onClick={this.toggleFlashes}>
-        <i className={classNames('line-icon', 'fi-alert', _.last(flashes).type)}/>
-      </a>,
-      <Tether key="flashes" targetClassName="flashes-alert-tether-target" className="flashes-alert-tether">
-        {this.renderFlashes()}
-      </Tether>,
-    ];
-
+    if (alert) {
+      return [
+        <a key="icon" className="alert-icon" onClick={this.toggleFlashes}>
+          <i className={classNames('line-icon', 'fi-alert', _.last(flashes).type)}/>
+        </a>,
+        <Tether key="flashes" targetClassName="flashes-alert-tether-target" className="flashes-alert-tether">
+          {this.renderFlashes()}
+        </Tether>,
+      ];
+    } else {
+      return (
+        <div className="flashes">
+          {this.renderFlashes()}
+        </div>
+      )
+    }
   }
 }

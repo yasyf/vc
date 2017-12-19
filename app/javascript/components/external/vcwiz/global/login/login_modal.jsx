@@ -47,7 +47,7 @@ export default class LoginModal extends React.Component {
   }
 
   lookupDomain() {
-    ffetch(`${CompaniesQueryPath}?${buildQuery({domain: getDomain(this.state.data.domain)})}`).then(company => {
+    ffetch(`${CompaniesQueryPath}?${buildQuery({domain: getDomain(this.state.data.domain, false)})}`).then(company => {
       if (!company) {
         if (!_.isEmpty(this.state.company)) {
           this.setState({company: {}, data: {}});

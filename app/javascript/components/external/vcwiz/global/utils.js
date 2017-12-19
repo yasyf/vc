@@ -3,8 +3,10 @@ import 'whatwg-fetch';
 import parseDomain from 'parse-domain';
 import Dimensions from 'react-dimensions';
 import { LocalStorage, SessionStorage } from './storage.js.erb';
-import { FounderEventNames, FounderEventPath, StorageRestoreStateKey } from './constants.js.erb';
+import { FounderEventNames, FounderEventPath, StorageRestoreStateKey, MobileScreenSize } from './constants.js.erb';
 import Breadcrumb from './breadcrumbs';
+import Store from './store';
+import { canUseDOM } from 'exenv';
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
@@ -102,7 +104,7 @@ export const buildQuery = (row, context = '') => {
 
 export const nullOrUndef = (val) => val === undefined || val === null;
 
-export const getDomain = (url) => {
+export const getDomain = (url, withSubdomain = true) => {
   if (!url) {
     return null;
   }
@@ -110,7 +112,7 @@ export const getDomain = (url) => {
   if (!parts) {
     return null;
   } else {
-    return _.compact([parts.subdomain, parts.domain, parts.tld]).join('.');
+    return _.compact([withSubdomain ? parts.subdomain : null, parts.domain, parts.tld]).join('.');
   }
 };
 
@@ -200,3 +202,5 @@ export const saveCurrentRestoreState = () => {
 };
 
 export const toOptions = (arr, options) => arr.map(x => ({value: x, label: options[x]}));
+
+export const isMobile = () => canUseDOM && Store.get('dimensions', {width: MobileScreenSize + 1}).width <= MobileScreenSize;

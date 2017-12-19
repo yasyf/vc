@@ -47,7 +47,7 @@ module Http::Crunchbase
         self.class.api_get("/#{@permalink}/investments")
       else
         response.investments || []
-      end
+      end.compact
     end
 
     def fund_types

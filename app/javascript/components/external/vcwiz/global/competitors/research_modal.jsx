@@ -1,11 +1,10 @@
 import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath, MobileScreenSize} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import {ffetch, fullName, sendEvent, withDots} from '../utils';
+import {ffetch, fullName, isMobile, sendEvent, withDots} from '../utils';
 import Actions from '../actions';
-import Store from '../store';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
@@ -17,20 +16,8 @@ export default class ResearchModal extends React.Component {
     this.converter = new showdown.Converter();
     this.state = {
       tab: null,
-      dimensions: Store.get('dimensions', {
-        width: 0,
-        height: 0,
-      }),
     };
     this.firstTabChange = true;
-  }
-
-  componentWillMount() {
-    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
-  }
-
-  componentWillUnmount() {
-    Store.unsubscribe(this.subscription);
   }
 
   componentDidMount() {
@@ -85,24 +72,22 @@ export default class ResearchModal extends React.Component {
   }
 
   renderIndustries() {
-    const { dimensions } = this.state;
     const { industry } = this.props.item;
     if (!industry || !industry.length) {
       return null;
     }
-    let industries = _.take(industry, dimensions.width > MobileScreenSize ? 7 : 3).map(i =>
+    let industries = _.take(industry, isMobile() ? 3 : 7).map(i =>
       <span key={i}>{CompetitorIndustries[i]}</span>
     );
     return <p><b className="info-heading">Top Industries:</b> {withDots(industries)}</p>
   }
 
   renderInvestments() {
-    const { dimensions } = this.state;
     const { recent_investments } = this.props.item;
     if (!recent_investments || !recent_investments.length) {
       return null;
     }
-    let investments = _.take(recent_investments, dimensions.width > MobileScreenSize ? 5 : 3).map(c =>
+    let investments = _.take(recent_investments, isMobile() ? 3 : 5).map(c =>
       <span key={c.id}>{this.renderCompany(c)}</span>
     );
     return <p><b className="info-heading">Recent Investments:</b> {withDots(investments)}</p>

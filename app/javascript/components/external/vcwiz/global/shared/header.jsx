@@ -7,9 +7,9 @@ import {
   TopBarLeft,
   TopBarRight,
 } from 'react-foundation';
-import {DiscoverPath,OutreachPath} from '../constants.js.erb';
+import {DiscoverPath, OutreachPath, LoginPath} from '../constants.js.erb';
 import Store from '../store';
-import {isLoggedIn} from '../utils';
+import {isLoggedIn, isMobile} from '../utils';
 import LoginModal from '../login/login_modal';
 import Actions from '../actions';
 import classNames from 'classnames';
@@ -77,6 +77,10 @@ export default class Header extends React.Component {
     this.setState({settingsOpen: false});
   };
 
+  goToLogin = () => {
+    window.location.href = LoginPath;
+  };
+
   renderCount() {
     if (!this.state.founder.conversations) {
       return null;
@@ -121,7 +125,7 @@ export default class Header extends React.Component {
               <h3><b>VCWiz</b></h3>
               <h5 className="faded subtitle">{this.props.subtitle}</h5>
             </a>
-            <Flashes />
+            <Flashes alert={!isMobile()} />
           </div>
         </TopBarLeft>
         <TopBarRight>
@@ -147,6 +151,33 @@ export default class Header extends React.Component {
     );
   }
 
+  renderExtraInfo() {
+    if (isMobile()) {
+      return "Visit vcwiz.co on your desktop to sign up!";
+    } else {
+      return (
+        "VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors." +
+        "Sign up for conversation tracking, email integrations, and personalized recommendations!"
+      );
+    }
+  }
+
+  renderButton() {
+    if (isMobile()) {
+      return (
+        <Button onClick={this.goToLogin} color={Colors.SUCCESS}>
+          Log In
+        </Button>
+      );
+    } else {
+      return (
+        <Button onClick={this.openSignup} color={Colors.SUCCESS}>
+          Sign Up
+        </Button>
+      );
+    }
+  }
+
   renderLoggedOutBar() {
     return (
       <TopBar id="signup-bar">
@@ -154,9 +185,8 @@ export default class Header extends React.Component {
         <div className="signup-content title left">
           <div className="intro">
             <h2 className="subtitle">Raise your seed round with VCWiz.</h2>
-            <p className="subtitle">
-              VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors.
-              Sign up for conversation tracking, email integrations, and personalized recommendations!
+            <p className="subtitle extra-info">
+              {this.renderExtraInfo()}
             </p>
           </div>
           <div className="benefits">
@@ -165,9 +195,7 @@ export default class Header extends React.Component {
             {this.renderBenefit('track', 'check', '3. Track', 'Organize all your fundraising conversations.')}
           </div>
           <div className="button-wrapper">
-            <Button onClick={this.openSignup} color={Colors.SUCCESS}>
-              Sign Up
-            </Button>
+            {this.renderButton()}
           </div>
         </div>
       </TopBar>
