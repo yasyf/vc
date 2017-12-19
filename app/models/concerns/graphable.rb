@@ -8,7 +8,9 @@ module Concerns
       if path.length == 1
         { direct: true, first_hop_via: path.first.rel_type }
       else
-        first, *rest = path[0...-1].map(&:end_node).map(&:to_h)
+        first, *rest = path[0...-1].map do |rel|
+          rel.start_node == graph_node ? rel.end_node : rel.start_node
+        end.map(&:to_h)
         through = [first] + rest.map { |h| h.slice(:name) }
         { direct: false, first_hop_via: path.first.rel_type, through: through }
       end

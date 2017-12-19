@@ -156,7 +156,7 @@ class Company < ActiveRecord::Base
   end
 
   def cb_slack_link
-    "<#{cb_url}|#{name}>" if cb_url.present?
+    cb_url.present? ? "<#{cb_url}|#{name}>" : name
   end
 
   def cb_url
