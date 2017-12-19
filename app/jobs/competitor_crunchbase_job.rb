@@ -63,13 +63,13 @@ class CompetitorCrunchbaseJob < ApplicationJob
         partners = investment.partners.map do |partner|
           Investor.from_crunchbase(partner.permalink)
         end
-        company = investment.funding_round&.funded_organization
-        next unless company.present?
+        funding_round = investment.funding_round
+        company = funding_round&.funded_organization
+        next unless funding_round.present? && company.present?
         retry_record_errors do
           c = Company.where(crunchbase_id: company.permalink).first_or_create! do |c|
             c.name = company.name
           end
-
           cc = c.investments.where(competitor: competitor).first_or_initialize
           cc.funded_at = (investment.announced_on || funding_round.announced_on).to_date
           cc.funding_type = funding_round.funding_type
