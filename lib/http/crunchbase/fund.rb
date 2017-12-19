@@ -32,7 +32,7 @@ module Http::Crunchbase
     end
 
     def country
-      code = response.headquarters.country_code2
+      code = response.headquarters&.country_code2
       return code if code.present?
       name = response.headquarters.country
       Country.find_country_by_name(name)&.alpha2 if name.present?

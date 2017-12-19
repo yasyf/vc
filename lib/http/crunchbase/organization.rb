@@ -27,7 +27,7 @@ module Http::Crunchbase
     end
 
     def board_members_and_advisors
-      response.board_members_and_advisors
+      response.board_members_and_advisors || []
     end
 
     def funding_rounds
