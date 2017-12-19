@@ -36,7 +36,7 @@ module Http::Crunchbase
     end
 
     def university
-      response.degrees.last&.school&.name
+      response.degrees&.last&.school&.name
     end
 
     def affiliated_companies
