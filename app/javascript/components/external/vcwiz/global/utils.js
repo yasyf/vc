@@ -203,4 +203,4 @@ export const saveCurrentRestoreState = () => {
 
 export const toOptions = (arr, options) => arr.map(x => ({value: x, label: options[x]}));
 
-export const isMobile = () => canUseDOM && Store.get('dimensions', {width: MobileScreenSize + 1}).width <= MobileScreenSize;
+export const isMobile = () => canUseDOM && document.documentElement.clientWidth <= MobileScreenSize;
