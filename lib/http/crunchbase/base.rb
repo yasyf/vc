@@ -127,7 +127,7 @@ module Http::Crunchbase
     end
 
     def response
-      @response ||= search_for_data || OpenStruct.new
+      @response ||= search_for_data || ApiObject.new({})
     end
 
     def search_for_data
