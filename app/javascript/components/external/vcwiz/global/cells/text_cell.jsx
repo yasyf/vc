@@ -36,7 +36,7 @@ let TextCellFactory = (superclass) => class extends superclass {
     let row = props.data.getSync(props.rowIndex);
     if (row) {
       const faded = props.isFaded ? props.isFaded(row) : false;
-      this.setState({loading: false, faded, ...this.processRow(props, row)});
+      this.setState({loading: false, faded, id: row.id, ...this.processRow(props, row)});
     } else {
       this.setState({loading: true, faded: false});
     }

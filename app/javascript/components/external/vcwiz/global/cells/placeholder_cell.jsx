@@ -11,6 +11,7 @@ export default class PlaceholderCell extends TextCell {
     return (
       <div className="placeholder-cell">
         <PlaceholderInput
+          rowId={this.state.id}
           name={this.props.columnKey}
           value={this.state.value}
           placeholder="Click to add note..."

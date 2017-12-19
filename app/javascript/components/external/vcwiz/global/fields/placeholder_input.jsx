@@ -17,6 +17,9 @@ export default class PlaceholderInput extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.rowId !== prevProps.rowId) {
+      this.setState({value: this.props.value || ''});
+    }
     if (this.state.focused && !prevState.focused) {
       this.input.focus();
     }
@@ -36,7 +39,7 @@ export default class PlaceholderInput extends React.Component {
   };
 
   render() {
-    let {onChange, placeholder, multiline, ...rest} = this.props;
+    let {onChange, placeholder, multiline, rowId, ...rest} = this.props;
     let showInput = this.state.focused || this.state.value;
     const InputComponent = multiline ? TextArea : Input;
     return (
