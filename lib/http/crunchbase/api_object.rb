@@ -43,7 +43,7 @@ module Http::Crunchbase
 
     def children(arr)
       return [] unless arr.present?
-      arr.map { |resp| child(resp) if resp.present? }
+      arr.map { |resp| child(resp) if resp.present? }.compact
     end
 
     def child(resp)
