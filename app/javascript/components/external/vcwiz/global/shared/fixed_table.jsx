@@ -12,6 +12,8 @@ import CompetitorTrackCell from '../cells/competitor_track_cell';
 import NullStateCell from '../cells/null_state_cell';
 import Header from '../cells/header';
 import PlaceholderCell from '../cells/placeholder_cell';
+import Store from '../store';
+import { MobileScreenSize } from '../constants.js.erb';
 
 export default class FixedTable extends React.Component {
   static defaultProps = {
@@ -19,11 +21,27 @@ export default class FixedTable extends React.Component {
     headerHeight: 50,
   };
 
+  state = {
+    dimensions: Store.get('dimensions', {
+      width: 0,
+      height: 0,
+    }),
+  };
+
+  componentWillMount() {
+    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
+  }
+
+  componentWillUnmount() {
+    Store.unsubscribe(this.subscription);
+  }
+
   onCellClick = name => (e, row) => {
     this.props.onCellClick(row, name);
   };
 
   renderColumn(key, name, CellComponent, props = {}, width = 50, flex = 1, trackClicks = true) {
+    const { dimensions } = this.state;
     return (
       <Column
         key={key}
@@ -38,7 +56,7 @@ export default class FixedTable extends React.Component {
           />
         }
         flexGrow={flex || undefined}
-        width={width}
+        width={dimensions.width > MobileScreenSize ? width : 200}
         allowCellsRecycling={true}
       />
     );

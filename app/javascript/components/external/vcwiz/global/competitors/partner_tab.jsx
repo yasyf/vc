@@ -85,7 +85,7 @@ export default class PartnerTab extends React.Component {
 
   renderHeading() {
     return (
-      <div>
+      <div className="partner-heading">
         <Row>
           <Column large={8}>
             <PartnerHeading investor={this.state.investor} />

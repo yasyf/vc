@@ -35,7 +35,7 @@ class FixedWrappedTable extends React.Component {
     const { dimensions } = this.state;
     const BackingTable = table;
     return (
-      <div className="full-screen">
+      <div className="full-width">
         <BackingTable dimensions={dimensions} {...rest} />
       </div>
     );

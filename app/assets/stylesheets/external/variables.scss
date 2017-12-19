@@ -1,0 +1,39 @@
+$white: #FFFFFF;
+$black: #000000;
+$grey: #666666;
+$header-grey: #434D59;
+$mid-grey: #AAADAE;
+$light-grey: #E9E9E9;
+$lightest-grey: #F5F6F7;
+$success: #3074EE;
+$success-dark: #145D9B;
+$secondary: #2ADBC4;
+$secondary-dark: darken(#2ADBC4, 10%);
+$green: #34BF20;
+$blue: #0D71E9;
+$red: #E8441E;
+$yellow: #FFD339;
+$purple: #AE2CFF;
+$dark: #363844;
+
+$top-bar: #113277;
+$alert-dropdown: darken($top-bar, 10%);
+
+$discover: #D97FF2;
+$discover-icon: #9D47B4;
+
+$outreach: #E25F4D;
+$outreach-icon: #A94234;
+
+$track: #E3ED95;
+$track-icon: #5B6036;
+
+$filters-blue: #F5F9FA;
+
+@mixin on-mobile {
+  @media only screen and (max-width: 500px) { @content; }
+}
+
+@mixin only-desktop {
+  @media only screen and (min-width: 501px) { @content; }
+}

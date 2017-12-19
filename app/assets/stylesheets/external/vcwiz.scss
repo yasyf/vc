@@ -1,38 +1,7 @@
 @import "fonts";
 @import "tabs";
 @import "tutorials";
-
-$white: #FFFFFF;
-$black: #000000;
-$grey: #666666;
-$header-grey: #434D59;
-$mid-grey: #AAADAE;
-$light-grey: #E9E9E9;
-$lightest-grey: #F5F6F7;
-$success: #3074EE;
-$success-dark: #145D9B;
-$secondary: #2ADBC4;
-$secondary-dark: darken(#2ADBC4, 10%);
-$green: #34BF20;
-$blue: #0D71E9;
-$red: #E8441E;
-$yellow: #FFD339;
-$purple: #AE2CFF;
-$dark: #363844;
-
-$top-bar: #113277;
-$alert-dropdown: darken($top-bar, 10%);
-
-$discover: #D97FF2;
-$discover-icon: #9D47B4;
-
-$outreach: #E25F4D;
-$outreach-icon: #A94234;
-
-$track: #E3ED95;
-$track-icon: #5B6036;
-
-$filters-blue: #F5F9FA;
+@import "variables";
 
 html, body, .full-screen {
   height: 100%;
@@ -128,6 +97,10 @@ div.flashes-alert {
   border: 1px solid rgba($light-grey, 0.75);
   height: auto;
   margin: 0.5em 1.5em;
+
+  @include on-mobile {
+    display: none;
+  }
 
   &-hidden {
     visibility: hidden;
@@ -369,6 +342,10 @@ img.reversed, i.reversed::before {
 
     &.right {
       padding-right: 2vw;
+
+      @include on-mobile {
+        display: none;
+      }
     }
 
     a {
@@ -409,6 +386,10 @@ img.reversed, i.reversed::before {
   .outreach-bar-content {
     width: 100%;
     padding: 2em 3em 1em;
+
+    @include on-mobile {
+      padding: 1.5em;
+    }
   }
 }
 
@@ -522,8 +503,11 @@ img.reversed, i.reversed::before {
 }
 
 #top-bar {
-  height: 85px;
   background: $top-bar;
+
+  @include only-desktop {
+    height: 85px;
+  }
 
   .title {
     cursor: pointer;
@@ -558,7 +542,9 @@ img.reversed, i.reversed::before {
   }
 
   .stats-and-events {
-    width: 75%;
+    @include only-desktop {
+      width: 75%;
+    }
 
     .events {
       padding-top: 0.5em;
@@ -566,6 +552,10 @@ img.reversed, i.reversed::before {
   }
 
   .button-wrapper {
+    @include on-mobile {
+      text-align: center;
+    }
+
     button {
       font-weight: bold;
     }
@@ -575,7 +565,14 @@ img.reversed, i.reversed::before {
     display: flex;
     margin-top: 1em;
     margin-bottom: 1.5em;
-    width: 90%;
+
+    @include only-desktop {
+      width: 90%;
+    }
+
+    @include on-mobile {
+      flex-direction: column;
+    }
 
     .conversation-group {
       flex: 1;
@@ -588,6 +585,10 @@ img.reversed, i.reversed::before {
       }
 
       &:first-child {
+        margin-left: 0;
+      }
+
+      @include on-mobile {
         margin-left: 0;
       }
 
@@ -693,8 +694,10 @@ input.placeholded {
     margin: auto;
     width: 100%;
 
-    .row:not(:first-child)  {
-      margin-top: 2.5em;
+    @include only-desktop {
+      .row:not(:first-child)  {
+        margin-top: 2.5em;
+      }
     }
   }
 
@@ -702,10 +705,17 @@ input.placeholded {
     .card {
       height: 165px;
       width: 100%;
-      max-width: 350px;
       margin: auto;
       cursor: pointer;
       box-shadow: 0 0 10px 1px lighten($grey, 25%);
+
+      @include on-mobile {
+        margin-bottom: 1em;
+      }
+
+      @include only-desktop {
+        max-width: 350px;
+      }
 
       .card-section {
         position: relative;;
@@ -832,7 +842,11 @@ input.placeholded {
   }
 
   &-footer {
-    margin: 10px 20px 30px;
+    margin: 20px 20px 30px;
+
+    @include on-mobile {
+      display: none;
+    }
 
     h3 {
       margin-bottom: 1em;
@@ -849,14 +863,26 @@ input.placeholded {
     margin-bottom: 10px;
     padding-top: 20px;
     padding-bottom: 75px;
+
+    @include on-mobile {
+      display: none;
+    }
   }
 
   &-body {
     display: block;
     margin: 30px 75px;
 
+    @include on-mobile {
+      margin: 1.5em 3em;
+    }
+
     h3 {
       margin-bottom: 1em;
+
+      @include on-mobile {
+        margin-bottom: 2em;
+      }
     }
   }
 }
@@ -880,6 +906,10 @@ input.placeholded {
     .actions {
       text-align: right;
       margin-top: 0.5em;
+
+      @include on-mobile {
+        display: none;
+      }
     }
 
     .sep {
@@ -1440,6 +1470,22 @@ mark.highlighter {
     margin-bottom: 1em;
     font-weight: bold;
   }
+
+  @include on-mobile {
+    h5 {
+      margin-bottom: 1em;
+    }
+
+    .partner-heading {
+      .inline-image {
+        display: block;
+      }
+
+      .track-button {
+        margin-bottom: 2em;
+      }
+    }
+  }
 }
 
 .overlay-modal-wrapper {
@@ -1488,21 +1534,35 @@ mark.highlighter {
   }
 
   .heading {
-    position: absolute;
-    padding-left: 10px;
-    display: inline-block;
     font-weight: bold;
     font-size: larger;
+
+    @include only-desktop {
+      position: absolute;
+      padding-left: 10px;
+      display: inline-block;
+    }
   }
 
   .subheading {
-    position: relative;
-    left: 51px;
-    top: -31px;
     color: $grey;
 
-    span {
-      margin-left: 10px;
+    @include only-desktop {
+      position: relative;
+      left: 51px;
+      top: -31px;
+
+      span {
+        margin-left: 10px;
+      }
+    }
+
+    @include on-mobile {
+      margin-bottom: 1em;
+
+      span:not(:first-child) {
+        margin-left: 5px;
+      }
     }
   }
 
@@ -1868,7 +1928,8 @@ mark.highlighter {
     .tab-list-wrapper {
       position: relative;
       top: 1px;
-      overflow: scroll;
+      overflow-x: scroll;
+      overflow-y: hidden;
       white-space: nowrap;
       height: 40px;
       width: calc(100% - 10px);
@@ -1907,6 +1968,18 @@ mark.highlighter {
       margin-bottom: 1.5rem;
       max-height: 30vh;
       overflow: auto;
+    }
+
+    @include on-mobile {
+      margin-bottom: 1em;
+
+      p {
+        overflow: auto;
+      }
+
+      b.info-heading {
+        display: block;
+      }
     }
   }
 }
