@@ -12,7 +12,6 @@ class External::AuthController < Devise::OmniauthCallbacksController
       if session[:signup_data].present?
         founder.create_company! session[:signup_data].with_indifferent_access
         session.delete(:signup_data)
-        cookies[:filters] = JSON.parse(cookies[:filters]).except('location').to_json if cookies[:filters].present?
         founder.ensure_target_investors!
         SummaryMailer.welcome_founder_email(founder).deliver_later
         session[:new_login] = true

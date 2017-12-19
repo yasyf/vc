@@ -4,9 +4,9 @@ import Input from '../fields/input';
 import Filters from '../../discover/filters';
 import {
   buildQuery, extend, ffetch, flush, merge, currentPage,
-  getDomain,
+  getDomain, toOptions,
 } from '../utils';
-import {SignupPath, LoginPath, CompaniesQueryPath, StorageRestoreStateKey} from '../constants.js.erb';
+import {SignupPath, LoginPath, CompaniesQueryPath, StorageRestoreStateKey, CompetitorIndustries} from '../constants.js.erb';
 import {Button, Row, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
 import CompanyImage from '../../discover/company_image';
@@ -55,7 +55,8 @@ export default class LoginModal extends React.Component {
         return;
       }
       const { name, description, industry } = company;
-      const data = merge(this.state.data, {name, description, industry});
+      const industryOptions = toOptions(industry || [], CompetitorIndustries);
+      const data = merge(this.state.data, {name, description, industry: industryOptions});
       this.setState({company, data});
     });
   }
@@ -168,6 +169,7 @@ export default class LoginModal extends React.Component {
       <div key="filters" className="filters">
         <div className="filters-wrapper">
           <Filters
+            initialFilters={_.pick(this.state.data, fields)}
             showButton={false}
             fields={fields}
             onChange={this.onChange}

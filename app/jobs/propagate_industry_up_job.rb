@@ -1,6 +1,6 @@
 class PropagateIndustryUpJob < ApplicationJob
   INDUSTRY_THRESHOLD = 0.05
-  MAX_INDUSTRIES = 10
+  MAX_INDUSTRIES = 15
   INDUSTRY_DEPENDENCIES = {
     ecommerce: :consumer,
     cleantech: :energy,

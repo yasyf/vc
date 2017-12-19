@@ -1052,7 +1052,9 @@ input.placeholded {
     }
 
     .select-wrapper {
-      flex: 1;
+      min-width: 200px;
+      flex-basis: auto;
+      flex-grow: 1;
     }
   }
 

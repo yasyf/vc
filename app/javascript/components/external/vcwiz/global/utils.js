@@ -198,3 +198,5 @@ export const saveCurrentRestoreState = () => {
     location: currentPage(),
   });
 };
+
+export const toOptions = (arr, options) => arr.map(x => ({value: x, label: options[x]}));
