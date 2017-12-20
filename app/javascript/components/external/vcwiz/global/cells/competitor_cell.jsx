@@ -22,7 +22,9 @@ const fetchPaths = _.debounce(() => {
 const fetchPath = (id, cb) => {
   const cached = LocalStorage.getExpr(`IntroPath::${id}`);
   if (cached) {
-    cb(cached);
+    if (!_.isEmpty(cached)) {
+      cb(cached);
+    }
   } else {
     pendingPaths[id] = cb;
     fetchPaths();
