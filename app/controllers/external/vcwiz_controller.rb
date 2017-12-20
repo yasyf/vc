@@ -19,6 +19,7 @@ class External::VCWizController < External::ApplicationController
     company = current_external_founder&.primary_company
 
     title 'Discover'
+    default_description
     component 'Discover'
     params.merge!(
       options: { us_only: true },
@@ -36,6 +37,7 @@ class External::VCWizController < External::ApplicationController
 
   def filter
     title 'Filter'
+    description "View #{description_from_filters} on VCWiz, the easiest way to discover investors that are relevant to your startup."
     component 'Filter'
     result_props 20
     render_default
@@ -43,6 +45,7 @@ class External::VCWizController < External::ApplicationController
 
   def search
     title 'Search'
+    description "View #{description_from_search} on VCWiz, the easiest way to discover investors that are relevant to your startup."
     component 'Search'
     result_props 20
     render_default
@@ -50,6 +53,7 @@ class External::VCWizController < External::ApplicationController
 
   def list
     path = list_external_api_v1_competitors_path(list: list_from_name.to_param, key: params[:key], value: params[:value])
+    description "#{list_from_name.title} on VCWiz. #{list_from_name.description}"
     title list_from_name.title.titleize
     component 'List'
     props list: list_from_name.as_json(limit: 10, meta: true), path: path
@@ -68,6 +72,7 @@ class External::VCWizController < External::ApplicationController
       .as_json
 
     title 'Outreach'
+    default_description
     component 'Outreach'
     props(
       targets: targets,
@@ -96,6 +101,7 @@ class External::VCWizController < External::ApplicationController
     intro_request.decide! accept?
 
     title 'Opt-In'
+    default_description
     render_investor
   end
 
@@ -103,6 +109,7 @@ class External::VCWizController < External::ApplicationController
     intro_request.decide! accept?
 
     title 'Intro Decision'
+    default_description
     render_investor
   end
 
@@ -118,6 +125,10 @@ class External::VCWizController < External::ApplicationController
 
   def title(title)
     @title = title
+  end
+
+  def description(description)
+    @description = description
   end
 
   def component(name)
@@ -167,6 +178,35 @@ class External::VCWizController < External::ApplicationController
 
   def signup_params
     params.permit(:fund_type, :industry, :location, :companies, :name, :description, :domain, :enable_scanner)
+  end
+
+  def description_from_filters
+    filters = filter_params[:filters]
+    fund_types = filters[:fund_type].present? && Util.split_slice( filters[:fund_type], Competitor::FUND_TYPES).values.to_sentence
+    industries = filters[:industry].present?  && Util.split_slice(filters[:industry], Competitor::INDUSTRIES).values.to_sentence
+    locations  = filters[:location].present?  && filters[:location].split(',').to_sentence
+    companies  = filters[:companies].present? && Company.find(filters[:companies].split(',')).map(&:name).to_sentence
+    [
+      fund_types || nil,
+      'venture firms',
+      locations ? "located in #{locations}" : nil,
+      industries ? "who invest in #{industries}" : nil,
+      companies ? "#{industries ? 'and ' : ''}who invested in #{companies}" : nil,
+    ].compact.join(' ')
+  end
+
+  def description_from_search
+    search = search_params[:search]
+    [
+      search[:first_name].present? ? search[:first_name].titleize : nil,
+      search[:last_name].present? ? search[:last_name].titleize : nil,
+      search[:first_name].present? || search[:last_name].present? ? nil : 'Investors',
+      search[:firm_name].present? ? "at #{search[:firm_name].titleize}" : nil,
+    ].compact.join(' ')
+  end
+
+  def default_description
+    description 'VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors.'
   end
 
   def full_filters

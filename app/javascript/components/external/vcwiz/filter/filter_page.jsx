@@ -71,14 +71,12 @@ export default class FilterPage extends React.Component {
   }
 
   fetchNumInvestors() {
-    const query = this.query();
-    ffetch(`${CompetitorsFilterCountPath}?${query}`).then(({count, suggestions}) => {
+    ffetch(`${CompetitorsFilterCountPath}?${this.query()}`).then(({count, suggestions}) => {
       const newState = {count, suggestions, resultsId: timestamp(), competitors: null};
       if (this.props.applySuggestions) {
         newState.options = suggestions;
       }
-      this.setState(newState);
-      this.props.onQueryChange(query, count);
+      this.setState(newState, () => this.props.onQueryChange(this.query(), count));
     });
   }
 
