@@ -94,7 +94,7 @@ RSpec.describe 'intro request', type: :request do
   end
 
   it 'tracks responses and recognizes passes' do
-    expect(Graph).to receive(:get).exactly(4).times
+    expect(Graph).to receive(:get).exactly(3).times
     expect(Graph).to receive(:connect).twice
 
     expect do
