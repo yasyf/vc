@@ -7,6 +7,7 @@ class Investor < ApplicationRecord
   include Concerns::TimeZonable
   include Concerns::Locationable
   include Concerns::Graphable
+  include Concerns::Socialable
 
   GENDERS = %w(unknown male female)
 

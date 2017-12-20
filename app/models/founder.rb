@@ -4,6 +4,7 @@ class Founder < ApplicationRecord
   include Concerns::Eventable
   include Concerns::Locationable
   include Concerns::Graphable
+  include Concerns::Socialable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
@@ -166,10 +167,6 @@ class Founder < ApplicationRecord
       total: target_investors.size,
       recents: grouped_conversations,
     }
-  end
-
-  def linkedin=(linkedin)
-    super (linkedin && linkedin.split('/')[4]) || linkedin
   end
 
   def twitter=(twitter)
