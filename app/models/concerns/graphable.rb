@@ -10,7 +10,8 @@ module Concerns
         first, *rest = path[0...-1].map do |rel|
           rel.start_node == graph_node ? rel.end_node : rel.start_node
         end.map(&:to_h)
-        through = [first] + rest.map { |h| h.slice(:name) }
+        first_person = Founder.where(email: first[:email]).first || Investor.where(email: first[:email]).first
+        through = [first.merge(linkedin: first_person&.linkedin)] + rest.map { |h| h.slice(:name) }
         { direct: false, first_hop_via: path.first.rel_type, through: through }
       end
     end

@@ -263,7 +263,7 @@ export default class PartnerTab extends React.Component {
 
   renderInteractions() {
     const { investor, interactions } = this.state;
-    if (_.isEmpty(interactions)) {
+    if (_.isEmpty(_.omitBy(interactions, _.isEmpty))) {
       return null;
     }
     const { first_name } = investor;

@@ -20,6 +20,14 @@ export default class IntroPath extends React.Component {
     }
   }
 
+  renderLink() {
+    const { path, fullName } = this.props;
+    const { through } = path;
+    const { name, email, linkedin } = through[0];
+    const href = linkedin ? `https://linkedin.com/in/${linkedin}` : `mailto:${email}?subject=Intro to ${fullName}`;
+    return <a target="_blank" href={href}>{name}</a>;
+  }
+
   renderMiddle() {
     const { path, fullName, fullSentence } = this.props;
     const { direct, first_hop_via, through } = path;
@@ -27,21 +35,16 @@ export default class IntroPath extends React.Component {
     if (direct) {
       return <span key="middle">by {first_hop_via}</span>;
     } else if (through.length === 1) {
-      const { name, email } = through[0];
-      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName}`}>{name}</a>;
-      return <span key="middle">through {link}</span>;
+      return <span key="middle">through {this.renderLink()}</span>;
     } else if (through.length === 2) {
-      const { name, email } = through[0];
-      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName}`}>{name}</a>;
+
       const lastName = through[1].name;
-      return <span key="middle">through {lastName}, via {link}</span>;
+      return <span key="middle">through {lastName}, via {this.renderLink()}</span>;
     } else {
-      const { name, email } = through[0];
-      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName}`}>{name}</a>;
       const middleName = through[1].name;
       const lastParts = through[2].name.split(' ');
       const lastName = `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
-      return <span key="middle">through {middleName} and {lastName}, via {link}</span>;
+      return <span key="middle">through {middleName} and {lastName}, via {this.renderLink()}</span>;
     }
   }
 
