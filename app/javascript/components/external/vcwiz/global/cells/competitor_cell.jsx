@@ -11,9 +11,10 @@ const fetchPaths = _.debounce(() => {
   pendingPaths = {};
 
   ffetch(`${CompetitorsIntroPathsPath}?ids=${Object.keys(pending).join(',')}`).then(({intro_paths}) => {
-    Object.entries(intro_paths).forEach(([id, path]) => {
-      LocalStorage.setExpr(`IntroPath::${id}`, path || {}, 60*60*24);
-      pending[id](path);
+    Object.entries(pending).forEach(([id, cb]) => {
+      const path = intro_paths[id] || {};
+      LocalStorage.setExpr(`IntroPath::${id}`, path, 60*60*24);
+      cb(path);
     });
   });
 }, 500);
@@ -22,6 +23,7 @@ const fetchPath = (id, cb) => {
   if (cached) {
     cb(cached);
   } else {
+    cb(null);
     pendingPaths[id] = cb;
     fetchPaths();
   }
@@ -40,14 +42,15 @@ export default class CompetitorCell extends ImageTextCell {
     if (isLoggedIn() && prevState.id !== this.state.id) {
       fetchPath(this.state.id, path => {
         if (_.isEmpty(path)) {
-          return;
+          this.setState({subValue: null});
+        } else {
+          const subValue = (
+            <span>
+              Connected <IntroPath path={path} fullName={this.state.value} fullSentence={false} />
+            </span>
+          );
+          this.setState({subValue});
         }
-        const subValue = (
-          <span>
-            Connected <IntroPath path={path} fullName={this.state.value} fullSentence={false} />
-          </span>
-        );
-        this.setState({subValue});
       });
     }
   }
