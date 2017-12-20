@@ -61,7 +61,7 @@ export default class IntroPath extends React.Component {
     return [
       <span key="start">{this.renderStart()}</span>,
       this.renderMiddle(),
-      <span key="end">this.renderEnd()</span>,
+      <span key="end">{this.renderEnd()}</span>,
     ];
   }
 }
