@@ -1549,7 +1549,7 @@ mark.highlighter {
   }
 
   &-bottom {
-    padding: 30px;
+    padding: 5% 30px 30px;
   }
 
   p {
@@ -1715,6 +1715,8 @@ mark.highlighter {
 }
 
 .email_integration-modal {
+  @include small-modal;
+
   &-bottom {
     .info {
       h4 {
@@ -1729,6 +1731,8 @@ mark.highlighter {
 }
 
 .settings-modal {
+  @include small-modal;
+
   &-bottom {
     .fields {
       .row {
@@ -1743,6 +1747,8 @@ mark.highlighter {
 }
 
 .add_investor-modal {
+  @include small-modal;
+
   &-bottom {
     input {
       margin-bottom: 0;
@@ -1753,6 +1759,8 @@ mark.highlighter {
 }
 
 .more_filters-modal {
+  @include small-modal;
+
   &-top {
     padding: 20px;
   }
@@ -1830,6 +1838,8 @@ mark.highlighter {
 }
 
 .emoji-modal {
+  @include small-modal;
+
   width: 100%;
   text-align: center;
 
@@ -1907,6 +1917,8 @@ mark.highlighter {
 }
 
 .login-modal {
+  @include small-modal;
+
   display: grid;
   grid-template-rows: auto 1fr;
 
@@ -1939,12 +1951,13 @@ mark.highlighter {
       height: 100%;
       width: 100%;
       padding: 0.85em 1em;
+      margin-top: 1em;
     }
 
     .info {
       font-weight: bold;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 1.5em;
       font-size: large;
     }
 

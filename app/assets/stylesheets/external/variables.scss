@@ -37,3 +37,15 @@ $filters-blue: #F5F9FA;
 @mixin only-desktop {
   @media only screen and (min-width: 501px) { @content; }
 }
+
+@mixin small-modal {
+  &-content {
+    top: 15%;
+    left: 15%;
+    right: 15%;
+    bottom: 15%;
+    max-height: 800px;
+    max-width: 1000px;
+    margin: auto;
+  }
+}
