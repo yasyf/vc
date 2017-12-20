@@ -8,6 +8,12 @@ html, body, .full-screen {
   width: 100%;
 }
 
+@include on-s-mobile {
+  body {
+    font-size: smaller;
+  }
+}
+
 textarea[type='text'] {
   height: 5em;
 }
@@ -441,6 +447,13 @@ img.reversed, i.reversed::before {
           margin-bottom: 3px;
         }
       }
+
+      @include on-s-mobile {
+        h2.subtitle {
+          font-size: large;
+          margin-bottom: 5px;
+        }
+      }
     }
 
     & > div:not(:last-child) {
@@ -481,6 +494,7 @@ img.reversed, i.reversed::before {
 
       @include on-mobile {
         margin-bottom: 0.5em;
+        display: block;
       }
 
       .badge {
@@ -489,6 +503,10 @@ img.reversed, i.reversed::before {
         line-height: 4em;
         vertical-align: 1.2em;
         margin-right: 10px;
+
+        @include on-s-mobile {
+          vertical-align: middle;
+        }
       }
 
       .info {
@@ -497,6 +515,12 @@ img.reversed, i.reversed::before {
         .heading {
           text-transform: uppercase;
           font-weight: bold;
+        }
+
+        .subheading {
+          @include on-s-mobile {
+            display: none;
+          }
         }
       }
 
@@ -909,6 +933,10 @@ input.placeholded {
 
     @include on-mobile {
       margin: 1.5em 3em;
+    }
+
+    @include on-s-mobile {
+      margin: 1.5em;
     }
 
     h3 {

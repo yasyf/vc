@@ -153,7 +153,7 @@ export default class Header extends React.Component {
 
   renderExtraInfo() {
     if (isMobile()) {
-      return "Visit vcwiz.co on your desktop to sign up!";
+      return "Our site is not optimized for mobile yet! Visit vcwiz.co on your desktop to sign up.";
     } else {
       return (
         "VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors." +
