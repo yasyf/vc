@@ -25,23 +25,23 @@ export default class IntroPath extends React.Component {
     const { direct, first_hop_via, through } = path;
 
     if (direct) {
-      return `by ${first_hop_via}`;
+      return <span key="middle">by {first_hop_via}</span>;
     } else if (through.length === 1) {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName}`}>{name}</a>;
-      return <span>through {link}</span>;
+      return <span key="middle">through {link}</span>;
     } else if (through.length === 2) {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName}`}>{name}</a>;
       const lastName = through[1].name;
-      return <span>through {lastName}, via {link}</span>;
+      return <span key="middle">through {lastName}, via {link}</span>;
     } else {
       const { name, email } = through[0];
       const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName}`}>{name}</a>;
       const middleName = through[1].name;
       const lastParts = through[2].name.split(' ');
       const lastName = `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
-      return <span>through {middleName} and {lastName}, via {link}</span>;
+      return <span key="middle">through {middleName} and {lastName}, via {link}</span>;
     }
   }
 
@@ -58,6 +58,10 @@ export default class IntroPath extends React.Component {
     if (_.isEmpty(path)) {
       return null;
     }
-    return `${this.renderStart()}${this.renderMiddle()}${this.renderEnd()}`;
+    return [
+      <span key="start">{this.renderStart()}</span>,
+      this.renderMiddle(),
+      <span key="end">this.renderEnd()</span>,
+    ];
   }
 }
