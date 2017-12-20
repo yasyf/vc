@@ -51,7 +51,7 @@ module Concerns
     end
 
     def graph_node
-      @graph_node ||= Graph.get(Mail::Address.new("\"#{name}\" <#{email}>"))
+      @graph_node ||= Graph.get(Mail::Address.new("\"#{name}\" <#{email}>")) if email.present?
     end
 
     class_methods do
