@@ -13,18 +13,14 @@ const fetchPaths = _.debounce(() => {
   ffetch(`${CompetitorsIntroPathsPath}?ids=${Object.keys(pending).join(',')}`).then(({intro_paths}) => {
     Object.entries(intro_paths).forEach(([id, path]) => {
       LocalStorage.setExpr(`IntroPath::${id}`, path || {}, 60*60*24);
-      if (!_.isEmpty(path)) {
-        pending[id](path);
-      }
+      pending[id](path);
     });
   });
 }, 500);
 const fetchPath = (id, cb) => {
   const cached = LocalStorage.getExpr(`IntroPath::${id}`);
   if (cached) {
-    if (!_.isEmpty(cached)) {
-      cb(cached);
-    }
+    cb(cached);
   } else {
     pendingPaths[id] = cb;
     fetchPaths();
@@ -43,6 +39,9 @@ export default class CompetitorCell extends ImageTextCell {
   componentDidUpdate(prevProps, prevState) {
     if (isLoggedIn() && prevState.id !== this.state.id) {
       fetchPath(this.state.id, path => {
+        if (_.isEmpty(path)) {
+          return;
+        }
         const subValue = (
           <span>
             Connected <IntroPath path={path} fullName={this.state.value} fullSentence={false} />
