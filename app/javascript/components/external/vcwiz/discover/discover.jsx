@@ -39,6 +39,7 @@ export default class Discovery extends React.Component {
         body={<Lists />}
         modal={this.renderModal()}
         showIntro={true}
+        openLoginOnLoad={!!this.props.open_signup}
       />
     );
   }

@@ -61,6 +61,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
     if founder.primary_company.blank? && session[:signup_data].blank? && !founder.admin?
       set_flash_message :alert, :failure, kind: 'Google', reason: "you don't have an account yet! Please sign up below"
       sign_out current_external_founder if current_external_founder.present?
+      session[:open_signup] = true
       redirect_to external_vcwiz_root_path
     else
       cookies.permanent[:login_domain] = founder.domain unless founder.domain == 'gmail.com'

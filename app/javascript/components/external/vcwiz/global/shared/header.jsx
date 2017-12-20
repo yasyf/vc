@@ -20,15 +20,20 @@ import Flashes from './flashes';
 export default class Header extends React.Component {
   static defaultProps = {
     showLogin: true,
+    openLoginOnLoad: false,
   };
 
-  state = {
-    loginOpen: false,
-    settingsOpen: false,
-    loginStage: 0,
-    showIntro: true,
-    founder: Store.get('founder', {}),
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loginOpen: props.openLoginOnLoad,
+      settingsOpen: false,
+      loginStage: 0,
+      showIntro: true,
+      founder: Store.get('founder', {}),
+    };
+  }
 
   componentWillMount() {
     this.subscription = Store.subscribe('founder', founder => this.setState({founder}));

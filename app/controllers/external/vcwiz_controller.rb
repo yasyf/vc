@@ -12,9 +12,13 @@ class External::VCWizController < External::ApplicationController
   end
 
   def discover
-    if params[:new_login].present? || session[:new_login].present?
+    if params[:new_login].present? || session[:new_login]
       session.delete(:new_login)
       props is_new_login: true
+    end
+    if session[:open_signup]
+      session.delete(:open_signup)
+      props open_signup: true
     end
     company = current_external_founder&.primary_company
 
