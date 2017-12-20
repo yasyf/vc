@@ -10,6 +10,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def intro_paths
+    render json: { intro_paths: [] } and return unless external_founder_signed_in?
     paths = Competitor
       .where(id: params[:ids].split(','))
       .where.not(domain: nil)

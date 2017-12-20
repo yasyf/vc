@@ -2,7 +2,7 @@ import React from 'react';
 import ImageTextCell from './image_text_cell';
 import { CompetitorsIntroPathsPath } from '../constants.js.erb';
 import { LocalStorage } from '../storage.js.erb';
-import {ffetch} from '../utils';
+import {ffetch, isLoggedIn} from '../utils';
 import IntroPath from '../competitors/intro_path';
 
 let pendingPaths = {};
@@ -39,7 +39,7 @@ export default class CompetitorCell extends ImageTextCell {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.id !== this.state.id) {
+    if (isLoggedIn() && prevState.id !== this.state.id) {
       fetchPath(this.state.id, path => {
         const subValue = (
           <span>
