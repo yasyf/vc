@@ -104,7 +104,7 @@ class Message
   end
 
   def process_incoming!(founder)
-    founder.connect_from_addr!(from, :email)
+    founder.connect_from_addr!(from, :email) if valid_connection?
     target = TargetInvestor.from_addr(founder, from, create: true)
     return unless target.present?
     stage = self.class.stage(reply_text, sentiment)
@@ -135,7 +135,7 @@ class Message
 
   def process_outgoing!(founder)
     recipients.each do |addr|
-      founder.connect_to_addr!(addr, :email)
+      founder.connect_to_addr!(addr, :email) if valid_connection?
       target = TargetInvestor.from_addr(founder, addr, create: true)
       next unless target.present?
       stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
@@ -160,6 +160,13 @@ class Message
       target.stage = stage
       target.save!
     end
+  end
+
+  def valid_connection?
+    return false if ['unsubscribe', 'email preferences', 'privacy policy', 'terms of use', 'do not reply', 'you have received this email because', 'view in your browser', 'to stop receiving'].any? { |s| text.lower.include?(s) }
+    return false if ['List-Unsubscribe', 'List-ID', 'X-Mailgun-Sid', 'Feedback-ID', 'X-SES-Outgoing', 'X-SG-EID', 'X-MC-User', 'X-Mandrill-User', 'X-Roving-ID'].any? { |h| headers.key?(h) }
+    return false if recipients.any? { |addr| addr.local.downcase.in?(['noreply', 'no-reply', 'do-not-reply']) || addr.local.include?('+') }
+    true
   end
 
   def self.stage(text, sentiment)
