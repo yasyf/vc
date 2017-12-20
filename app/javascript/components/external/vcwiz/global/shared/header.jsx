@@ -62,7 +62,7 @@ export default class Header extends React.Component {
   };
 
   openLogin = e => {
-    this.openLoginModal(e, 3);
+    this.openLoginModal(e, 4);
   };
 
   openSignup = e => {
@@ -106,7 +106,7 @@ export default class Header extends React.Component {
       return (
         <div className="title right">
           Already have an account?
-          <a onClick={this.openLogin}>
+          <a onClick={this.goToLogin}>
             <span className="subtitle nudge-right">Log In</span>
           </a>
         </div>

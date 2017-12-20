@@ -180,6 +180,10 @@ p.tight {
   background: url(image_path("login/btn_google_signin_dark_normal_web.png")) no-repeat center;
   width: 191px;
   height: 46px;
+
+  &.light {
+    background: url(image_path("login/btn_google_signin_light_normal_web.png")) no-repeat center;
+  }
 }
 
 .button.success {
@@ -1931,7 +1935,7 @@ mark.highlighter {
     .button.success {
       font-size: 1em;
       font-weight: bolder;
-      border-radius: 5%;
+      border-radius: 10px;
       height: 100%;
       width: 100%;
       padding: 0.85em 1em;
@@ -1943,12 +1947,41 @@ mark.highlighter {
       margin-bottom: 10px;
       font-size: large;
     }
+
+    .login-info {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .login-sub-info {
+      text-align: center;
+    }
+
+    .google-button {
+      text-align: center;
+      margin-top: 1.5em;
+    }
+
+    .permission-info {
+      margin-bottom: 2em;
+
+      p {
+        margin-bottom: 1em;
+      }
+    }
   }
 
   .row {
-    max-width: 35rem;
     margin-right: auto;
     margin-left: auto;
+
+    &.padded {
+      width: 90%;
+    }
+
+    &.narrow {
+      max-width: 35rem;
+    }
   }
 }
 

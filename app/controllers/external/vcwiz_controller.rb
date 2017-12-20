@@ -146,7 +146,7 @@ class External::VCWizController < External::ApplicationController
 
   def redirect_login
     store_location_for(:external_founder, request.referer)
-    redirect_to omniauth_path('google_external', hd: params[:domain] || cookies[:login_domain] || '*')
+    redirect_to omniauth_path(enable_scanner? ? 'gmail' : 'google_external', hd: params[:domain] || cookies[:login_domain] || '*')
   end
 
   def optin?
@@ -157,12 +157,16 @@ class External::VCWizController < External::ApplicationController
     params[:accept] == 'true'
   end
 
+  def enable_scanner?
+    signup_params[:enable_scanner] == 'true'
+  end
+
   def intro_request
     @intro_request ||= IntroRequest.where(token: params[:token]).first!
   end
 
   def signup_params
-    params.permit(:fund_type, :industry, :location, :companies, :name, :description, :domain)
+    params.permit(:fund_type, :industry, :location, :companies, :name, :description, :domain, :enable_scanner)
   end
 
   def full_filters

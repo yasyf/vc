@@ -4,16 +4,25 @@ import Input from '../fields/input';
 import Filters from '../../discover/filters';
 import {
   buildQuery, extend, ffetch, flush, merge, currentPage,
-  getDomain, toOptions,
+  getDomain, toOptions, preloadImages,
 } from '../utils';
-import {SignupPath, LoginPath, CompaniesQueryPath, StorageRestoreStateKey, CompetitorIndustries} from '../constants.js.erb';
-import {Button, Row, Colors} from 'react-foundation';
+import {
+  SignupPath,
+  LoginPath,
+  CompaniesQueryPath,
+  StorageRestoreStateKey,
+  CompetitorIndustries,
+  GoogleLoginImagePath,
+  GoogleLoginLightImagePath,
+} from '../constants.js.erb';
+import {Button, Row, Column, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
 import CompanyImage from '../../discover/company_image';
 import Breadcrumb from '../breadcrumbs';
 import {SessionStorage} from '../storage.js.erb';
 import { canUseDOM } from 'exenv';
 import TextArea from '../fields/text_area';
+import classNames from 'classnames';
 
 const RequiredFields = [
   [],
@@ -30,7 +39,7 @@ export default class LoginModal extends React.Component {
     this.state = {
       path: LoginPath,
       data: {},
-      stage: props.stage || 0,
+      stage: props.stage,
       company: {},
       hasImage: false,
       restoreState: canUseDOM ? {
@@ -40,10 +49,21 @@ export default class LoginModal extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.preloadImages();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.state.data.domain && prevState.data.domain !== this.state.data.domain) {
       this.lookupDomain();
     }
+  }
+
+  preloadImages() {
+    if (!canUseDOM) {
+      return;
+    }
+    preloadImages([GoogleLoginImagePath, GoogleLoginLightImagePath]);
   }
 
   lookupDomain() {
@@ -79,13 +99,23 @@ export default class LoginModal extends React.Component {
   };
 
   skipToLogin = () => {
-    this.setState({stage: 3});
+    this.setState({stage: 4});
   };
 
-  loginWithGoogle = () => {
+  beforeLogin() {
     flush();
     SessionStorage.set(StorageRestoreStateKey, this.state.restoreState);
+  }
+
+  loginWithGoogle = () => {
+    this.beforeLogin();
     this.form.submit();
+  };
+
+  loginWithGoogleInbox = () => {
+    this.beforeLogin();
+    const data = extend(this.state.data, {enable_scanner: true});
+    this.setState({data}, () => this.form.submit());
   };
 
   renderSubHeading() {
@@ -110,7 +140,7 @@ export default class LoginModal extends React.Component {
 
   renderTop() {
     const { data, hasImage, stage } = this.state;
-    if (stage === 3) {
+    if (stage >= 3) {
       return (
         <div className="title">
           <h3>Login To VCWiz</h3>
@@ -179,6 +209,19 @@ export default class LoginModal extends React.Component {
     );
   }
 
+  renderGoogleForm() {
+    return <HiddenForm key="form" data={this.state.data} formRef={form => { this.form = form; }} path={this.state.path} />;
+  }
+
+  renderGoogleButton(onClick, light = false) {
+    return (
+      <div key="button" className="google-button">
+        <Button className={classNames('google', {light: light})} onClick={onClick}>
+        </Button>
+      </div>
+    );
+  }
+
   renderStage0() {
     const { company, data } = this.state;
     const continueText = (company && company.name) ? company.name : data.domain;
@@ -213,12 +256,44 @@ export default class LoginModal extends React.Component {
 
   renderStage3() {
     return [
-      <p className="info" key="text">Login with your company email address to secure your account.</p>,
-      <HiddenForm key="form" data={this.state.data} formRef={form => { this.form = form; }} path={this.state.path} />,
-      <div key="button" className="text-center">
-        <Button className="google" onClick={this.loginWithGoogle}>
-        </Button>
+      <div key="text" className="permission-info">
+        <p>
+          Last step! To verify your email address, we need you to log in with your Google account.
+        </p>
+        <p>
+          You also have the option to enable the VCWiz Inbox Scanner, which will sync your conversations with investors to VCWiz, and help you figure out your intro path to any VC.
+        </p>
+        <p>
+          We know granting this kind of permission to a product built by a venture firm may feel a bit sketchy.
+          Here are our promises to you about how we use (and don’t use) your data.
+        </p>
+        <ol>
+          <li>No human will <b>ever</b> have access to your data.</li>
+          <li>We will <b>never</b> use your individual conversation data for anything other than your personal dashboard and analytics.</li>
+          <li>We will <b>only</b> use aggregate data to look at high level trends.</li>
+          <li>If you give us inbox access, we will <b>only</b> process email metadata (to, from, and subject)&mdash;<b>never</b> any content.</li>
+        </ol>
       </div>,
+      this.renderGoogleForm(),
+      <Row key="login-with-inbox" className="full-width">
+        <Column large={6}>
+          <p className="info">Login without VCWiz Inbox Scanner</p>
+          {this.renderGoogleButton(this.loginWithGoogle, true)}
+        </Column>
+        <Column large={6}>
+          <p className="info">Login and enable VCWiz Inbox Scanner</p>
+          {this.renderGoogleButton(this.loginWithGoogleInbox)}
+        </Column>
+      </Row>,
+    ];
+  }
+
+  renderStage4() {
+    return [
+      <p className="login-info" key="info">Login with your company email address to secure your account.</p>,
+      <p className="login-sub-info" key="subinfo">You will be redirected to Google to complete your login.</p>,
+      this.renderGoogleForm(),
+      this.renderGoogleButton(this.loginWithGoogle),
     ];
   }
 
@@ -235,9 +310,10 @@ export default class LoginModal extends React.Component {
   }
 
   renderBottom() {
+    const { stage } = this.state;
     return (
       <div className="filters">
-        <Row>
+        <Row className={classNames({narrow: stage < 3, padded: stage >= 3})}>
           {this[`renderStage${this.state.stage}`]()}
         </Row>
       </div>

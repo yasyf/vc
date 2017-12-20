@@ -13,6 +13,11 @@ module External::ApplicationHelper
     a.map { |v| v.merge({ value: v['id'], label: v[key] }) }
   end
 
+  def flash_success(message)
+    flash[:success] ||= []
+    flash[:success] << message
+  end
+
   def foundation_flash_type(level)
     case level.to_sym
       when :alert     then 'alert'

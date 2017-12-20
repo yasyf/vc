@@ -202,5 +202,13 @@ export const saveCurrentRestoreState = () => {
 };
 
 export const toOptions = (arr, options) => arr.map(x => ({value: x, label: options[x]}));
-
 export const isMobile = () => canUseDOM && document.documentElement.clientWidth <= MobileScreenSize;
+
+export const preloadImage = path => {
+  const preload = document.createElement("link");
+  preload.href = path;
+  preload.rel = 'preload';
+  preload.as = 'image';
+  document.head.appendChild(preload);
+};
+export const preloadImages = images => images.forEach(preloadImage);
