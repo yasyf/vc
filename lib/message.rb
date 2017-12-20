@@ -177,7 +177,7 @@ class Message
        'you have received this email because',
        'view in your browser',
        'to stop receiving'
-      ].any? { |s| text.downcase.include?(s) || html.downcase.include?(s) } ||
+      ].any? { |s| text&.downcase&.include?(s) || html&.downcase&.include?(s) } ||
       %w(
         List-Unsubscribe
         List-ID
@@ -189,7 +189,7 @@ class Message
         X-Mandrill-User
         X-Roving-ID
        ).any? { |h| headers.key?(h) } ||
-      recipients.any? { |a| a.local.downcase.in?(%w(noreply no-reply do-not-reply)) || a.local.include?('+') }
+      recipients.any? { |a| a.local.present? && (a.local.downcase.in?(%w(noreply no-reply do-not-reply)) || a.local.include?('+')) }
     end
   end
 
