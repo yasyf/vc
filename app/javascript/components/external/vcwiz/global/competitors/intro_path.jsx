@@ -55,7 +55,7 @@ export default class IntroPath extends React.Component {
 
   render() {
     const { path, name } = this.props;
-    if (!path) {
+    if (_.isEmpty(path)) {
       return null;
     }
     return `${this.renderStart()}${this.renderMiddle()}${this.renderEnd()}`;
