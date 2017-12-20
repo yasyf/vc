@@ -13,6 +13,7 @@ import NullStateCell from '../cells/null_state_cell';
 import Header from '../cells/header';
 import PlaceholderCell from '../cells/placeholder_cell';
 import {isMobile} from '../utils';
+import CompetitorCell from '../cells/competitor_cell';
 
 export default class FixedTable extends React.Component {
   static defaultProps = {
@@ -51,6 +52,10 @@ export default class FixedTable extends React.Component {
 
   renderImageTextColumn = (key, name, props, flex = 1) => {
     return this.renderColumn(key, name, ImageTextCell, { size: this.props.rowHeight / 2 , ...props }, undefined, flex);
+  };
+
+  renderCompetitorColumn = (key, name, props, flex = 1) => {
+    return this.renderColumn(key, name, CompetitorCell, { size: this.props.rowHeight / 2 , ...props }, undefined, flex);
   };
 
   renderTextColumn = (key, name, props, flex = 1) => {

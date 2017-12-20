@@ -41,6 +41,7 @@ class Investor < ApplicationRecord
 
   before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
+  after_update :check_competitor_domain
   before_validation :normalize_location, :set_first_name
 
   def self.from_addr(addr)
@@ -371,11 +372,17 @@ class Investor < ApplicationRecord
       travel_status: outgoing_openable&.travel_status,
       last_contact: incoming_email&.created_at,
       overlap: overlap.present? ? overlap : nil,
-      path: founder.path_to(self)
+      path: founder.path_to(self),
     })
   end
 
   private
+
+  def check_competitor_domain
+    if email.present? && competitor.domain.blank?
+      competitor.update! domain: Mail::Address.new(email).domain
+    end
+  end
 
   def normalize_location
     self.location = Util.normalize_city(self.location) if self.location.present?

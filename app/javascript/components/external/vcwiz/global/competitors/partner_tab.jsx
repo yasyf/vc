@@ -17,6 +17,7 @@ import Loader from '../shared/loader';
 import Track from '../fields/track';
 import PartnerHeading from './partner_heading';
 import update from 'immutability-helper';
+import IntroPath from './intro_path';
 
 export default class PartnerTab extends React.Component {
   constructor(props) {
@@ -257,29 +258,7 @@ export default class PartnerTab extends React.Component {
     const { investor, interactions } = this.state;
     const { first_name } = investor;
     const { path } = interactions;
-    if (!path) {
-      return null;
-    }
-    const { direct, first_hop_via, through } = path;
-    if (direct) {
-      return <span key="path">You are connected with {first_name} by {first_hop_via}. </span>;
-    } else if (through.length === 1) {
-      const { name, email } = through[0];
-      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
-      return <span key="path">You have a connection to {first_name} through {link}. </span>
-    } else if (through.length === 2) {
-      const { name, email } = through[0];
-      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
-      const lastName = through[1].name;
-      return <span key="path">You have a connection to {first_name} through {lastName}, via {link}. </span>;
-    } else {
-      const { name, email } = through[0];
-      const link = <a target="_blank" href={`mailto:${email}?subject=Intro to ${fullName(investor)}`}>{name}</a>;
-      const middleName = through[1].name;
-      const lastParts = through[2].name.split(' ');
-      const lastName = `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
-      return <span key="path">You have a connection to {first_name} through {middleName} and {lastName}, via {link}. </span>;
-    }
+    return <IntroPath key="path" path={path} displayName={first_name} fullName={fullName(investor)} />;
   }
 
   renderInteractions() {

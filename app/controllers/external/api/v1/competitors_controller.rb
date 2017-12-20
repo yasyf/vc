@@ -9,6 +9,15 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
     render_censored  Competitor.find(params[:id])
   end
 
+  def intro_paths
+    paths = Competitor
+      .where(id: params[:ids].split(','))
+      .where.not(domain: nil)
+      .map { |c| [c.id, current_external_founder.path_to_domain(c.domain)] }
+      .to_h
+    render json: { intro_paths: paths }
+  end
+
   def filter
     apply_suggestions! if apply_suggestions?
     competitors = filtered_results(sort: sorts, limit: limit, offset: page * limit, meta: true)

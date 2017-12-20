@@ -95,6 +95,7 @@ Rails.application.routes.draw do
               get 'filter'
               get 'filter_count'
               get 'locations'
+              get 'intro_paths'
               get 'lists'
               get 'list/:list(/:key/:value)', action: :list, as: :list
             end

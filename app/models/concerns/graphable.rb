@@ -2,8 +2,7 @@ module Concerns
   module Graphable
     extend ActiveSupport::Concern
 
-    def path_to_node(node)
-      path = Graph.shortest_path(graph_node, node).first
+    def describe_path(path)
       return nil unless path.present?
       if path.length == 1
         { direct: true, first_hop_via: path.first.rel_type }
@@ -16,6 +15,10 @@ module Concerns
       end
     end
 
+    def path_to_node(node)
+      describe_path Graph.shortest_path(graph_node, node)
+    end
+
     def path_to_addr(addr)
       return nil unless (other = self.class.node_from_addr(addr)).present?
       path_to other
@@ -23,6 +26,10 @@ module Concerns
 
     def path_to(other)
       path_to_node other.graph_node
+    end
+
+    def path_to_domain(domain)
+      describe_path Graph.shortest_path_to_domain(graph_node, domain)
     end
 
     def connect_to!(other, type)
@@ -44,15 +51,15 @@ module Concerns
     end
 
     def graph_node
-      @graph_node ||= Graph.get(name, email)
+      @graph_node ||= Graph.get(Mail::Address.new("\"#{name}\" <#{email}>"))
     end
 
     class_methods do
       def node_from_addr(addr)
-        if (found = Graph.find(addr.address))
+        if (found = Graph.find(addr))
           found
         else
-          Graph.add(addr.name,addr.address) if addr.name.present?
+          Graph.add(addr) if addr.name.present?
         end
       end
     end

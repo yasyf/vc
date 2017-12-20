@@ -11,7 +11,18 @@ class Graph
 
   def self.shortest_path(n1, n2, limit = 4)
     return [] unless n1.present? && n2.present?
-    n1.shortest_path_to(n2).depth(limit).rels.to_a
+    n1.shortest_path_to(n2).depth(limit).rels.to_a.first
+  end
+
+  def self.shortest_path_to_domain(n, domain, limit = 4)
+    script = <<-CYPHER
+      MATCH (other:Person { domain: {domain} }), path = shortestPath((me)-[*1..#{limit}]-(other))
+      WHERE id(me) = {neo_id}
+      RETURN path
+    CYPHER
+    result = server.execute_query(script, neo_id: n.neo_id.to_i, domain: domain)['data']
+    return [] unless result.present?
+    result.first.first['relationships'].map { |rel| Neography::Relationship.load(rel, db=server) }
   end
 
   def self.connect(type, n1, n2)
@@ -25,27 +36,30 @@ class Graph
     )
   end
 
-  def self.get(name, email)
-    find(email) || add(name, email)
+  def self.get(addr)
+    find(addr) || add(addr)
   end
 
-  def self.add(name, email)
-    node = Neography::Node.create({name: name, email: email}, server)
+  def self.add(addr)
+    node = Neography::Node.create({name: addr.name, email: addr.address, domain: addr.domain}, server)
     begin
       node.set_labels('Person')
     rescue Neography::BadInputException
       node.del
-      get name, email
+      get addr
+    else
+      node
     end
   end
 
-  def self.find(email)
-    results = retry_([Excon::Error::Socket]) { server.find_nodes_labeled('Person', {email: email}) }
+  def self.find(addr)
+    results = retry_([Excon::Error::Socket]) { server.find_nodes_labeled('Person', {email: addr.address}) }
     Neography::Node.load(results.first, server) if results.present?
   end
 
   def self.init!
     add_constraint! 'Person', 'email'
+    ensure_index! 'Person', 'domain'
     ensure_relationship_index! 'email'
   end
 

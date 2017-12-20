@@ -42,7 +42,7 @@ class ResultsTable extends FixedTable {
 
   renderColumns() {
     return [
-      this.renderImageTextColumn('name', 'Firm', { imageKey: 'photo', fallbackKey: 'acronym' }),
+      this.renderCompetitorColumn('name', 'Firm', { imageKey: 'photo', fallbackKey: 'acronym' }),
       this.middleColumns(),
       this.renderCompetitorTrackColumn('stage', this.onTrackChange, 'Track'),
     ];
