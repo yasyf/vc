@@ -13,6 +13,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
     paths = Competitor
       .where(id: params[:ids].split(','))
       .where.not(domain: nil)
+      .where.not(domain: current_external_founder.domain)
       .map { |c| [c.id, current_external_founder.path_to_domain(c.domain)] }
       .to_h
     render json: { intro_paths: paths }
