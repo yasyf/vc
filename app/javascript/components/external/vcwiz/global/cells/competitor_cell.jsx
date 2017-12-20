@@ -13,7 +13,7 @@ const fetchPaths = _.debounce(() => {
   ffetch(`${CompetitorsIntroPathsPath}?ids=${Object.keys(pending).join(',')}`).then(({intro_paths}) => {
     Object.entries(intro_paths).forEach(([id, path]) => {
       LocalStorage.setExpr(`IntroPath::${id}`, path || {}, 60*60*24);
-      if (path) {
+      if (!_.isEmpty(path)) {
         pending[id](path);
       }
     });
