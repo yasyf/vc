@@ -177,7 +177,7 @@ class Message
        'you have received this email because',
        'view in your browser',
        'to stop receiving'
-      ].any? { |s| text.lower.include?(s) || html.lower.include?(s) } ||
+      ].any? { |s| text.downcase.include?(s) || html.downcase.include?(s) } ||
       %w(
         List-Unsubscribe
         List-ID
