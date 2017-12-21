@@ -146,7 +146,6 @@ export default class PartnerTab extends React.Component {
         {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}
         {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
         {this.renderIconLine('web', '', homepage, getDomain(homepage))}
-        {this.renderIconLine('clock', average_response_time && `Average Response Time of ${moment.duration(average_response_time, 'seconds').humanize()}`)}
       </div>
     );
   }
