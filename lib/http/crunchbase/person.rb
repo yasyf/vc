@@ -59,8 +59,9 @@ module Http::Crunchbase
       end
     end
 
-    def self.find_investor_id(name)
-      find_id(name: name.gsub('&') { '\\&' })
+    def self.find_investor_id(name, org = nil)
+      results = api_get('/', name: name.gsub('&') { '\\&' }, types: 'investor')
+      (org ? results.find { |r| r.organization_name.downcase == org.downcase } : results.first)&.permalink
     end
 
     private

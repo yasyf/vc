@@ -62,13 +62,9 @@ class Investor < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  def populate_from_cb!
+  def populate_from_cb_basic!
     person = crunchbase_person
     return unless person.present? && person.found?
-
-    Founder::SOCIAL_KEYS.each do |attr|
-      self[attr] = person.public_send(attr)
-    end
 
     self.first_name = person.first_name
     self.last_name = person.last_name
@@ -82,6 +78,17 @@ class Investor < ApplicationRecord
     self.country = person.location&.country_code2
     self.gender = person.gender || self.gender
     self.university = University.from_name(person.university) if person.university.present?
+  end
+
+  def populate_from_cb!
+    person = crunchbase_person
+    return unless person.present? && person.found?
+
+    Founder::SOCIAL_KEYS.each do |attr|
+      self[attr] = person.public_send(attr)
+    end
+
+    populate_from_cb_basic!
 
     return unless self.competitor.present?
 
@@ -191,7 +198,7 @@ class Investor < ApplicationRecord
 
   def self.from_crunchbase(cb_id)
     return nil unless cb_id.present?
-    ignore_invalid { retry_unique { where(crunchbase_id: cb_id).first_or_create! { |investor| investor.populate_from_cb! } } }
+    ignore_invalid { retry_unique { where(crunchbase_id: cb_id).first_or_create!(&:populate_from_cb_basic!) } }
   end
 
   def self.from_angelist(al_id)

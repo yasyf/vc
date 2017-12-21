@@ -17,9 +17,13 @@ module Http::AngelList
       self.name.demodulize.downcase
     end
 
-    def self.find_id(query)
+    def self.find_id(query, org = nil)
       results = api_get('/search', query: query, type: resource.titleize)
-      results.first['id'] if results.present? && results.first['name'].strip.downcase == query.downcase
+      filtered = results.select { |r| r['name'].strip.downcase == query.downcase }
+      return nil unless filtered.present?
+      return filtered.first['id'] unless org.present?
+      in_org = filtered.find { |r| new(r['id']).description.downcase.include?(org.downcase) }
+      in_org.present? ? in_org['id'] : nil
     end
 
     def self.search(query)
@@ -88,7 +92,7 @@ module Http::AngelList
       if @id_or_slug.is_a?(Integer)
         @data = self.class.api_get("/#{self.class.resource.pluralize}/#{@id_or_slug}")
       else
-        @data = self.class.api_get('/search/slugs', slug: @id_or_slug)
+        @data = self.class.api_get("/#{self.class.resource.pluralize}/search", slug: @id_or_slug)
       end
     end
 

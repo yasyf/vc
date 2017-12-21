@@ -20,6 +20,7 @@ module Http::AngelList
     def bio
       Util.fix_encoding((@data['bio'] || '') + (@data['what_i_do'] || '')) if found?
     end
+    alias_method :description, :bio
 
     def fund_types
       return [] unless found? && @data['roles'].present?
