@@ -86,6 +86,7 @@ gem 'addressable'
 gem 'browser'
 gem 'neography'
 gem 'email_reply_parser'
+gem 'prop'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'
@@ -93,7 +94,6 @@ group :test do
 end
 
 group :production do
-  gem 'rails_12factor'
   gem 'puma'
   gem 'dalli'
   gem 'connection_pool'

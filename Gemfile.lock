@@ -352,6 +352,7 @@ GEM
     premailer-rails (1.10.1)
       actionmailer (>= 3, < 6)
       premailer (~> 1.7, >= 1.7.9)
+    prop (2.2.4)
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -384,11 +385,6 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails_12factor (0.0.3)
-      rails_serve_static_assets
-      rails_stdout_logging
-    rails_serve_static_assets (0.0.5)
-    rails_stdout_logging (0.0.5)
     railties (5.1.4)
       actionpack (= 5.1.4)
       activesupport (= 5.1.4)
@@ -652,10 +648,10 @@ DEPENDENCIES
   pg
   picky
   premailer-rails
+  prop
   puma
   rack-timeout
   rails (~> 5.1.2)
-  rails_12factor
   redcarpet
   redis
   redis-namespace
