@@ -35,6 +35,7 @@ class Investor < ApplicationRecord
   validates :linkedin, uniqueness: { allow_nil: true }
   validates :twitter, uniqueness: { allow_nil: true }
   validates :homepage, uniqueness: { allow_nil: true }
+  validates :photo, uniqueness: { allow_nil: true }
 
   sort :industry
   sort :fund_type
@@ -193,6 +194,7 @@ class Investor < ApplicationRecord
   def set_gender!
     return unless self.gender == :unknown
     gender = GenderDetector.new.get_gender(self.first_name)
+    gender = gender.to_s.remove('mostly_').to_sym if gender.to_s.starts_with?('mostly_')
     self.gender = gender if gender.in?(GENDERS)
   end
 

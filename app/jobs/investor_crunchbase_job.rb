@@ -28,7 +28,13 @@ class InvestorCrunchbaseJob < ApplicationJob
       other = Investor.where(attrs).first
       other.update! attrs.transform_values { |v| nil }
       investor.save!
-      self.class.perform_later(other.id)
+      begin
+        other.destroy!
+        Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present?
+      rescue ActiveRecord::InvalidForeignKey
+        other.update! email: nil, al_id: nil
+        self.class.perform_later(other.id)
+      end
     end
   end
 end
