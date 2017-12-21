@@ -7,11 +7,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   before_action :authenticate_api_user!, only: [:fuzzy_search, :update]
 
   filter %w(email)
-
-  def index
-    render_censored Investor.order(updated_at: :asc).limit(LIMIT).offset(page * LIMIT)
-  end
-
+  
   def show
     render_censored  Investor.find(params[:id])
   end

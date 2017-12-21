@@ -68,7 +68,7 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :investors do
+          resources :investors, except: [:index] do
             member do
               get 'review'
               get 'interactions'
