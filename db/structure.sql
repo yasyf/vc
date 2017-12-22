@@ -258,7 +258,8 @@ CREATE TABLE competitors (
     twitter character varying,
     facebook character varying,
     domain character varying,
-    al_url character varying
+    al_url character varying,
+    verified boolean DEFAULT false NOT NULL
 );
 
 
@@ -596,7 +597,8 @@ CREATE TABLE investors (
     time_zone character varying,
     country character varying,
     al_url character varying,
-    last_fetched timestamp without time zone
+    last_fetched timestamp without time zone,
+    verified boolean DEFAULT false NOT NULL
 );
 
 
@@ -2896,6 +2898,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171206103132'),
 ('20171207112536'),
 ('20171209084559'),
-('20171210093034');
+('20171210093034'),
+('20171222033118');
 
 

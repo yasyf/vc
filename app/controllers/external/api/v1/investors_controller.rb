@@ -66,15 +66,56 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def update
     investor = Investor.find(params[:id])
+
     if (stage = investor_params[:stage]).present?
       target = TargetInvestor.from_investor!(current_external_founder, investor)
       current_external_founder.investor_targeted! investor.id
       target.update! stage: stage
+      render_censored(investor) and return
     end
-    render_censored investor
+
+    if investor == current_external_investor
+      investor.update!(verified: true) unless investor.verified?
+
+      if investor_update_params.present?
+        investor.update! investor_update_params
+      end
+
+      if investor_industries.present?
+        investor.update! industry: investor_industries.map { |i| i['value'] }
+      end
+
+      if investor_companies.present?
+        existing = investor.companies.pluck(:id)
+        ids = investor_companies.map { |c| c['id'] }
+        puts "#{existing}, #{ids}"
+        (ids - existing).each do |id|
+          Investment.where(company: Company.find(id), competitor: investor.competitor).first_or_create!.tap do |inv|
+            inv.update! investor: investor
+          end
+        end
+        (existing - ids).each do |id|
+          Investment.where(company_id: id, competitor: investor.competitor, investor: investor).update_all(investor_id: nil)
+        end
+      end
+    end
+
+    render_censored investor.as_search_json
   end
 
   private
+
+  def investor_update_params
+    params.require(:investor).permit(:city, :twitter, :linkedin, :homepage, :email, :facebook, :description, :role, :photo, :al_username, :crunchbase_id)
+  end
+
+  def investor_companies
+    params.require(:investor).permit![:companies]
+  end
+
+  def investor_industries
+    params.require(:investor).permit![:industries]
+  end
 
   def search_params
     { competitors: { name: params[:firm_name] } }.deep_compact

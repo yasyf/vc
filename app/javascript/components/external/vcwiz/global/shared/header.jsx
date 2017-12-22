@@ -14,7 +14,7 @@ import LoginModal from '../login/login_modal';
 import Actions from '../actions';
 import classNames from 'classnames';
 import OutreachBar from './outreach_bar';
-import SettingsModal from '../settings/settings_modal';
+import FounderSettingsModal from '../settings/founder_settings_modal';
 import Flashes from './flashes';
 
 export default class Header extends React.Component {
@@ -245,7 +245,7 @@ export default class Header extends React.Component {
       return null;
     }
     return (
-      <SettingsModal
+      <FounderSettingsModal
         isOpen={this.state.settingsOpen}
         onClose={this.closeSettingsModal}
       />

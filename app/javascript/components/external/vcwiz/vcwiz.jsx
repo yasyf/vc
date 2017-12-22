@@ -34,6 +34,8 @@ export default class VCWiz extends React.Component {
 
     window.addEventListener('scroll', this.onScroll, true);
 
+    Store.set('dimensions', {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight});
+
     const restoreState = SessionStorage.get(StorageRestoreStateKey);
     if (restoreState) {
       if (currentPage() !== restoreState.location) {

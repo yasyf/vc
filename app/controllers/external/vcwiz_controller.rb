@@ -105,7 +105,6 @@ class External::VCWizController < External::ApplicationController
     intro_request.decide! accept?
 
     title 'Opt-In'
-    default_description
     render_investor
   end
 
@@ -113,8 +112,17 @@ class External::VCWizController < External::ApplicationController
     intro_request.decide! accept?
 
     title 'Intro Decision'
-    default_description
     render_investor
+  end
+
+  def investor_settings
+    companies = records_to_options(intro_request.investor.companies.map(&:as_json_search))
+    industries = hash_to_options(Competitor::INDUSTRIES.slice(*(intro_request.investor.industry || [])))
+
+    title 'Investor Settings'
+    component 'InvestorSettings'
+    props investor: intro_request.investor.as_json(only: nil, methods: [:competitor, :al_username]), companies: companies, industries: industries
+    render_default
   end
 
   def pixel
@@ -150,7 +158,7 @@ class External::VCWizController < External::ApplicationController
 
   def render_investor
     component 'Investor'
-    props investor: @intro_request.investor, founder: @intro_request.founder, company: @intro_request.company.as_json_search
+    props investor: intro_request.investor.as_json(methods: [:competitor]), founder: intro_request.founder, company: intro_request.company.as_json_search
     render layout: 'vcwiz'
   end
 
@@ -177,7 +185,9 @@ class External::VCWizController < External::ApplicationController
   end
 
   def intro_request
-    @intro_request ||= IntroRequest.where(token: params[:token]).first!
+    @intro_request ||= IntroRequest.where(token: params[:token]).first!.tap do |intro_request|
+      session[:investor_id] = intro_request.investor_id
+    end
   end
 
   def signup_params

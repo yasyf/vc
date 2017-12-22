@@ -56,6 +56,7 @@ Rails.application.routes.draw do
         scope :intro do
           get 'opt_in'
           get 'decide'
+          get 'investor_settings'
         end
       end
 

@@ -5,6 +5,7 @@ class InvestorEmailJob < ApplicationJob
 
   def perform(investor_id)
     investor = Investor.find(investor_id)
+    return if investor.verified?
     return if investor.last_fetched && investor.last_fetched > THRESHOLD.ago
     return unless investor.email.blank?
     investor.update! last_fetched: DateTime.now

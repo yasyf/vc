@@ -4,6 +4,10 @@ class External::ApplicationController < ::ApplicationController
 
   private
 
+  def current_external_investor
+    @current_external_investor ||= Investor.find(session[:investor_id]) if session[:investor_id].present?
+  end
+
   def populate_gon
     gon.founder = current_external_founder&.cached_json unless json?
   end

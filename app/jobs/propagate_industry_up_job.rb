@@ -44,11 +44,11 @@ class PropagateIndustryUpJob < ApplicationJob
       ) c_t
       INNER JOIN investments ON c_t.id = investments.company_id
       INNER JOIN #{table} ON #{table}.id = investments.#{name}_id
-      WHERE (c_t.industry <> '{}' AND c_t.industry IS NOT NULL)
+      WHERE (c_t.industry <> '{}' AND c_t.industry IS NOT NULL AND #{table}.verified = FALSE)
       GROUP BY #{table}.id
     SQL
-    Competitor.transaction do
-      Competitor.connection.execute(query).to_a.each do |result|
+    klass.transaction do
+      klass.connection.execute(query).to_a.each do |result|
         industries = result['industries'][1...-1].split(',')
         frequencies = industries.each_with_object(Hash.new(0)) do |i, h|
           h[i] += 1

@@ -236,6 +236,15 @@ class Investor < ApplicationRecord
     opted_in == false
   end
 
+  def al_username
+    al_url.split('/').last if al_url.present?
+  end
+
+  def al_username=(al_username)
+    al_url_will_change!
+    self.al_url = "https://angel.co/#{al_username}"
+  end
+
   def as_json(options = {})
     super options.reverse_merge(
       only: [

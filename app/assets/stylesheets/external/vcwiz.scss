@@ -793,6 +793,31 @@ input.placeholded {
   }
 }
 
+.investor_settings-page {
+  &-header {
+    padding: 30px;
+  }
+
+  &-body {
+    div.row {
+      margin-bottom: 0.25em;
+    }
+
+    .info {
+      width: 80%;
+    }
+
+    .fields {
+      width: 100%;
+    }
+
+    .filter .filter-label {
+      text-transform: unset;
+      color: black;
+    }
+  }
+}
+
 .investor-page {
   &-header {
     .intro-header {
@@ -1398,7 +1423,7 @@ mark.highlighter {
 }
 
 .typeahead-tether {
-  z-index: 1;
+  z-index: 2;
 
   .react-autosuggest__suggestions-container {
     display: none;
@@ -1577,7 +1602,7 @@ mark.highlighter {
   }
 
   &-bottom {
-    padding: 5% 30px 30px;
+    padding: 4% 30px 30px;
   }
 
   p {
@@ -1819,6 +1844,10 @@ mark.highlighter {
         margin-top: 1.5em;
       }
 
+      .placeholder-input {
+        white-space: nowrap;
+      }
+
       input.placeholded {
         background-color: inherit;
         width: unset;
@@ -2029,6 +2058,10 @@ mark.highlighter {
 .research-modal {
   &-top {
     padding-bottom: 20px;
+  }
+
+  &-bottom {
+    padding-top: 1em;
   }
 
   .tabs-component {

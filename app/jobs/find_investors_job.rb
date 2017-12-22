@@ -41,7 +41,7 @@ class FindInvestorsJob < ApplicationJob
 
   def propagate_fields!
     scope = ALL_PROP_FIELDS.inject(Investor.none) { |scope, f| scope.or(Investor.where(f => nil)) }
-    scope = Investor.where('target_investors_count >= ?', MIN_TARGET_COUNT).merge(scope)
+    scope = Investor.where(verified: false).where('target_investors_count >= ?', MIN_TARGET_COUNT).merge(scope)
     scope.includes(:target_investors).find_each do |investor|
       fields = ALL_PROP_FIELDS.map { |f| [f, Hash.new(0)] }.to_h
       investor.target_investors.each do |ti|

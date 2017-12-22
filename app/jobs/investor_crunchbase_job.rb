@@ -5,10 +5,12 @@ class InvestorCrunchbaseJob < ApplicationJob
 
   def perform(investor_id)
     investor = Investor.find(investor_id)
-    investor.crunchbase_id = Http::Crunchbase::Person.find_investor_id(investor.name, investor.competitor.name)
-    investor.al_id = Http::AngelList::User.find_id(investor.name, investor.competitor.name)
-    investor.populate_from_cb!
-    investor.populate_from_al!
+    unless investor.verified?
+      investor.crunchbase_id = Http::Crunchbase::Person.find_investor_id(investor.name, investor.competitor.name)
+      investor.al_id = Http::AngelList::User.find_id(investor.name, investor.competitor.name)
+      investor.populate_from_cb!
+      investor.populate_from_al!
+    end
     investor.crawl_homepage!
     investor.crawl_posts!
     investor.fetch_news!

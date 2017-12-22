@@ -11,6 +11,11 @@ import OptionFactory from './option';
 import Store from '../global/store';
 
 export default class Filter extends React.Component {
+  static defaultProps = {
+    showSelected: 2,
+    placeholder: 'Start typing...',
+  };
+
   state = {
     editing: false,
     dimensions: Store.get('dimensions', {
@@ -47,7 +52,7 @@ export default class Filter extends React.Component {
   };
 
   selectProps() {
-    const { name, input, value, meta, onInputChange } = this.props;
+    const { name, input, value, meta, placeholder, onInputChange } = this.props;
 
     const optionRenderer = o => <Highlighter
       highlightClassName='highlighter'
@@ -71,7 +76,7 @@ export default class Filter extends React.Component {
       closeOnSelect: false,
       scrollMenuIntoView: false,
       name: name,
-      placeholder: 'Start typing...',
+      placeholder: placeholder,
       showLabel: false,
       multi: true,
       arrowRenderer: null,
@@ -86,12 +91,12 @@ export default class Filter extends React.Component {
   }
 
   renderSelected() {
-    const { name, value } = this.props;
+    const { name, value, showSelected } = this.props;
     const { dimensions } = this.state;
     if (!value || !value.length) {
       return null;
     }
-    const display = _.map(_.take(value, dimensions && dimensions.width > SmallScreenSize ? 2 : 1), 'label');
+    const display = _.map(_.take(value, dimensions && dimensions.width > SmallScreenSize ? showSelected : showSelected/2), 'label');
     const remaining = value.length - display.length;
     return (
       <div className="selected-wrapper">
