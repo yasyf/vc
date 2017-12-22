@@ -19,7 +19,7 @@ module Http::AngelList
 
     def self.find_id(query, org = nil)
       results = api_get('/search', query: query, type: resource.titleize)
-      filtered = results.select { |r| r['name'].strip.downcase == query.downcase }
+      filtered = results.select { |r| r['name']&.strip&.downcase == query.downcase }
       return nil unless filtered.present?
       return filtered.first['id'] unless org.present?
       in_org = filtered.find { |r| new(r['id']).description.downcase.include?(org.downcase) }

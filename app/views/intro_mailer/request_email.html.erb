@@ -5,8 +5,8 @@
 <h3>Your Response to <%= @founder.first_name %></h3>
 
 <p>
-  Click <a href="<%= external_vcwiz_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
-  or <a href="<%= external_vcwiz_decide_url(accept: false, token: @request.token) %>">here</a> to reject it.
+  Click <a href="<%= external_vcwiz_intro_decide_url(accept: true, token: @request.token) %>">here</a> to accept <%= @founder.name %>'s request,
+  or <a href="<%= external_vcwiz_intro_decide_url(accept: false, token: @request.token) %>">here</a> to reject it.
 </p>
 
 <p>

@@ -40,7 +40,7 @@ Rails.application.routes.draw do
         get 'auth/failure', to: 'auth#failure'
       end
 
-      scope controller: 'vcwiz', as: :vcwiz do
+      scope controller: 'vcwiz/vcwiz', as: :vcwiz do
         root action: 'index'
         get 'discover'
         get 'filter'
@@ -49,14 +49,20 @@ Rails.application.routes.draw do
         get 'outreach'
         get 'gmail_auth'
         get 'login'
-        get 'pixel/:token.png', action: :pixel, as: :pixel
         post 'login'
         post 'signup'
 
-        scope :intro do
+        scope :intro, as: :intro, controller: 'vcwiz/intro' do
           get 'opt_in'
           get 'decide'
-          get 'investor_settings'
+          get 'pixel/:token.png', action: :pixel, as: :pixel
+        end
+
+        scope :investors, as: :investors, controller: 'vcwiz/investors'  do
+          root action: 'index'
+          get 'token/:token', action: :token, as: :token
+          get 'signup'
+          get 'settings'
         end
       end
 
@@ -73,6 +79,7 @@ Rails.application.routes.draw do
             member do
               get 'review'
               get 'interactions'
+              post 'verify'
             end
 
             collection do

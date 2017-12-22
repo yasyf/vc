@@ -1,0 +1,20 @@
+<p>
+  Hey <%= @investor.first_name %>!
+</p>
+
+<p>
+  Someone (hopefully you) just asked for a verification email from the VCWiz Investor Portal for <%= @investor.competitor.name %>.
+  If this was you, click <b><a href="<%=  external_vcwiz_investors_token_url(token: @investor.token, email: @email) %>">here</a></b> to access the portal.
+  If if wasn't, ignore this and have a great day!
+</p>
+
+<p>
+  Cheers,<br>
+  VCWiz
+</p>
+
+
+<p class="faded">
+  VCWiz is a comprehensive tool for founders raising their seed rounds.
+  You got this email because you requested access to your investor portal.
+</p>

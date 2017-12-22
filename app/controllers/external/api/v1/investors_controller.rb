@@ -4,20 +4,18 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   LIMIT = 10
 
-  before_action :authenticate_api_user!, only: [:fuzzy_search, :update]
-
   filter %w(email)
   
   def show
-    render_censored  Investor.find(params[:id])
+    render_censored  investor
   end
 
   def interactions
-    render json: { interactions: Investor.find(params[:id]).interactions(current_external_founder) }
+    render json: { interactions: investor.interactions(current_external_founder) }
   end
 
   def review
-    render json: { review: Investor.find(params[:id]).review }
+    render json: { review: investor.review }
   end
 
   def locations
@@ -65,9 +63,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def update
-    investor = Investor.find(params[:id])
-
-    if (stage = investor_params[:stage]).present?
+    if external_founder_signed_in? && (stage = investor_params[:stage]).present?
       target = TargetInvestor.from_investor!(current_external_founder, investor)
       current_external_founder.investor_targeted! investor.id
       target.update! stage: stage
@@ -103,7 +99,19 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored investor.as_search_json
   end
 
+  def verify
+    address = Mail::Address.new(params[:email])
+    render json: { error: "Your email does not match #{investor.competitor.name}'s domain!'" } and return if address.domain != investor.competitor.domain
+    InvestorMailer.signup_email(investor, params[:email]).deliver_later
+    render json: { error: nil }
+    # also put this link everywhere with intros. also blue badges.
+  end
+
   private
+
+  def investor
+    @investor ||= Investor.find(params[:id])
+  end
 
   def investor_update_params
     params.require(:investor).permit(:city, :twitter, :linkedin, :homepage, :email, :facebook, :description, :role, :photo, :al_username, :crunchbase_id)
@@ -126,7 +134,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def existing_target_investor_ids
-    current_external_founder.existing_target_investor_ids
+    current_external_founder&.existing_target_investor_ids || []
   end
 
   def filter_params

@@ -1,8 +1,8 @@
-class External::VCWizController < External::ApplicationController
+class External::VCWiz::VCWizController < External::ApplicationController
   include External::Concerns::Filterable
   include External::Concerns::Sortable
+  include External::Concerns::Reactable
   include External::ApplicationHelper
-  include External::ReactServerHelper
 
   layout 'vcwiz'
   before_action :check_founder!, only: [:outreach]
@@ -100,66 +100,10 @@ class External::VCWizController < External::ApplicationController
     redirect_gmail
   end
 
-  def opt_in
-    intro_request.investor.update! opted_in: optin?
-    intro_request.decide! accept?
-
-    title 'Opt-In'
-    render_investor
-  end
-
-  def decide
-    intro_request.decide! accept?
-
-    title 'Intro Decision'
-    render_investor
-  end
-
-  def investor_settings
-    companies = records_to_options(intro_request.investor.companies.map(&:as_json_search))
-    industries = hash_to_options(Competitor::INDUSTRIES.slice(*(intro_request.investor.industry || [])))
-
-    title 'Investor Settings'
-    component 'InvestorSettings'
-    props investor: intro_request.investor.as_json(only: nil, methods: [:competitor, :al_username]), companies: companies, industries: industries
-    render_default
-  end
-
-  def pixel
-    pixel = TrackingPixel.where(token: params[:token]).first!
-    pixel.target_investor&.investor_opened! pixel.intro_request&.id, pixel.email_id
-    PixelHitJob.perform_later(pixel.id, DateTime.now.to_s, Util.ip_address(request.env), request.user_agent)
-    expires_now
-    send_file Rails.root.join('public', 'pixel.png'), type: 'image/png', disposition: 'inline'
-  end
-
   private
-
-  def title(title)
-    @title = title
-  end
-
-  def description(description)
-    @description = description
-  end
-
-  def component(name)
-    @component_name = name
-  end
-
-  def props(props)
-    @component_props ||= {}
-    @component_props.merge!(props.keep_if { |k, v| !v.nil? })
-  end
 
   def render_default
     render html: '', layout: 'vcwiz'
-  end
-
-  def render_investor
-    component 'Investor'
-    props investor: intro_request.investor.as_json(methods: [:competitor]), founder: intro_request.founder, company: intro_request.company.as_json_search
-    render layout: 'vcwiz'
   end
 
   def redirect_gmail
@@ -172,22 +116,8 @@ class External::VCWizController < External::ApplicationController
     redirect_to omniauth_path(enable_scanner? ? 'gmail' : 'google_external', hd: params[:domain] || cookies[:login_domain] || '*')
   end
 
-  def optin?
-    params[:optin] == 'true'
-  end
-
-  def accept?
-    params[:accept] == 'true'
-  end
-
   def enable_scanner?
     signup_params[:enable_scanner] == 'true'
-  end
-
-  def intro_request
-    @intro_request ||= IntroRequest.where(token: params[:token]).first!.tap do |intro_request|
-      session[:investor_id] = intro_request.investor_id
-    end
   end
 
   def signup_params

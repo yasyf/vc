@@ -1,6 +1,7 @@
 import React from 'react';
 import VCWiz  from '../vcwiz';
 import InvestorSettingsPage from '../global/settings/investor_settings';
+import { InvestorsRootPath } from '../global/constants.js.erb';
 
 export default class InvestorSettings extends React.Component {
   render() {
@@ -15,6 +16,7 @@ export default class InvestorSettings extends React.Component {
             header={top}
             body={bottom}
             showLogin={false}
+            logoLinkPath={InvestorsRootPath}
           />
         )}
       />

@@ -598,7 +598,8 @@ CREATE TABLE investors (
     country character varying,
     al_url character varying,
     last_fetched timestamp without time zone,
-    verified boolean DEFAULT false NOT NULL
+    verified boolean DEFAULT false NOT NULL,
+    token character varying
 );
 
 
@@ -2124,6 +2125,13 @@ CREATE UNIQUE INDEX index_investors_on_photo ON investors USING btree (photo);
 
 
 --
+-- Name: index_investors_on_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investors_on_token ON investors USING btree (token);
+
+
+--
 -- Name: index_investors_on_twitter; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2899,6 +2907,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171207112536'),
 ('20171209084559'),
 ('20171210093034'),
-('20171222033118');
+('20171222033118'),
+('20171222074015');
 
 

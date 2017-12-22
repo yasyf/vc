@@ -21,6 +21,7 @@ export default class Header extends React.Component {
   static defaultProps = {
     showLogin: true,
     openLoginOnLoad: false,
+    logoLinkPath: DiscoverPath,
   };
 
   constructor(props) {
@@ -126,7 +127,7 @@ export default class Header extends React.Component {
       <TopBar id="top-bar">
         <TopBarLeft>
           <div className="title left">
-            <a href={DiscoverPath}>
+            <a href={this.props.logoLinkPath}>
               <h3><b>VCWiz</b></h3>
               <h5 className="faded subtitle">{this.props.subtitle}</h5>
             </a>

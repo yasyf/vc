@@ -793,6 +793,40 @@ input.placeholded {
   }
 }
 
+.investor_signup-page {
+  &-header {
+    padding: 30px;
+  }
+
+  &-body {
+    @include headings;
+
+    p.error {
+      color: $red;
+    }
+
+    p.success {
+      color: darken($green, 25%);
+      margin-bottom: 0;
+    }
+
+    .loading {
+      margin: auto;
+      width: 200px;
+    }
+
+    .standard-loader {
+      .loader {
+        padding-top: 8%;
+      }
+    }
+
+    .search, .verification {
+      width: 60%;
+    }
+  }
+}
+
 .investor_settings-page {
   &-header {
     padding: 30px;
@@ -818,7 +852,7 @@ input.placeholded {
   }
 }
 
-.investor-page {
+.intro-page {
   &-header {
     .intro-header {
       display: flex;
@@ -1622,38 +1656,7 @@ mark.highlighter {
     color: $grey;
   }
 
-  .heading {
-    font-weight: bold;
-    font-size: larger;
-
-    @include only-desktop {
-      position: absolute;
-      padding-left: 10px;
-      display: inline-block;
-    }
-  }
-
-  .subheading {
-    color: $grey;
-
-    @include only-desktop {
-      position: relative;
-      left: 51px;
-      top: -31px;
-
-      span {
-        margin-left: 10px;
-      }
-    }
-
-    @include on-mobile {
-      margin-bottom: 1em;
-
-      span:not(:first-child) {
-        margin-left: 5px;
-      }
-    }
-  }
+  @include headings;
 
   span.dot {
     margin-right: 5px;
@@ -1806,8 +1809,6 @@ mark.highlighter {
     input {
       margin-bottom: 0;
     }
-
-
   }
 }
 

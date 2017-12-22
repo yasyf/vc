@@ -119,4 +119,8 @@ class Util
   def self.count_lines(filename)
     `wc -l "#{filename}"`.strip.split(' ')[0].to_i
   end
+
+  def self.token
+    SecureRandom.hex.first(10).upcase
+  end
 end

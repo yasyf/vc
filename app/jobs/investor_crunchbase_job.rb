@@ -28,15 +28,15 @@ class InvestorCrunchbaseJob < ApplicationJob
       raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
       attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
       other = Investor.where(attrs).first
-      other.update! attrs.transform_values { |v| nil }
-      investor.save!
+      raise unless other.present?
       begin
         other.destroy!
         Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present?
       rescue ActiveRecord::InvalidForeignKey
-        other.update! email: nil, al_id: nil
+        other.update! attrs.transform_values { |v| nil }.merge(email: nil, al_id: nil)
         self.class.perform_later(other.id)
       end
+      investor.save!
     end
   end
 end

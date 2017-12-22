@@ -54,3 +54,38 @@ $filters-blue: #F5F9FA;
     margin: auto;
   }
 }
+
+@mixin headings {
+  .heading {
+    font-weight: bold;
+    font-size: larger;
+
+    @include only-desktop {
+      position: absolute;
+      padding-left: 10px;
+      display: inline-block;
+    }
+  }
+
+  .subheading {
+    color: $grey;
+
+    @include only-desktop {
+      position: relative;
+      left: 51px;
+      top: -31px;
+
+      span {
+        margin-left: 10px;
+      }
+    }
+
+    @include on-mobile {
+      margin-bottom: 1em;
+
+      span:not(:first-child) {
+        margin-left: 5px;
+      }
+    }
+  }
+}

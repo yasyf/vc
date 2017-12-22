@@ -10,7 +10,7 @@ module Concerns
     private
 
     def set_token!
-      self.token ||= SecureRandom.hex.first(10).upcase
+      self.token ||= Util.token
     end
   end
 end

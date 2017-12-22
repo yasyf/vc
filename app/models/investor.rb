@@ -46,6 +46,8 @@ class Investor < ApplicationRecord
   after_update :check_competitor_domain
   before_validation :normalize_location, :set_first_name
 
+  scope :with_token, Proc.new { |token| where.not(token: nil).where(token: token) }
+
   def self.from_addr(addr)
     found = where(email: addr.address).first
     return found if found.present?
@@ -61,6 +63,14 @@ class Investor < ApplicationRecord
 
   def name
     "#{first_name} #{last_name}"
+  end
+
+  def homepage=(homepage)
+    if homepage.present? && !homepage.include?('//')
+      super "http://#{homepage}"
+    else
+      super homepage
+    end
   end
 
   def populate_from_cb_basic!
@@ -327,6 +337,11 @@ class Investor < ApplicationRecord
 
   def tweeter
     super || (create_tweeter(username: twitter) if twitter.present?)
+  end
+
+  def token
+    update! token: Util.token unless super.present?
+    super
   end
 
   def tweets(n = 3)

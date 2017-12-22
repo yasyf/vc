@@ -229,6 +229,7 @@ class Competitor < ApplicationRecord
         :photo,
         :facebook,
         :twitter,
+        :domain,
       ],
       methods: [
         :acronym,
