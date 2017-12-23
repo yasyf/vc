@@ -21,7 +21,7 @@ class External::VCWiz::InvestorsController < External::ApplicationController
   end
 
   def signup
-    title 'Investor Signup'
+    title 'Investor Login'
     component 'InvestorSignup'
     render_default
   end

@@ -1,6 +1,7 @@
 import React from 'react';
 import VCWiz  from '../vcwiz';
 import InvestorHeader from './investor_header';
+import { InvestorsRootPath } from '../global/constants.js.erb';
 
 export default class Intro extends React.Component {
   render() {
@@ -13,6 +14,7 @@ export default class Intro extends React.Component {
         header={<InvestorHeader {...this.props} />}
         body={body}
         showLogin={false}
+        logoLinkPath={InvestorsRootPath}
       />
     );
   }

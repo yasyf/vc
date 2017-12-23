@@ -217,8 +217,10 @@ class Company < ActiveRecord::Base
   end
 
   def latest_tweets
-    newsworthy = tweeter.newsworthy_tweets
-    newsworthy.present? ? newsworthy : tweeter.latest_tweets(3)
+    @latest_tweets ||= begin
+      newsworthy = tweeter.newsworthy_tweets(3)
+      newsworthy.present? ? newsworthy : tweeter.latest_tweets(3)
+    end
   end
 
   def featured_competitors

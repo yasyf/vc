@@ -4,7 +4,7 @@
 
 <p>
   Someone (hopefully you) just asked for a verification email from the VCWiz Investor Portal for <%= @investor.competitor.name %>.
-  If this was you, click <b><a href="<%=  external_vcwiz_investors_token_url(token: @investor.token, email: @email) %>">here</a></b> to access the portal.
+  If this was you, click <b><a href="<%= external_vcwiz_investors_token_url(token: @investor.token, email: @email) %>">here</a></b> to access the portal.
   If if wasn't, ignore this and have a great day!
 </p>
 

@@ -19,9 +19,7 @@ class Tweeter < ApplicationRecord
     fave_threshold = threshold[:favorite_count]
     rt_threshold = threshold[:retweet_count]
 
-    Tweet.wrap(self) do
-      tweets.select { |t| t.favorite_count > fave_threshold && t.retweet_count > rt_threshold }
-    end
+    tweets.select { |t| t.favorite_count > fave_threshold && t.retweet_count > rt_threshold }
   end
 
   def latest_tweets(n = 5)

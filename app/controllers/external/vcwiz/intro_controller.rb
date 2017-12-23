@@ -44,7 +44,7 @@ class External::VCWiz::IntroController < External::ApplicationController
 
   def intro_request
     @intro_request ||= IntroRequest.where(token: params[:token]).first!.tap do |intro_request|
-      sign_in_external_investor! intro_request.investor unless current_external_investor == investor
+      sign_in_external_investor! intro_request.investor
     end
   end
 end

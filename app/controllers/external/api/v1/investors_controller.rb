@@ -104,7 +104,6 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render json: { error: "Your email does not match #{investor.competitor.name}'s domain!'" } and return if address.domain != investor.competitor.domain
     InvestorMailer.signup_email(investor, params[:email]).deliver_later
     render json: { error: nil }
-    # also put this link everywhere with intros. also blue badges.
   end
 
   private

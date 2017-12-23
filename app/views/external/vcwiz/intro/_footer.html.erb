@@ -1,0 +1,12 @@
+<h4>Lost?</h4>
+
+<p>
+  As a reminder, VCWiz is a tool for founders to research investors, discover new firms, and manage their fundraising outreach.
+  You're here because a founder was interested in connecting with you through the platform.
+</p>
+
+<p>
+  <b>New!</b> VCWiz now lets you customize the investor profile shown to founders who are looking at <%= @intro_request.investor.competitor.name %>.
+  <br />
+  <b><a href="<%= external_vcwiz_investors_token_url(token: @intro_request.investor.token) %>">Click here to update your investor profile.</a></b>
+</p>

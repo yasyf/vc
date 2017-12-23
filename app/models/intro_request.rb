@@ -30,6 +30,7 @@ class IntroRequest < ApplicationRecord
   end
 
   def decide!(decision)
+    return unless accepted.nil?
     update! accepted: decision
     send_decision!
   end

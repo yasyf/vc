@@ -1,5 +1,7 @@
 <p class="faded">
   VCWiz is a comprehensive tool for founders raising their seed rounds.
   You got this email because founders are interested in connecting with you.
+  <br />
   You can opt out of VCWiz emails anytime <a href="<%= external_vcwiz_intro_opt_in_url(optin: false, accept: false, token: @request.token) %>">here</a>.
+  Click <a href="<%= external_vcwiz_investors_token_url(token: @request.investor.token) %>">here</a> to update your investor profile.
 </p>

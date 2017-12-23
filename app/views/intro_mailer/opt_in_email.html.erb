@@ -33,5 +33,9 @@ Hey <%= @investor.first_name %>!
   VCWiz
 </p>
 
+<p>
+  P.S. Once you're done with this request, you might want to check out your <a href="<%= external_vcwiz_investors_token_url(token: @request.investor.token) %>">investor profile</a> on VCWiz, where you can update the information that founder see.
+</p>
+
 <%= render partial: 'pixel' %>
 <%= render partial: 'investor_footer' %>
