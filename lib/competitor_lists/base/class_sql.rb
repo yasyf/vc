@@ -41,7 +41,7 @@ module CompetitorLists::Base::ClassSql
         investors.verified DESC,
         MAX(investments.funded_at) DESC NULLS LAST,
         COUNT(investments.id) DESC
-      LIMIT 15
+      LIMIT 25
     SQL
     <<-SQL
       LEFT JOIN LATERAL (
