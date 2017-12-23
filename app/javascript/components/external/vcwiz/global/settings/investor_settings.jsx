@@ -37,6 +37,10 @@ export default class InvestorSettings extends SettingsBase {
           This page will auto-save as you make changes!
         </p>
         <Row>
+          <Column large={6}>{this.renderInput('first_name', 'First Name')}</Column>
+          <Column large={6}>{this.renderInput('last_name', 'Last Name')}</Column>
+        </Row>
+        <Row>
           <Column large={6}>{this.renderInput('linkedin', 'LinkedIn Username')}</Column>
           <Column large={6}>{this.renderInput('email', 'Email')}</Column>
         </Row>

@@ -54,7 +54,7 @@ export default class ResearchModal extends React.Component {
     ];
     return (
       <div>
-        <ProfileImage src={photo} size={50} className="inline-image" />
+        <ProfileImage src={photo} size={50} className="inline-image" rounded={false} />
         <div className="heading">{name}</div>
         <div className="subheading">
           {type || null}

@@ -19,7 +19,7 @@ class ConversationsTable extends FixedTable {
 
   renderColumns() {
     return [
-      this.renderImageTextColumn('full_name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, subKey: 'title', max: 18 }, 2),
+      this.renderImageTextColumn('full_name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, verifiedKey: 'investor.verified', subKey: 'title', max: 18 }, 2),
       this.renderTrackColumn('stage', this.onTrackChange, 'Stage'),
       this.renderIntroColumn('intro_requests[0]', 'VCWiz Intro', { eligibleKey: 'can_intro?', emailKey: 'email_present?', stageKey: 'stage' }),
       this.renderEmojiColumn('priority', 'Tag'),

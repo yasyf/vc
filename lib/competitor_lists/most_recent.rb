@@ -13,6 +13,7 @@ class CompetitorLists::MostRecent < CompetitorLists::Base::Base
     <<-SQL
       investments.funded_at DESC NULLS LAST,
       investments.featured DESC,
+      investments.verified DESC,
       COUNT(NULLIF(investors.featured, false)) DESC,
       COALESCE(SUM(investors.target_investors_count), 0) DESC
     SQL

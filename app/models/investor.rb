@@ -274,6 +274,7 @@ class Investor < ApplicationRecord
         :location,
         :time_zone,
         :al_url,
+        :verified,
       ],
      methods: [
        :competitor,

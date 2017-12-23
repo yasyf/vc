@@ -126,6 +126,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
       overlap_industries.present? && 'MIN(overlap_cnt) DESC',
       overlap_cities.present? && "(competitors.location && '{#{overlap_cities}}') DESC",
       'COALESCE(SUM(investors.target_investors_count), 0) DESC',
+      'bool_or(COALESCE(investors.verified, false)) DESC',
     ].select { |x| x }.join(', ')
   end
 

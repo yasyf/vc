@@ -186,11 +186,11 @@ export const humanizeList = list => {
 export const humanizeTravelStatus = (travelStatus, openCity) => {
   switch (travelStatus) {
     case 'working':
-      return `hard at work in ${openCity}`;
+      return `hard at work${openCity ? ` in ${openCity}` : ''}`;
     case 'work_traveling':
-      return `travelling for work in ${openCity}`;
+      return `travelling for work${openCity ? ` in ${openCity}` : ''}`;
     case 'pleasure_traveling':
-      return `taking a vacation in ${openCity}`;
+      return `taking a vacation${openCity ? ` in ${openCity}` : ''}`;
   }
 };
 

@@ -113,7 +113,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def investor_update_params
-    params.require(:investor).permit(:city, :twitter, :linkedin, :homepage, :email, :facebook, :description, :role, :photo, :al_username, :crunchbase_id)
+    params.require(:investor).permit(:city, :twitter, :linkedin, :homepage, :email, :facebook, :description, :role, :photo, :al_username, :crunchbase_id, :first_name, :last_name)
   end
 
   def investor_companies

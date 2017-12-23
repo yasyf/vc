@@ -146,7 +146,7 @@ class TargetInvestor < ApplicationRecord
     super options.reverse_merge(
       only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name, :investor_id],
       methods: [:can_intro?, :email_present?, :full_name, :title],
-      include: [investor: { only: [:id, :first_name, :last_name, :photo], include: [:competitor] }],
+      include: [investor: { only: [:id, :first_name, :last_name, :photo, :verified], include: [:competitor] }],
     )
   end
 

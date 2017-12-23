@@ -37,9 +37,10 @@ module CompetitorLists::Base::ClassSql
       LEFT OUTER JOIN investments ON investments.investor_id = investors.id
       GROUP BY investors.id
       ORDER BY
+        investors.featured DESC,
+        investors.verified DESC,
         MAX(investments.funded_at) DESC NULLS LAST,
-        COUNT(investments.id) DESC,
-        investors.featured DESC
+        COUNT(investments.id) DESC
       LIMIT 15
     SQL
     <<-SQL

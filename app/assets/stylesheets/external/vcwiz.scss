@@ -255,14 +255,6 @@ p.tight {
 .rounded-image {
   background-color: $white;
   overflow: hidden;
-  border: 1px solid $mid-grey;
-  border-radius: 50%;
-
-  img {
-    object-fit: cover;
-    border-radius: 50%;
-    padding: 2px 2px 4px;
-  }
 
   .fallback {
     font-size: 11px;
@@ -1627,7 +1619,7 @@ mark.highlighter {
     background-color: $white;
 
     .inline-image {
-      border-radius: 0;
+      border: 1px solid $mid-grey;
 
       img {
         border-radius: 0;
