@@ -95,7 +95,7 @@ export default class OutreachBar extends React.Component {
     }
     return (
       <div className="events">
-        Recently, {this.renderEvent(_.sample(events_with_meta))}
+        Recently, <b>{this.renderEvent(_.sample(events_with_meta))}</b>
       </div>
     )
   }

@@ -21,7 +21,7 @@ export default class EmojiModal extends React.Component {
           title="Pick Emoji"
           sheetSize={32}
           emojiSize={32}
-          perLine={10}
+          perLine={11}
           showPreview={true}
           onClick={this.onEmoji}
         />

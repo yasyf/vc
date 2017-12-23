@@ -946,7 +946,7 @@ input.placeholded {
   }
 
   &-body {
-    margin: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -1020,7 +1020,7 @@ input.placeholded {
 
 .outreach-page {
   &-header {
-    padding: 30px 0 20px 0;
+    padding: 20px 50px;
 
     h3 {
       display: inline-block;
@@ -1054,7 +1054,7 @@ input.placeholded {
   }
 
   &-body {
-    margin: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -1646,7 +1646,7 @@ mark.highlighter {
   }
 
   &-bottom {
-    padding: 4% 30px 30px;
+    padding: 3% 30px 30px;
   }
 
   p {
