@@ -21,7 +21,7 @@ export default class FounderSettingsModal extends SettingsBase {
   }
 
   componentWillMount() {
-    this.subscription = Store.subscribe('founder', founder => this.setState(SettingsModal.stateFromFounder(founder)));
+    this.subscription = Store.subscribe('founder', founder => this.setState(FounderSettingsModal.stateFromFounder(founder)));
   }
 
   componentWillUnmount() {
