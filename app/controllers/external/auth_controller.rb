@@ -46,7 +46,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
     if founder == current_external_founder
       founder.update! history_id: 0
       FounderGmailSyncJob.new(founder.id).enqueue(queue: :long_now)
-      flash_success 'The VCWiz Inbox Scanner has been enabled! As you send emails to investors, this tracker will update.'
+      flash_success 'VCWiz Link has been enabled! As you send emails to investors, this tracker will update.'
     else
       set_flash_message :alert, :failure, kind: 'Google', reason: 'that user is not logged in'
     end

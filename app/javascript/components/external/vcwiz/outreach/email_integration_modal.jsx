@@ -37,13 +37,13 @@ export default class EmailIntegrationModal extends React.Component {
     if (this.state.founder['scanner_enabled?']) {
       return (
         <Button color={Colors.ALERT} onClick={this.disableScanner}>
-          Disable Inbox Scanner
+          Disable VCWiz Link
         </Button>
       );
     }
     return (
       <Button color={Colors.SUCCESS} onClick={this.authWithGoogle}>
-        Enable Inbox Scanner With Google
+        Enable VCWiz Link With Google
       </Button>
     );
   }
@@ -60,7 +60,7 @@ export default class EmailIntegrationModal extends React.Component {
           You can start by simply CCing <b>{CCEmail}</b> on any email you send to investors.
           Give it a try with <a target="_blank" href={`mailto:${DemoEmail}?subject=VCWiz Test&cc=${CCEmail}`}>{DemoEmail}</a> now!
         </p>
-        <h4>VCWiz Inbox Scanner</h4>
+        <h4>VCWiz Link</h4>
         <p>
           If you don't want the annoyance of adding VCWiz to every email, you can give us permission to scan your Gmail inbox.
           We will automatically detect emails back and forth with investors, and add them to your tracker.

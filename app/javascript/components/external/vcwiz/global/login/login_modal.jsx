@@ -261,11 +261,10 @@ export default class LoginModal extends React.Component {
           Last step! To verify your email address, we need you to log in with your Google account.
         </p>
         <p>
-          You also have the option to enable the VCWiz Inbox Scanner, which will sync your conversations with investors to VCWiz, and help you figure out your intro path to any VC.
+          You also have the option to enable VCWiz Link, which will help you figure out your intro path to any VC, and sync your conversations with investors to VCWiz.
         </p>
         <p>
-          We know granting this kind of permission to a product built by a venture firm may feel a bit sketchy.
-          Here are our promises to you about how we use (and don’t use) your data.
+          Here is how VCWiz will and won't use your data.
         </p>
         <ol>
           <li>No human will <b>ever</b> have access to your data.</li>
@@ -277,11 +276,11 @@ export default class LoginModal extends React.Component {
       this.renderGoogleForm(),
       <Row key="login-with-inbox" className="full-width">
         <Column large={6}>
-          <p className="info">Login without VCWiz Inbox Scanner</p>
+          <p className="info">Login without VCWiz Linkr</p>
           {this.renderGoogleButton(this.loginWithGoogle, true)}
         </Column>
         <Column large={6}>
-          <p className="info">Login and enable VCWiz Inbox Scanner</p>
+          <p className="info">Login and enable VCWiz Linkr</p>
           {this.renderGoogleButton(this.loginWithGoogleInbox)}
         </Column>
       </Row>,
