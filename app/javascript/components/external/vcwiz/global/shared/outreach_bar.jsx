@@ -37,13 +37,13 @@ export default class OutreachBar extends React.Component {
     const email = meta.email_subject ?  `email (${meta.email_subject})` : 'email';
     switch (action) {
       case 'investor_opened':
-        return `${name} opened your ${arg1 ? 'intro' : email}. Look forward to a response soon!`;
+        return <span><b>{name} opened your {arg1 ? 'intro' : email}.</b> Look forward to a response soon!</span>;
       case 'investor_replied':
-        return `${name} replied to your ${arg1 ? 'intro' : email}. Make sure you follow up!`;
+        return <span><b>{name} replied to your {arg1 ? 'intro' : email}.</b> Make sure you follow up!</span>;
       case 'investor_clicked':
-        return <span>{name} clicked your link to <a href={arg2} target="_blank">{getDomain(arg2)}</a>. I'm sure they were impressed!</span>;
+        return <span><b>{name} clicked your link to <a href={arg2} target="_blank">{getDomain(arg2)}</a>.</b> I'm sure they were impressed!</span>;
       case 'intro_requested':
-        return `you requested an intro to ${name}.`;
+        return <span><b>you requested an intro to {name}.</b></span>;
       default:
         return null;
     }
@@ -95,7 +95,7 @@ export default class OutreachBar extends React.Component {
     }
     return (
       <div className="events">
-        Recently, <b>{this.renderEvent(_.sample(events_with_meta))}</b>
+        Recently, {this.renderEvent(_.sample(events_with_meta))}
       </div>
     )
   }
