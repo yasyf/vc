@@ -7,6 +7,7 @@ import Actions from './global/actions';
 import {SessionStorage} from './global/storage.js.erb';
 import {StorageRestoreStateKey, FounderPath} from './global/constants.js.erb';
 import { canUseDOM } from 'exenv';
+import Footer from './global/shared/footer';
 
 export default class VCWiz extends React.Component {
   static defaultProps = {
@@ -102,6 +103,7 @@ export default class VCWiz extends React.Component {
           {this.renderBody()}
           {this.renderFooter()}
         </div>
+        <Footer />
         {this.props.modal}
       </div>
     );

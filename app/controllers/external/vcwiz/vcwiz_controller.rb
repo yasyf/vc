@@ -11,6 +11,10 @@ class External::VCWiz::VCWizController < External::ApplicationController
     redirect_to action: :discover
   end
 
+  def privacy
+    render layout: 'external'
+  end
+
   def discover
     if params[:new_login].present? || session[:new_login]
       session.delete(:new_login)

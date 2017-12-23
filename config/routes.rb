@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
       scope controller: 'vcwiz/vcwiz', as: :vcwiz do
         root action: 'index'
+        get 'privacy'
         get 'discover'
         get 'filter'
         get 'search'

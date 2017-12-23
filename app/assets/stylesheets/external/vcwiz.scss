@@ -719,6 +719,22 @@ input.placeholded {
     margin: 30px 50px;
     flex: 0 1 auto;
   }
+
+  footer.global-footer {
+    color: $grey;
+    padding: 0.5em 0;
+    background-color: $light-grey;
+    text-align: center;
+
+    div {
+      opacity: 0.75;
+
+      span.sep {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    }
+  }
 }
 
 .lists {
@@ -736,7 +752,8 @@ input.placeholded {
   }
 
   .loading {
-    padding-top: 10%;
+    padding-top: 5%;
+    padding-bottom: 5%;
     width: 200px;
     margin: auto;
   }
