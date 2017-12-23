@@ -6,6 +6,7 @@ export default class ProfileImage extends React.Component {
     size: 60,
     background: '000000',
     foreground: 'FFFFFF',
+    transparency: 'FFFFFF',
     verified: false,
     rounded: true,
   };
@@ -27,10 +28,10 @@ export default class ProfileImage extends React.Component {
   }
 
   renderImage() {
-    let { src, size, foreground, verified, rounded } = this.props;
+    let { src, size, transparency, verified, rounded } = this.props;
     const check = verified ? 'l_check,w_0.5,fl_relative,g_south_east/' : '';
     const round = rounded ? 'r_max,' : '';
-    const url = `https://res.cloudinary.com/vcwiz/image/fetch/w_${size},h_${size},g_face,c_fill,${round}f_auto,q_auto,b_rgb:${foreground}/${check}${src}`;
+    const url = `https://res.cloudinary.com/vcwiz/image/fetch/w_${size},h_${size},g_face,c_fill,${round}f_auto,q_auto,b_rgb:${transparency}/${check}${src}`;
     return <img width={size} height={size} src={url} style={this.sizeStyle()} />;
   }
 

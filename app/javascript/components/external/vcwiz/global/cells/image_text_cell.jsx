@@ -29,7 +29,7 @@ export default class ImageTextCell extends TextCell {
         fallback={this.state.fallback}
         size={this.props.size}
         verified={this.state.verified}
-        foreground={this.props.rowIndex % 2 ? 'F6F7F8' : 'FFFFFF'}
+        transparency={this.props.rowIndex % 2 ? 'F6F7F8' : 'FFFFFF'}
         className="floating-image"
       />
     );
