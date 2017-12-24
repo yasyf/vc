@@ -19,10 +19,12 @@ class External::VCWiz::VCWizController < External::ApplicationController
   end
 
   def firm
+    competitor = Competitor.find(params[:id])
     list = CompetitorLists::Single.new(current_external_founder, request, params[:id])
 
     title list.title
     description list.description
+    canonical_href external_vcwiz_firm_url(id: competitor.id, slug: competitor.name.parameterize)
     component 'CompetitorPage'
     props item: list.results(meta: true).first
     render_default
@@ -34,6 +36,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
 
     title "#{investor.name} on VCWiz"
     description "Learn about #{investor.name} on VCWiz. #{(investor.description || '').squish.truncate(100)}"
+    canonical_href external_vcwiz_investor_url(id: investor.id, slug: investor.name.parameterize)
     component 'InvestorPage'
     props item: censor(investor)
     render_default
@@ -129,6 +132,10 @@ class External::VCWiz::VCWizController < External::ApplicationController
   end
 
   private
+
+  def canonical_href(href)
+    @canonical = href
+  end
 
   def render_default
     render html: '', layout: 'vcwiz'

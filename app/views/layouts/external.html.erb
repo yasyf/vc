@@ -6,7 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= yield(:title) %></title>
   <% if content_for?(:description) %>
-    <meta name="description" content="<%= yield(:description) %>">
+    <meta name="description" href="<%= yield(:description) %>">
+  <% end %>
+
+  <% if content_for?(:canonical) %>
+    <link rel="canonical" href="<%= yield(:canonical) %>">
   <% end %>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css"/>
