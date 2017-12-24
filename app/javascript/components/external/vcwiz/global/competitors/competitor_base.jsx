@@ -9,6 +9,7 @@ import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
 import inflection from 'inflection';
 import Tabs from '../tabs/tabs';
+import FakeLink from '../shared/fake_link';
 
 export default class CompetitorBase extends React.Component {
   constructor(props) {
