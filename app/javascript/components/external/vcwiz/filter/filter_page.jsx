@@ -26,6 +26,7 @@ export default class FilterPage extends React.Component {
     super(props);
 
     this.state = {
+      canApplySuggestions: false,
       competitors: props.competitors,
       count: props.count,
       filters: flattenFilters(props.filters),
@@ -43,8 +44,8 @@ export default class FilterPage extends React.Component {
 
   queryParams(state = null) {
     const { applySuggestions } = this.props;
-    let { search, filters, options, sort } = state || this.state;
-    const params = { options, sort, apply_suggestions: applySuggestions };
+    let { search, filters, options, sort, canApplySuggestions } = state || this.state;
+    const params = { options, sort, apply_suggestions: applySuggestions && canApplySuggestions };
     if (this.props.showSearch) {
       params.search = search;
     }
@@ -73,15 +74,16 @@ export default class FilterPage extends React.Component {
   fetchNumInvestors() {
     ffetch(`${CompetitorsFilterCountPath}?${this.query()}`).then(({count, suggestions}) => {
       const newState = {count, suggestions, resultsId: timestamp(), competitors: null};
-      if (this.props.applySuggestions) {
+      if (this.props.applySuggestions && this.state.canApplySuggestions) {
         newState.options = suggestions;
+        newState.canApplySuggestions = false;
       }
       this.setState(newState, () => this.props.onQueryChange(this.query(), count));
     });
   }
 
   onFiltersChange = filters => {
-    this.setState({filters});
+    this.setState({filters, canApplySuggestions: true});
   };
 
   onSearchChange = update => {

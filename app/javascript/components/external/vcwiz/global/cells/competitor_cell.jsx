@@ -30,6 +30,14 @@ const fetchPath = (id, cb) => {
 };
 
 export default class CompetitorCell extends ImageTextCell {
+  componentWillMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   processRow(props, row) {
     const { subValue, ...rest } = super.processRow(props, row);
     return {
@@ -41,6 +49,9 @@ export default class CompetitorCell extends ImageTextCell {
   componentDidUpdate(prevProps, prevState) {
     if (isLoggedIn() && prevState.id !== this.state.id) {
       fetchPath(this.state.id, path => {
+        if (!this.mounted) {
+          return;
+        }
         if (_.isEmpty(path)) {
           this.setState({subValue: null});
         } else {

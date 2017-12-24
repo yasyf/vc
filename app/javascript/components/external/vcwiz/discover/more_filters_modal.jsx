@@ -27,6 +27,7 @@ export default class MoreFiltersModal extends React.Component {
         {this.renderSwitch('us_only', 'US-Based', 'Only show investors based in the United States.')}
         {this.renderSwitch('related', 'Related Startups', 'Show investors who have invested in similar startups to the ones you selected.')}
         {this.renderSwitch('company_cities', 'Cities', 'Show investors who made investments in the given locations, instead of ones based there.')}
+        {this.renderSwitch('industry_or', 'Any Industry', 'Show investors who made investments in any of the given industries, instead of all of them.')}
       </div>
     );
   }

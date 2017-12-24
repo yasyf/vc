@@ -11,7 +11,7 @@ module External::Concerns
     end
 
     def options_params
-      options = params.permit(options: [:us_only, :related, :company_cities])[:options]
+      options = params.permit(options: [:us_only, :industry_or, :related, :company_cities])[:options]
       { options: options.present? ? options.transform_values { |v| v.is_a?(String) ? v.downcase == 'true' : v } : {} }
     end
 
@@ -43,7 +43,8 @@ module External::Concerns
         if filtered_count == 0
           params[:options] = (params[:options] || {}).merge(
             related: filter_params[:filters][:companies].present?,
-            company_cities: filter_params[:filters][:location].present?
+            company_cities: filter_params[:filters][:location].present?,
+            industry_or: filter_params[:filters][:industry].present?,
           )
         elsif params[:options].present?
           params[:options].except(:us_only).select { |_, v| v }.keys.each do |k|

@@ -98,7 +98,11 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     end
     competitors = competitors.where('competitors.fund_type && ?', "{#{params[:filters][:fund_type]}}") if params[:filters][:fund_type].present?
     if params[:filters][:industry].present?
-      competitors = competitors.where('competitors.industry @> ?', "{#{params[:filters][:industry]}}")
+      if params[:options][:industry_or]
+        competitors = competitors.where('competitors.industry && ?', "{#{params[:filters][:industry]}}")
+      else
+        competitors = competitors.where('competitors.industry @> ?', "{#{params[:filters][:industry]}}")
+      end
     end
     if params[:filters][:location].present?
       competitors = if params[:options][:company_cities]

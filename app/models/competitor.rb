@@ -58,7 +58,7 @@ class Competitor < ApplicationRecord
 
   RELATED_INDUSTRIES = {
     arvr: ['Augmented Reality', 'Virtual Reality'],
-    bitcoin: ['Bitcoin', 'Crypto', 'Virtual Currency'],
+    bitcoin: ['Bitcoin', 'Crypto', 'Cryptocurrency', 'Virtual Currency'],
     saas: ['Software as a Service'],
     gaming: ['Video Games'],
     transportation: ['Public Transportation', 'Ride Sharing'],
