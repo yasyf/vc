@@ -27,7 +27,7 @@ SitemapGenerator::Sitemap.create do
   end
   Competitor.in_batches do |scope|
     scope.pluck(:id, :name).each do |competitor|
-      add external_vcwiz_firm_path(id: competitor.first, slug: investor.last.downcase.dasherize), changefreq: :weekly
+      add external_vcwiz_firm_path(id: competitor.first, slug: competitor.last.downcase.dasherize), changefreq: :weekly
     end
   end
 end
