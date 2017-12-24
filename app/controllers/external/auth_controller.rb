@@ -22,7 +22,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
     auth = request.env['omniauth.auth']
     founder = Founder.from_omniauth(auth)
 
-    if external_founder_signed_in?
+    if external_founder_signed_in? && session[:signup_data].blank?
       process_gmail_auth founder
       redirect_to after_sign_in_path_for(current_external_founder)
     else
@@ -48,18 +48,18 @@ class External::AuthController < Devise::OmniauthCallbacksController
       FounderGmailSyncJob.new(founder.id).enqueue(queue: :long_now)
       flash_success 'VCWiz Link has been enabled! As you send emails to investors, this tracker will update.'
     else
-      set_flash_message :alert, :failure, kind: 'Google', reason: 'that user is not logged in'
+      flash_failure 'That user is not logged in'
     end
   end
 
   def redirect_after_failure
-    set_flash_message :alert, :failure, kind: 'Google', reason: 'an error occurred'
+    flash_failure 'A login error occured'
     redirect_to external_vcwiz_root_path
   end
 
   def redirect_after_signup(founder)
     if founder.primary_company.blank? && session[:signup_data].blank? && !founder.admin?
-      set_flash_message :alert, :failure, kind: 'Google', reason: "you don't have an account yet! Please sign up below"
+      flash_failure "You don't have an account yet! Please sign up below"
       sign_out current_external_founder if current_external_founder.present?
       session[:open_signup] = true
       redirect_to external_vcwiz_root_path

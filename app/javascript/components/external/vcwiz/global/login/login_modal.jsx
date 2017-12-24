@@ -67,7 +67,11 @@ export default class LoginModal extends React.Component {
   }
 
   lookupDomain() {
-    ffetch(`${CompaniesQueryPath}?${buildQuery({domain: getDomain(this.state.data.domain, false)})}`).then(company => {
+    const domain = getDomain(this.state.data.domain, false);
+    if (!domain) {
+      return;
+    }
+    ffetch(`${CompaniesQueryPath}?${buildQuery({domain})}`).then(company => {
       if (!company) {
         if (!_.isEmpty(this.state.company)) {
           this.setState({company: {}, data: {}});
@@ -178,10 +182,10 @@ export default class LoginModal extends React.Component {
     };
   }
 
-  renderInput(name, placeholder) {
+  renderInput(name, placeholder, debounced = false) {
     return (
       <Row key={name} isColumn>
-        <Input {...this.inputProps(name, placeholder)} />
+        <Input {...this.inputProps(name, placeholder)} debounced={debounced} />
       </Row>
     );
   }
@@ -227,7 +231,7 @@ export default class LoginModal extends React.Component {
     const continueText = (company && company.name) ? company.name : data.domain;
     return [
       <p className="info" key="text">Some Quick Info</p>,
-      this.renderInput('domain', 'Your Company Website'),
+      this.renderInput('domain', 'Your Company Website', true),
       <Button color={Colors.SUCCESS} onClick={this.nextStage} key="button">
         {this.state.data.domain ? `Continue With ${continueText}` : "I Don't Have One Yet"}
       </Button>,

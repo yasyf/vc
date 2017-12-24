@@ -18,6 +18,11 @@ module External::ApplicationHelper
     flash[:success] << message
   end
 
+  def flash_failure(message)
+    flash[:error] ||= []
+    flash[:error] << message
+  end
+
   def foundation_flash_type(level)
     case level.to_sym
       when :alert     then 'alert'
