@@ -31,7 +31,7 @@ class InvestorCrunchbaseJob < ApplicationJob
       raise unless other.present?
       begin
         other.destroy!
-        Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present?
+        Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present? && other.crunchbase_id != investor.crunchbase_id
       rescue ActiveRecord::InvalidForeignKey
         other.update! attrs.transform_values { |v| nil }.merge(email: nil, al_id: nil)
         self.class.perform_later(other.id)
