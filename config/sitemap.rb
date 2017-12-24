@@ -22,12 +22,12 @@ SitemapGenerator::Sitemap.create do
   end
   Investor.in_batches do |scope|
     scope.pluck(:id, :first_name, :last_name).each do |investor|
-      add external_vcwiz_investor_path(id: investor.first, slug: "#{investor.second} #{investor.third}".downcase.dasherize), changefreq: :weekly
+      add external_vcwiz_investor_path(id: investor.first, slug: "#{investor.second} #{investor.third}".parameterize), changefreq: :weekly
     end
   end
   Competitor.in_batches do |scope|
     scope.pluck(:id, :name).each do |competitor|
-      add external_vcwiz_firm_path(id: competitor.first, slug: competitor.last.downcase.dasherize), changefreq: :weekly
+      add external_vcwiz_firm_path(id: competitor.first, slug: competitor.last.parameterize), changefreq: :weekly
     end
   end
 end
