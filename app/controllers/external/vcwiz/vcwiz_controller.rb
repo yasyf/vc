@@ -116,7 +116,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
   end
 
   def redirect_login
-    store_location_for(:external_founder, request.referer)
+    store_location_for(:external_founder, request.referer) if URI::parse(request.referer).host == ENV['SITE_DOMAIN']
     redirect_to omniauth_path(enable_scanner? ? 'gmail' : 'google_external', hd: params[:domain] || cookies[:login_domain] || '*')
   end
 

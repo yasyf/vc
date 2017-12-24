@@ -280,11 +280,11 @@ export default class LoginModal extends React.Component {
       this.renderGoogleForm(),
       <Row key="login-with-inbox" className="full-width">
         <Column large={6}>
-          <p className="info">Login without VCWiz Linkr</p>
+          <p className="info">Login without VCWiz Link</p>
           {this.renderGoogleButton(this.loginWithGoogle, true)}
         </Column>
         <Column large={6}>
-          <p className="info">Login and enable VCWiz Linkr</p>
+          <p className="info">Login and enable VCWiz Link</p>
           {this.renderGoogleButton(this.loginWithGoogleInbox)}
         </Column>
       </Row>,

@@ -22,7 +22,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
     auth = request.env['omniauth.auth']
     founder = Founder.from_omniauth(auth)
 
-    if external_founder_signed_in? && session[:signup_data].blank?
+    if external_founder_signed_in?
       process_gmail_auth founder
       redirect_to after_sign_in_path_for(current_external_founder)
     else
@@ -37,7 +37,11 @@ class External::AuthController < Devise::OmniauthCallbacksController
   end
 
   def failure
-    redirect_to external_founder_signed_in? ? after_sign_in_path_for(current_external_founder) : external_vcwiz_root_path
+    if params[:message] == 'access_denied' && params[:strategy] == 'gmail'
+      redirect_to omniauth_path('google_external', hd: cookies[:login_domain] || '*')
+    else
+      redirect_to external_founder_signed_in? ? after_sign_in_path_for(current_external_founder) : external_vcwiz_root_path
+    end
   end
 
   private
