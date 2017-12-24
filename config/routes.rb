@@ -42,6 +42,8 @@ Rails.application.routes.draw do
 
       scope controller: 'vcwiz/vcwiz', as: :vcwiz do
         root action: 'index'
+        get 'firm/:id(/:slug)', action: :firm, as: :firm
+        get 'investor/:id(/:slug)', action: :investor, as: :investor
         get 'privacy'
         get 'discover'
         get 'filter'

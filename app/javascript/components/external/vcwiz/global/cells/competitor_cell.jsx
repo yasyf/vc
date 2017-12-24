@@ -1,9 +1,10 @@
 import React from 'react';
 import ImageTextCell from './image_text_cell';
-import { CompetitorsIntroPathsPath } from '../constants.js.erb';
+import { CompetitorsIntroPathsPath, FirmPath } from '../constants.js.erb';
 import { LocalStorage } from '../storage.js.erb';
 import {ffetch, isLoggedIn} from '../utils';
 import IntroPath from '../competitors/intro_path';
+import inflection from 'inflection';
 
 let pendingPaths = {};
 const fetchPaths = _.debounce(() => {
@@ -38,10 +39,13 @@ export default class CompetitorCell extends ImageTextCell {
     this.mounted = false;
   }
 
+  onLinkClick = e => e.preventDefault();
+
   processRow(props, row) {
-    const { subValue, ...rest } = super.processRow(props, row);
+    const { subValue, value, ...rest } = super.processRow(props, row);
     return {
       id: row.id,
+      value: <a href={FirmPath.resource(row.id, inflection.dasherize(row.name.toLowerCase()))} className="indistinguishable" onClick={this.onLinkClick}>{value}</a>,
       ...rest,
     };
   };

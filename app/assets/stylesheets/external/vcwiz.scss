@@ -18,6 +18,11 @@ textarea[type='text'] {
   height: 5em;
 }
 
+a.indistinguishable, .overlay-modal a.indistinguishable, .modal-page a.indistinguishable {
+  color: inherit;
+  font-weight: inherit;
+}
+
 div.flashes-alert {
   @include only-desktop {
     position: relative;
@@ -802,6 +807,13 @@ input.placeholded {
         line-height: 1.3em;
       }
     }
+  }
+}
+
+.competitor-page {
+  &-body {
+    background-color: $white;
+    margin-bottom: 0;
   }
 }
 
@@ -1633,7 +1645,9 @@ mark.highlighter {
 .overlay-modal {
   background-color: $lightest-grey;
   min-height: 100%;
+}
 
+.overlay-modal, .modal-page {
   &-top {
     padding: 30px 40px;
     background-color: $white;
@@ -2069,6 +2083,10 @@ mark.highlighter {
 }
 
 .research-modal {
+  &-page-wrapper {
+    width: 100%;
+  }
+
   &-top {
     padding-bottom: 20px;
   }

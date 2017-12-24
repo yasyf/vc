@@ -2,7 +2,10 @@ class External::VCWiz::VCWizController < External::ApplicationController
   include External::Concerns::Filterable
   include External::Concerns::Sortable
   include External::Concerns::Reactable
+  include External::Concerns::Censorable
   include External::ApplicationHelper
+
+  filter %w(email)
 
   layout 'vcwiz'
   before_action :check_founder!, only: [:outreach]
@@ -13,6 +16,27 @@ class External::VCWiz::VCWizController < External::ApplicationController
 
   def privacy
     render layout: 'external'
+  end
+
+  def firm
+    list = CompetitorLists::Single.new(current_external_founder, request, params[:id])
+
+    title list.title
+    description list.description
+    component 'CompetitorPage'
+    props item: list.results(meta: true).first
+    render_default
+  end
+
+
+  def investor
+    investor = Investor.find(params[:id])
+
+    title "#{investor.name} on VCWiz"
+    description "Learn about #{investor.name} on VCWiz. #{(investor.description || '').squish.truncate(100)}"
+    component 'InvestorPage'
+    props item: censor(investor)
+    render_default
   end
 
   def discover

@@ -9,8 +9,6 @@ module Importers::External
       country: 'country_code',
     }
 
-
-
     def self.process!(row)
       return false unless row.delete(:roles) == 'investor'
       return false unless row[:type].present?
