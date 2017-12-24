@@ -5,6 +5,7 @@ import { LocalStorage } from '../storage.js.erb';
 import {ffetch, isLoggedIn} from '../utils';
 import IntroPath from '../competitors/intro_path';
 import inflection from 'inflection';
+import FakeLink from '../shared/fake_link';
 
 let pendingPaths = {};
 const fetchPaths = _.debounce(() => {
@@ -39,13 +40,11 @@ export default class CompetitorCell extends ImageTextCell {
     this.mounted = false;
   }
 
-  onLinkClick = e => e.preventDefault();
-
   processRow(props, row) {
     const { subValue, value, ...rest } = super.processRow(props, row);
     return {
       id: row.id,
-      value: <a href={FirmPath.resource(row.id, inflection.dasherize(row.name.toLowerCase()))} className="indistinguishable" onClick={this.onLinkClick}>{value}</a>,
+      value: <FakeLink href={FirmPath.resource(row.id, inflection.dasherize(row.name.toLowerCase()))} value={value} />,
       ...rest,
     };
   };

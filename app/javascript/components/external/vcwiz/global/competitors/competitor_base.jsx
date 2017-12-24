@@ -125,8 +125,6 @@ export default class CompetitorBase extends React.Component {
     )
   }
 
-  onLinkClick = e => e.preventDefault();
-
   renderBottom() {
     const { tab, item } = this.props;
     const { partners, matches } = item;
@@ -144,7 +142,7 @@ export default class CompetitorBase extends React.Component {
       <Tabs
         scrollShadows={true}
         defaultIndex={defaultIndex}
-        tabs={partners.map(p => <a href={InvestorPath.resource(p.id, inflection.dasherize(fullName(p).toLowerCase()))} className="indistinguishable" onClick={this.onLinkClick}>{fullName(p)}</a>)}
+        tabs={partners.map(p => <FakeLink href={InvestorPath.resource(p.id, inflection.dasherize(fullName(p).toLowerCase()))} value={fullName(p)} />)}
         panels={partners.map(p => <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />)}
         onTabChange={this.onTabChange}
       />
