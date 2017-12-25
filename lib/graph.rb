@@ -53,7 +53,7 @@ class Graph
   end
 
   def self.find(addr)
-    results = retry_([Excon::Error::Socket]) { server.find_nodes_labeled('Person', {email: addr.address}) }
+    results = retry_([Excon::Error::Socket, Neography::NeographyError]) { server.find_nodes_labeled('Person', {email: addr.address}) }
     Neography::Node.load(results.first, server) if results.present?
   end
 
