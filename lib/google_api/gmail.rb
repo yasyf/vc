@@ -73,7 +73,7 @@ module GoogleApi
 
     %w(thread message).each do |s|
       define_method("get_#{s}s") do |all_ids, &block|
-        ids.each_slice(50) do |ids|
+        all_ids.each_slice(50) do |ids|
           @gmail.batch do |batch|
             ids.each do |id|
               batch.public_send("get_user_#{s}", @user.email, id) do |res, err|
