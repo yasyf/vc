@@ -10,6 +10,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
       scope: 'userinfo.email,userinfo.profile', callback_path: '/auth/create', access_type: 'offline'
 
     provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], name: 'gmail',
-      scope: 'gmail.readonly', access_type: 'offline', prompt: 'consent', include_granted_scopes: true, callback_path: '/auth/enhance'
+      scope: 'userinfo.email,userinfo.profile,gmail.readonly', access_type: 'offline', prompt: 'consent', include_granted_scopes: true, callback_path: '/auth/enhance'
   end
 end
