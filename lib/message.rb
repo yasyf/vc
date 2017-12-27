@@ -59,11 +59,11 @@ class Message
   end
 
   def text
-    @text ||= part('text/plain')&.data&.encode('UTF-8') || ''
+    @text ||= Util.fix_encoding(part('text/plain')&.data) || ''
   end
 
   def html
-    @html ||= part('text/html')&.data&.encode('UTF-8') || ''
+    @html ||= Util.fix_encoding(part('text/html')&.data) || ''
   end
 
   def id
