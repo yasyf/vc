@@ -39,24 +39,41 @@ module External::Concerns
     def filtered_suggestions
       @filtered_suggestions ||= begin
         original = params[:options].dup
+        params[:options] ||= {}
 
-        if filtered_count == 0
-          params[:options] = (params[:options] || {}).merge(
-            related: filter_params[:filters][:companies].present?,
-            company_cities: filter_params[:filters][:location].present?,
-            industry_or: filter_params[:filters][:industry].present?,
-          )
-        elsif params[:options].present?
-          params[:options].except(:us_only).select { |_, v| v }.keys.each do |k|
+        if filtered_count != 0
+          options_params.except(:us_only).select { |_, v| v }.keys.each do |k|
             params[:options][k] = false
             params[:options][k] = true if filtered_count == 0
           end
         end
 
-        suggestions = params[:options].dup
+        if filter_params[:filters][:location].present? && filtered_count == 0
+          if options_params[:company_cities]
+            params[:options][:company_cities] = false
+            if filtered_count == 0
+              params[:options][:company_cities] = true
+            end
+          else
+            params[:options][:company_cities] = true
+            if filtered_count == 0
+              params[:options][:company_cities] = false
+            end
+          end
+        end
+
+        if filter_params[:filters][:companies].present? && !options_params[:related] && filtered_count <= 1
+          params[:options][:related] = true
+        end
+
+        if filter_params[:filters][:industry].present? && !options_params[:industry_or] && filtered_count == 0
+          params[:options][:industry_or] = true
+        end
+
+        suggestions = options_params.dup
         params[:options] = original
 
-        suggestions
+        suggestions[:options]
       end
     end
 
