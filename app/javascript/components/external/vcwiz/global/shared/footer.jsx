@@ -10,7 +10,7 @@ export default class Footer extends React.Component {
           <span className="sep">|</span>
           <a href={PrivacyPolicyPath} target="_blank">Privacy Policy</a>
           <span className="sep">|</span>
-          Tweet <a href="https://www.twitter.com/yasyf" target="_blank">Yasyf</a> if things break
+          <a href="https://www.twitter.com/yasyf" target="_blank">@yasyf</a> if things break
         </div>
       </footer>
     )

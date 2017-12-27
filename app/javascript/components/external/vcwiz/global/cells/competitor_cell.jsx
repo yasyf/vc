@@ -45,6 +45,7 @@ export default class CompetitorCell extends ImageTextCell {
     return {
       id: row.id,
       value: <FakeLink href={FirmPath.resource(row.id, inflection.dasherize(row.name.toLowerCase()))} value={value} />,
+      textValue: value,
       ...rest,
     };
   };
@@ -60,7 +61,7 @@ export default class CompetitorCell extends ImageTextCell {
         } else {
           const subValue = (
             <span>
-              Connected <IntroPath path={path} fullName={this.state.value} fullSentence={false} />
+              Link: <IntroPath path={path} fullName={this.state.textValue} fullSentence={false} />
             </span>
           );
           this.setState({subValue});

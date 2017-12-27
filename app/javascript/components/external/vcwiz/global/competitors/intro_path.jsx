@@ -35,16 +35,27 @@ export default class IntroPath extends React.Component {
     if (direct) {
       return <span key="middle">by {first_hop_via}</span>;
     } else if (through.length === 1) {
-      return <span key="middle">through {this.renderLink()}</span>;
+      if (fullSentence) {
+        return <span key="middle">through {this.renderLink()}</span>;
+      } else {
+        return <span key="middle">{this.renderLink()}</span>;
+      }
     } else if (through.length === 2) {
-
       const lastName = through[1].name;
-      return <span key="middle">through {lastName}, via {this.renderLink()}</span>;
+      if (fullSentence) {
+        return <span key="middle">through {lastName}, via {this.renderLink()}</span>;
+      } else {
+        return <span key="middle">{this.renderLink()} &rarr; {lastName}</span>;
+      }
     } else {
       const middleName = through[1].name;
       const lastParts = through[2].name.split(' ');
       const lastName = `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
-      return <span key="middle">through {middleName} and {lastName}, via {this.renderLink()}</span>;
+      if (fullSentence) {
+        return <span key="middle">through {middleName} and {lastName}, via {this.renderLink()}</span>;
+      } else {
+        return <span key="middle">{this.renderLink()} &rarr; {middleName} &rarr; {lastName}</span>;
+      }
     }
   }
 

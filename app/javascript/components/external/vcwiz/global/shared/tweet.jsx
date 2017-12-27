@@ -1,6 +1,14 @@
 import React from 'react';
-import Linkify from 'linkifyjs/react';
 import moment from 'moment';
+
+// Linkify Options
+import * as linkify from 'linkifyjs';
+import hashtag from 'linkifyjs/plugins/hashtag';
+import mention from 'linkifyjs/plugins/mention';
+hashtag(linkify);
+mention(linkify);
+import linkifyHtml from 'linkifyjs/html';
+// --
 
 const linkifyOptions = {
   formatHref: (href, type) => {
@@ -22,7 +30,7 @@ export default class Tweet extends React.Component {
     return (
       <div className="tweet">
         <i className="line-icon fi-social-twitter"/>
-        <Linkify options={linkifyOptions}>&ldquo;{this.props.tweet.text}&rdquo;</Linkify>
+        &ldquo;<span dangerouslySetInnerHTML={{ __html: linkifyHtml(this.props.tweet.text, linkifyOptions) }} />&rdquo;
         <span className="dot">-</span>
         <span className="faded">{moment(this.props.tweet.tweeted_at).fromNow()}</span>
       </div>
