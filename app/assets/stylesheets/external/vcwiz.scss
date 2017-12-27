@@ -728,8 +728,8 @@ input.placeholded {
 
   footer.global-footer {
     color: $grey;
-    padding-top: 2em;
-    padding-bottom: 1em;
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
     background-color: $light-grey;
     text-align: center;
 
@@ -873,6 +873,12 @@ input.placeholded {
       text-transform: unset;
       color: black;
     }
+  }
+}
+
+.toplevel-investor-page {
+  footer.global-footer {
+    padding-top: 0;
   }
 }
 
