@@ -199,19 +199,36 @@ class Competitor < ApplicationRecord
     SQL
   end
 
-  def self.lists(founder, request)
+  def self.lists(founder, request, timeout = 3.seconds)
+    start = Time.now
+    results = []
+
     lists = CompetitorLists::Base::Base.get_eligibles(founder, request)
-    Parallel.map(lists, in_threads: lists.length) do |list|
+    Parallel.each(lists, in_threads: lists.length) do |list|
+      raise Parallel::Break if start < timeout.ago
       ActiveRecord::Base.connection_pool.with_connection do
-        list.new(founder, request).as_json(json: :list)
+        begin
+          ActiveRecord::Base.connection.execute "SET statement_timeout = #{timeout.to_i * 1000}"
+          result = list.new(founder, request).as_json(json: :list)
+        rescue ActiveRecord::StatementInvalid => e
+          if e.cause.is_a?(PG::QueryCanceled)
+            raise Parallel::Break
+          else
+            raise
+          end
+        ensure
+          ActiveRecord::Base.connection.execute 'SET statement_timeout = 0'
+        end
+        results << result if result[:competitors].present?
       end
-    end.select { |l| l[:competitors].present? }
+    end
+
+    results
   end
 
   def self.list(founder, request, name)
     CompetitorLists::Base::Base.get_if_eligible(founder, request, name)&.new(founder, request)
   end
-
 
   def self.param_list(founder, request, name, cache_values)
     CompetitorLists::Base::Base.get(name).new(founder, request).tap do |list|

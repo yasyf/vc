@@ -45,7 +45,7 @@ Zhong.schedule do
       every(1.day, 'clean', at: '01:00') { CompanyCleanJob.perform_later }
       every(1.hours, 'gmail') { FoundersGmailSyncJob.perform_later }
       every(1.hours, 'investors') { FindInvestorsJob.perform_later }
-      every(6.hours, 'competitor_lists') { CompetitorListJob.perform_later }
+      every(1.hour, 'competitor_lists') { CompetitorListJob.perform_later }
     end
 
     category 'bulk' do
