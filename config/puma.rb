@@ -33,6 +33,8 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 preload_app!
 
 before_fork do
+  require 'puma_worker_killer'
+  PumaWorkerKiller.enable_rolling_restart
   ActiveRecord::Base.connection.disconnect!
 end
 

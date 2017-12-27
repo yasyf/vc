@@ -100,6 +100,7 @@ group :production do
   gem 'hive_geoip2'
   gem 'skylight'
   gem 'scout_apm', '~> 3.0.x'
+  gem 'puma_worker_killer', require: false
 end
 
 group :development, :staging do
