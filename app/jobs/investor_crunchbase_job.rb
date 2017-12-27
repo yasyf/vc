@@ -11,8 +11,13 @@ class InvestorCrunchbaseJob < ApplicationJob
       investor.populate_from_cb!
       investor.populate_from_al!
     end
-    save_without_homepage!(investor) if investor.changed?
     save_and_fix_duplicates!(investor) if investor.changed?
+    %i(homepage facebook twitter).each do |attr|
+      save_without!(investor, attr)
+      break unless investor.changed?
+      save_and_fix_duplicates!(investor)
+      break unless investor.changed?
+    end if investor.changed?
     investor.crawl_homepage!
     investor.crawl_posts!
     investor.fetch_news!
@@ -24,12 +29,12 @@ class InvestorCrunchbaseJob < ApplicationJob
 
   private
 
-  def save_without_homepage!(investor)
+  def save_without!(investor, field)
     begin
       investor.save!
     rescue ActiveRecord::RecordInvalid
-      if investor.errors.details.keys.include?(:homepage)
-        investor.homepage = investor.homepage_was
+      if investor.errors.details.keys.include?(field)
+        investor.public_send("#{field}=", investor.public_send("#{field}_was"))
         ignore_invalid { investor.save! }
       end
     end
@@ -41,8 +46,8 @@ class InvestorCrunchbaseJob < ApplicationJob
     rescue ActiveRecord::RecordInvalid => e
       raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
       attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
-      other = Investor.where(attrs.except(:homepage)).first
-      raise unless other.present?
+      other = Investor.where(attrs).first
+      return unless other.present?
       begin
         other.destroy!
         Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present? && other.crunchbase_id != investor.crunchbase_id
