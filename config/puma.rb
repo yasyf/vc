@@ -9,7 +9,7 @@ threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests, default is 3000.
 #
-port        ENV.fetch("PORT") { 3000 }
+port        ENV.fetch("PORT") { 3000 }.to_i
 
 # Specifies the `environment` that Puma will run in.
 #
@@ -21,7 +21,7 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+workers ENV.fetch("WEB_CONCURRENCY") { 2 }.to_i
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
@@ -34,7 +34,14 @@ preload_app!
 
 before_fork do
   require 'puma_worker_killer'
-  PumaWorkerKiller.enable_rolling_restart
+
+  if ENV['TOTAL_MEMORY'].present?
+    PumaWorkerKiller.ram = ENV['TOTAL_MEMORY'].to_i
+    PumaWorkerKiller.start
+  else
+    PumaWorkerKiller.enable_rolling_restart
+  end
+
   ActiveRecord::Base.connection.disconnect!
 end
 
