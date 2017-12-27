@@ -18,7 +18,7 @@ export default class InvestorPage extends React.Component {
     return (
       <ModalPage
         name="research"
-        top={<PartnerTab investor={item} onTrackChange={this.onTrackChange} />}
+        top={<PartnerTab investor={item} fetch={false} onTrackChange={this.onTrackChange} />}
       />
     );
   }

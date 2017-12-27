@@ -20,14 +20,18 @@ import update from 'immutability-helper';
 import IntroPath from './intro_path';
 
 export default class PartnerTab extends React.Component {
+  static defaultProps = {
+    fetch: true,
+  };
+
   constructor(props) {
     super(props);
 
     const { target_investors } = Store.get('founder', {});
 
     this.state = {
-      investor: null,
-      target: _.find(target_investors, {investor_id: this.props.investor.id}),
+      investor: props.fetch ? null : props.investor,
+      target: _.find(target_investors, {investor_id: props.investor.id}),
       fetchedReview: false,
       review: null,
       interactions: null,
@@ -48,9 +52,11 @@ export default class PartnerTab extends React.Component {
 
   componentDidMount() {
     if (this.props.investor.id) {
-      ffetchCached(InvestorsPath.id(this.props.investor.id)).then(investor => {
-        this.setState({investor});
-      });
+      if (this.props.fetch) {
+        ffetchCached(InvestorsPath.id(this.props.investor.id)).then(investor => {
+          this.setState({investor});
+        });
+      }
       if (isLoggedIn()) {
         ffetch(InvestorsPath.resource(this.props.investor.id, 'interactions')).then(({interactions}) => {
           this.setState({interactions});
