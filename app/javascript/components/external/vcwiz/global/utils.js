@@ -5,7 +5,6 @@ import Dimensions from 'react-dimensions';
 import { LocalStorage, SessionStorage } from './storage.js.erb';
 import { FounderEventNames, FounderEventPath, StorageRestoreStateKey, MobileScreenSize } from './constants.js.erb';
 import Breadcrumb from './breadcrumbs';
-import Store from './store';
 import { canUseDOM } from 'exenv';
 
 export const _ffetch = function(path, data, opts) {
@@ -21,12 +20,14 @@ export const _ffetch = function(path, data, opts) {
     opts.headers['Content-Type'] = 'application/json';
   } else if (opts.method === 'GET' && opts.cache) {
     delete opts.cache;
-    const cached = LocalStorage.getExpr(path);
+    const Storage = opts.session ? SessionStorage : LocalStorage;
+    delete opts.session;
+    const cached = Storage.getExpr(path);
     if (cached) {
       return new Promise(cb => cb(cached));
     } else {
       return fetch(path, opts).then(resp => resp.json()).then(res => {
-        LocalStorage.setExpr(path, res, 3600);
+        Storage.setExpr(path, res, 3600);
         return res;
       });
     }
@@ -47,12 +48,15 @@ export const ffetch = function(path, method = 'GET', data = null, opts = {}) {
   return _ffetch(path, data, allOpts);
 };
 
-export const ffetchCached = function(path) {
-  return ffetch(path, 'GET', null, {cache: true});
+export const ffetchCached = function(path, session = false) {
+  return ffetch(path, 'GET', null, {cache: true, session});
 };
 
 export const flush = function() {
-  setTimeout(() => LocalStorage.clearExpr(), 0);
+  setTimeout(() => {
+    LocalStorage.clearExpr();
+    SessionStorage.clearExpr();
+  }, 0);
 };
 
 export const csrfToken = function() {

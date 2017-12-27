@@ -58,7 +58,7 @@ export default class PartnerTab extends React.Component {
         });
       }
       if (isLoggedIn()) {
-        ffetch(InvestorsPath.resource(this.props.investor.id, 'interactions')).then(({interactions}) => {
+        ffetchCached(InvestorsPath.resource(this.props.investor.id, 'interactions'), true).then(({interactions}) => {
           this.setState({interactions});
         });
       }
