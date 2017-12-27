@@ -35,6 +35,8 @@ preload_app!
 before_fork do
   require 'puma_worker_killer'
 
+  PumaWorkerKiller.rolling_restart_frequency = 1 * 3600
+
   if ENV['TOTAL_MEMORY'].present?
     PumaWorkerKiller.ram = ENV['TOTAL_MEMORY'].to_i
     PumaWorkerKiller.start
