@@ -2,17 +2,13 @@ module Concerns
   module Graphable
     extend ActiveSupport::Concern
 
-    def describe_path(path)
-      return nil unless path.present?
-      if path.length == 1
-        { direct: true, first_hop_via: path.first.rel_type }
-      else
-        first, *rest = path[0...-1].map do |rel|
-          rel.start_node == graph_node ? rel.end_node : rel.start_node
-        end.map(&:to_h)
-        first_person = Founder.where(email: first[:email]).first || Investor.where(email: first[:email]).first
-        through = [first.merge(linkedin: first_person&.linkedin)] + rest.map { |h| h.slice(:name) }
-        { direct: false, first_hop_via: path.first.rel_type, through: through }
+    class_methods do
+      def node_from_addr(addr)
+        if (found = Graph.find(addr))
+          found
+        else
+          Graph.add(addr) if addr.name.present?
+        end
       end
     end
 
@@ -55,14 +51,26 @@ module Concerns
       @graph_node ||= Graph.get(Mail::Address.new("\"#{name}\" <#{email}>")) if email.present?
     end
 
-    class_methods do
-      def node_from_addr(addr)
-        if (found = Graph.find(addr))
-          found
-        else
-          Graph.add(addr) if addr.name.present?
-        end
+    private
+
+    def describe_path(path)
+      return nil unless path.present?
+      if path.length == 1
+        { direct: true, first_hop_via: path.first.rel_type }
+      else
+        first, *rest = node_list_from_path(path).map(&:to_h)
+        first_person = Founder.where(email: first[:email]).first || Investor.where(email: first[:email]).first
+        through = [first.merge(linkedin: first_person&.linkedin)] + rest.map { |h| h.slice(:name) }
+        { direct: false, first_hop_via: path.first.rel_type, through: through }
       end
+    end
+
+    def node_list_from_path(path)
+      nodes = [graph_node]
+      path[0...-1].each do |rel|
+        nodes << (rel.start_node == nodes.last ? rel.end_node : rel.start_node)
+      end
+      nodes.drop(1)
     end
   end
 end
