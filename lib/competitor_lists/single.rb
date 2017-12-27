@@ -11,7 +11,7 @@ class CompetitorLists::Single < CompetitorLists::Base::Base
   end
 
   def title
-    "#{competitor.name} on VCWiz"
+    competitor.name
   end
 
   def description

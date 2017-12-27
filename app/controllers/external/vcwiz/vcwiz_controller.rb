@@ -34,7 +34,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
   def investor
     investor = Investor.find(params[:id])
 
-    title "#{investor.name} on VCWiz"
+    title investor.name
     description "Learn about #{investor.name} on VCWiz. #{(investor.description || '').squish.truncate(100)}"
     canonical_href external_vcwiz_investor_url(id: investor.id, slug: investor.name.parameterize)
     component 'InvestorPage'
