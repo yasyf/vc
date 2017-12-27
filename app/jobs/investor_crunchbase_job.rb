@@ -16,6 +16,7 @@ class InvestorCrunchbaseJob < ApplicationJob
     investor.fetch_news!
     investor.set_timezone!
     investor.set_gender!
+    investor.set_average_response_time!
     save_and_fix_duplicates!(investor) if investor.changed?
   end
 

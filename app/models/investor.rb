@@ -275,6 +275,7 @@ class Investor < ApplicationRecord
         :time_zone,
         :al_url,
         :verified,
+        :average_response_time,
       ],
      methods: [
        :competitor,
@@ -282,7 +283,6 @@ class Investor < ApplicationRecord
        :recent_investments,
        :recent_news,
        :university,
-       :average_response_time,
        :tweets,
        :public_posts,
        :utc_offset,
@@ -371,8 +371,8 @@ class Investor < ApplicationRecord
     end
   end
 
-  def average_response_time
-    cache_for_a_week { Util.average_response_time(emails, :founder_id) }
+  def set_average_response_time!
+    self.average_response_time = Util.average_response_time(emails, :founder_id)
   end
 
   def founder_overlap(founder)

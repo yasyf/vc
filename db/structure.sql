@@ -599,7 +599,8 @@ CREATE TABLE investors (
     al_url character varying,
     last_fetched timestamp without time zone,
     verified boolean DEFAULT false NOT NULL,
-    token character varying
+    token character varying,
+    average_response_time integer
 );
 
 
@@ -2908,6 +2909,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171209084559'),
 ('20171210093034'),
 ('20171222033118'),
-('20171222074015');
+('20171222074015'),
+('20171227002601');
 
 
