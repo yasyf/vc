@@ -160,7 +160,7 @@ class Investor < ApplicationRecord
     new_posts.reject { |p| existing.include? p[:url] }.each do |meta|
       html = Http::Fetch.get_one(meta[:url])
       body = meta[:content] || Readability::Document.new(html).content
-      description = MetaInspector.new(meta[:url], document: html).description
+      description = MetaInspector.new(meta[:url], document: html).best_description
       next unless body.present?
       post = begin
         posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published], description: description)

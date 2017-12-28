@@ -22,6 +22,6 @@ class Post < ApplicationRecord
   end
 
   def set_description!
-    update! description: MetaInspector.new(url).description
+    update! description: MetaInspector.new(url).best_description
   end
 end
