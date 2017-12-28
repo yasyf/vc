@@ -5,6 +5,7 @@ import ProfileImage from '../global/shared/profile_image';
 import {Row, Column} from 'react-foundation';
 import Loader from '../global/shared/loader';
 import Store from '../global/store';
+import FakeLink from '../global/shared/fake_link';
 
 export default class Lists extends React.Component {
   constructor(props) {
@@ -81,7 +82,7 @@ export default class Lists extends React.Component {
         <div className="card-wrapper">
           <div className="card" onClick={this.onListClick(name)}>
             <div className="card-section">
-              <p className="title">{title}</p>
+              <p className="title"><FakeLink href={ListPath.id(name)} value={title} /></p>
               <div className="body">
                 <h6>Investors</h6>
                 <div>

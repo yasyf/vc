@@ -5,6 +5,7 @@ import PartnerTab from '../global/competitors/partner_tab';
 import { TargetInvestorsPath } from '../global/constants.js.erb';
 import Actions from '../global/actions';
 import {ffetch} from '../global/utils';
+import Lists from '../discover/lists';
 
 export default class InvestorPage extends React.Component {
   onTrackChange = update => {
@@ -28,6 +29,7 @@ export default class InvestorPage extends React.Component {
       <VCWiz
         page="investor"
         body={this.renderBody()}
+        footer={<Lists />}
         showIntro={true}
       />
     );

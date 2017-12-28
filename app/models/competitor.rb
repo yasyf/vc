@@ -208,7 +208,7 @@ class Competitor < ApplicationRecord
       raise Parallel::Break if start < timeout.ago
       ActiveRecord::Base.connection_pool.with_connection do
         begin
-          ActiveRecord::Base.connection.execute "SET statement_timeout = #{timeout.to_i * 1000}"
+          ActiveRecord::Base.connection.execute "SET statement_timeout = #{(timeout.to_f * 1000).to_i}"
           result = list.new(founder, request).as_json(json: :list)
         rescue ActiveRecord::StatementInvalid => e
           if e.cause.is_a?(PG::QueryCanceled)

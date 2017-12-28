@@ -876,9 +876,25 @@ input.placeholded {
   }
 }
 
-.toplevel-investor-page {
-  footer.global-footer {
-    padding-top: 0;
+.investor-page {
+  &-footer {
+    margin-top: 0.5em;
+
+    .lists {
+      h3 {
+        padding-bottom: 1em;
+      }
+    }
+  }
+}
+
+.competitor-page {
+  &-footer {
+    .lists {
+      h3 {
+        padding-bottom: 1em;
+      }
+    }
   }
 }
 
