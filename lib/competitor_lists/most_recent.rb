@@ -64,7 +64,7 @@ class CompetitorLists::MostRecent < CompetitorLists::Base::Base
 
   def sql
     <<-SQL
-      SELECT competitors.*, investments.id as investment_id, di.rn
+      SELECT competitors.*, investments.id AS investment_id, di.rn
       FROM (#{distinct_sql}) AS di
       INNER JOIN investments ON di.id = investments.id
       INNER JOIN competitors ON competitors.id = investments.competitor_id

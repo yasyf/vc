@@ -39,9 +39,9 @@ class Util
   end
 
   def self.normalize_city(city)
-    if city.in?(['New York', 'New York City'])
+    if city.in?(['New York', 'New York City', 'Brooklyn'])
       'New York'
-    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park', 'South San Francisco', 'San Francisco Bay Area', 'Oakland'])
+    elsif city.in?(['San Francisco', 'SF Bay Area', 'Mountain View', 'Palo Alto', 'Menlo Park', 'South San Francisco', 'San Francisco Bay Area', 'Oakland', 'Stanford', 'Berkeley'])
       'San Francisco'
     elsif city.in?(['Washington, DC', 'Washington DC', 'Washington'])
       'Washington, DC'
@@ -122,5 +122,9 @@ class Util
 
   def self.token
     SecureRandom.hex.first(10).upcase
+  end
+
+  def self.truncated_description(record)
+    (record.description || '').squish.truncate(150)
   end
 end

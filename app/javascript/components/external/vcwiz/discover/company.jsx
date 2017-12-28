@@ -22,7 +22,7 @@ export default class Company extends React.Component {
     return (
       <div className="company-container">
         <div className="company-name">
-          {<CompanyImage fallback={this.props.fallback} domain={this.props.domain} size={this.props.imgSize} />}
+          <CompanyImage fallback={this.props.fallback} domain={this.props.domain} size={this.props.imgSize} />
           {' '}
           {this.props.website ? <a href={this.props.website} target="_blank">{highlighted}</a> : highlighted}
           {' '}

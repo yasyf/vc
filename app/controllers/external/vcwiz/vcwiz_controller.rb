@@ -35,10 +35,23 @@ class External::VCWiz::VCWizController < External::ApplicationController
     investor = Investor.find(params[:id])
 
     title investor.name
-    description "Learn about #{investor.name} on VCWiz. #{(investor.description || '').squish.truncate(150)}"
+    description "Learn about #{investor.name} on VCWiz. #{Util.truncated_description(investor)}"
     canonical_href external_vcwiz_investor_url(id: investor.id, slug: investor.name.parameterize)
     component 'InvestorPage'
     props item: censor(investor), interactions: investor.interactions(current_external_founder), review: investor.review
+    render_default
+  end
+
+  def company
+    params.merge!(list: CompetitorLists::CompanyInvestors.to_param, key: :company_id, value: params[:id])
+    path = list_external_api_v1_competitors_path(list: list_from_name.to_param, key: params[:key], value: params[:value])
+    company = Company.find(params[:id])
+
+    title company.name
+    description "Learn about #{company.name} on VCWiz. #{Util.truncated_description(company)}"
+    canonical_href external_vcwiz_company_url(id: company.id, slug: company.name.parameterize)
+    component 'CompanyPage'
+    props item: company, list: list_from_name.as_json(limit: 10, meta: true), path: path
     render_default
   end
 

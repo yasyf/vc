@@ -44,6 +44,7 @@ Rails.application.routes.draw do
         root action: 'index'
         get 'firm/:id(/:slug)', action: :firm, as: :firm
         get 'investor/:id(/:slug)', action: :investor, as: :investor
+        get 'company/:id(/:slug)', action: :company, as: :company
         get 'privacy'
         get 'discover'
         get 'filter'

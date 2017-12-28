@@ -15,7 +15,7 @@ class CompetitorLists::Single < CompetitorLists::Base::Base
   end
 
   def description
-    "Learn about #{competitor.name} on VCWiz. #{(competitor.description || '').squish.truncate(150)}"
+    "Learn about #{competitor.name} on VCWiz. #{Util.truncated_description(competitor)}"
   end
 
   def sql

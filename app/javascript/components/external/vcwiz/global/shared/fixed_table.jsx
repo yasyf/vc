@@ -75,7 +75,7 @@ export default class FixedTable extends React.Component {
   };
 
   renderCompanyColumn = (key, name) => {
-    return this.renderColumn(key, name, CompanyCell);
+    return this.renderColumn(key, name, CompanyCell, {}, undefined, 2);
   };
 
   renderTrackColumn = (key, onChange, name) => {

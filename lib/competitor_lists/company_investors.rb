@@ -31,12 +31,12 @@ class CompetitorLists::CompanyInvestors < CompetitorLists::Base::Base
   end
 
   def self._sql(attrs)
-    Competitor
-      .joins(:investments)
-      .where("investments.company_id = #{attrs[:company_id]}")
-      .group('competitors.id')
-      .select('competitors.id, MAX(investments.funded_at) AS funded_at')
-      .to_sql
+    <<-SQL
+      SELECT DISTINCT ON(investments.competitor_id) id, funded_at, competitor_id
+      FROM investments
+      WHERE investments.company_id = #{attrs[:company_id]}
+      ORDER BY investments.competitor_id, investments.funded_at DESC
+    SQL
   end
 
   def _sql
@@ -57,21 +57,39 @@ class CompetitorLists::CompanyInvestors < CompetitorLists::Base::Base
 
   def with_order_subquery
     <<-SQL
-      SELECT subquery.id, #{order_sql}
+      SELECT subquery.id, subquery.competitor_id, #{order_sql}
       FROM (#{_sql}) AS subquery
     SQL
   end
 
   def sql
     <<-SQL
-      SELECT competitors.*, wo.rn
+      SELECT competitors.*, wo.id AS investment_id, wo.rn
       FROM (#{with_order_subquery}) AS wo
-      INNER JOIN competitors USING (id)
+      INNER JOIN competitors ON competitors.id = wo.competitor_id
     SQL
   end
 
   def order
     :rn
+  end
+
+  def meta_sql
+    <<-SQL
+      SELECT investments.funded_at
+      FROM investments
+      WHERE investments.id = subquery.investment_id
+    SQL
+  end
+
+  def meta_cols
+    [
+      {
+        key: :funded_at,
+        name: 'Funding Date',
+        type: :datetime,
+      },
+    ]
   end
 end
 

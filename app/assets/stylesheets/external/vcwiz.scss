@@ -869,6 +869,12 @@ input.placeholded {
   }
 }
 
+.company-page {
+  &-header {
+    padding-bottom: 20px;
+  }
+}
+
 .investor-page {
   &-body {
     margin: 0;
@@ -1279,6 +1285,45 @@ input.placeholded {
 mark.highlighter {
   font-weight: bold;
   background-color: unset;
+}
+
+.company-card {
+  display: flex;
+
+  .company-meta {
+    margin-right: 1em;
+  }
+
+  .company-name {
+    display: inline-block;
+    margin-left: 1em;
+    vertical-align: -15px;
+    vertical-align: -moz-middle-with-baseline;
+    vertical-align: -webkit-baseline-middle;
+  }
+
+  .company-info {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5em;
+
+    .company-description {
+      margin-left: 1em;
+
+      p {
+        margin-bottom: 0.5em;
+      }
+    }
+  }
+
+  .company-image {
+    margin: auto 1em auto auto;
+    flex-shrink: 0;
+
+    img {
+      border-radius: 50%;
+    }
+  }
 }
 
 .company-container {

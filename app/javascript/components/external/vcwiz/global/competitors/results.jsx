@@ -14,6 +14,13 @@ class ResultsTable extends FixedTable {
     industryLimit: 3,
   };
 
+  parseColumns(columns, prefix = '') {
+    return columns.map(({type, key, name, ...args}) => {
+      let method = this[`render${inflection.camelize(type)}Column`];
+      return method(`${prefix}${key}`, name, args);
+    });
+  }
+
   defaultMiddleColumns() {
     return [
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
@@ -23,12 +30,11 @@ class ResultsTable extends FixedTable {
   }
 
   middleColumns() {
-    const cols = this.props.columns || this.defaultMiddleColumns();
-    const prefix = this.props.columns ? 'meta.' : '';
-    return cols.map(({type, key, name, ...args}) => {
-      let method = this[`render${inflection.camelize(type)}Column`];
-      return method(`${prefix}${key}`, name, args);
-    });
+    if (this.props.columns) {
+      return this.parseColumns(this.props.columns, 'meta.').concat(this.parseColumns(_.initial(this.defaultMiddleColumns())));
+    } else {
+      return this.parseColumns(this.defaultMiddleColumns());
+    }
   }
 
   onTrackChange = (row, update) => {

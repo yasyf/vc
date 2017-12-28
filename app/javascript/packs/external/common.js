@@ -4,5 +4,5 @@ import inflection from 'inflection';
 const toPath = name => `${inflection.underscore(name)}/${inflection.underscore(name)}`;
 const toComponent = name => require(`components/external/vcwiz/${toPath(name)}`).default;
 
-const ComponentNames = ['Discover', 'Filter', 'Search', 'List', 'Outreach', 'Intro', 'InvestorSettings', 'InvestorSignup', 'CompetitorPage', 'InvestorPage'];
+const ComponentNames = ['Discover', 'Filter', 'Search', 'List', 'Outreach', 'Intro', 'InvestorSettings', 'InvestorSignup', 'CompetitorPage', 'InvestorPage', 'CompanyPage'];
 const Components = _.fromPairs(_.map(ComponentNames, name => [name, toComponent(name)]));
