@@ -9,30 +9,30 @@ SitemapGenerator::Sitemap.create do
   add external_vcwiz_list_path(list: 'most_recent'), changefreq: :daily, priority: 0.6
   add external_vcwiz_list_path(list: 'most_popular_global'), changefreq: :daily, priority: 0.6
   Competitor.locations(nil, nil).each do |city|
-    add external_vcwiz_list_path(list: 'most_popular', key: :city, value: city), changefreq: :weekly
+    add external_vcwiz_list_path(list: 'most_popular', key: :city, value: city), changefreq: :weekly, priority: 0.4
   end
   Competitor::INDUSTRIES.each do |industry|
-    add external_vcwiz_list_path(list: 'most_recent_in', key: :industry, value: industry), changefreq: :weekly
+    add external_vcwiz_list_path(list: 'most_recent_in', key: :industry, value: industry), changefreq: :weekly, priority: 0.4
   end
   Competitor::FUND_TYPES.each do |fund_type|
-    add external_vcwiz_list_path(list: 'most_popular_of', key: :fund_type, value: fund_type), changefreq: :weekly
+    add external_vcwiz_list_path(list: 'most_popular_of', key: :fund_type, value: fund_type), changefreq: :weekly, priority: 0.4
   end
   CompetitorLists::CompanyInvestors.cache_values_span.each do |v|
-    add external_vcwiz_list_path(list: 'company_investors', key: :company_id, value: v[:company_id]), changefreq: :weekly
+    add external_vcwiz_list_path(list: 'company_investors', key: :company_id, value: v[:company_id]), changefreq: :weekly, priority: 0.4
   end
   Investor.in_batches do |scope|
     scope.pluck(:id, :first_name, :last_name).each do |investor|
-      add external_vcwiz_investor_path(id: investor.first, slug: "#{investor.second} #{investor.third}".parameterize), changefreq: :weekly
+      add external_vcwiz_investor_path(id: investor.first, slug: "#{investor.second} #{investor.third}".parameterize), changefreq: :weekly, priority: 0.5
     end
   end
   Competitor.in_batches do |scope|
     scope.pluck(:id, :name).each do |competitor|
-      add external_vcwiz_firm_path(id: competitor.first, slug: competitor.last.parameterize), changefreq: :weekly
+      add external_vcwiz_firm_path(id: competitor.first, slug: competitor.last.parameterize), changefreq: :weekly, priority: 0.5
     end
   end
   Company.in_batches do |scope|
     scope.pluck(:id, :name).each do |company|
-      add external_vcwiz_company_path(id: company.first, slug: company.last.parameterize), changefreq: :monthly
+      add external_vcwiz_company_path(id: company.first, slug: company.last.parameterize), changefreq: :monthly, priority: 0.5
     end
   end
 end
