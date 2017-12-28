@@ -160,8 +160,12 @@ class Investor < ApplicationRecord
     new_posts.reject { |p| existing.include? p[:url] }.each do |meta|
       html = Http::Fetch.get_one(meta[:url])
       body = meta[:content] || Readability::Document.new(html).content
-      description = Util.fix_encoding(MetaInspector.new(meta[:url], document: html).best_description) rescue nil
       next unless body.present?
+      begin
+        description = Util.fix_encoding(MetaInspector.new(meta[:url], document: html).best_description)
+      rescue
+        next
+      end
       post = begin
         posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published], description: description)
       rescue ActiveRecord::RecordInvalid
