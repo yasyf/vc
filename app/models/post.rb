@@ -20,8 +20,4 @@ class Post < ApplicationRecord
       methods: [:categories]
     )
   end
-
-  def set_description!
-    update! description: MetaInspector.new(url).best_description
-  end
 end
