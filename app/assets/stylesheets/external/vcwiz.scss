@@ -810,13 +810,6 @@ input.placeholded {
   }
 }
 
-.competitor-page {
-  &-body {
-    background-color: $white;
-    margin-bottom: 0;
-  }
-}
-
 .investor_signup-page {
   &-header {
     padding: 30px;
@@ -877,9 +870,11 @@ input.placeholded {
 }
 
 .investor-page {
-  &-footer {
-    margin-top: 0.5em;
+  &-body {
+    margin: 0;
+  }
 
+  &-footer {
     .lists {
       h3 {
         padding-bottom: 1em;
@@ -889,6 +884,15 @@ input.placeholded {
 }
 
 .competitor-page {
+  &-body {
+    background-color: $white;
+    margin: 0;
+
+    .tab-list {
+      background: $white;
+    }
+  }
+
   &-footer {
     .lists {
       h3 {
