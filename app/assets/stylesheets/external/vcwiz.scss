@@ -872,6 +872,10 @@ input.placeholded {
 .investor-page {
   &-body {
     margin: 0;
+
+    .inline-image.rounded-image {
+      border: none;
+    }
   }
 
   &-footer {
