@@ -30,4 +30,9 @@ SitemapGenerator::Sitemap.create do
       add external_vcwiz_firm_path(id: competitor.first, slug: competitor.last.parameterize), changefreq: :weekly
     end
   end
+  Company.in_batches do |scope|
+    scope.pluck(:id, :name).each do |company|
+      add external_vcwiz_company_path(id: company.first, slug: company.last.parameterize), changefreq: :monthly
+    end
+  end
 end
