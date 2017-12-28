@@ -37,7 +37,7 @@ module Http::AngelList
 
     def roles
       return [] unless found?
-      @roles ||= fetch_roles!
+      @roles ||= fetch_roles! || []
     end
 
     def id
