@@ -14,11 +14,11 @@ export default class InvestorPage extends React.Component {
   };
 
   renderBody() {
-    const { item } = this.props;
+    const { item, review, interactions } = this.props;
     return (
       <ModalPage
         name="research"
-        top={<PartnerTab investor={item} fetch={false} onTrackChange={this.onTrackChange} />}
+        top={<PartnerTab initiallyExpanded={true} investor={item} review={review} interactions={interactions} fetch={false} onTrackChange={this.onTrackChange} />}
       />
     );
   }

@@ -38,7 +38,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
     description "Learn about #{investor.name} on VCWiz. #{(investor.description || '').squish.truncate(150)}"
     canonical_href external_vcwiz_investor_url(id: investor.id, slug: investor.name.parameterize)
     component 'InvestorPage'
-    props item: censor(investor)
+    props item: censor(investor), interactions: investor.interactions(current_external_founder), review: investor.review
     render_default
   end
 

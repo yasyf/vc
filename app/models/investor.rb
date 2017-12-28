@@ -158,10 +158,12 @@ class Investor < ApplicationRecord
     existing = Set.new Post.where(url: new_posts.map { |p| p[:url] }).pluck(:url)
 
     new_posts.reject { |p| existing.include? p[:url] }.each do |meta|
-      body = meta[:content] || Http::Fetch.get_one(meta[:url])
+      html = Http::Fetch.get_one(meta[:url])
+      body = meta[:content] || Readability::Document.new(html).content
+      description = MetaInspector.new(meta[:url], document: html).description
       next unless body.present?
       post = begin
-        posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published])
+        posts.where(url: meta[:url]).first_or_create!(title: meta[:title], published_at: meta[:published], description: description)
       rescue ActiveRecord::RecordInvalid
         next
       end
@@ -387,7 +389,7 @@ class Investor < ApplicationRecord
       response = JSON.parse(value).with_indifferent_access
       return nil if response[:errors].present?
       return nil if response[:review].blank? || !response[:review][:published] || response[:review][:overall] < 4
-      response[:review][:comment]
+      { text: response[:review][:comment], id: response[:investorId] }
     end
   end
 

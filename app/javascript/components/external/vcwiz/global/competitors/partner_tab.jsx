@@ -22,6 +22,7 @@ import IntroPath from './intro_path';
 export default class PartnerTab extends React.Component {
   static defaultProps = {
     fetch: true,
+    initiallyExpanded: false,
   };
 
   constructor(props) {
@@ -32,9 +33,9 @@ export default class PartnerTab extends React.Component {
     this.state = {
       investor: props.fetch ? null : props.investor,
       target: _.find(target_investors, {investor_id: props.investor.id}),
-      fetchedReview: false,
-      review: null,
-      interactions: null,
+      fetchedReview: !!props.review,
+      review: props.review || null,
+      interactions: props.interactions || null,
     };
   }
 
@@ -57,7 +58,7 @@ export default class PartnerTab extends React.Component {
           this.setState({investor});
         });
       }
-      if (isLoggedIn()) {
+      if (isLoggedIn() && !this.state.interactions) {
         ffetchCached(InvestorsPath.resource(this.props.investor.id, 'interactions'), true).then(({interactions}) => {
           this.setState({interactions});
         });
@@ -252,9 +253,9 @@ export default class PartnerTab extends React.Component {
     return (
       <div>
         <br />
-        <em>{review}</em>
+        <em>{review.text}</em>
         <span className="dot">-</span>
-        <a href="https://knowyourvc.com/" target="_blank">Founder @ KnowYourVC</a>
+        <a href={`https://knowyourvc.com/investors/${review.id}`} target="_blank">Founder @ KnowYourVC</a>
       </div>
     )
   }
@@ -288,6 +289,7 @@ export default class PartnerTab extends React.Component {
   }
 
   renderBody() {
+    const { initiallyExpanded } = this.props;
     const { investor, review } = this.state;
     if (!investor) {
       return this.renderLoading();
@@ -300,7 +302,7 @@ export default class PartnerTab extends React.Component {
         {this.renderTweet()}
         {this.renderInteractions()}
         <Row isColumn>
-          <ReadMore onTruncate={this.onTruncate} lines={3}>
+          <ReadMore initiallyExpanded={initiallyExpanded} onTruncate={this.onTruncate} lines={3}>
             {description}
             {this.renderReview()}
           </ReadMore>

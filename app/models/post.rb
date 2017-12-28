@@ -16,7 +16,7 @@ class Post < ApplicationRecord
 
   def as_json(options = {})
     super options.reverse_merge(
-      only: [:url, :title, :published_at, :id],
+      only: [:url, :title, :published_at, :id, :description],
       methods: [:categories]
     )
   end

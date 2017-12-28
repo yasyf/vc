@@ -5,6 +5,7 @@ export default class ReadMore extends React.Component {
   static defaultProps = {
     onTruncate: _.noop,
     block: false,
+    initiallyExpanded: false,
     lines: 2,
     more: 'more',
     less: 'less',
@@ -14,7 +15,7 @@ export default class ReadMore extends React.Component {
     super(props);
 
     this.state = {
-      expanded: false,
+      expanded: props.initiallyExpanded,
     };
   }
 
