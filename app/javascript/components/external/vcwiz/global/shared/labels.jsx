@@ -4,7 +4,7 @@ import {withDots} from '../utils';
 
 export default class Labels extends React.Component {
   render() {
-    let { items, translate, extraClass, plain, max } = this.props;
+    let { items, translate, extraClass, plain, max, block } = this.props;
 
     if (!items) {
       return null;
@@ -15,10 +15,17 @@ export default class Labels extends React.Component {
         {translate[i] || i}
       </span>
     );
+
+    if (block) {
+      nodes = nodes.map((n, i) => <p key={i}>{n}</p>);
+    }
+
+    const Parent = block ? 'div' : 'span';
+
     if (plain) {
-      return <span className="labels-plain">{withDots(nodes)}</span>;
+      return <Parent className="labels-plain">{withDots(nodes)}</Parent>;
     } else {
-      return <span className="labels">{nodes}</span>;
+      return <Parent className="labels">{nodes}</Parent>;
     }
   }
 }
