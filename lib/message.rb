@@ -192,7 +192,10 @@ class Message
         X-Mandrill-User
         X-Roving-ID
        ).any? { |h| headers.key?(h) } ||
-      recipients.any? { |a| a.local.present? && (%w(noreply no-reply do-not-reply mailer-daemon).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+')) }
+      recipients.any? do |a|
+        (a.local.present? && (%w(noreply no-reply do-not-reply mailer-daemon).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
+        (a.name.present? && (['mail delivery', 'support', 'team'].any? { |s| a.name.downcase.include?(s) }))
+      end
     end
   end
 
