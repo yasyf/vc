@@ -1,4 +1,5 @@
 import React from 'react';
+import Modal from 'react-modal';
 import Header from './global/shared/header';
 import classNames from 'classnames';
 import {currentPage, ffetch} from './global/utils';
@@ -39,13 +40,15 @@ export default class VCWiz extends React.Component {
 
     const restoreState = SessionStorage.get(StorageRestoreStateKey);
     if (restoreState) {
-      if (currentPage() !== restoreState.location) {
-        window.location = restoreState.location;
-      } else {
+      if (currentPage() === restoreState.location) {
         SessionStorage.remove(StorageRestoreStateKey);
         Store.set(StorageRestoreStateKey, restoreState);
       }
     }
+  }
+
+  componentDidMount() {
+    Modal.setAppElement('#vcwiz');
   }
 
   componentWillUnmount() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath, InvestorPath} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath, InvestorPath, CompanyPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import {ffetch, fullName, isMobile, sendEvent, withDots} from '../utils';
 import Actions from '../actions';
@@ -65,11 +65,8 @@ export default class CompetitorBase extends React.Component {
     );
   }
 
-  renderCompany({ crunchbase_id, domain, name }) {
-    let url =
-      (domain && `http://${domain}`) ||
-      (crunchbase_id && `https://www.crunchbase.com/organization/${crunchbase_id}`);
-    return url ? <a href={url} target="_blank">{name}</a> : name;
+  renderCompany({ id, name }) {
+    return <a href={CompanyPath.resource(id, inflection.dasherize(name.toLowerCase()))}>{name}</a>;
   }
 
   renderIndustries() {
