@@ -1,8 +1,10 @@
 import React from 'react';
+import {firstName} from '../utils';
 
 export default class IntroPath extends React.Component {
   static defaultProps = {
     fullSentence: true,
+    short: false,
   };
 
   renderStart() {
@@ -21,15 +23,15 @@ export default class IntroPath extends React.Component {
   }
 
   renderLink() {
-    const { path, fullName } = this.props;
+    const { path, fullName, short } = this.props;
     const { through } = path;
     const { name, email, linkedin } = through[0];
     const href = linkedin ? `https://linkedin.com/in/${linkedin}` : `mailto:${email}?subject=Intro to ${fullName}`;
-    return <a target="_blank" href={href}>{name}</a>;
+    return <a target="_blank" href={href}>{short ? firstName(name) : name}</a>;
   }
 
   renderMiddle() {
-    const { path, fullName, fullSentence } = this.props;
+    const { path, fullName, fullSentence, short } = this.props;
     const { direct, first_hop_via, through } = path;
 
     if (direct) {
@@ -41,16 +43,16 @@ export default class IntroPath extends React.Component {
         return <span key="middle">{this.renderLink()}</span>;
       }
     } else if (through.length === 2) {
-      const lastName = through[1].name;
+      const lastName = short ? firstName(through[1].name) : through[1].name;
       if (fullSentence) {
         return <span key="middle">through {lastName}, via {this.renderLink()}</span>;
       } else {
         return <span key="middle">{this.renderLink()} &rarr; {lastName}</span>;
       }
     } else {
-      const middleName = through[1].name;
+      let middleName = short ? firstName(through[1].name) : through[1].name
       const lastParts = through[2].name.split(' ');
-      const lastName = `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
+      const lastName = short ? _.head(lastParts) : `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
       if (fullSentence) {
         return <span key="middle">through {middleName} and {lastName}, via {this.renderLink()}</span>;
       } else {

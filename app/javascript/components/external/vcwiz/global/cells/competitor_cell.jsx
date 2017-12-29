@@ -61,7 +61,7 @@ export default class CompetitorCell extends ImageTextCell {
         } else {
           const subValue = (
             <span>
-              Link: <IntroPath path={path} fullName={this.state.textValue} fullSentence={false} />
+              Link: <IntroPath path={path} fullName={this.state.textValue} fullSentence={false} short={this.props.shortLink} />
             </span>
           );
           this.setState({subValue});

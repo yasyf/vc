@@ -75,6 +75,10 @@ export const initials = function(founder) {
   return `${_.first(founder.first_name) || ''}${_.first(founder.last_name) || ''}`;
 };
 
+export const firstName = function(name) {
+  return _.first(name.split(' '));
+};
+
 let _extend = function(dest, src, overwrite = true) {
   let ret = Object.assign({}, dest);
   Object.entries(src).forEach(([k, v]) => {

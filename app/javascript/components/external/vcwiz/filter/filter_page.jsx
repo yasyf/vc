@@ -160,7 +160,7 @@ export default class FilterPage extends React.Component {
 
   renderBody() {
     const { competitors, count, sort, resultsId } = this.state;
-    const { rowHeight, industryLimit, overflowY } = this.props;
+    const { rowHeight, industryLimit, overflowY, shortLink } = this.props;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
       <SectionWithDims dimensionsKey="dimensions">
@@ -173,6 +173,7 @@ export default class FilterPage extends React.Component {
           rowHeight={rowHeight}
           industryLimit={industryLimit}
           overflowY={overflowY}
+          shortLink={shortLink}
           onSort={this.onSort}
         />
       </SectionWithDims>
