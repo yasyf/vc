@@ -20,8 +20,15 @@ module GoogleApi
       }
       secrets.to_authorization.tap do |authorization|
         return unless @user.refresh_token.present?
-        authorization.refresh!
-        @user.update! access_token: authorization.access_token
+        begin
+          authorization.refresh!
+        rescue Signet::AuthorizationError
+          @user.update! refresh_token: nil
+        else
+          @user.access_token = authorization.access_token
+          @user.refresh_token = authorization.refresh_token if authorization.refresh_token.present?
+          @user.save!
+        end
       end
     end
 
