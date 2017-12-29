@@ -871,9 +871,13 @@ input.placeholded {
 
 .toplevel-company-page, .toplevel-investor-page, .toplevel-competitor-page {
   #signup-bar {
-    height: 250px;
+    height: 225px;
     min-height: unset;
     max-height: unset;
+
+    .intro {
+      margin-top: -10px;
+    }
 
     .signup-content > div:not(:last-child) {
       margin-bottom: 1.5em;

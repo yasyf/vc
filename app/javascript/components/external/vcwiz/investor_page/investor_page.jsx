@@ -31,6 +31,7 @@ export default class InvestorPage extends React.Component {
         body={this.renderBody()}
         footer={<Lists />}
         showIntro={true}
+        inlineSignup={true}
       />
     );
   }

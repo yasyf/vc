@@ -23,6 +23,7 @@ export default class CompetitorPage extends CompetitorBase {
         body={this.renderBody()}
         footer={<Lists />}
         showIntro={true}
+        inlineSignup={true}
       />
     );
   }
