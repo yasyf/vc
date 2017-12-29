@@ -946,7 +946,7 @@ input.placeholded {
       margin-left: 1em;
       margin-right: 1em;
     }
-    
+
     .images {
       text-align: center;
 
@@ -2208,6 +2208,10 @@ mark.highlighter {
 
   &-top {
     padding-bottom: 20px;
+
+    .fallback {
+      border-radius: unset;
+    }
   }
 
   &-bottom {
