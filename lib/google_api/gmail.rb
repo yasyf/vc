@@ -32,8 +32,8 @@ module GoogleApi
         return
       end
 
-      return unless response.history.present?
       loop do
+        break unless response.history.present?
         message_ids = response.history.flat_map do |history|
           history.messages_added.reject { |ma| ma.message.label_ids&.include?('DRAFT') }.map { |ma| ma.message.id }
         end.uniq
@@ -41,9 +41,7 @@ module GoogleApi
           process_message message
         end if message_ids.present?
         @user.update! history_id: response.history_id
-        unless response.next_page_token.present?
-          break
-        end
+        break unless response.next_page_token.present?
         response = list_histories response.next_page_token
       end
     end
