@@ -1847,6 +1847,13 @@ CREATE INDEX index_competitions_on_b_id ON competitions USING btree (b_id);
 
 
 --
+-- Name: index_competitors_on_al_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_competitors_on_al_id ON competitors USING btree (al_id);
+
+
+--
 -- Name: index_competitors_on_crunchbase_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2054,6 +2061,13 @@ CREATE INDEX index_investments_on_funded_at ON investments USING btree (funded_a
 --
 
 CREATE INDEX index_investments_on_investor_id ON investments USING btree (investor_id);
+
+
+--
+-- Name: index_investors_on_al_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investors_on_al_id ON investors USING btree (al_id);
 
 
 --
@@ -2446,6 +2460,20 @@ CREATE INDEX investors_last_name_gin_trgm_idx ON investors USING gin (last_name 
 --
 
 CREATE INDEX investors_location_gin_trgm_idx ON investors USING gin (location gin_trgm_ops);
+
+
+--
+-- Name: investors_to_tsvector_fname; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX investors_to_tsvector_fname ON investors USING gin (to_tsvector('english'::regconfig, (first_name)::text));
+
+
+--
+-- Name: investors_to_tsvector_lname; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX investors_to_tsvector_lname ON investors USING gin (to_tsvector('english'::regconfig, (last_name)::text));
 
 
 --
@@ -2912,6 +2940,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171222033118'),
 ('20171222074015'),
 ('20171227002601'),
-('20171228000038');
+('20171228000038'),
+('20171229082041');
 
 
