@@ -178,6 +178,8 @@ class Message
        'view in your browser',
        'to stop receiving',
        '©',
+       'could not be delivered',
+       "wasn't delivered",
       ].any? { |s| text&.downcase&.include?(s) || html&.downcase&.include?(s) } ||
       %w(
         List-Unsubscribe
@@ -190,7 +192,7 @@ class Message
         X-Mandrill-User
         X-Roving-ID
        ).any? { |h| headers.key?(h) } ||
-      recipients.any? { |a| a.local.present? && (%w(noreply no-reply do-not-reply).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+')) }
+      recipients.any? { |a| a.local.present? && (%w(noreply no-reply do-not-reply mailer-daemon).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+')) }
     end
   end
 
