@@ -175,6 +175,7 @@ class Message
        'terms of use',
        'do not reply',
        'you have received this email because',
+       'you are receiving this email',
        'view in your browser',
        'to stop receiving',
        '©',
@@ -193,7 +194,7 @@ class Message
         X-Roving-ID
        ).any? { |h| headers.key?(h) } ||
       recipients.any? do |a|
-        (a.local.present? && (%w(noreply no-reply do-not-reply mailer-daemon).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
+        (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
         (a.name.present? && (['mail delivery', 'support', 'team'].any? { |s| a.name.downcase.include?(s) }))
       end
     end

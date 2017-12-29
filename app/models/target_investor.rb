@@ -144,7 +144,7 @@ class TargetInvestor < ApplicationRecord
 
   def as_json(options = {})
     super options.reverse_merge(
-      only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name, :investor_id],
+      only: [:id, :stage, :first_name, :last_name, :last_response, :note, :priority, :role, :firm_name, :investor_id, :competitor_id],
       methods: [:can_intro?, :email_present?, :full_name, :title],
       include: [investor: { only: [:id, :first_name, :last_name, :photo, :verified], include: [:competitor] }],
     )

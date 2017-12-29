@@ -22,7 +22,7 @@ export default class CompetitorTrackCell extends TrackCell {
       }
       const target = _.find(target_investors, {competitor_id: this.state.rowId});
       if (target)
-        this.setState({value: _.get(target, props.columnKey)});
+        this.setState({value: _.get(target, this.props.columnKey)});
     });
   }
 

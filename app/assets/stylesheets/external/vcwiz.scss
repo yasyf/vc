@@ -18,6 +18,10 @@ textarea[type='text'] {
   height: 5em;
 }
 
+button:focus {
+  outline: none;
+}
+
 a.indistinguishable, .overlay-modal a.indistinguishable, .modal-page a.indistinguishable {
   color: inherit;
   font-weight: inherit;
