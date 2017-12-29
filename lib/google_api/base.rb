@@ -20,6 +20,7 @@ module GoogleApi
       }
       secrets.to_authorization.tap do |authorization|
         return unless @user.refresh_token.present?
+        return unless authorization.expires_within?(1.hour)
         begin
           authorization.refresh!
         rescue Signet::AuthorizationError
