@@ -28,7 +28,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
 
   def list
     competitors = list_from_name.results(limit: limit, offset: page * limit, meta: true)
-    render json: { competitors: competitors, columns: list_from_name.meta_cols }
+    render json: competitors
   end
 
   def filter_count
