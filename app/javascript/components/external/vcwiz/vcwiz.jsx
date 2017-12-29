@@ -15,6 +15,7 @@ export default class VCWiz extends React.Component {
     header: null,
     modal: null,
     showIntro: false,
+    inlineSignup: false,
     subtitle: 'Raise Your Seed Round',
   };
 
@@ -97,11 +98,11 @@ export default class VCWiz extends React.Component {
   }
 
   render() {
-    const { page, showIntro, showLogin, logoLinkPath, openLoginOnLoad, subtitle } = this.props;
+    const { page, showIntro, showLogin, fullScreen, logoLinkPath, openLoginOnLoad, inlineSignup, subtitle } = this.props;
     return (
       <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
-        <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} openLoginOnLoad={openLoginOnLoad} logoLinkPath={logoLinkPath} />
-        <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': !showIntro})} onClick={this.onClick}>
+        <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} openLoginOnLoad={openLoginOnLoad} logoLinkPath={logoLinkPath} inlineSignup={inlineSignup} />
+        <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': fullScreen || !showIntro})} onClick={this.onClick}>
           {this.renderHeader()}
           {this.renderBody()}
           {this.renderFooter()}

@@ -31,6 +31,8 @@ export default class ComanyPage extends React.Component {
         header={<CompanyCard company={this.props.item} />}
         body={this.renderBody()}
         showIntro={!isLoggedIn()}
+        fullScreen={true}
+        inlineSignup={true}
       />
     );
   }

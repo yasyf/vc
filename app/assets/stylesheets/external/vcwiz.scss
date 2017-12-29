@@ -869,6 +869,18 @@ input.placeholded {
   }
 }
 
+.toplevel-company-page, .toplevel-investor-page, .toplevel-competitor-page {
+  #signup-bar {
+    height: 250px;
+    min-height: unset;
+    max-height: unset;
+
+    .signup-content > div:not(:last-child) {
+      margin-bottom: 1.5em;
+    }
+  }
+}
+
 .company-page {
   &-header {
     padding-bottom: 20px;

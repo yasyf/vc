@@ -109,14 +109,25 @@ export default class Header extends React.Component {
         </div>
       );
     } else if (this.props.showLogin) {
-      return (
-        <div className="title right">
-          Already have an account?
-          <a onClick={this.goToLogin}>
-            <span className="subtitle nudge-right">Log In</span>
-          </a>
-        </div>
-      );
+      if (this.props.inlineSignup) {
+        return (
+          <div className="title right">
+            Founder?
+            <a onClick={this.openSignup}>
+              <span className="subtitle nudge-right">Sign Up For VCWiz!</span>
+            </a>
+          </div>
+        );
+      } else {
+        return (
+          <div className="title right">
+            Already have an account?
+            <a href={LoginPath}>
+              <span className="subtitle nudge-right">Log In</span>
+            </a>
+          </div>
+        );
+      }
     } else {
       return null;
     }
@@ -162,8 +173,11 @@ export default class Header extends React.Component {
       return "Our site is not optimized for mobile yet! Visit vcwiz.co on your desktop to sign up.";
     } else {
       return (
-        "VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors." +
-        "Sign up for conversation tracking, email integrations, and personalized recommendations!"
+        <span>
+          VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors.
+          {' '}
+          <a onClick={this.openSignup}>Sign up for conversation tracking, email integrations, and personalized recommendations!</a>
+        </span>
       );
     }
   }
@@ -184,6 +198,17 @@ export default class Header extends React.Component {
     }
   }
 
+  renderButtonWrapper() {
+    if (this.props.inlineSignup) {
+      return null;
+    }
+    return (
+      <div className="button-wrapper">
+        {this.renderButton()}
+      </div>
+    );
+  }
+
   renderLoggedOutBar() {
     return (
       <TopBar id="signup-bar">
@@ -200,9 +225,7 @@ export default class Header extends React.Component {
             {this.renderBenefit('outreach', 'mail', '2. VCWiz Intros', 'Get introduced to participating investors.')}
             {this.renderBenefit('track', 'check', '3. Track', 'Organize all your fundraising conversations.')}
           </div>
-          <div className="button-wrapper">
-            {this.renderButton()}
-          </div>
+          {this.renderButtonWrapper()}
         </div>
       </TopBar>
     );
