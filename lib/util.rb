@@ -1,33 +1,47 @@
 class Util
- def self.log_exception(e)
+  BAD_STRINGS = {
+    'â€™' => "'",
+    'â€˜' => "'",
+    'â€œ' => '"',
+    'â€”' => '–',
+    'â€“' => '—',
+    'â€¢' => '-',
+    'â€¦' => '…',
+  }
+
+  def self.log_exception(e)
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
- end
+  end
 
   def self.split_name(name)
     first, *last = name.split(' ')
     [first, last.join(' ')]
   end
 
- def self.escape_sql_argument(arg)
-   arg.gsub(/\s(?![\&|\!|\|])/, '\\\\ ')
- end
+  def self.escape_sql_argument(arg)
+    arg.gsub(/\s(?![\&|\!|\|])/, '\\\\ ')
+  end
 
   def self.fix_encoding(string, fallback_encoding = 'CP1252')
     return nil if string.nil?
     begin
-      clean_string(tidy_utf8(string))
+      begin
+        clean_string(tidy_utf8(string))
+      rescue ArgumentError, Encoding::UndefinedConversionError
+        clean_string(string.encode(fallback_encoding, fallback: {
+          "\u0081" => "\x81".force_encoding(fallback_encoding),
+          "\u008D" => "\x8D".force_encoding(fallback_encoding),
+          "\u008F" => "\x8F".force_encoding(fallback_encoding),
+          "\u0090" => "\x90".force_encoding(fallback_encoding),
+          "\u009D" => "\x9D".force_encoding(fallback_encoding),
+        }).force_encoding('UTF-8'))
+      end
     rescue ArgumentError, Encoding::UndefinedConversionError
-      clean_string(string.encode(fallback_encoding, fallback: {
-        "\u0081" => "\x81".force_encoding(fallback_encoding),
-        "\u008D" => "\x8D".force_encoding(fallback_encoding),
-        "\u008F" => "\x8F".force_encoding(fallback_encoding),
-        "\u0090" => "\x90".force_encoding(fallback_encoding),
-        "\u009D" => "\x9D".force_encoding(fallback_encoding),
-      }).force_encoding('UTF-8'))
+      clean_string(string)
+    end.tap do |s|
+      BAD_STRINGS.each { |bad, good| s.gsub!(bad, good) }
     end
-  rescue ArgumentError, Encoding::UndefinedConversionError
-    clean_string(string)
   end
 
   def self.tidy_utf8(string)
@@ -99,11 +113,11 @@ class Util
     (average.to_f / 1.minute).minutes
   end
 
- def self.html_person(person, only_first: false)
-   name = only_first ? person.first_name : person.name
-   link = Founder::SOCIAL_KEYS.find { |k| person.send(k).present? }
-   return name unless link.present?
-   prefix = case link.to_sym
+  def self.html_person(person, only_first: false)
+    name = only_first ? person.first_name : person.name
+    link = Founder::SOCIAL_KEYS.find { |k| person.send(k).present? }
+    return name unless link.present?
+    prefix = case link.to_sym
      when :linkedin
        'https://www.linkedin.com/in/'
      when :facebook
@@ -112,9 +126,9 @@ class Util
        'https://twitter.com/'
      else
        ''
-   end
-   "<a href='#{prefix}#{person.send(link)}'>#{name}</a>"
- end
+    end
+    "<a href='#{prefix}#{person.send(link)}'>#{name}</a>"
+  end
 
   def self.count_lines(filename)
     `wc -l "#{filename}"`.strip.split(' ')[0].to_i
