@@ -41,14 +41,14 @@ module Http::Crunchbase
 
     def affiliated_companies
       %w(jobs advisory_roles).flat_map do |field|
-        (response.rel(field) || []).map { |job| job.organization&.properties&.slice('name', 'permalink') }.compact
+        (response.rel(field) || []).select { |job| job.organization.present? && job.ended_on.blank? }
       end
     end
 
     def affiliation
       return nil unless (aff = response.primary_affiliation).present?
       @affiliation ||= begin
-        OpenStruct.new({role: aff.title, name: aff.organization&.name, permalink: aff.organization&.permalink})
+        OpenStruct.new({role: aff.title, name: aff.organization&.name, permalink: aff.organization&.permalink, investor: aff.organization.role_investor})
       end
     end
 

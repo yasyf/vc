@@ -79,9 +79,15 @@ class Investor < ApplicationRecord
 
     self.first_name = person.first_name
     self.last_name = person.last_name
-    if person.affiliation.present?
+    if person.affiliation.present? && person.affiliation.investor
       self.role = person.affiliation.role
       self.competitor = Competitor.from_crunchbase!(person.affiliation.permalink, person.affiliation.name) if person.affiliation.permalink.present?
+    else
+      job = person.affiliated_companies.sort_by(&:updated_at).reverse.find { |job| job.organization.role_investor }
+      if job.present?
+        self.role = job.title
+        self.competitor = Competitor.from_crunchbase!(job.organization.permalink, job.organization.name)
+      end
     end
     self.description = person.bio
     self.photo = person.image
@@ -103,9 +109,10 @@ class Investor < ApplicationRecord
 
     return unless self.competitor.present?
 
-    person.affiliated_companies.each do |company|
+    person.affiliated_companies.each do |job|
+      next unless job.organization.role_company
       scope = self.competitor.companies
-      company = scope.where(crunchbase_id: company['permalink']).or(scope.where(name: company['name'])).first
+      company = scope.where(crunchbase_id: job.organization.permalink).or(scope.where(name: job.organization.name)).first
       next unless company.present?
       assign_company! company, featured: true
     end
