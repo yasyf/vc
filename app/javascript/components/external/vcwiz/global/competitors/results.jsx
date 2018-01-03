@@ -1,6 +1,6 @@
 import React from 'react';
 import inflection from 'inflection';
-import {CompetitorFundTypes, CompetitorIndustries, TargetInvestorsPath, StorageRestoreStateKey} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey} from '../constants.js.erb';
 import ResearchModal from './research_modal';
 import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
@@ -39,9 +39,7 @@ class ResultsTable extends FixedTable {
 
   onTrackChange = (row, update) => {
     const id = this.props.array.getSync(row, false).id;
-    const { target_investors } = Store.get('founder', {});
-    const target = _.find(target_investors, {competitor_id: id});
-    ffetch(TargetInvestorsPath.id(target.id), 'PATCH', {target_investor: update}).then(() => {
+    ffetch(CompetitorsPath.id(id), 'PATCH', {competitor: update}).then(() => {
       Actions.trigger('refreshFounder');
     });
   };

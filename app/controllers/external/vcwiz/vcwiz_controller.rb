@@ -77,7 +77,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
         location: Util.hub_city(session, current_external_founder),
         companies: company&.competitions&.map(&:id)&.join(',')
       },
-    )
+    ) unless filter_params[:filters].present?
     apply_suggestions!
     result_props 5
     render_default

@@ -80,6 +80,7 @@ class External::AuthController < Devise::OmniauthCallbacksController
       founder.ensure_target_investors!
       SummaryMailer.welcome_founder_email(founder).deliver_later
       session[:new_login] = true
+      cookies.delete(:filters)
     end
     sign_in founder
   end

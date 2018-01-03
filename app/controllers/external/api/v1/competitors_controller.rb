@@ -6,7 +6,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   include External::ApplicationHelper
 
   def show
-    render_censored  Competitor.find(params[:id])
+    render_censored  competitor
   end
 
   def intro_paths
@@ -44,7 +44,24 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
     render json: Competitor.lists(current_external_founder, request).sort_by { |l| [l[:personalized] ? 0 : 1, rand] }
   end
 
+  def update
+    if external_founder_signed_in? && (stage = investor_params[:stage]).present?
+      target = current_external_founder.target_investors.where(competitor: competitor).order(stage: :asc, updated_at: :desc).first
+      current_external_founder.investor_targeted! target.investor.id
+      target.update! stage: stage
+    end
+    render json: {}
+  end
+
   private
+
+  def competitor
+    @competitor ||= Competitor.find(params[:id])
+  end
+
+  def investor_params
+    params.require(:competitor).permit(:stage)
+  end
 
   def apply_suggestions?
     params[:apply_suggestions] == 'true'

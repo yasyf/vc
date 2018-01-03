@@ -104,7 +104,7 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :competitors, only: [:show] do
+          resources :competitors, only: [:show, :update] do
             collection do
               get 'filter'
               get 'filter_count'
