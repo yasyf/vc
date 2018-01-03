@@ -20,7 +20,7 @@ module Http::Crunchbase
     end
 
     def team
-      response.featured_team || []
+      response.current_team || []
     end
 
     def locations
