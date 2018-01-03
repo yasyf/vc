@@ -35,7 +35,7 @@ export default class ReadMore extends React.Component {
     const {less} = this.props;
     const {expanded, truncated} = this.state;
     if (!truncated && expanded) {
-      return  <span key="less"><a href='#' onClick={this.toggleLines}>{less}</a></span>;
+      return <span key="less"> <a href='#' onClick={this.toggleLines}>{less}</a></span>;
     } else {
       return null;
     }

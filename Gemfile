@@ -98,7 +98,6 @@ group :production do
   gem 'dalli'
   gem 'connection_pool'
   gem 'hive_geoip2'
-  gem 'skylight'
   gem 'scout_apm', '~> 3.0.x'
   gem 'puma_worker_killer', require: false
 end

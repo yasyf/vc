@@ -511,8 +511,6 @@ GEM
     sitemap_generator (6.0.0)
       builder (~> 3.0)
     sixarm_ruby_unaccent (1.2.0)
-    skylight (1.5.0)
-      activesupport (>= 3.0.0)
     slack-ruby-client (0.11.0)
       activesupport
       faraday (>= 0.9)
@@ -674,7 +672,6 @@ DEPENDENCIES
   sidekiq-unique-jobs
   sinatra (~> 2.0)
   sitemap_generator
-  skylight
   slack-ruby-client
   spring
   spring-commands-rspec

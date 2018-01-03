@@ -8,6 +8,6 @@ if [ -n "$RUN_CLOCK" ]; then
   PID2=$!
 fi
 
-trap "kill $PID1 $PID2" SIGINT SIGTERM EXIT
+trap "kill -TERM $PID1 $PID2" SIGINT SIGTERM EXIT
 
 wait
