@@ -848,9 +848,9 @@ input.placeholded {
   }
 }
 
-.investor_settings-page {
+.investor_settings-page, .investor_contacts-page {
   &-header {
-    padding: 30px;
+    padding: 30px 30px 25px;
   }
 
   &-body {
@@ -864,11 +864,38 @@ input.placeholded {
 
     .fields {
       width: 100%;
+
+      .row {
+        max-width: 100%;
+      }
     }
 
     .filter .filter-label {
       text-transform: unset;
       color: black;
+    }
+  }
+}
+
+.investor_contacts-page {
+  &-body {
+    .button-wrapper {
+      text-align: center;
+
+      .button {
+        margin-top: 2em;
+        width: 30%;
+      }
+    }
+
+    .contacts {
+      width: 60%;
+      margin: 2.5em auto auto;
+
+      .inline-image {
+        vertical-align: middle;
+        margin-right: 0.5em;
+      }
     }
   }
 }

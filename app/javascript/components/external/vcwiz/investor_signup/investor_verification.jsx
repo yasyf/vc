@@ -68,7 +68,7 @@ export default class InvestorVerification extends React.Component {
     } else if (!investor.competitor.domain) {
       return (
         <div>
-          Sorry, we aren't able to automatically create investor profiles for {investor.competitor.name} right now.
+          Sorry, we aren't able to automatically verify investor profiles for {investor.competitor.name} right now.
           Please <a target="_blank" href={`mailto:${SupportEmail}?subject=VCWiz Investor Profiles - ${investor.competitor.name}`}>reach out</a> so we can get you set up!
         </div>
       );

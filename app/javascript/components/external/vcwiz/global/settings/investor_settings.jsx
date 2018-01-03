@@ -1,6 +1,6 @@
 import React from 'react';
 import {ffetch, fullName} from '../utils';
-import {CompetitorsLocationsPathWithQuery, InvestorsPath, CompaniesSearchPath, CompetitorFullIndustriesOptions} from '../constants.js.erb';
+import {CompetitorsLocationsPathWithQuery, InvestorsPath, CompaniesSearchPath, CompetitorFullIndustriesOptions, InvestorPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import SettingsBase from './settings_base';
 import Company from '../../discover/company';
@@ -34,7 +34,8 @@ export default class InvestorSettings extends SettingsBase {
         <p className="info">
           These fields will be used to generate your VCWiz Investor Profile, which will be shown to founders.
           Please fill out the information specific to you, not {competitor.name} as a whole.
-          This page will auto-save as you make changes!
+          This page will auto-save as you make changes.
+          To view your external profile, click <a href={InvestorPath.id(this.props.investor.id)} target="_blank">here</a>.
         </p>
         <Row>
           <Column large={6}>{this.renderInput('first_name', 'First Name')}</Column>

@@ -1,0 +1,26 @@
+<p>
+  Hey <%= @investor.first_name %>!
+</p>
+
+<p>
+  Your colleague <%= @inviter.name %> just invited you to complete your VCWiz Investor Profile.
+</p>
+<p>
+  <a href="http://<%= ENV['MARKETING_DOMAIN'] %>">VCWiz</a> is a comprehensive tool for founders raising their seed rounds built by Dorm Room Fund and First Round.
+  We show detailed profiles for every investor in the country, to help founders research who they'd like to work with.
+  In order to show the most accurate information to founders, investors like yourself can verify and edit their profiles.
+</p>
+<p>
+  To accept <%= @inviter.first_name %>'s invite and complete yor profile, <b><a href="<%= external_vcwiz_investors_token_url(token: @investor.token) %>">click here</a></b>.
+</p>
+
+<p>
+  Cheers,<br>
+  VCWiz
+</p>
+
+
+<p class="faded">
+  VCWiz is a comprehensive tool for founders raising their seed rounds.
+  You got this email because you were invited by your colleague <%= @inviter.name %>.
+</p>

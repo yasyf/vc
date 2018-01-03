@@ -67,6 +67,8 @@ Rails.application.routes.draw do
           get 'token/:token', action: :token, as: :token
           get 'signup'
           get 'settings'
+          get 'contacts'
+          post 'update_contacts'
         end
       end
 

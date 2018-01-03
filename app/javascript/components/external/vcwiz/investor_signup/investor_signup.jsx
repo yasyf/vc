@@ -23,12 +23,18 @@ export default class InvestorSignup extends React.Component {
       return <InvestorVerification id={id} />;
     } else {
       return (
-        <div className="search">
+        <div>
           <p>
-            Type your name to find yourself in the VCWiz database, and continue to the investor portal.
-            We are currently not accepting applications to be added to VCWiz.
+            VCWiz is a tool for founders to research investors, discover new firms, and manage their fundraising outreach.
+            As an investor, you have an automatically-generated profile on VCWiz.
+            By claiming your account below, you can ensure founders get the most up-to-date information on you and your firm.
           </p>
-          <InvestorTypeahead onResult={this.onResult} />
+          <div className="search">
+            <p>
+              Type your name to find yourself in the VCWiz database, and continue to the investor portal.
+            </p>
+            <InvestorTypeahead onResult={this.onResult} />
+          </div>
         </div>
       );
     }

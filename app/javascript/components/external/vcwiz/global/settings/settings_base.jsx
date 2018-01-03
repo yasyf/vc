@@ -6,6 +6,10 @@ import TextArea from '../fields/text_area';
 import Filter from '../../discover/filter';
 
 export default class SettingsBase extends React.Component {
+  static defaultProps = {
+    showLabels: true,
+  };
+
   constructor(props) {
     super(props);
 
@@ -14,6 +18,8 @@ export default class SettingsBase extends React.Component {
       inputs: {},
     };
   }
+
+  onBlur = _.noop;
 
   onChange = name => (update, cb) => {
     const value = update[name];
@@ -43,7 +49,7 @@ export default class SettingsBase extends React.Component {
       name: name,
       value: _.get(this.state.data, name),
       placeholder: placeholder,
-      showLabel: true,
+      showLabel: this.props.showLabels,
       wrap: false,
       onBlur: this.onBlur(name),
       onChange: this.onChange(name),

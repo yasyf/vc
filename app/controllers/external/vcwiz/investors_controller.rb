@@ -3,11 +3,11 @@ class External::VCWiz::InvestorsController < External::ApplicationController
   include External::Concerns::Reactable
 
   layout 'vcwiz'
-  before_action :check_investor!, only: [:settings]
+  before_action :check_investor!, only: [:contacts, :settings]
 
   def index
     if external_investor_signed_in?
-      redirect_to action: :settings
+      redirect_to action: :contacts
     else
       redirect_to action: :signup
     end
@@ -26,17 +26,50 @@ class External::VCWiz::InvestorsController < External::ApplicationController
     render_default
   end
 
+  def contacts
+    contacts = current_external_investor
+      .competitor
+      .investors
+      .where.not(id: current_external_investor.id)
+      .where(email: nil)
+      .limit(10)
+
+    redirect_to action: :settings and return unless contacts.present?
+
+    title 'Investor Signup'
+    component 'InvestorContacts'
+    investor_props contacts: contacts.as_json(only: [:first_name, :last_name, :photo, :id, :role], methods: [])
+    render_default
+  end
+
+  def update_contacts
+    if params[:emails].present?
+      JSON.parse(params[:emails]).each do |id, email|
+        address = Mail::Address.new(email) rescue next
+        investor = Investor.find(id)
+        investor.update! email: address.address
+        InvestorMailer.invite_email(investor, current_external_investor).deliver_later
+      end
+      flash_success 'Your colleagues have been invited!'
+    end
+    redirect_to action: :settings
+  end
+
   def settings
     companies = records_to_options(current_external_investor.companies.map(&:as_json_search))
     industries = hash_to_options(Competitor::INDUSTRIES.slice(*(current_external_investor.industry || [])))
 
     title 'Investor Settings'
     component 'InvestorSettings'
-    props investor: current_external_investor.as_json(only: nil, methods: [:competitor, :al_username]), companies: companies, industries: industries
+    investor_props companies: companies, industries: industries
     render_default
   end
 
   private
+
+  def investor_props(other_props = {})
+    props other_props.merge(investor: current_external_investor.as_json(only: nil, methods: [:competitor, :al_username]))
+  end
 
   def render_default
     render html: '', layout: 'vcwiz'
