@@ -42,13 +42,14 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
 
   def self._sql(attrs)
     Competitor
-      .where('competitors.location && ?', "{#{attrs[:city]}}")
       .joins(:companies)
+      .where('competitors.location && ?', "{#{attrs[:city]}}")
+      .or(Competitor.joins(:companies).where('companies.location IN (?)', attrs[:city]))
       .joins(:investors)
-      .where('companies.location = ?', attrs[:city])
+      .joins("LEFT OUTER JOIN companies AS city_companies ON (city_companies.id = investments.company_id AND #{Util.sanitize_sql('city_companies.location = ?', attrs[:city])})")
+      .select('competitors.id', 'COALESCE(SUM(investors.target_investors_count), 0) AS ti_sum', 'COUNT(city_companies.id) AS c_cnt')
       .order('ti_sum DESC, c_cnt DESC')
       .group('competitors.id')
-      .select('competitors.id', 'COALESCE(SUM(investors.target_investors_count), 0) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
       .limit(10)
       .to_sql
   end

@@ -24,6 +24,10 @@ class Util
     arg.gsub(/\s(?![\&|\!|\|])/, '\\\\ ')
   end
 
+  def self.sanitize_sql(*args)
+    ActiveRecord::Base.send(:sanitize_sql, args)
+  end
+
   def self.fix_encoding(string, fallback_encoding = 'CP1252')
     return nil if string.nil?
     begin
