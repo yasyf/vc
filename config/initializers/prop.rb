@@ -1,7 +1,7 @@
 if Rails.application.vcwiz?
   require 'prop/middleware'
 
-  Prop.cache = Rails.application.redis_cache
+  Prop.cache = Rails.application.redis_store
 
   Prop.before_throttle do |handle, key, threshold, interval|
     ActiveSupport::Notifications.instrument('throttle.prop', handle: handle, key: key, threshold: threshold, interval: interval)
