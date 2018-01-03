@@ -12,9 +12,18 @@ import Filter from './filter';
 
 const CookieStorageKey = 'filters';
 
+const defaultLabels = {
+  fund_type: 'Stage',
+  industry: 'Industries',
+  location: 'Cities',
+  companies: 'Related Startups',
+  source_companies: 'Startups',
+};
+
 export default class Filters extends React.Component {
   static defaultProps = {
     showLabels: true,
+    labels: {},
   };
 
   constructor(props) {
@@ -34,12 +43,12 @@ export default class Filters extends React.Component {
   onChange = (update) => {
     const filters = extend(this.state.filters, update);
     const flattened = flattenFilters(filters);
-    CookieStorage.set(CookieStorageKey, flattened);
+    CookieStorage.set(CookieStorageKey, _.omit(flattened, ['source_companies']));
     this.setState({filters});
     this.props.onChange(flattened);
   };
 
-  renderFilter(name, label, optionProps, showMeta = true) {
+  renderFilter(name, optionProps, showMeta = true) {
     if (this.props.fields && !this.props.fields.includes(name)) {
       return null;
     }
@@ -47,7 +56,7 @@ export default class Filters extends React.Component {
       <Filter
         key={name}
         name={name}
-        label={label}
+        label={this.props.labels[name] || defaultLabels[name]}
         input={this.state.inputs[name]}
         value={this.state.filters[name]}
         meta={showMeta ? this.props.meta : undefined}
@@ -61,10 +70,11 @@ export default class Filters extends React.Component {
 
   render() {
     const filters = _.compact([
-      this.renderFilter('fund_type', 'Stage', { options: CompetitorFundTypesOptions }),
-      this.renderFilter('industry', 'Industries', { options: CompetitorFullIndustriesOptions }),
-      this.renderFilter('location', 'Cities', { path: CompetitorsLocationsPath }),
-      this.renderFilter('companies', 'Related Startups', { path: CompaniesSearchPath, optionComponent: Company }, false),
+      this.renderFilter('fund_type', { options: CompetitorFundTypesOptions }),
+      this.renderFilter('industry', { options: CompetitorFullIndustriesOptions }),
+      this.renderFilter('location', { path: CompetitorsLocationsPath }),
+      this.renderFilter('companies', { path: CompaniesSearchPath, optionComponent: Company }, false),
+      this.renderFilter('source_companies', { path: CompaniesSearchPath, optionComponent: Company }),
     ]);
     return withSeparators(i => <hr key={`hr-${i}`} className="vr"/>, filters);
   }

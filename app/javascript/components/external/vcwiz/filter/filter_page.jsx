@@ -1,6 +1,6 @@
 import React from 'react';
 import Results from '../global/competitors/results';
-import {CompetitorsFilterPath, CompetitorsFilterCountPath} from '../global/constants.js.erb';
+import {CompetitorsFilterPath, CompetitorsFilterCountPath, FilterTypes, CompaniesSearchPath} from '../global/constants.js.erb';
 import {
   flattenFilters,
   buildQuery,
@@ -10,15 +10,14 @@ import {
   replaceSort,
 } from '../global/utils';
 import Search from '../discover/search';
-import {Row, Column} from 'react-foundation';
+import {Row} from 'react-foundation';
 import FilterRow from '../discover/filter_row';
 import SectionWithDims from '../global/shared/section_with_dims';
+import Filters from '../discover/filters';
 
 export default class FilterPage extends React.Component {
   static defaultProps = {
     onQueryChange: _.noop,
-    showFilters: true,
-    showSearch: true,
     applySuggestions: false,
   };
 
@@ -43,14 +42,17 @@ export default class FilterPage extends React.Component {
   }
 
   queryParams(state = null) {
-    const { applySuggestions } = this.props;
+    const { applySuggestions, types } = this.props;
     let { search, filters, options, sort, canApplySuggestions } = state || this.state;
     const params = { options, sort, apply_suggestions: applySuggestions && canApplySuggestions };
-    if (this.props.showSearch) {
+    if (types === FilterTypes.SEARCH) {
       params.search = search;
-    }
-    if (this.props.showFilters) {
-      params.filters = filters;
+    } else if (types === FilterTypes.FILTER) {
+      params.filters = _.omit(filters, ['source_companies']);
+    } else if (types === FilterTypes.COMPANY) {
+      params.filters = {companies: filters.source_companies};
+      params.options = {};
+      params.apply_suggestions = false;
     }
     return params;
   }
@@ -63,7 +65,7 @@ export default class FilterPage extends React.Component {
     if (
       this.state.resultsId === prevState.resultsId
       && (
-        (this.props.showFilters && !prevProps.showFilters)
+        (this.props.types === FilterTypes.FILTER && prevProps.types !== FilterTypes.FILTER)
         || buildQuery(this.queryParams()) !== buildQuery(this.queryParams(prevState))
       )
     ) {
@@ -87,8 +89,12 @@ export default class FilterPage extends React.Component {
   };
 
   onSearchChange = update => {
-    let search = extend(this.state.search, update);
+    const search = extend(this.state.search, update);
     this.setState({search});
+  };
+
+  onCompaniesChange = filters => {
+    this.setState({filters});
   };
 
   onSort = (key, direction) => {
@@ -124,27 +130,28 @@ export default class FilterPage extends React.Component {
     );
   }
 
+  renderCompany() {
+    return (
+      <div className="filters">
+        <Filters
+          fields={['source_companies']}
+          onChange={this.onCompaniesChange}
+        />
+      </div>
+    );
+  }
+
   renderSearchAndFilters() {
-    const { showFilters, showSearch } = this.props;
-    if (showFilters && showSearch) {
-      return (
-        <Row>
-          <Column large={9}>
-            {this.renderFilterRow()}
-          </Column>
-          <Column large={3}>
-            {this.renderSearch()}
-          </Column>
-        </Row>
-      );
-    } else if (showFilters) {
+    const { types } = this.props;
+    if (types === FilterTypes.FILTER) {
       return <Row isColumn>{this.renderFilterRow()}</Row>;
-    } else if (showSearch) {
+    } else if (types === FilterTypes.SEARCH) {
       return <Row isColumn>{this.renderSearch()}</Row>;
+    } else if (types === FilterTypes.COMPANY) {
+      return <Row isColumn>{this.renderCompany()}</Row>;
     } else {
       return null;
     }
-
   }
 
   renderHeader() {

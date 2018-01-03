@@ -28,7 +28,7 @@ export default class FilterRow extends React.Component {
 
   render() {
     const { initialCount, onFiltersChange, onOptionChange, onButtonClick, options, suggestions, ...rest } = this.props;
-    const filters = <Filters onChange={this.onFiltersChange} meta={this.meta()} {...rest} />;
+    const filters = <Filters onChange={this.onFiltersChange} meta={this.meta()} fields={['fund_type', 'industry', 'location', 'companies']} {...rest} />;
     return (
       <div className="filters">
         <div className="filters-wrapper">

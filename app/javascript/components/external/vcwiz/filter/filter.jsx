@@ -2,6 +2,7 @@ import React from 'react';
 import FilterPage from './filter_page';
 import VCWiz from '../vcwiz';
 import { canUseDOM } from 'exenv';
+import { FilterTypes } from '../global/constants.js.erb';
 import createHistory from 'history/createBrowserHistory'
 
 export default class Filter extends React.Component {
@@ -24,7 +25,7 @@ export default class Filter extends React.Component {
       <FilterPage
         {...this.props}
         title="Filter Investors"
-        showSearch={false}
+        types={FilterTypes.FILTER}
         onQueryChange={this.pushState}
         render={(header, body) => (
           <VCWiz

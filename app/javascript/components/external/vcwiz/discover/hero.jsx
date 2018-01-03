@@ -1,14 +1,10 @@
 import React from 'react';
-import {FilterPath, SearchPath} from '../global/constants.js.erb';
+import {FilterPath, SearchPath, FilterTypes} from '../global/constants.js.erb';
 import Tabs from '../global/tabs/tabs';
 import FilterPage from '../filter/filter_page';
 import inflection from 'inflection';
 
 const MaxCount = 100;
-const TabIndex = Object.freeze({
-  FILTER: 0,
-  SEARCH: 1,
-});
 
 export default class Hero extends React.Component {
   state = {
@@ -29,7 +25,7 @@ export default class Hero extends React.Component {
   renderViewAll() {
     const { query, count } = this.state;
     const clipped = Math.min(count, MaxCount);
-    const path = this.state.tab === TabIndex.FILTER ? FilterPath : SearchPath;
+    const path = this.state.tab === FilterTypes.SEARCH ? SearchPath : FilterPath;
     return (
       <div className="view-all">
         <a href={`${path}?${query}`}>
@@ -50,8 +46,7 @@ export default class Hero extends React.Component {
       <div>
         <FilterPage
           {...this.props}
-          showFilters={this.state.tab === TabIndex.FILTER}
-          showSearch={this.state.tab === TabIndex.SEARCH}
+          types={this.state.tab}
           onQueryChange={this.onQueryChange}
           rowHeight={60}
           industryLimit={2}
@@ -82,7 +77,7 @@ export default class Hero extends React.Component {
           </p>
         </div>
         <Tabs
-          tabs={['Filter Investors', 'Search for an Investor']}
+          tabs={['Filter investors', 'Search for an investor', "Find a startup's investors"]}
           panels={[null, null]}
           onTabChange={this.onTabChange}
         />

@@ -39,6 +39,11 @@ export const SortDirection = Object.freeze({
   Desc: -1,
   Natural: 0,
 });
+export const FilterTypes = Object.freeze({
+  FILTER: 0,
+  SEARCH: 1,
+  COMPANY: 2,
+});
 export const FounderEventNames = Object.freeze(<%= Founder.event_names.to_json %>);
 export const SmallScreenSize = 1000;
 export const MobileScreenSize = 500;
