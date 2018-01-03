@@ -1,6 +1,6 @@
 class Http::Fetch
   CACHE_DIR = "#{Rails.root}/tmp/http_cache"
-  EASY_OPTIONS = { follow_location: true }
+  EASY_OPTIONS = { follow_location: true, version: Curl::HTTP_2_0 }
   MULTI_OPTIONS = { pipeline: Curl::CURLPIPE_MULTIPLEX | Curl::CURLPIPE_HTTP1 }
   OK = '200 OK'
   DEFAULT_ERROR = 500
