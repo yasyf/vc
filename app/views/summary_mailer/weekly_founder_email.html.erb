@@ -50,12 +50,14 @@
 <% end %>
 
 <% content_for :right_content do %>
-  <b>Emails Sent</b>
-  <p><%= @stats[:emails] %></p>
-  <b>Investors Contacted</b>
-  <p><%= @stats[:investors] %></p>
-  <b>Intros Requested</b>
-  <p><%= @requests %></p>
-  <b>Average Response Time</b>
-  <div><%= distance_of_time_in_words @stats[:response_time] %></div>
+  <% if @stats.deep_compact.present? %>
+    <b>Emails Sent</b>
+    <p><%= @stats[:emails] %></p>
+    <b>Investors Contacted</b>
+    <p><%= @stats[:investors] %></p>
+    <b>Intros Requested</b>
+    <p><%= @requests %></p>
+    <b>Average Response Time</b>
+    <div><%= distance_of_time_in_words @stats[:response_time] %></div>
+  <% end %>
 <% end %>
