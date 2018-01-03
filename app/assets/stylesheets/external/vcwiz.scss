@@ -914,6 +914,20 @@ input.placeholded {
       margin-bottom: 1.5em;
     }
   }
+
+  @include on-mobile {
+    #signup-bar {
+      height: 150px;
+
+      .intro, .extra-info {
+        margin-bottom: 0 !important;
+      }
+
+      .benefits {
+        display: none;
+      }
+    }
+  }
 }
 
 .company-page {
