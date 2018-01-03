@@ -72,20 +72,18 @@ module GoogleApi
     end
 
     %w(thread message).each do |s|
-      define_method("get_#{s}s") do |all_ids, &block|
-        all_ids.each_slice(25) do |ids|
-          @gmail.batch do |batch|
-            ids.each do |id|
-              batch.public_send("get_user_#{s}", @user.email, id) do |res, err|
-                if err.present?
-                  if err.is_a? Google::Apis::ClientError
-                    Rails.logger.warn err
-                  else
-                    raise err
-                  end
+      define_method("get_#{s}s") do |ids, &block|
+        @gmail.batch do |batch|
+          ids.each do |id|
+            batch.public_send("get_user_#{s}", @user.email, id) do |res, err|
+              if err.present?
+                if err.is_a? Google::Apis::ClientError
+                  Rails.logger.warn err
                 else
-                  block.call(res)
+                  raise err
                 end
+              else
+                block.call(res)
               end
             end
           end
@@ -94,11 +92,11 @@ module GoogleApi
     end
 
     def list_histories(token = nil)
-      @gmail.list_user_histories(@user.email, history_types: 'messageAdded', start_history_id: @user.history_id, page_token: token, max_results: 25)
+      @gmail.list_user_histories(@user.email, history_types: 'messageAdded', start_history_id: @user.history_id, page_token: token)
     end
 
     def list_threads(token = nil, limit = '1y')
-      @gmail.list_user_threads(@user.email, page_token: token, q: "newer_than:#{limit}", max_results: 25)
+      @gmail.list_user_threads(@user.email, page_token: token, q: "newer_than:#{limit}")
     end
   end
 end

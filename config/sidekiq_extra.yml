@@ -1,7 +1,9 @@
-:concurrency: 4
+:concurrency: 3
 :queues:
   - now
+  - long_now
   - high
   - mailers
   - default
+  - long
   - low
