@@ -69,7 +69,6 @@ class External::VCWiz::VCWizController < External::ApplicationController
     title 'Discover'
     default_description
     component 'Discover'
-    params.merge! options: { us_only: true }
     params.merge!(
       filters: {
         fund_type: 'seed',
