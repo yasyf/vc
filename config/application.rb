@@ -36,10 +36,10 @@ module Drfvote
 
     if vcwiz?
       REDIS_CACHE = ActiveSupport::Cache.lookup_store :redis_store, ENV['REDIS_CACHE_URL'], { expires_in: 1.week }
-      REDIS_STORE = ActiveSupport::Cache.lookup_store :redis_store, ENV['REDIS_STORE_URL']
+      REDIS_PROP_CACHE = ActiveSupport::Cache.lookup_store :redis_store, ENV['REDIS_PROP_CACHE_URL'], { expires_in: 1.day }
 
       define_method(:redis_cache) { REDIS_CACHE }
-      define_method(:redis_store) { REDIS_STORE }
+      define_method(:redis_prop_cache) { REDIS_PROP_CACHE }
     end
   end
 end
