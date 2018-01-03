@@ -21,6 +21,7 @@ class FounderEnhanceJob < ApplicationJob
       raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
       attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
       other = Founder.where(attrs).first
+      raise unless other.present?
       raise if other.logged_in_at.present?
       migrate_founder(founder, other)
     end

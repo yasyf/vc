@@ -12,6 +12,9 @@ class ApplicationJob < ActiveJob::Base
   retry_with_exp_backoff Timeout::Error
   retry_with_exp_backoff HTTP::TimeoutError
 
+  # Rate Limits
+  retry_with_exp_backoff Google::Apis::RateLimitError
+
   # Retries
   retry_on PG::UniqueViolation
   retry_on ActiveRecord::RecordNotUnique
