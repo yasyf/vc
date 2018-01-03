@@ -4,6 +4,7 @@ import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath, 
 import {Row, Column} from 'react-foundation';
 import {ffetch, fullName, isMobile, sendEvent, withDots} from '../utils';
 import Actions from '../actions';
+import Store from '../store';
 import PartnerTab from './partner_tab';
 import IconLine from '../shared/icon_line';
 import showdown from 'showdown';
@@ -31,7 +32,11 @@ export default class CompetitorBase extends React.Component {
     if (this.props.onTrackChange) {
       this.props.onTrackChange(update);
     } else {
-      Actions.trigger('flash', {type: 'success', message: `${this.props.item.name} has been added to your conversation tracker!`, link: OutreachPath});
+      const { target_investors } = Store.get('founder', {});
+      const target = _.find(target_investors, {competitor_id: this.props.item.id});
+      if (!target) {
+        Actions.trigger('flash', {type: 'success', message: `${this.props.item.name} has been added to your conversation tracker!`, link: OutreachPath});
+      }
       ffetch(InvestorsPath.id(id), 'PATCH', {investor: {stage: update.track.value}}).then(() => {
         Actions.trigger('refreshFounder');
       });
