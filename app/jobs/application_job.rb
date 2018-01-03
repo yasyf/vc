@@ -1,3 +1,5 @@
+require 'google/apis/errors'
+
 class ApplicationJob < ActiveJob::Base
   def self.retry_with_exp_backoff(ex, attempts: 10, queue: :low)
     retry_on ex, wait: :exponentially_longer, queue: queue, attempts: attempts
