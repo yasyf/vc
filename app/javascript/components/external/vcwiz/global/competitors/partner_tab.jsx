@@ -2,8 +2,8 @@ import React from 'react';
 import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
 import Store from '../store';
 import {
-  ffetch, ffetchCached, fullName, getDomain, humanizeList,
-  humanizeTravelStatus, isLoggedIn,
+  ffetchCached, fullName, getDomain, humanizeList,
+  humanizeTravelStatus,
 } from '../utils';
 import {Row, Column} from 'react-foundation';
 import ReadMore from '../shared/read_more';
@@ -58,7 +58,7 @@ export default class PartnerTab extends React.Component {
           this.setState({investor});
         });
       }
-      if (isLoggedIn() && !this.state.interactions) {
+      if (!this.state.interactions) {
         ffetchCached(InvestorsPath.resource(this.props.investor.id, 'interactions'), true).then(({interactions}) => {
           this.setState({interactions});
         });
