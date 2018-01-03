@@ -344,6 +344,7 @@ img.reversed, i.reversed::before {
 
       @include on-mobile {
         padding: 1em;
+        width: 100%;
       }
 
       a.alert-icon {
@@ -471,6 +472,7 @@ img.reversed, i.reversed::before {
   .button-wrapper {
     @include on-mobile {
       margin-top: 1em;
+      text-align: center;
     }
 
     button {
@@ -481,6 +483,10 @@ img.reversed, i.reversed::before {
       border: 0;
       padding: 1rem 2rem;
       font-size: large;
+
+      @include on-mobile {
+        padding: 1rem;
+      }
     }
   }
 

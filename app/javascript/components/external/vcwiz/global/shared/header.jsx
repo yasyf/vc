@@ -170,7 +170,12 @@ export default class Header extends React.Component {
 
   renderExtraInfo() {
     if (isMobile()) {
-      return "Our site is not optimized for mobile yet! Visit vcwiz.co on your desktop to sign up.";
+      return (
+        <div>
+          VCWiz is not optimized for your phone!<br />
+          Visit vcwiz.co on your desktop to sign up.
+        </div>
+      );
     } else {
       return (
         <span>
