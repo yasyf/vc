@@ -439,7 +439,7 @@ class Investor < ApplicationRecord
   def import_news_with_attrs(url, body, attrs)
     news = News.where(investor: self, url: url).first_or_initialize(attrs).tap do |news|
       news.body = body
-      news.save!
+      ignore_invalid { news.save! }
     end
     import_news news
   end
