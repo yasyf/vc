@@ -17,7 +17,10 @@ export default class FounderSettingsModal extends SettingsBase {
 
   constructor(props) {
     super(props);
-    this.state = FounderSettingsModal.stateFromFounder(Store.get('founder', {}));
+    this.state = {
+      ...this.state,
+      ...FounderSettingsModal.stateFromFounder(Store.get('founder', {})),
+    };
   }
 
   componentWillMount() {
