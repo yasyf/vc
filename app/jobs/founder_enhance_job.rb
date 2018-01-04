@@ -66,6 +66,8 @@ class FounderEnhanceJob < ApplicationJob
       founder.homepage = nil
       return
     end
-    founder.entities.concat Entity.from_html(body)
+    Entity.from_html(body).each do |entity|
+      founder.entities << entity unless founder.entities.include?(entity)
+    end
   end
 end

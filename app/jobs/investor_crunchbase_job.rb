@@ -55,7 +55,7 @@ class InvestorCrunchbaseJob < ApplicationJob
         other.update! attrs.transform_values { |v| nil }.merge(email: nil, al_id: nil)
         self.class.perform_later(other.id)
       end
-      investor.save!
+      ignore_invalid { investor.save! }
     end
   end
 end
