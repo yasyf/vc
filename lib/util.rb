@@ -146,4 +146,10 @@ class Util
   def self.truncated_description(record)
     (record.description || '').squish.truncate(150)
   end
+
+  def self.text_content(html)
+    Readability::Document.new(html).content
+  rescue NoMethodError, ArgumentError
+    html
+  end
 end

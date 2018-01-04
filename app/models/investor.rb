@@ -166,7 +166,7 @@ class Investor < ApplicationRecord
 
     new_posts.reject { |p| existing.include? p[:url] }.each do |meta|
       html = Http::Fetch.get_one(meta[:url])
-      body = meta[:content] || Readability::Document.new(html).content
+      body = meta[:content] || Util.text_content(html)
       next unless body.present?
       begin
         description = Util.fix_encoding(MetaInspector.new(meta[:url], document: html).best_description)

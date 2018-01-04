@@ -8,7 +8,7 @@ module Http
     POSITIVE = 0.5
 
     def self.sentiment(body)
-      text = Readability::Document.new(body).content
+      text = Util.text_content(body)
       resp = self.post('/sentiment/', body: { text: text }).parsed_response
       return nil unless resp.present?
       probability = resp['probability']
