@@ -9,6 +9,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
 
   layout 'vcwiz'
   before_action :check_founder!, only: [:outreach]
+  before_action :merge_cookie_filters!
 
   def index
     redirect_to action: :discover
