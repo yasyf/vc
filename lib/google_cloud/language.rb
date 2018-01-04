@@ -57,7 +57,7 @@ module GoogleCloud
     def initialize(text, format: :text)
       text = begin
         Readability::Document.new(text).content
-      rescue NoMethodError
+      rescue NoMethodError, ArgumentError
         text
       end if format == :html
       text = text.truncate(500)
