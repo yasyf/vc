@@ -1,13 +1,10 @@
 #!/bin/bash
 
-bundle exec sidekiq -C config/sidekiq.yml -t 25 &
-PID1=$!
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
+bundle exec sidekiq -C config/sidekiq.yml -t 25 &
 if [ -n "$RUN_CLOCK" ]; then
   bundle exec zhong config/zhong.rb &
-  PID2=$!
 fi
-
-trap "kill -TERM $PID1 $PID2" SIGINT SIGTERM EXIT
 
 wait
