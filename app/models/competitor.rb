@@ -79,6 +79,7 @@ class Competitor < ApplicationRecord
   }.with_indifferent_access.freeze
 
   INVESTOR_TITLE = %w(Managing Partner Director Associate Principal CEO Founder Invest).map(&:downcase)
+  NON_INVESTOR_TITLE = ['Executive Assistant', 'Consultant', 'Accountant', 'Team Member', 'Accounting', 'Advisor'].map(&:downcase)
 
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
   HUB_THRESHOLD = 50
