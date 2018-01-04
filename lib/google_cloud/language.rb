@@ -60,6 +60,7 @@ module GoogleCloud
       rescue NoMethodError
         text
       end if format == :html
+      text = text.truncate(350)
       @document = self.class.client.document text, format: format
     end
 

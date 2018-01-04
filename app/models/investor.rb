@@ -141,7 +141,7 @@ class Investor < ApplicationRecord
 
   def add_entities!(owner, entities)
     entities.each do |entity|
-      ignore_unique { PersonEntity.first_or_create!(person: owner, entity: entity) }
+      ignore_unique { PersonEntity.where(person: owner, entity: entity).first_or_create! }
     end
   end
 
