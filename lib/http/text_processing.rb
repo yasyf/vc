@@ -11,6 +11,7 @@ module Http
       text = Readability::Document.new(body).content
       resp = self.post('/sentiment/', body: { text: text }).parsed_response
       probability = resp['probability']
+      return nil unless probability.present?
       magnitude = probability[resp['label']]
       total = probability.values.sum
       score = NEGATIVE * (probability['neg'] / total) + NEUTRAL * (probability['neutral'] / total) + POSITIVE * (probability['pos'] / total)
