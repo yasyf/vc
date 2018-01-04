@@ -48,7 +48,7 @@ module Http::Crunchbase
     def affiliation
       return nil unless (aff = response.primary_affiliation).present?
       @affiliation ||= begin
-        OpenStruct.new({role: aff.title, name: aff.organization&.name, permalink: aff.organization&.permalink, investor: aff.organization.role_investor})
+        OpenStruct.new({role: aff.title, name: aff.organization&.name, permalink: aff.organization&.permalink, investor: aff.organization&.role_investor})
       end
     end
 
