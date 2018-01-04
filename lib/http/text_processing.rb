@@ -10,6 +10,7 @@ module Http
     def self.sentiment(body)
       text = Readability::Document.new(body).content
       resp = self.post('/sentiment/', body: { text: text }).parsed_response
+      return nil unless resp.present?
       probability = resp['probability']
       return nil unless probability.present?
       magnitude = probability[resp['label']]

@@ -57,6 +57,7 @@ class Http::Fetch
         exception = e
       end
     end if remaining.present?
+    GC.start
     raise exception if exception.present?
     results
   end
