@@ -581,9 +581,9 @@ img.reversed, i.reversed::before {
     cursor: pointer;
 
     img.logo {
-      height: 30px;
-      margin-right: 0.75em;
-      vertical-align: sub;
+      width: 100px;
+      margin-right: 1em;
+      vertical-align: -2px;
     }
 
     .line-icon {
