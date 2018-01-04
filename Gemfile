@@ -69,7 +69,7 @@ gem 'google-cloud-storage'
 gem 'google-cloud-pubsub'
 gem 'gender_detector'
 gem 'sidekiq-unique-jobs'
-gem 'curb'
+gem 'curb', github: 'taf2/curb'
 gem 'clearbit'
 gem 'googlemaps-services'
 gem 'sinatra', '~>2.0', require: false
