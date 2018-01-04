@@ -25,7 +25,7 @@ class News < ApplicationRecord
   end
 
   def sentiment
-    @sentiment ||= GoogleCloud::Language.new(body, format: :html).sentiment if body.present?
+    @sentiment ||= Http::TextProcessing.sentiment(body) if body.present?
   end
 
   def self.create_with_body(url, body, investor: nil, company: nil, attrs: {})
