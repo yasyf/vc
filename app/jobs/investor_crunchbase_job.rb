@@ -24,7 +24,7 @@ class InvestorCrunchbaseJob < ApplicationJob
     investor.set_timezone!
     investor.set_gender!
     investor.set_average_response_time!
-    investor.save! if investor.changed?
+    ignore_invalid { investor.save! } if investor.changed?
   end
 
   private
