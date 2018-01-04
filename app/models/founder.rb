@@ -26,6 +26,7 @@ class Founder < ApplicationRecord
   validates :homepage, uniqueness: { allow_nil: true }
 
   before_validation :normalize_city
+  before_validation :remove_corporate_homepage
   after_commit :start_augment_job, on: :create
   after_commit :start_enhance_job, on: :update
 
@@ -229,6 +230,14 @@ class Founder < ApplicationRecord
 
   def normalize_city
     self.city = Util.normalize_city(self.city) if self.city.present?
+  end
+
+  def remove_corporate_homepage
+    return unless self.homepage.present?
+    domain = Util.parse_domain(self.homepage)
+    if Company.where(domain: domain).count > 0 || Competitor.where(domain: domain).count > 0
+      self.homepage = nil
+    end
   end
 
   def set_response_time!
