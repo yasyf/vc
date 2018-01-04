@@ -1,10 +1,10 @@
 import React from 'react';
 import OverlayModal from '../shared/overlay_modal';
 import {ffetch} from '../utils';
-import {FounderLocationsPath, FounderPath} from '../constants.js.erb';
+import { FounderLocationsPath, FounderPath, LogoutPath } from '../constants.js.erb';
 import Store from '../store';
 import Actions from '../actions';
-import {Row, Column} from 'react-foundation';
+import {Row, Column, Colors, Button} from 'react-foundation';
 import SettingsBase from './settings_base';
 
 export default class FounderSettingsModal extends SettingsBase {
@@ -31,13 +31,41 @@ export default class FounderSettingsModal extends SettingsBase {
     Store.unsubscribe(this.subscription);
   }
 
+  pushFounder = founder => {
+    ffetch(FounderPath, 'PATCH', {founder}).then(newFounder => Actions.trigger('refreshFounder', newFounder));
+  };
+
+  goToLogout = () => {
+    window.location.href = LogoutPath;
+  };
+
+  toggleSubscription = () => {
+    this.pushFounder({unsubscribed: !this.state.data.unsubscribed});
+  };
+
   onBlur = name => () => {
     const founder = this.onBlurDirty(name);
     if (!founder) {
       return;
     }
-    ffetch(FounderPath, 'PATCH', {founder}).then(newFounder => Actions.trigger('refreshFounder', newFounder));
+    this.pushFounder(founder);
   };
+
+  renderUnsubscribeButton() {
+    return (
+      <Button color={this.state.data.unsubscribed ? Colors.SUCCESS : Colors.ALERT} onClick={this.toggleSubscription}>
+        {this.state.data.unsubscribed ? 'Enable' : 'Disable'} Weekly Summaries
+      </Button>
+    );
+  }
+
+  renderLogoutButton() {
+    return (
+      <Button color={Colors.ALERT} onClick={this.goToLogout}>
+        Logout {this.state.data.email}
+      </Button>
+    );
+  }
 
   renderTop() {
     return <h3>My Info</h3>;
@@ -47,9 +75,14 @@ export default class FounderSettingsModal extends SettingsBase {
     return (
       <div className="fields">
         <p>
-          These fields will be used to generate your VCWiz intro requests!
+          You can customize the information that will be shown to investors on your behalf.
+          These fields will be only be used to generate VCWiz intro requests when you request them!
           If there's anything you'd prefer an investor not see, make sure you clear it out below.
         </p>
+        <Row className="buttons">
+          <Column large={6}>{this.renderUnsubscribeButton()}</Column>
+          <Column large={6}>{this.renderLogoutButton()}</Column>
+        </Row>
         <Row>
           <Column large={6}>{this.renderInput('homepage', 'Your Personal Homepage')}</Column>
           <Column large={6}>{this.renderAutoInput('city', 'Your City', FounderLocationsPath)}</Column>

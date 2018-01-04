@@ -42,7 +42,7 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
   end
 
   def founder_params
-    params.require(:founder).permit(:city, :twitter, :linkedin, :homepage)
+    params.require(:founder).permit(:city, :twitter, :linkedin, :homepage, :unsubscribed)
   end
 
   def founder

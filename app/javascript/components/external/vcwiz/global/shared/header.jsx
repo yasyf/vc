@@ -191,7 +191,7 @@ export default class Header extends React.Component {
     if (isMobile()) {
       return (
         <Button onClick={this.goToLogin} color={Colors.SUCCESS}>
-          Log In
+          Log In{isMobile() ? ' (Existing User)' : ''}
         </Button>
       );
     } else {

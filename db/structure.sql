@@ -420,7 +420,8 @@ CREATE TABLE founders (
     photo character varying,
     access_token character varying,
     refresh_token character varying,
-    history_id bigint
+    history_id bigint,
+    unsubscribed boolean DEFAULT false NOT NULL
 );
 
 
@@ -2941,6 +2942,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171222074015'),
 ('20171227002601'),
 ('20171228000038'),
-('20171229082041');
+('20171229082041'),
+('20180104062301');
 
 

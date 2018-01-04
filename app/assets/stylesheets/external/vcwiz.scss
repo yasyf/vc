@@ -299,8 +299,8 @@ p.tight {
 
   .close-icon {
     position: absolute;
-    right: -10px;
-    top: -10px;
+    right: -17px;
+    top: -17px;
     z-index: 2;
     background: white;
     width: 35px;
@@ -486,6 +486,7 @@ img.reversed, i.reversed::before {
 
       @include on-mobile {
         padding: 1rem;
+        background-color: $grey;
       }
     }
   }
@@ -1985,7 +1986,17 @@ mark.highlighter {
 .settings-modal {
   @include small-modal;
 
+  &-top {
+    padding: 20px 30px 15px;
+  }
+
   &-bottom {
+    .buttons {
+      .columns {
+        text-align: center;
+      }
+    }
+
     .fields {
       .row {
         margin-top: 1.5em;

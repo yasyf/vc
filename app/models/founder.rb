@@ -185,7 +185,7 @@ class Founder < ApplicationRecord
 
   def as_json(options = {})
     super(options.reverse_merge(
-      only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage],
+      only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage, :unsubscribed, :email],
       methods: [:drf?, :primary_company, :utc_offset, :conversations, :events_with_meta, :stats, :scanner_enabled?]
     )).reverse_merge(
       target_investors: target_investors.includes(:intro_requests).order(stage: :asc, updated_at: :desc).as_json(include: [], methods: [:intro_requests])
