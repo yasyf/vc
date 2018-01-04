@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import OutreachBar from './outreach_bar';
 import FounderSettingsModal from '../settings/founder_settings_modal';
 import Flashes from './flashes';
+import Logo from './logo';
 
 export default class Header extends React.Component {
   static defaultProps = {
@@ -139,7 +140,7 @@ export default class Header extends React.Component {
         <TopBarLeft>
           <div className="title left">
             <a href={this.props.logoLinkPath}>
-              <h3><b>VCWiz</b></h3>
+              <Logo />
               <h5 className="faded subtitle">{this.props.subtitle}</h5>
             </a>
             <Flashes alert={!isMobile()} />

@@ -20,6 +20,7 @@ class ApplicationJob < ActiveJob::Base
   # Retries
   retry_on PG::UniqueViolation
   retry_on ActiveRecord::RecordNotUnique
+  retry_on ActiveRecord::Deadlocked
 
   # Temporary Failures
   retry_with_exp_backoff Redis::CommandError

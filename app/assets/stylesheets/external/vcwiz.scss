@@ -580,6 +580,12 @@ img.reversed, i.reversed::before {
   .title {
     cursor: pointer;
 
+    img.logo {
+      height: 30px;
+      margin-right: 0.75em;
+      vertical-align: sub;
+    }
+
     .line-icon {
       vertical-align: 0;
       font-size: 1.3em;
