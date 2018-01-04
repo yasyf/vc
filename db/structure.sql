@@ -421,7 +421,8 @@ CREATE TABLE founders (
     access_token character varying,
     refresh_token character varying,
     history_id bigint,
-    unsubscribed boolean DEFAULT false NOT NULL
+    unsubscribed boolean DEFAULT false NOT NULL,
+    token character varying
 );
 
 
@@ -1981,6 +1982,13 @@ CREATE UNIQUE INDEX index_founders_on_linkedin ON founders USING btree (linkedin
 
 
 --
+-- Name: index_founders_on_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_founders_on_token ON founders USING btree (token);
+
+
+--
 -- Name: index_founders_on_twitter; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2943,6 +2951,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171227002601'),
 ('20171228000038'),
 ('20171229082041'),
-('20180104062301');
+('20180104062301'),
+('20180104120408');
 
 

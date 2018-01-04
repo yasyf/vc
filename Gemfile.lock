@@ -657,6 +657,7 @@ DEPENDENCIES
   picky
   premailer-rails
   prop
+  public_suffix
   puma
   puma_worker_killer
   rack-timeout

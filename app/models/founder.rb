@@ -170,6 +170,11 @@ class Founder < ApplicationRecord
     }
   end
 
+  def token
+    update! token: Util.token unless super.present?
+    super
+  end
+
   def twitter=(twitter)
     twitter = twitter&.split('/')&.last || twitter
     super twitter&.first == '@' ? twitter[1..-1] : twitter

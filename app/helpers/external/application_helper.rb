@@ -18,6 +18,11 @@ module External::ApplicationHelper
     flash[:success] << message
   end
 
+  def flash_warning(warning)
+    flash[:warning] ||= []
+    flash[:warning] << warning
+  end
+
   def flash_failure(message)
     flash[:error] ||= []
     flash[:error] << message

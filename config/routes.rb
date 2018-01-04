@@ -62,13 +62,17 @@ Rails.application.routes.draw do
           get 'pixel/:token.png', action: :pixel, as: :pixel
         end
 
-        scope :investors, as: :investors, controller: 'vcwiz/investors'  do
+        scope :investors, as: :investors, controller: 'vcwiz/investors' do
           root action: 'index'
           get 'token/:token', action: :token, as: :token
           get 'signup'
           get 'settings'
           get 'contacts'
           post 'update_contacts'
+        end
+
+        scope :founders, as: :founders, controller: 'vcwiz/founders' do
+          get 'unsubscribe/(:token)', action: :unsubscribe, as: :unsubscribe
         end
       end
 

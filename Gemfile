@@ -87,6 +87,7 @@ gem 'browser'
 gem 'neography'
 gem 'email_reply_parser'
 gem 'prop'
+gem 'public_suffix'
 
 group :test do
   gem 'minitest', '~> 5.10', '!= 5.10.2'

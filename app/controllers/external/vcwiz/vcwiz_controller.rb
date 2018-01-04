@@ -132,7 +132,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
 
   def signup
     session[:signup_data] = signup_params
-    cookies.permanent[:login_domain] = signup_params[:domain]
+    cookies.permanent[:login_domain] = (PublicSuffix.domain(URI::parse(signup_params[:domain]).host) rescue nil)
     redirect_login
   end
 
