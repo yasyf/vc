@@ -52,9 +52,16 @@ class CompetitorCrunchbaseJob < ApplicationJob
         next if Competitor::NON_INVESTOR_TITLE.any? { |t| job.title.downcase.include?(t) }
         next unless (person = job.person).present?
         investor = Investor.from_crunchbase(person.permalink)
-        next unless investor.competitor != competitor
-        investor.update! competitor: competitor, role: job.title, description: person.bio
-        InvestorCrunchbaseJob.perform_later(investor.id)
+        if investor.present?
+          next unless investor.competitor != competitor
+          investor.update! competitor: competitor, role: job.title, description: person.bio
+          InvestorCrunchbaseJob.perform_later(investor.id)
+        else
+         investor = competitor.investors.where(first_name: person.first_name, last_name: person.last_name).first
+         next unless investor.present?
+         investor.update! crunchbase_id: person.permalink
+         InvestorCrunchbaseJob.perform_later(investor.id)
+        end
       end
     end
 

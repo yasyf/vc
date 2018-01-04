@@ -61,7 +61,10 @@ module Http::Crunchbase
 
     def self.find_investor_id(name, org = nil)
       results = api_get('/', name: name.gsub('&') { '\\&' }, types: 'investor')
-      (org.present? ? results.find { |r| r.organization_name&.downcase == org.downcase } : results.first)&.permalink
+      return results.first&.permalink unless org.present?
+      results.find do |result|
+        self.new(result.permalink).affiliated_companies.any? { |job| job.organization.name.downcase == org.downcase }
+      end&.permalink
     end
 
     private

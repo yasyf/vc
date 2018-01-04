@@ -2,4 +2,5 @@
 :queues:
   - long_now
   - long
+  - high_mem
   - low
