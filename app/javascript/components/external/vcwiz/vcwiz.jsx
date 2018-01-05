@@ -10,6 +10,49 @@ import {StorageRestoreStateKey, FounderPath} from './global/constants.js.erb';
 import { canUseDOM } from 'exenv';
 import Footer from './global/shared/footer';
 
+class GlobalErrorBoundary extends React.Component {
+  state = {
+    error: null
+  };
+
+  componentDidCatch(error, info) {
+    this.setState({error});
+    Raven.captureException(error, {extra: info});
+  }
+
+  onClick = () => Raven.showReportDialog();
+
+  renderDetails() {
+    if (Raven.lastEventId()) {
+      return (
+        <p>
+          Our team has already been notified, but we'd appreciate it if you could take 2 minutes to <a onClick={this.onClick}>fill out a crash report</a>.
+        </p>
+      );
+    } else {
+      return <p>Our team has been notified. We'll get right on fixing this!</p>;
+    }
+  }
+
+  renderError() {
+    return (
+      <div className="global-error" onClick={this.onClick}>
+        <h1>Oh no!</h1>
+        <p>We're sorry — something's gone wrong.</p>
+        {this.renderDetails()}
+      </div>
+    );
+  }
+
+  render() {
+    if (this.state.error) {
+      return this.renderError();
+    } else {
+      return this.props.children;
+    }
+  }
+}
+
 export default class VCWiz extends React.Component {
   static defaultProps = {
     header: null,
@@ -100,16 +143,18 @@ export default class VCWiz extends React.Component {
   render() {
     const { page, showIntro, showLogin, fullScreen, logoLinkPath, openLoginOnLoad, inlineSignup, subtitle } = this.props;
     return (
-      <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
-        <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} openLoginOnLoad={openLoginOnLoad} logoLinkPath={logoLinkPath} inlineSignup={inlineSignup} />
-        <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': fullScreen || !showIntro})} onClick={this.onClick}>
-          {this.renderHeader()}
-          {this.renderBody()}
-          {this.renderFooter()}
+      <GlobalErrorBoundary>
+        <div id="vcwiz" className={classNames('full-screen', 'vcwiz', `toplevel-${page}-page`)}>
+          <Header subtitle={subtitle} showIntro={showIntro} showLogin={showLogin} openLoginOnLoad={openLoginOnLoad} logoLinkPath={logoLinkPath} inlineSignup={inlineSignup} />
+          <div className={classNames('vcwiz-page', `${page}-page`, {'full-screen': fullScreen || !showIntro})} onClick={this.onClick}>
+            {this.renderHeader()}
+            {this.renderBody()}
+            {this.renderFooter()}
+          </div>
+          <Footer />
+          {this.props.modal}
         </div>
-        <Footer />
-        {this.props.modal}
-      </div>
+      </GlobalErrorBoundary>
     );
   }
 }
