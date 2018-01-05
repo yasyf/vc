@@ -41,7 +41,7 @@ class Graph
   end
 
   def self.add(addr)
-    node = Neography::Node.create({name: addr.name, email: addr.address, domain: addr.domain}, server)
+    node = Neography::Node.create({ name: addr.name, email: addr.address, domain: addr.domain }, server)
     begin
       node.set_labels('Person')
     rescue Neography::BadInputException

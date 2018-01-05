@@ -277,6 +277,17 @@ p.tight {
   display: inline-block;
 }
 
+.intro-path {
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: 1px;
+
+  & > div:not(:first-child) {
+    margin-left: 0.2em;
+  }
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1595,7 +1606,7 @@ mark.highlighter {
   .image-text-cell {
     .subheading {
       color: $grey;
-      font-size: smaller;
+      font-size: 0.9em;
     }
   }
 
@@ -1822,8 +1833,20 @@ mark.highlighter {
   }
 
   .interactions {
-    margin-bottom: 1em;
     font-weight: bold;
+
+    span:last-child {
+      display: inline-block;
+      margin-bottom: 1em;
+    }
+
+    .intro-path {
+      margin-bottom: 1em;
+
+      &.direct {
+        display: inline-flex;
+      }
+    }
   }
 
   @include on-mobile {
@@ -2303,6 +2326,12 @@ mark.highlighter {
 .research-modal {
   &-page-wrapper {
     width: 100%;
+  }
+
+  .intro-path {
+    & > div:not(:first-child) {
+      margin-left: 0.4em;
+    }
   }
 
   &-top {

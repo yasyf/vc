@@ -276,12 +276,11 @@ export default class PartnerTab extends React.Component {
     const { last_contact, travel_status, opened_at, open_city, overlap, entities, path } = interactions;
     const fragments = _.compact([
       this.renderPath(),
-      <span key="space">{' '}</span>,
-      last_contact && <span key="last_contact">You last heard from {first_name} {moment(last_contact).fromNow()}. </span>,
-      opened_at && !last_contact && <span key="last_contact">You emailed {first_name} {moment(opened_at).fromNow()}. </span>,
-      travel_status && <span key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}. </span>,
-      overlap && overlap.length && <span key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}! </span>,
-      entities.length && (!overlap || !overlap.length) && <span key="entities">{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}. </span>,
+      last_contact && <span key="last_contact">&nbsp;You last heard from {first_name} {moment(last_contact).fromNow()}.</span>,
+      opened_at && !last_contact && <span key="last_contact">&nbsp;You emailed {first_name} {moment(opened_at).fromNow()}.</span>,
+      travel_status && <span key="travel_status">&nbsp;Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}.</span>,
+      overlap && overlap.length && <span key="overlap">&nbsp;You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}!</span>,
+      entities.length && (!overlap || !overlap.length) && <span key="entities">&npsp;{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}.</span>,
     ]);
     if (!fragments.length) {
       return null;

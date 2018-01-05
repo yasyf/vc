@@ -6,6 +6,7 @@ import {ffetch, isLoggedIn} from '../utils';
 import IntroPath from '../competitors/intro_path';
 import inflection from 'inflection';
 import FakeLink from '../shared/fake_link';
+import {Textfit} from 'react-textfit';
 
 let pendingPaths = {};
 const fetchPaths = _.debounce(() => {
@@ -41,7 +42,7 @@ export default class CompetitorCell extends ImageTextCell {
   }
 
   processRow(props, row) {
-    const { subValue, value, ...rest } = super.processRow(props, row);
+    const { subValue, value, badge, ...rest } = super.processRow(props, row);
     return {
       id: row.id,
       value: <FakeLink href={FirmPath.resource(row.id, inflection.dasherize(row.name.toLowerCase()))} value={value} />,
@@ -50,6 +51,21 @@ export default class CompetitorCell extends ImageTextCell {
     };
   };
 
+  renderTextfit() {
+    return (
+      <Textfit key="value" mode="multi" min={this.props.min} max={this.props.max}>
+        <div className="textfit-cell" style={{height: (this.props.size * 2) - 15}}>
+          <div>
+            {this.state.value}
+            <div className="subheading">
+              {this.state.subValue}
+            </div>
+          </div>
+        </div>
+      </Textfit>
+    );
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (isLoggedIn() && prevState.id !== this.state.id) {
       fetchPath(this.state.id, path => {
@@ -57,14 +73,10 @@ export default class CompetitorCell extends ImageTextCell {
           return;
         }
         if (_.isEmpty(path)) {
-          this.setState({subValue: null});
+          this.setState({subValue: null, badge: null});
         } else {
-          const subValue = (
-            <span>
-              Link: <IntroPath path={path} fullName={this.state.textValue} fullSentence={false} short={this.props.shortLink} />
-            </span>
-          );
-          this.setState({subValue});
+          const subValue = <IntroPath path={path} short={true} />;
+          this.setState({subValue, badge: path.through.length});
         }
       });
     }

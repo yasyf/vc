@@ -1,83 +1,53 @@
 import React from 'react';
-import {firstName} from '../utils';
+import {fullName, initials, withSeparators} from '../utils';
+import ProfileImage from '../shared/profile_image';
+import classNames from 'classnames';
 
 export default class IntroPath extends React.Component {
   static defaultProps = {
-    fullSentence: true,
     short: false,
   };
+  
+  renderLink(person) {
+    const { short } = this.props;
+    const { first_name, email, linkedin } = person;
+    const href = linkedin ? `https://linkedin.com/in/${linkedin}` : `mailto:${email}?subject=Intro to ${fullName(person)}`;
+    return <a target="_blank" href={href}>{short ? first_name : fullName(person)}</a>;
+  }
 
-  renderStart() {
-    const { path, displayName, fullSentence } = this.props;
-    const { direct, first_hop_via, through } = path;
+  renderPerson = (person, i) => {
+    const { photo } = person;
+    return [
+      <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={25} /></div>,
+      <div key={`link-${i}`}>{this.renderLink(person)}</div>
+    ];
+  };
 
-    if (!fullSentence) {
-      return '';
-    }
+  renderPath() {
+    const { path, short } = this.props;
+    const { first_hop_via, through } = path;
 
-    if (direct) {
-      return `You are connected with ${displayName} `;
+    if (through.length === 1) {
+      return _.compact([
+        short ? null : <div key="info">You're connected to</div>,
+        <div key="link">{this.renderLink(through[0])}</div>,
+        <div key="via">by {first_hop_via}{short ? '' : '.'}</div>,
+      ]);
     } else {
-      return `You have a connection to ${displayName} `;
+      return withSeparators(i => <div key={`arr-${i}`}>&rarr;</div>, through.map(this.renderPerson));
     }
-  }
-
-  renderLink() {
-    const { path, fullName, short } = this.props;
-    const { through } = path;
-    const { name, email, linkedin } = through[0];
-    const href = linkedin ? `https://linkedin.com/in/${linkedin}` : `mailto:${email}?subject=Intro to ${fullName}`;
-    return <a target="_blank" href={href}>{short ? firstName(name) : name}</a>;
-  }
-
-  renderMiddle() {
-    const { path, fullName, fullSentence, short } = this.props;
-    const { direct, first_hop_via, through } = path;
-
-    if (direct) {
-      return <span key="middle">by {first_hop_via}</span>;
-    } else if (through.length === 1) {
-      if (fullSentence) {
-        return <span key="middle">through {this.renderLink()}</span>;
-      } else {
-        return <span key="middle">{this.renderLink()}</span>;
-      }
-    } else if (through.length === 2) {
-      const lastName = short ? firstName(through[1].name) : through[1].name;
-      if (fullSentence) {
-        return <span key="middle">through {lastName}, via {this.renderLink()}</span>;
-      } else {
-        return <span key="middle">{this.renderLink()} &rarr; {lastName}</span>;
-      }
-    } else {
-      let middleName = short ? firstName(through[1].name) : through[1].name
-      const lastParts = through[2].name.split(' ');
-      const lastName = short ? _.head(lastParts) : `${_.head(lastParts)} ${_.tail(lastParts).map(s => `${_.first(s)}.`).join(' ')}`;
-      if (fullSentence) {
-        return <span key="middle">through {middleName} and {lastName}, via {this.renderLink()}</span>;
-      } else {
-        return <span key="middle">{this.renderLink()} &rarr; {middleName} &rarr; {lastName}</span>;
-      }
-    }
-  }
-
-  renderEnd() {
-    const { fullSentence } = this.props;
-    if (!fullSentence) {
-      return '';
-    }
-    return '.';
   }
 
   render() {
-    const { path, name } = this.props;
+    const { path } = this.props;
+    const { through } = path;
     if (_.isEmpty(path)) {
       return null;
     }
-    return [
-      <span key="start">{this.renderStart()}</span>,
-      this.renderMiddle(),
-      <span key="end">{this.renderEnd()}</span>,
-    ];
+    return (
+      <div className={classNames('intro-path', through.length > 1 ? 'indirect' : 'direct')}>
+        {this.renderPath()}
+      </div>
+    );
   }
 }

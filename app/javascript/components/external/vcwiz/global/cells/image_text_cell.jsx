@@ -11,6 +11,7 @@ export default class ImageTextCell extends TextCell {
       src: _.get(row, props.imageKey),
       fallback: props.fallbackFn ? props.fallbackFn(row) : row[props.fallbackKey],
       verified: _.get(row, props.verifiedKey),
+      badge: _.get(row, props.badgeKey),
     };
   };
 
@@ -29,6 +30,7 @@ export default class ImageTextCell extends TextCell {
         fallback={this.state.fallback}
         size={this.props.size}
         verified={this.state.verified}
+        badge={this.state.badge}
         transparency={this.props.rowIndex % 2 ? 'F6F7F8' : 'FFFFFF'}
         className="floating-image"
       />

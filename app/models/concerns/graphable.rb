@@ -55,19 +55,20 @@ module Concerns
 
     def describe_path(path)
       return nil unless path.present?
-      if path.length == 1
-        { direct: true, first_hop_via: path.first.rel_type }
-      else
-        first, *rest = node_list_from_path(path).map(&:to_h)
-        first_person = Founder.where(email: first[:email]).first || Investor.where(email: first[:email]).first
-        through = [first.merge(linkedin: first_person&.linkedin)] + rest.map { |h| h.slice(:name) }
-        { direct: false, first_hop_via: path.first.rel_type, through: through }
+      puts path.to_s
+      list = node_list_from_path(path).map(&:to_h)
+      through = list.each_with_index.map do |node, i|
+        person = Founder.where(email: node[:email]).first || Investor.where(email: node[:email]).first
+        first_name, last_name = Util.split_name(node[:name])
+        email = i == 0 ? node[:email] : nil
+        { first_name: first_name, last_name: last_name, email: email, linkedin: person&.linkedin, photo: person&.photo }
       end
+      { first_hop_via: path.first.rel_type, through: through }
     end
 
     def node_list_from_path(path)
       nodes = [graph_node]
-      path[0...-1].each do |rel|
+      path.each do |rel|
         nodes << (rel.start_node == nodes.last ? rel.end_node : rel.start_node)
       end
       nodes.drop(1)
