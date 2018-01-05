@@ -14,7 +14,9 @@ module External::ReactServerHelper
       (function(){
         function hydrateComponent() {
           var root = document.getElementById('react-root-component');
-          WebpackerReact.render(root, WebpackerReact.registeredComponents["#{name}"]);      
+          Raven.context(function () {
+            WebpackerReact.render(root, WebpackerReact.registeredComponents["#{name}"]); 
+          });    
         }
         if (window.WebpackerReact) {
           hydrateComponent();
