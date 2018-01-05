@@ -192,9 +192,10 @@ class Message
         X-MC-User
         X-Mandrill-User
         X-Roving-ID
+        X-Eventbrite
        ).any? { |h| headers.key?(h) } ||
       recipients.any? do |a|
-        (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
+        (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
         (a.name.present? && (['mail delivery', 'support', 'team'].any? { |s| a.name.downcase.include?(s) }))
       end
     end
