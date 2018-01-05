@@ -43,9 +43,9 @@ Zhong.schedule do
       every(1.weeks, 'summaries', at: 'Sunday 17:30') { FounderSummaryJob.perform_later }
       every(1.day, 'industry', at: '00:00') { PropagateIndustryJob.perform_later }
       every(1.day, 'clean', at: '01:00') { CompanyCleanJob.perform_later }
-      every(1.hours, 'gmail') { FoundersGmailSyncJob.perform_later }
-      every(1.hours, 'investors') { FindInvestorsJob.perform_later }
-      every(1.hour, 'competitor_lists') { CompetitorListJob.perform_later }
+      every(1.hours, 'gmail',  skip_first_run: true) { FoundersGmailSyncJob.perform_later }
+      every(1.hours, 'investors',  skip_first_run: true) { FindInvestorsJob.perform_later }
+      every(1.hour, 'competitor_lists',  skip_first_run: true) { CompetitorListJob.perform_later }
     end
 
     category 'bulk' do
