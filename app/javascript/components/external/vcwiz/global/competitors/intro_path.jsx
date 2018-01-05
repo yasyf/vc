@@ -48,10 +48,10 @@ export default class IntroPath extends React.Component {
 
   render() {
     const { path } = this.props;
-    const { through } = path;
     if (_.isEmpty(path)) {
       return null;
     }
+    const { through } = path;
     return (
       <div className={classNames('intro-path', through.length > 1 ? 'indirect' : 'direct')}>
         {this.renderFull()}
