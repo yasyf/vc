@@ -32,7 +32,7 @@ class Entity < ApplicationRecord
   end
 
   def self.from_wiki(wiki, attrs = {})
-    name = CGI.unescape(wiki.split('wiki/').last.gsub("_", " "))
+    name = CGI.unescape(wiki.split('wiki/').last.gsub("_", " ")).split(' (')[0...-1].join(' (')
     where(wiki: wiki).first_or_create!(attrs.merge(name: name))
   end
 
