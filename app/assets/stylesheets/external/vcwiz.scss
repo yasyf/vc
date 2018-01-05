@@ -605,6 +605,10 @@ img.reversed, i.reversed::before {
 
   @include only-desktop {
     height: 85px;
+
+    .top-bar-left {
+      margin-top: 8px;
+    }
   }
 
   .title {
