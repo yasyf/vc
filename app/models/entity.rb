@@ -1,4 +1,6 @@
 class Entity < ApplicationRecord
+  has_many :person_entities, dependent: :destroy
+
   validates :name, presence: true, uniqueness: true, length: { minimum: 3 }
   validates :category, presence: true
 
@@ -23,14 +25,15 @@ class Entity < ApplicationRecord
 
   def self.from_cloud(entities)
     entities.to_a.map do |e|
-      next unless e.metadata.present?
-      next if (name = normalize(e.name)).length < 3
-      where(name: name).first_or_create! do |entity|
-        entity.category = e.type
-        entity.wiki = e.metadata['wikipedia_url']
-        entity.mid = e.metadata['mid']
-      end
+      next unless (wiki = e.metadata['wikipedia_url']).present?
+      next if normalize(e.name).length < 3
+      from_wiki(wiki, mid: e.metadata['mid'])
     end.compact
+  end
+
+  def self.from_wiki(wiki, attrs = {})
+    name = CGI.unescape(wiki.split('/').last.gsub("_", " "))
+    where(wiki: wiki).first_or_create!(attrs.merge(name: name))
   end
 
   def as_json(options = {})
