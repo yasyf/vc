@@ -7,7 +7,7 @@ class InvestorCrunchbaseJob < ApplicationJob
     investor = Investor.find(investor_id)
     unless investor.verified?
       investor.crunchbase_id = Http::Crunchbase::Person.find_investor_id(investor.name, investor.competitor.name)
-      investor.al_id = Http::AngelList::User.find_id(investor.name, investor.competitor.name)
+      investor.al_id = Http::AngelList::User.find_id(investor.name, org: investor.competitor.name)
       investor.populate_from_cb!
       investor.populate_from_al!
     end
