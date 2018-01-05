@@ -294,6 +294,10 @@ p.tight {
   display: flex;
   align-items: center;
 
+  img {
+    vertical-align: baseline;
+  }
+
   &.with-photos {
     position: relative;
     top: 1px;
