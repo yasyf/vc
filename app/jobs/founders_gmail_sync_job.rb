@@ -3,7 +3,7 @@ class FoundersGmailSyncJob < ApplicationJob
 
   def perform
     Founder.active(1.year.ago).where.not(history_id: nil).pluck(:id).each do |id|
-      FounderGmailSyncJob.perform_later id
+      FounderGmailSyncJob.set(wait: 30.minutes * rand).perform_later(id)
     end
   end
 end
