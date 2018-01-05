@@ -37,7 +37,11 @@ class Entity < ApplicationRecord
 
   def self.from_wiki(wiki, attrs = {})
     name = CGI.unescape(wiki.split('wiki/').last.gsub("_", " "))
-    where(wiki: wiki).first_or_create!(attrs.merge(name: name))
+    begin
+      where(wiki: wiki).first_or_create!(attrs.merge(name: name))
+    rescue ActiveRecord::RecordInvalid
+      where(name: name).first
+    end
   end
 
   def as_json(options = {})

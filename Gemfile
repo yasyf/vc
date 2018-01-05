@@ -21,10 +21,6 @@ gem 'jquery-rails'
 gem 'jquery-turbolinks'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -53,7 +49,7 @@ gem 'levenshtein-ffi', require: 'levenshtein'
 gem 'sentry-raven'
 gem 'roo'
 gem 'lograge'
-gem 'twitter', '~> 6.1.0'
+gem 'twitter', '~> 6.2.x'
 gem 'redis'
 gem 'redis-namespace'
 gem 'redis-rails'
@@ -61,10 +57,10 @@ gem 'sidekiq'
 gem 'zhong'
 gem 'textacular', '~> 5.0'
 gem 'gon'
-gem 'retriable', '~> 3.0'
+gem 'retriable', '~> 3.1.1'
 gem 'metainspector'
 gem 'feedjira'
-gem 'google-cloud-language'
+gem 'google-cloud-language', '0.27.1'
 gem 'google-cloud-storage'
 gem 'google-cloud-pubsub'
 gem 'gender_detector'
@@ -72,10 +68,10 @@ gem 'sidekiq-unique-jobs'
 gem 'curb', github: 'taf2/curb'
 gem 'clearbit'
 gem 'googlemaps-services'
-gem 'sinatra', '~>2.0', require: false
+gem 'sinatra', '~> 2.0', require: false
 gem 'rack-timeout'
 gem 'ruby-readability'
-gem 'countries', '~> 2.1', :require => 'countries/global'
+gem 'countries', '~> 2.1.x', :require => 'countries/global'
 gem 'execjs'
 gem 'geocoder'
 gem 'redcarpet'
@@ -90,7 +86,7 @@ gem 'prop'
 gem 'public_suffix'
 
 group :test do
-  gem 'minitest', '~> 5.10', '!= 5.10.2'
+  gem 'minitest', '~> 5.11.1'
   gem 'webmock'
 end
 
