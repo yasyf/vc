@@ -20,7 +20,7 @@ module Http::Crunchbase
     end
 
     def team
-      response.current_team || []
+      self.class.api_get("/#{@permalink}/current_team")
     end
 
     def locations
