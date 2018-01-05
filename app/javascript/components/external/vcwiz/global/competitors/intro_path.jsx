@@ -38,6 +38,14 @@ export default class IntroPath extends React.Component {
     }
   }
 
+  renderFull() {
+    const { short } = this.props;
+    return _.compact([
+      short ? null : <div key="link-text" className="link">Link:</div>,
+      ...this.renderPath(),
+    ]);
+  }
+
   render() {
     const { path } = this.props;
     const { through } = path;
@@ -46,7 +54,7 @@ export default class IntroPath extends React.Component {
     }
     return (
       <div className={classNames('intro-path', through.length > 1 ? 'indirect' : 'direct')}>
-        {this.renderPath()}
+        {this.renderFull()}
       </div>
     );
   }

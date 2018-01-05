@@ -2,7 +2,10 @@ import React from 'react';
 import ProfileImage from '../shared/profile_image';
 import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath, InvestorPath, CompanyPath} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import {ffetch, fullName, isMobile, sendEvent, withDots} from '../utils';
+import {
+  ffetch, fullName, isLoggedIn, isMobile, sendEvent,
+  withDots,
+} from '../utils';
 import Actions from '../actions';
 import Store from '../store';
 import PartnerTab from './partner_tab';
@@ -11,6 +14,8 @@ import showdown from 'showdown';
 import inflection from 'inflection';
 import Tabs from '../tabs/tabs';
 import FakeLink from '../shared/fake_link';
+import fetchCompetitorPath from '../fetch_competitor_path';
+import IntroPath from './intro_path';
 
 export default class CompetitorBase extends React.Component {
   constructor(props) {
@@ -18,13 +23,30 @@ export default class CompetitorBase extends React.Component {
     this.converter = new showdown.Converter();
     this.state = {
       tab: null,
+      path: null,
     };
     this.firstTabChange = true;
   }
 
+  componentWillMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   componentDidMount() {
+    if (!isLoggedIn()) {
+      return;
+    }
     if (this.props.item.id) {
       sendEvent('competitor_clicked', this.props.item.id);
+      fetchCompetitorPath(this.props.item.id, path => {
+        if (this.mounted && !_.isEmpty(path)) {
+          this.setState({path});
+        }
+      });
     }
   }
 
@@ -59,7 +81,7 @@ export default class CompetitorBase extends React.Component {
       <span key="dot">·</span>,
     ];
     return (
-      <div>
+      <div className="competitor-heading">
         <ProfileImage src={photo} size={50} className="inline-image" rounded={false} />
         <div className="heading">{name}</div>
         <div className="subheading">
@@ -94,6 +116,14 @@ export default class CompetitorBase extends React.Component {
       <span key={c.id}>{this.renderCompany(c)}</span>
     );
     return <p><b className="info-heading">Recent Investments:</b> {withDots(investments)}</p>
+  }
+
+  renderPath() {
+    const { path } = this.state;
+    if (!path) {
+      return null;
+    }
+    return <IntroPath path={path} />;
   }
 
   renderCompetitorInfo() {
@@ -157,6 +187,7 @@ export default class CompetitorBase extends React.Component {
       <Row>
         <Column large={8}>
           {this.renderHeading()}
+          {this.renderPath()}
           {this.renderCompetitorInfo()}
         </Column>
         <Column large={3} offsetOnLarge={1}>

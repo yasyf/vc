@@ -261,10 +261,9 @@ export default class PartnerTab extends React.Component {
   }
 
   renderPath() {
-    const { investor, interactions } = this.state;
-    const { first_name } = investor;
+    const { interactions } = this.state;
     const { path } = interactions;
-    return <IntroPath key="path" path={path} displayName={first_name} fullName={fullName(investor)} />;
+    return <IntroPath key="path" path={path} />;
   }
 
   renderInteractions() {
