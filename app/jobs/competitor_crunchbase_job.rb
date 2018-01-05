@@ -14,14 +14,19 @@ class CompetitorCrunchbaseJob < ApplicationJob
     competitor = Competitor.find(competitor_id)
 
     competitor.crunchbase_id ||= Http::Crunchbase::Organization.find_investor_id(competitor.name)
-    competitor.al_id ||= Http::AngelList::Startup.find_id(competitor.name, cb_id: competitor.crunchbase_id)
-
     begin
       competitor.save!
     rescue ActiveRecord::RecordInvalid => e
-      raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
       DuplicateCompetitorJob.perform_later competitor.id
       return
+    end
+
+    competitor.al_id ||= Http::AngelList::Startup.find_id(competitor.name, cb_id: competitor.crunchbase_id)
+    begin
+      competitor.save!
+    rescue ActiveRecord::RecordInvalid => e
+      Competitor.where(al_id: competitor.al_id).update_all al_id: nil
+      competitor.save!
     end
 
     cb_fund = competitor.crunchbase_fund
