@@ -185,12 +185,12 @@ export default class CompetitorBase extends React.Component {
   renderTop() {
     return (
       <Row>
-        <Column large={8}>
+        <Column large={9}>
           {this.renderHeading()}
           {this.renderPath()}
           {this.renderCompetitorInfo()}
         </Column>
-        <Column large={3} offsetOnLarge={1}>
+        <Column large={3}>
           {this.renderCompetitorSocial()}
         </Column>
       </Row>
