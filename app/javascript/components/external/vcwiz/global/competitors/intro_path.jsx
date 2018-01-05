@@ -26,7 +26,7 @@ export default class IntroPath extends React.Component {
 
   renderPerson = (person, i) => {
     if (_.isString(person)) {
-      return <div key={`link-${i}`}>person</div>;
+      return <div key={`link-${i}`}>{person}</div>;
     }
     const { hidePhotos } = this.props;
     const { photo } = person;
