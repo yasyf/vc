@@ -4,6 +4,10 @@ class Entity < ApplicationRecord
   validates :name, presence: true, uniqueness: true, length: { minimum: 3 }
   validates :category, presence: true
 
+  def nice_name
+    ')'.in?(name) ? name.split(' (')[0...-1].join(' (') : name
+  end
+
   def self.normalize(name)
     name.gsub(/\W/, ' ').squish.strip
   end
@@ -37,6 +41,6 @@ class Entity < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.reverse_merge(only: [:wiki])).merge(name: name.split(' (')[0...-1].join(' ('))
+    super(options.reverse_merge(only: [:wiki])).merge(name: nice_name)
   end
 end
