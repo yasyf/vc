@@ -52,7 +52,7 @@ export default class Hero extends React.Component {
           industryLimit={2}
           overflowY="hidden"
           applySuggestions={true}
-          shortLink={true}
+          hidePhotos={true}
           render={(header, body) => (
             <div>
               {header}

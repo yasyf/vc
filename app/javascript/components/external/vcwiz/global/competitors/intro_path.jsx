@@ -6,6 +6,7 @@ import classNames from 'classnames';
 export default class IntroPath extends React.Component {
   static defaultProps = {
     short: false,
+    hidePhotos: false,
   };
   
   renderLink(person) {
@@ -25,13 +26,14 @@ export default class IntroPath extends React.Component {
 
   renderPerson = (person, i) => {
     if (_.isString(person)) {
-      return person;
+      return <div key={`link-${i}`}>person</div>;
     }
+    const { hidePhotos } = this.props;
     const { photo } = person;
-    return [
-      <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={25} /></div>,
+    return _.compact([
+      hidePhotos ? null : <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={25} /></div>,
       <div key={`link-${i}`}>{this.renderLink(person)}</div>
-    ];
+    ]);
   };
 
   renderPath() {
@@ -59,13 +61,13 @@ export default class IntroPath extends React.Component {
   }
 
   render() {
-    const { path } = this.props;
+    const { path, hidePhotos } = this.props;
     if (_.isEmpty(path)) {
       return null;
     }
     const { through } = path;
     return (
-      <div className={classNames('intro-path', through.length > 1 ? 'indirect' : 'direct')}>
+      <div className={classNames('intro-path', through.length > 1 ? 'indirect' : 'direct', hidePhotos ? 'without-photos' : 'with-photos')}>
         {this.renderFull()}
       </div>
     );

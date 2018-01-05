@@ -28,6 +28,9 @@ export default class CompetitorCell extends ImageTextCell {
   };
 
   renderTextfit() {
+    if (this.props.hidePhotos) {
+      return super.renderTextfit();
+    }
     return (
       <Textfit key="value" mode="multi" min={this.props.min} max={this.props.max}>
         <div className="textfit-cell" style={{height: (this.props.size * 2) - 15}}>
@@ -51,7 +54,7 @@ export default class CompetitorCell extends ImageTextCell {
         if (_.isEmpty(path)) {
           this.setState({subValue: null, badge: null});
         } else {
-          const subValue = <IntroPath path={path} short={true} />;
+          const subValue = <IntroPath path={path} short={true} hidePhotos={this.props.hidePhotos} />;
           this.setState({subValue, badge: path.through.length});
         }
       });

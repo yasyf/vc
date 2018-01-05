@@ -293,8 +293,15 @@ p.tight {
 .intro-path {
   display: flex;
   align-items: center;
-  position: relative;
-  top: 1px;
+
+  &.with-photos {
+    position: relative;
+    top: 1px;
+  }
+
+  &.without-photos {
+    margin-top: -2px;
+  }
 
   &.indirect {
     .link {
