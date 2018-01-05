@@ -32,11 +32,11 @@ class Entity < ApplicationRecord
   end
 
   def self.from_wiki(wiki, attrs = {})
-    name = CGI.unescape(wiki.split('wiki/').last.gsub("_", " ")).split(' (')[0...-1].join(' (')
+    name = CGI.unescape(wiki.split('wiki/').last.gsub("_", " "))
     where(wiki: wiki).first_or_create!(attrs.merge(name: name))
   end
 
   def as_json(options = {})
-    super options.reverse_merge(only: [:name, :wiki])
+    super(options.reverse_merge(only: [:wiki])).merge(name: name.split(' (')[0...-1].join(' ('))
   end
 end
