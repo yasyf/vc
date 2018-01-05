@@ -44,4 +44,12 @@ let ravenOptions = {
 
 Raven.config('<%= ENV['SENTRY_SAFE_DSN'] %>', ravenOptions).install();
 Raven.setUserContext(gon.userContext);
+
+if (window.LogRocket) {
+  Raven.setDataCallback(function(data) {
+    data.extra.sessionURL = LogRocket.sessionURL;
+    return data;
+  });
+}
+
 window.Raven = Raven;
