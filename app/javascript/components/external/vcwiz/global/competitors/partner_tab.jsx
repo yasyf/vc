@@ -279,7 +279,7 @@ export default class PartnerTab extends React.Component {
       opened_at && !last_contact && <span key="last_contact">&nbsp;You emailed {first_name} {moment(opened_at).fromNow()}.</span>,
       travel_status && <span key="travel_status">&nbsp;Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}.</span>,
       overlap && overlap.length && <span key="overlap">&nbsp;You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}!</span>,
-      entities.length && (!overlap || !overlap.length) && <span key="entities">&npsp;{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}.</span>,
+      entities.length && (!overlap || !overlap.length) && <span key="entities">&nbsp;{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}.</span>,
     ]);
     if (!fragments.length) {
       return null;
