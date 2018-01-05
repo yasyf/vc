@@ -10,12 +10,23 @@ export default class IntroPath extends React.Component {
   
   renderLink(person) {
     const { short } = this.props;
-    const { first_name, email, linkedin } = person;
-    const href = linkedin ? `https://linkedin.com/in/${linkedin}` : `mailto:${email}?subject=Intro to ${fullName(person)}`;
-    return <a target="_blank" href={href}>{short ? first_name : fullName(person)}</a>;
+    const { first_name, email, linkedin, twitter } = person;
+    const href = _.first(_.compact([
+      linkedin && `https://linkedin.com/in/${linkedin}`,
+      email && `mailto:${email}`,
+      twitter && `https://twitter.com/${twitter}`,
+    ]));
+    if (href) {
+      return <a target="_blank" href={href}>{short ? first_name : fullName(person)}</a>;
+    } else {
+      return short ? first_name : fullName(person);
+    }
   }
 
   renderPerson = (person, i) => {
+    if (_.isString(person)) {
+      return person;
+    }
     const { photo } = person;
     return [
       <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={25} /></div>,
@@ -34,7 +45,8 @@ export default class IntroPath extends React.Component {
         <div key="via">by {first_hop_via}{short ? '' : '.'}</div>,
       ]);
     } else {
-      return withSeparators(i => <div key={`arr-${i}`}>&rarr;</div>, through.map(this.renderPerson));
+      const show = short ? (through.length === 2 ? through : [_.first(through), '...', _.last(through)]) : through;
+      return withSeparators(i => <div key={`arr-${i}`}>&rarr;</div>, show.map(this.renderPerson));
     }
   }
 

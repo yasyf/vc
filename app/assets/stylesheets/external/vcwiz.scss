@@ -1854,7 +1854,7 @@ mark.highlighter {
   .interactions {
     font-weight: bold;
 
-    span:last-child {
+    & > span:last-child {
       display: inline-block;
       margin-bottom: 1em;
     }
