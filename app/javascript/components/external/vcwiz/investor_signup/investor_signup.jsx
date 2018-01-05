@@ -33,7 +33,7 @@ export default class InvestorSignup extends React.Component {
             <p>
               Type your name to find yourself in the VCWiz database, and continue to the investor portal.
             </p>
-            <InvestorTypeahead onResult={this.onResult} />
+            <InvestorTypeahead onResult={this.onResult} transparency="E9E9E9" />
           </div>
         </div>
       );

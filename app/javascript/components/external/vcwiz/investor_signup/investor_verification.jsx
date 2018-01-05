@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from '../global/fields/input';
-import { InvestorsPath } from '../global/constants.js.erb';
+import { InvestorsPath, SupportEmail } from '../global/constants.js.erb';
 import {ffetch, getDomain} from '../global/utils';
 import {Button, Colors} from 'react-foundation';
 import Loader from '../global/shared/loader';

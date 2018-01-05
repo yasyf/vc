@@ -11,7 +11,7 @@ export default class InvestorTypeahead extends React.Component {
   };
 
   renderSuggestion = suggestion => {
-    return <PartnerHeading investor={suggestion} />
+    return <PartnerHeading transparency={this.props.transparency} investor={suggestion} />
   };
 
   onLoading = isLoading => {

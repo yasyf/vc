@@ -828,8 +828,11 @@ input.placeholded {
 }
 
 .investor_signup-page {
+  height: calc(100% - 160px);
+  overflow: hidden;
+
   &-header {
-    padding: 30px;
+    padding: 20px 50px;
   }
 
   &-body {
@@ -850,13 +853,41 @@ input.placeholded {
     }
 
     .standard-loader {
-      .loader {
-        padding-top: 8%;
-      }
+      position: absolute;
+      top: 30%;
+      left: 40%;
     }
 
     .search, .verification {
       width: 60%;
+    }
+
+    .search {
+      height: 100%;
+
+      .investor-typeahead {
+        height: 100%;
+        position: relative;
+
+        .typeahead {
+          position: relative;
+          height: 100%;
+
+          .react-autosuggest__suggestions-container--open {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding-top: 10px;
+
+            ul.react-autosuggest__suggestions-list {
+              height: 100%;
+              width: 100%;
+              overflow-y: scroll;
+              position: absolute;
+            }
+          }
+        }
+      }
     }
   }
 }

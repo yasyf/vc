@@ -17,13 +17,17 @@ module Http::AngelList
       self.name.demodulize.downcase
     end
 
-    def self.find_id(query, org = nil)
+    def self.find_id(query, org: nil, cb_id: nil)
       results = api_get('/search', query: query, type: resource.titleize)
-      filtered = results.select { |r| r['name']&.strip&.downcase == query.downcase }
-      return nil unless filtered.present?
-      return filtered.first['id'] unless org.present?
-      in_org = filtered.find { |r| new(r['id']).description.downcase.include?(org.downcase) }
-      in_org.present? ? in_org['id'] : nil
+      filtered = results.select do |r|
+        result = new(r['id'])
+        (
+          r['name']&.strip&.downcase == query.downcase &&
+          (org.blank? || result.description.downcase.include?(org.downcase)) &&
+          (cb_id.blank? || result.crunchbase.downcase.strip == cb_id.downcase.strip)
+        )
+      end.compact
+      filtered.present? ? filtered.first['id'] : nil
     end
 
     def self.search(query)
