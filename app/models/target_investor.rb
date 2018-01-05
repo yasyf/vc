@@ -1,5 +1,5 @@
 class TargetInvestor < ApplicationRecord
-  include Concerns::AttributeSortable
+  include Concerns::AttributeArrayable
   include Concerns::Eventable
   include Concerns::Graphable
 
@@ -50,8 +50,8 @@ class TargetInvestor < ApplicationRecord
   after_commit :fetch_email!, on: :create
   after_commit :refresh_founder!, on: :create
 
-  sort :industry
-  sort :fund_type
+  array :industry
+  array :fund_type
 
   actions :state_changed, :investor_clicked, :investor_opened, :investor_replied, :intro_requested
 

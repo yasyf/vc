@@ -1,6 +1,6 @@
 class Investor < ApplicationRecord
   extend Concerns::Ignorable
-  include Concerns::AttributeSortable
+  include Concerns::AttributeArrayable
   include Concerns::Cacheable
   include Concerns::Twitterable
   include Concerns::Ignorable
@@ -37,8 +37,8 @@ class Investor < ApplicationRecord
   validates :homepage, uniqueness: { allow_nil: true }
   validates :photo, uniqueness: { allow_nil: true }
 
-  sort :industry
-  sort :fund_type
+  array :industry
+  array :fund_type
   enum gender: GENDERS
 
   before_save :titleize_role

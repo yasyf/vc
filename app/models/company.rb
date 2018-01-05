@@ -1,7 +1,7 @@
 class Company < ActiveRecord::Base
   include Concerns::Cacheable
   include ActionView::Helpers::NumberHelper
-  include Concerns::AttributeSortable
+  include Concerns::AttributeArrayable
   include Concerns::Domainable
 
   has_one :tweeter, as: :owner, dependent: :destroy
@@ -22,7 +22,7 @@ class Company < ActiveRecord::Base
   validates :al_id, uniqueness: { allow_nil: true }
   validates :capital_raised, presence: true, numericality: { only_integer: true }
 
-  sort :industry
+  array :industry
 
   scope :pitched, -> { joins(:pitches) }
   scope :decided, -> { pitched.where('pitches.decision IS NOT NULL') }

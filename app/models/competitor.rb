@@ -1,5 +1,5 @@
 class Competitor < ApplicationRecord
-  include Concerns::AttributeSortable
+  include Concerns::AttributeArrayable
   include Concerns::Domainable
 
   COMPETITORS = {
@@ -84,9 +84,9 @@ class Competitor < ApplicationRecord
   CLOSEST_INDUSTRY_THRESHOLD = 0.4
   HUB_THRESHOLD = 50
 
-  sort :industry
-  sort :fund_type
-  sort :location
+  array :industry
+  array :fund_type
+  array :location
 
   has_many :investors
   has_many :target_investors, through: :investors
