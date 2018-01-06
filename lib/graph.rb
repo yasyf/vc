@@ -18,7 +18,9 @@ class Graph
     script = <<-CYPHER
       MATCH (other:Person { domain: {domain} }), path = shortestPath((me)-[*1..#{limit}]-(other))
       WHERE id(me) = {neo_id}
-      RETURN path
+      RETURN path, reduce(count = 0, r IN relationships(path) | count + coalesce(r.count, 0)) AS total
+      ORDER BY total DESC
+      LIMIT 1;
     CYPHER
     result = server.execute_query(script, neo_id: n.neo_id.to_i, domain: domain)['data']
     return [] unless result.present?
