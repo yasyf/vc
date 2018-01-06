@@ -30,7 +30,7 @@ class Entity < ApplicationRecord
   def self.from_cloud(entities)
     entities.to_a.map do |e|
       next unless (wiki = e.metadata['wikipedia_url']).present?
-      next if normalize(e.name).length < 3
+      next if normalize(e.name).length <= 3
       from_wiki(wiki, mid: e.metadata['mid'])
     end.compact
   end
