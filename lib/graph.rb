@@ -9,22 +9,54 @@ class Graph
     @relationship_indexes ||= server.list_relationship_indexes
   end
 
-  def self.shortest_path(n1, n2, limit = 4)
+  def self.shortest_paths(n1, n2)
     return [] unless n1.present? && n2.present?
-    n1.shortest_path_to(n2).depth(limit).rels.to_a.first
+    script = all_sp_query 'other:Person', 'id(me) = {neo_id_1} AND id(other) = {neo_id_2}'
+    fetch_rels script, neo_id_1: n1.neo_id.to_i, neo_id_2: n2.neo_id.to_i
   end
 
-  def self.shortest_path_to_domain(n, domain, limit = 4)
-    script = <<-CYPHER
-      MATCH (other:Person { domain: {domain} }), path = shortestPath((me)-[*1..#{limit}]-(other))
-      WHERE id(me) = {neo_id}
-      RETURN path, reduce(count = 0, r IN relationships(path) | count + coalesce(r.count, 0)) AS total
-      ORDER BY total DESC
-      LIMIT 1;
-    CYPHER
-    result = server.execute_query(script, neo_id: n.neo_id.to_i, domain: domain)['data']
+  def self.count_shortest_paths(n1, n2)
+    return 0 unless n1.present? && n2.present?
+    script = all_sp_count_query 'other:Person', 'id(me) = {neo_id_1} AND id(other) = {neo_id_2}'
+    fetch_count script, neo_id_1: n1.neo_id.to_i, neo_id_2: n2.neo_id.to_i
+  end
+
+  def self.shortest_paths_to_domain(n, domain)
+    script = all_sp_query 'other:Person { domain: {domain} }', 'id(me) = {neo_id}'
+    fetch_rels script, neo_id: n.neo_id.to_i, domain: domain
+  end
+
+  def self.count_shortest_paths_to_domain(n, domain)
+    script = all_sp_count_query 'other:Person { domain: {domain} }', 'id(me) = {neo_id}'
+    fetch_count script, neo_id: n.neo_id.to_i, domain: domain
+  end
+
+  def self.fetch_count(script, attrs = {})
+    result = server.execute_query(script, attrs)['data']
+    result.first.first
+  end
+
+  def self.fetch_rels(script, attrs = {})
+    result = server.execute_query(script, attrs)['data']
     return [] unless result.present?
     result.first.first['relationships'].map { |rel| Neography::Relationship.load(rel, db=server) }
+  end
+
+  def self.all_sp_query(match, where, limit = 4)
+    <<-CYPHER
+      MATCH (#{match}), path = shortestPath((me)-[*1..#{limit}]-(other))
+      WHERE #{where}
+      RETURN path, reduce(count = 0, r IN relationships(path) | count + coalesce(r.count, 0)) AS total
+      ORDER BY total DESC;
+    CYPHER
+  end
+
+  def self.all_sp_count_query(match, where, limit = 4)
+    <<-CYPHER
+      MATCH (#{match}), path = shortestPath((me)-[*1..#{limit}]-(other))
+      WHERE #{where}
+      RETURN count(*);
+    CYPHER
   end
 
   def self.connect(type, n1, n2)
@@ -40,7 +72,7 @@ class Graph
 
   def self.increment(type, n1, n2)
     connect(type, n1, n2).tap do |rel|
-      rel[:count] = (rel[:count] || 0) + 1
+      rel[:count] = (rel[:count] || 0) + 1 if rel.present?
     end
   end
 

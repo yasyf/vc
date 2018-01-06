@@ -12,21 +12,38 @@ module Concerns
       end
     end
 
-    def path_to_node(node)
-      describe_path Graph.shortest_path(graph_node, node)
+    def paths_to_node(node)
+      describe_paths Graph.shortest_paths(graph_node, node)
     end
 
-    def path_to_addr(addr)
+    def count_paths_to_node(node)
+      Graph.count_shortest_paths(graph_node, node)
+    end
+
+    def paths_to_addr(addr)
       return nil unless (other = self.class.node_from_addr(addr)).present?
-      path_to other
+      paths_to other
     end
 
-    def path_to(other)
-      path_to_node other.graph_node
+    def count_paths_to_addr(addr)
+      return 0 unless (other = self.class.node_from_addr(addr)).present?
+      count_paths_to other
     end
 
-    def path_to_domain(domain)
-      describe_path Graph.shortest_path_to_domain(graph_node, domain)
+    def paths_to(other)
+      paths_to_node other.graph_node
+    end
+
+    def count_paths_to(other)
+      count_paths_to_node other.graph_node
+    end
+
+    def paths_to_domain(domain)
+      describe_paths Graph.shortest_paths_to_domain(graph_node, domain)
+    end
+
+    def count_paths_to_domain(domain)
+      Graph.count_shortest_paths_to_domain(graph_node, domain)
     end
 
     def connect_to!(other, type)
@@ -52,6 +69,10 @@ module Concerns
     end
 
     private
+
+    def describe_paths(paths)
+      paths.map { |path| describe_path(path) }.compact
+    end
 
     def describe_path(path)
       return nil unless path.present?
