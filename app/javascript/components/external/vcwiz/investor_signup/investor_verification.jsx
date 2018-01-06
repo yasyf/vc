@@ -74,6 +74,7 @@ export default class InvestorVerification extends React.Component {
       );
     }
     const error = this.renderError();
+    const disabled = !!error || !email || !getDomain(email);
     return (
       <div className="verification">
         Enter your {investor.competitor.name} address to continue
@@ -82,9 +83,10 @@ export default class InvestorVerification extends React.Component {
           name="email"
           value={email}
           onChange={this.onChange}
+          onSubmit={disabled ? undefined : this.checkEmail}
           placeholder={investor.competitor.domain ? `${investor.first_name.toLowerCase()}@${investor.competitor.domain}` : undefined}
         />
-        <Button onClick={this.checkEmail} color={Colors.SUCCESS} isDisabled={!!error || !email || !getDomain(email)}>
+        <Button onClick={this.checkEmail} color={Colors.SUCCESS} isDisabled={disabled}>
           Continue
         </Button>
       </div>

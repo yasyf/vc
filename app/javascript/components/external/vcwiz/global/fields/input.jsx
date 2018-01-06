@@ -3,6 +3,7 @@ import React from 'react';
 export default class Input extends React.Component {
   static defaultProps = {
     wrap: true,
+    onSubmit: e => e.preventDefault(),
     type: 'text',
     showLabel: false,
     onBlur: _.noop,
@@ -85,7 +86,7 @@ export default class Input extends React.Component {
   render() {
     if (this.props.wrap) {
       return (
-        <form ref={this.props.formRef}>
+        <form ref={this.props.formRef} onSubmit={this.props.onSubmit}>
           {this.renderInputAndLabel()}
         </form>
       );
