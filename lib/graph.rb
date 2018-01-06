@@ -36,6 +36,12 @@ class Graph
     )
   end
 
+  def self.increment(type, n1, n2)
+    connect(type, n1, n2).tap do |rel|
+      rel[:count] = (rel[:count] || 0) + 1
+    end
+  end
+
   def self.get(addr)
     find(addr) || add(addr)
   end

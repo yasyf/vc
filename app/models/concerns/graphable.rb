@@ -30,21 +30,21 @@ module Concerns
     end
 
     def connect_to!(other, type)
-      Graph.connect(type, graph_node, other.graph_node)
+      Graph.increment(type, graph_node, other.graph_node)
     end
 
     def connect_from!(other, type)
-      Graph.connect(type, other.graph_node, graph_node)
+      Graph.increment(type, other.graph_node, graph_node)
     end
 
     def connect_to_addr!(addr, type)
       return nil unless (other = self.class.node_from_addr(addr)).present?
-      Graph.connect(type, graph_node, other)
+      Graph.increment(type, graph_node, other)
     end
 
     def connect_from_addr!(addr, type)
       return nil unless (other = self.class.node_from_addr(addr)).present?
-      Graph.connect(type, other, graph_node)
+      Graph.increment(type, other, graph_node)
     end
 
     def graph_node
