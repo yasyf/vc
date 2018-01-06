@@ -28,6 +28,7 @@ module GoogleApi
       begin
         response = list_histories
       rescue Google::Apis::ClientError
+        @skip_graph = @user.history_id != 0
         sync_full!
         return
       end
@@ -68,7 +69,7 @@ module GoogleApi
 
     def process_message(message)
       return unless message.present?
-      Message.new(message).process!(@user)
+      Message.new(message).process!(@user, @skip_graph)
     end
 
     %w(thread message).each do |s|

@@ -82,12 +82,12 @@ class Message
     @intro_request ||= self.class.intro_request(text)
   end
 
-  def process!(founder)
+  def process!(founder, skip_graph = false)
     return if sent_to?(ENV['MAILGUN_EMAIL'])
     if from.address == founder.email || from.name == founder.name
-      process_outgoing!(founder)
+      process_outgoing!(founder, skip_graph)
     else
-      process_incoming!(founder)
+      process_incoming!(founder, skip_graph)
     end
   rescue Mail::Field::IncompleteParseError
     # ignored
@@ -103,8 +103,8 @@ class Message
     end
   end
 
-  def process_incoming!(founder)
-    founder.connect_from_addr!(from, :email) if valid_connection?(from)
+  def process_incoming!(founder, skip_graph)
+    founder.connect_from_addr!(from, :email) if valid_connection?(from) && !skip_graph
     target = TargetInvestor.from_addr(founder, from, create: true)
     return unless target.present?
     stage = self.class.stage(reply_text, sentiment)
@@ -133,9 +133,9 @@ class Message
     target.save!
   end
 
-  def process_outgoing!(founder)
+  def process_outgoing!(founder, skip_graph)
     recipients.each do |addr|
-      founder.connect_to_addr!(addr, :email) if valid_connection?(addr)
+      founder.connect_to_addr!(addr, :email) if valid_connection?(addr) && !skip_graph
       target = TargetInvestor.from_addr(founder, addr, create: true)
       next unless target.present?
       stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
