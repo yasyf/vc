@@ -40,7 +40,7 @@ class Graph
 
   def self.increment(type, n1, n2)
     connect(type, n1, n2).tap do |rel|
-      rel[:count] = (rel[:count] || 0) + 1
+      rel[:count] = (rel[:count] || 0) + 1 if rel.present?
     end
   end
 
