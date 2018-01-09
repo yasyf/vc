@@ -63,7 +63,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
             investor.update! competitor: competitor, role: job.title, description: person.bio
           rescue ActiveRecord::RecordInvalid
             other = competitor.investors.where(first_name: investor.first_name, last_name: investor.last_name).first!
-            investor.update! crunchbase_id: nil
+            investor.reload.update! crunchbase_id: nil
             other.update! crunchbase_id: person.permalink
             investor.destroy!
             InvestorCrunchbaseJob.perform_later(other.id)
