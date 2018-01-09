@@ -68,7 +68,15 @@ module Concerns
       person = Founder.where(email: node[:email]).first || Investor.where(email: node[:email]).first
       first_name, last_name = Util.split_name(node[:name])
       email = email ? node[:email] : nil
-      { first_name: first_name, last_name: last_name, email: email, linkedin: person&.linkedin, twitter: person&.twitter, photo: person&.photo }
+      {
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        linkedin: person&.linkedin,
+        twitter: person&.twitter,
+        photo: person&.photo,
+        id: Digest::MD5.hexdigest(node[:email]),
+      }
     end
 
     def describe_paths(paths)

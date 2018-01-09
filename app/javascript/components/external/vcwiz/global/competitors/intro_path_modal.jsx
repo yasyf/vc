@@ -6,6 +6,9 @@ import StandardLoader from '../shared/standard_loader';
 import inflection from 'inflection';
 import {CompetitorsPath, InvestorsPath, IntroPathTypes} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
+import Graph from 'react-graph-vis';
+import Store from '../store';
+import classNames from 'classnames';
 
 export default class IntroPathModal extends React.Component {
   state = {
@@ -14,12 +17,29 @@ export default class IntroPathModal extends React.Component {
     counts: {},
   };
 
+  static graphFromPaths(paths) {
+    const founder = Store.get('founder', {});
+    const nodes = _.uniq(_.flatMap(paths, ({through}) => through.map((node, i) => ({
+      id: node.id,
+      label: node.first_name,
+      image: node.photo,
+      shape: node.photo ? 'circularImage' : 'circle',
+    })))).concat([{id: 'me', label: founder.first_name, image: founder.photo, shape: 'circularImage'}]);
+    console.log(nodes);
+    const edges = _.uniq(_.flatMap(paths, ({through}) => _.compact(_.map(through, (node, i) => ({
+      from: i === 0 ? 'me' : through[i - 1].id,
+      to: node.id,
+    })))));
+    return { nodes, edges };
+  }
+
   componentDidMount() {
     const { path, id } = this.props;
     ffetch(path.resource(id, 'intro_paths')).then(({paths}) => {
       const startCount = _.uniq(_.map(paths, ({through}) => _.first(through))).length;
       const endCount = _.uniq(_.map(paths, ({through}) => _.last(through))).length;
-      this.setState({paths, startCount, endCount, loading: false});
+      const graph = IntroPathModal.graphFromPaths(paths);
+      this.setState({paths, startCount, endCount, graph, loading: false});
     });
   }
 
@@ -55,10 +75,35 @@ export default class IntroPathModal extends React.Component {
   }
 
   renderGraph() {
-    return null;
+    const { count } = this.props;
+    if (count <= 1) {
+      return null;
+    }
+    const { graph } = this.state;
+    return <Graph graph={graph} options={{
+      nodes: {
+        color: 'rgba(48, 116, 238, 0.3)',
+        font: {
+          size: 16,
+          face: 'Circular Std',
+        },
+      },
+      edges: {
+        width: 2,
+        arrowStrikethrough: false,
+        smooth: true,
+      },
+      layout: {
+        randomSeed: 22,
+      },
+      interaction: {
+        zoomView: false,
+      },
+    }} />;
   }
 
   renderModal() {
+    const { count } = this.props;
     const { loading, paths } = this.state;
     if (loading) {
       return <StandardLoader />;
@@ -66,7 +111,7 @@ export default class IntroPathModal extends React.Component {
     return (
       <div className="intro_paths">
         {this.renderInfo()}
-        <div className="paths">
+        <div className={classNames('paths', {'no-graph': count <= 1})}>
           {paths.map(this.renderPath)}
         </div>
         {this.renderGraph()}
