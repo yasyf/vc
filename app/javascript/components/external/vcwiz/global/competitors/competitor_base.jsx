@@ -123,7 +123,7 @@ export default class CompetitorBase extends React.Component {
 
   renderPath() {
     const { path } = this.state;
-    if (!path) {
+    if (!_.get(path, 'count')) {
       return null;
     }
     return <IntroPathCount {...path} path={IntroPathTypes.COMPETITOR} id={this.props.item.id} />;

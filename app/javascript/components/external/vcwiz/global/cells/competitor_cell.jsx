@@ -32,7 +32,7 @@ export default class CompetitorCell extends ImageTextCell {
         if (!this.mounted) {
           return;
         }
-        if (_.isEmpty(path)) {
+        if (!_.get(path, 'count')) {
           this.setState({subValue: null, badge: null});
         } else {
           const subValue =

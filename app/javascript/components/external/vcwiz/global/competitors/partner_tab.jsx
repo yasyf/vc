@@ -263,7 +263,7 @@ export default class PartnerTab extends React.Component {
   renderPath() {
     const { interactions } = this.state;
     const { paths } = interactions;
-    if (_.isEmpty(paths)) {
+    if (!_.get(paths, 'count')) {
       return null;
     }
     return <IntroPathCount key="path" {...paths} path={IntroPathTypes.INVESTOR} id={this.props.investor.id} />;
