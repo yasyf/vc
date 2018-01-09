@@ -10,6 +10,12 @@ import { canUseDOM } from 'exenv';
 import Store from '../store';
 import classNames from 'classnames';
 
+if (canUseDOM) {
+  // eslint-disable-next-line global-require
+  const Graph = require('react-graph-vis');
+}
+
+
 export default class IntroPathModal extends React.Component {
   state = {
     loading: true,
@@ -78,8 +84,6 @@ export default class IntroPathModal extends React.Component {
     if (!canUseDOM) {
       return null;
     }
-    // eslint-disable-next-line global-require
-    const Graph = require('react-graph-vis');
     const { count } = this.props;
     if (count <= 1) {
       return null;
