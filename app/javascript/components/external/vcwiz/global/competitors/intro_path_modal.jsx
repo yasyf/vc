@@ -6,7 +6,7 @@ import StandardLoader from '../shared/standard_loader';
 import inflection from 'inflection';
 import {CompetitorsPath, InvestorsPath, IntroPathTypes} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
-import Graph from 'react-graph-vis';
+import { canUseDOM } from 'exenv';
 import Store from '../store';
 import classNames from 'classnames';
 
@@ -75,6 +75,11 @@ export default class IntroPathModal extends React.Component {
   }
 
   renderGraph() {
+    if (!canUseDOM) {
+      return null;
+    }
+    // eslint-disable-next-line global-require
+    const Graph = require('react-graph-vis');
     const { count } = this.props;
     if (count <= 1) {
       return null;
