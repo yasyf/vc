@@ -3,7 +3,7 @@ import {doNotPropagate, initials} from '../utils';
 import ProfileImage from '../shared/profile_image';
 import IntroPathModal from './intro_path_modal';
 
-humanize = pair => {
+const humanize = pair => {
   if (!pair.length) {
     return [];
   } else if (pair.length === 1) {
@@ -55,7 +55,7 @@ export default class IntroPathCount extends React.Component {
       return _.compact([
         ...humanize(show.map(this.renderPerson)),
         remaining ? <div key="post">{short ? '&' : 'and'} {remaining} others</div> : null,
-        <div key="post2">can intro{short ? '' : 'duce you')</div>,
+        <div key="post2">can intro{short ? '' : 'duce you'}</div>,
       ]);
     }
   }

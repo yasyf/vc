@@ -31,7 +31,6 @@ export default class IntroPathModal extends React.Component {
       image: node.photo,
       shape: node.photo ? 'circularImage' : 'circle',
     })))).concat([{id: 'me', label: founder.first_name, image: founder.photo, shape: 'circularImage'}]);
-    console.log(nodes);
     const edges = _.uniq(_.flatMap(paths, ({through}) => _.compact(_.map(through, (node, i) => ({
       from: i === 0 ? 'me' : through[i - 1].id,
       to: node.id,
