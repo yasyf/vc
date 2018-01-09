@@ -1,7 +1,17 @@
 import React from 'react';
-import {doNotPropagate, humanizeList, initials} from '../utils';
+import {doNotPropagate, initials} from '../utils';
 import ProfileImage from '../shared/profile_image';
 import IntroPathModal from './intro_path_modal';
+
+humanize = pair => {
+  if (!pair.length) {
+    return [];
+  } else if (pair.length === 1) {
+    return[ _.first(pair)];
+  } else {
+    return [_.first(pair), <div key="comma">,</div>, _.last(pair)];
+  }
+};
 
 export default class IntroPathCount extends React.Component {
   static defaultProps = {
@@ -37,15 +47,15 @@ export default class IntroPathCount extends React.Component {
     const remaining = nodes.length - show.length;
     if (direct) {
       return _.compact([
-        <div key="pre">You're connected{short ? '' : ' directly'} to</div>,
-        ...humanizeList(show.map(this.renderPerson)),
-        remaining ? <div key="post">and {remaining} others</div> : null,
+        <div key="pre">{short ? 'C' : "You're c"}onnected{short ? '' : ' directly'} to</div>,
+        ...humanize(show.map(this.renderPerson)),
+        remaining ? <div key="post">{short ? '&' : 'and'} {remaining} others</div> : null,
       ]);
     } else {
       return _.compact([
-        ...humanizeList(show.map(this.renderPerson)),
-        remaining ? <div key="post">and {remaining} others</div> : null,
-        <div key="post2">can introduce you</div>,
+        ...humanize(show.map(this.renderPerson)),
+        remaining ? <div key="post">{short ? '&' : 'and'} {remaining} others</div> : null,
+        <div key="post2">can intro{short ? '' : 'duce you')</div>,
       ]);
     }
   }
