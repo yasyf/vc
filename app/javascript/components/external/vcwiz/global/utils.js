@@ -220,3 +220,9 @@ export const preloadImage = path => {
   document.head.appendChild(preload);
 };
 export const preloadImages = images => images.forEach(preloadImage);
+
+export const doNotPropagate = e => {
+  e.preventDefault();
+  e.stopPropagation();
+  return false;
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import {humanizeList, initials} from '../utils';
+import {doNotPropagate, humanizeList, initials} from '../utils';
 import ProfileImage from '../shared/profile_image';
 import IntroPathModal from './intro_path_modal';
 
@@ -13,18 +13,17 @@ export default class IntroPathCount extends React.Component {
   };
 
   openModal = e => {
-    e.preventDefault();
-    e.stopPropagation();
+    doNotPropagate(e);
     this.setState({modalOpen: true});
   };
 
   closeModal = () => this.setState({modalOpen: false});
 
   renderPerson = (person, i) => {
-    const { short } = this.props;
+    const { short, direct, count } = this.props;
     const { photo, first_name } = person;
     return _.compact([
-      short ? null : <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={25} /></div>,
+      (short || (direct && count === 1)) ? null : <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={25} /></div>,
       <div key={`link-${i}`}>{first_name}</div>
     ]);
   };
@@ -68,7 +67,11 @@ export default class IntroPathCount extends React.Component {
     if (!modalOpen) {
       return null;
     }
-    return <IntroPathModal onClose={this.closeModal} {...this.props} />;
+    return (
+      <div onClick={doNotPropagate}>
+        <IntroPathModal onClose={this.closeModal} {...this.props} />
+      </div>
+    );
   }
 
   render() {
