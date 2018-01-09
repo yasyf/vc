@@ -14,6 +14,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render json: { interactions: investor.interactions(current_external_founder) }
   end
 
+  def intro_paths
+    render json: { paths: current_external_founder.paths_to(investor) }
+  end
+
   def review
     render json: { review: investor.review }
   end

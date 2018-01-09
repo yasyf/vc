@@ -1,4 +1,4 @@
-import {CompetitorsIntroPathsPath, StoragePrefix} from './constants.js.erb';
+import {CompetitorsIntroPathCountsPath, StoragePrefix} from './constants.js.erb';
 import {ffetch} from './utils';
 import {LocalStorage} from './storage.js.erb';
 
@@ -8,7 +8,7 @@ const fetchPaths = _.debounce(() => {
   const pending = pendingPaths;
   pendingPaths = {};
 
-  ffetch(`${CompetitorsIntroPathsPath}?ids=${Object.keys(pending).join(',')}`).then(({intro_paths}) => {
+  ffetch(`${CompetitorsIntroPathCountsPath}?ids=${Object.keys(pending).join(',')}`).then(({intro_paths}) => {
     Object.entries(pending).forEach(([id, cb]) => {
       const path = intro_paths[id] || {};
       LocalStorage.setExpr(`${StoragePrefix}::IntroPath::${id}`, path, 60*60*24);

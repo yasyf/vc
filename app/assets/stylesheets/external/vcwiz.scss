@@ -290,31 +290,62 @@ p.tight {
   display: inline-block;
 }
 
-.intro-path {
+.intro_path-modal {
+  @include small-modal;
+
+  &-wrapper {
+    .metric-wrapper {
+      display: flex;
+      justify-content: center;
+      font-size: 2em;
+      align-items: center;
+
+      .metric {
+        margin-right: 0.4em;
+        font-size: 2em;
+        font-weight: bold;
+        color: $success;
+      }
+
+      .caption {
+        text-transform: capitalize;
+      }
+    }
+
+    .paths {
+      overflow-y: auto;
+      max-height: 80vh;
+
+      .fallback {
+        font-size: 1em;
+      }
+    }
+  }
+}
+
+
+.intro-path, .intro-path-count {
   display: flex;
   align-items: center;
+}
+
+.intro-path-count {
+  & > div:not(:first-child) {
+    margin-left: 0.3em;
+  }
+}
+
+.intro-path {
+  justify-content: center;
+  padding: 50px;
+  font-size: larger;
 
   img {
     vertical-align: baseline;
   }
 
-  &.with-photos {
-    position: relative;
-    top: 1px;
-  }
-
-  &.without-photos {
-    margin-top: -2px;
-  }
-
-  &.indirect {
-    .link {
-      font-size: 1.1em;
-    }
-  }
-
   & > div:not(:first-child) {
-    margin-left: 0.2em;
+    margin-left: 1em;
   }
 }
 
@@ -1874,7 +1905,7 @@ mark.highlighter {
       margin-bottom: 1em;
     }
 
-    .intro-path {
+    .intro-path-count {
       margin-bottom: 1em;
 
       &.direct {
@@ -2362,7 +2393,7 @@ mark.highlighter {
     width: 100%;
   }
 
-  .intro-path {
+  .intro-path-countintro-path-count {
     & > div:not(:first-child) {
       margin-left: 0.4em;
     }
@@ -2371,7 +2402,7 @@ mark.highlighter {
   &-top {
     padding-bottom: 20px;
 
-    .intro-path {
+    .intro-path-count {
       margin-bottom: 1em;
       font-weight: bold;
     }

@@ -3,7 +3,7 @@ import Loader from './loader';
 
 export default class StandardLoader extends React.Component {
   static defaultProps = {
-    size: 50,
+    size: 25,
     infoTag: 'h3',
     text: "Loading",
     isLoading: true,

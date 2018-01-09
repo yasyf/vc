@@ -9,15 +9,20 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
     render_censored  competitor
   end
 
-  def intro_paths
+  def intro_path_counts
     render json: { intro_paths: [] } and return unless external_founder_signed_in?
     paths = Competitor
       .where(id: params[:ids].split(','))
       .where.not(domain: nil)
       .where.not(domain: current_external_founder.domain)
-      .map { |c| [c.id, current_external_founder.path_to_domain(c.domain)] }
+      .map { |c| [c.id, current_external_founder.count_paths_to_domain(c.domain)] }
       .to_h
     render json: { intro_paths: paths }
+  end
+
+  def intro_paths
+    paths = current_external_founder.paths_to_domain(competitor.domain)
+    render json: { paths: paths }
   end
 
   def filter

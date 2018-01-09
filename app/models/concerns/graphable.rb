@@ -17,17 +17,7 @@ module Concerns
     end
 
     def count_paths_to_node(node)
-      Graph.count_shortest_paths(graph_node, node)
-    end
-
-    def paths_to_addr(addr)
-      return nil unless (other = self.class.node_from_addr(addr)).present?
-      paths_to other
-    end
-
-    def count_paths_to_addr(addr)
-      return 0 unless (other = self.class.node_from_addr(addr)).present?
-      count_paths_to other
+      describe_nodes Graph.shortest_paths(graph_node, node, type: :nodes)
     end
 
     def paths_to(other)
@@ -43,7 +33,7 @@ module Concerns
     end
 
     def count_paths_to_domain(domain)
-      Graph.count_shortest_paths_to_domain(graph_node, domain)
+      describe_nodes Graph.shortest_paths_to_domain(graph_node, domain, type: :nodes)
     end
 
     def connect_to!(other, type)
@@ -70,6 +60,17 @@ module Concerns
 
     private
 
+    def describe_nodes(nodes)
+      { count: nodes.length, direct: nodes.first.length == 2, nodes: nodes.map(&:second).map { |n| describe_node(n, email: true) } }
+    end
+
+    def describe_node(node, email: false)
+      person = Founder.where(email: node[:email]).first || Investor.where(email: node[:email]).first
+      first_name, last_name = Util.split_name(node[:name])
+      email = email ? node[:email] : nil
+      { first_name: first_name, last_name: last_name, email: email, linkedin: person&.linkedin, twitter: person&.twitter, photo: person&.photo }
+    end
+
     def describe_paths(paths)
       paths.map { |path| describe_path(path) }.compact
     end
@@ -78,12 +79,7 @@ module Concerns
       return nil unless path.present?
       puts path.to_s
       list = node_list_from_path(path).map(&:to_h)
-      through = list.each_with_index.map do |node, i|
-        person = Founder.where(email: node[:email]).first || Investor.where(email: node[:email]).first
-        first_name, last_name = Util.split_name(node[:name])
-        email = i == 0 ? node[:email] : nil
-        { first_name: first_name, last_name: last_name, email: email, linkedin: person&.linkedin, twitter: person&.twitter, photo: person&.photo }
-      end
+      through = list.each_with_index.map { |node, i| describe_node(node, email: i == 0) }
       { first_hop_via: path.first.rel_type, through: through }
     end
 

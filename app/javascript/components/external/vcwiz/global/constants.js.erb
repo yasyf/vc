@@ -75,7 +75,7 @@ export const CompetitorFullIndustriesOptions = Object.freeze(<%= Competitor.full
 
 export const CompetitorsFilterPath = '<%= filter_external_api_v1_competitors_path %>';
 export const CompetitorsFilterCountPath = '<%= filter_count_external_api_v1_competitors_path %>';
-export const CompetitorsIntroPathsPath = '<%= intro_paths_external_api_v1_competitors_path %>';
+export const CompetitorsIntroPathCountsPath = '<%= intro_path_counts_external_api_v1_competitors_path %>';
 export const CompetitorsLocationsPath = '<%= locations_external_api_v1_competitors_path %>';
 export const CompetitorsLocationsPathWithQuery = '<%= locations_external_api_v1_competitors_path(q: 'QUERY') %>';
 export const CompetitorsListsPath = '<%= lists_external_api_v1_competitors_path %>';
@@ -126,3 +126,11 @@ export const MeetingImagePath = '<%= ActionController::Base.helpers.asset_path('
 export const GoogleLoginImagePath = '<%= ActionController::Base.helpers.asset_path('login/btn_google_signin_dark_normal_web.png') %>';
 export const GoogleLoginLightImagePath = '<%= ActionController::Base.helpers.asset_path('login/btn_google_signin_light_normal_web.png') %>';
 export const LogoImagePath = '<%= ActionController::Base.helpers.asset_path('logo/vcwiz.png') %>';
+
+
+// Path Groups
+
+export const IntroPathTypes = {
+  COMPETITOR: CompetitorsPath,
+  INVESTOR: InvestorsPath,
+};

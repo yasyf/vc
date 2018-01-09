@@ -89,6 +89,7 @@ Rails.application.routes.draw do
             member do
               get 'review'
               get 'interactions'
+              get 'intro_paths'
               post 'verify'
             end
 
@@ -109,11 +110,15 @@ Rails.application.routes.draw do
           end
 
           resources :competitors, only: [:show, :update] do
+            member do
+              get 'intro_paths'
+            end
+
             collection do
               get 'filter'
               get 'filter_count'
               get 'locations'
-              get 'intro_paths'
+              get 'intro_path_counts'
               get 'lists'
               get 'list/:list(/:key/:value)', action: :list, as: :list
             end

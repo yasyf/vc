@@ -1,6 +1,9 @@
 import React from 'react';
 import ProfileImage from '../shared/profile_image';
-import {CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath, InvestorPath, CompanyPath} from '../constants.js.erb';
+import {
+  CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath,
+  InvestorPath, CompanyPath, IntroPathTypes,
+} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import {
   ffetch, fullName, isLoggedIn, isMobile, sendEvent,
@@ -15,7 +18,7 @@ import inflection from 'inflection';
 import Tabs from '../tabs/tabs';
 import FakeLink from '../shared/fake_link';
 import fetchCompetitorPath from '../fetch_competitor_path';
-import IntroPath from './intro_path';
+import IntroPathCount from './intro_path_count';
 
 export default class CompetitorBase extends React.Component {
   constructor(props) {
@@ -123,7 +126,7 @@ export default class CompetitorBase extends React.Component {
     if (!path) {
       return null;
     }
-    return <IntroPath path={path} />;
+    return <IntroPathCount {...path} path={IntroPathTypes.COMPETITOR} id={this.props.item.id} />;
   }
 
   renderCompetitorInfo() {

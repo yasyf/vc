@@ -1,8 +1,8 @@
 import React from 'react';
-import {CompetitorIndustries, InvestorsPath, ReviewAPI} from '../constants.js.erb';
+import {CompetitorIndustries, InvestorsPath, ReviewAPI, IntroPathTypes} from '../constants.js.erb';
 import Store from '../store';
 import {
-  ffetchCached, fullName, getDomain, humanizeList,
+  ffetchCached, getDomain, humanizeList,
   humanizeTravelStatus,
 } from '../utils';
 import {Row, Column} from 'react-foundation';
@@ -17,7 +17,7 @@ import Loader from '../shared/loader';
 import Track from '../fields/track';
 import PartnerHeading from './partner_heading';
 import update from 'immutability-helper';
-import IntroPath from './intro_path';
+import IntroPathCount from './intro_path_count';
 
 export default class PartnerTab extends React.Component {
   static defaultProps = {
@@ -262,8 +262,11 @@ export default class PartnerTab extends React.Component {
 
   renderPath() {
     const { interactions } = this.state;
-    const { path } = interactions;
-    return <IntroPath key="path" path={path} />;
+    const { paths } = interactions;
+    if (_.isEmpty(paths)) {
+      return null;
+    }
+    return <IntroPathCount key="path" {...paths} path={IntroPathTypes.INVESTOR} id={this.props.investor.id} />;
   }
 
   renderInteractions() {
