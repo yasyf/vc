@@ -43,7 +43,7 @@ export default class IntroPathCount extends React.Component {
     if (!count) {
       return null;
     }
-    const show = _.take(nodes, 2);
+    const show = _.take(nodes, short ? 1 : 2);
     const remaining = nodes.length - show.length;
     if (direct) {
       return _.compact([

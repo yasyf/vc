@@ -10,11 +10,8 @@ import { canUseDOM } from 'exenv';
 import Store from '../store';
 import classNames from 'classnames';
 
-if (canUseDOM) {
-  // eslint-disable-next-line global-require
-  const Graph = require('react-graph-vis');
-}
-
+// eslint-disable-next-line global-require
+const Graph = canUseDOM && require('react-graph-vis');
 
 export default class IntroPathModal extends React.Component {
   state = {
@@ -80,14 +77,11 @@ export default class IntroPathModal extends React.Component {
   }
 
   renderGraph() {
-    if (!canUseDOM) {
-      return null;
-    }
     const { count } = this.props;
-    if (count <= 1) {
+    const { graph } = this.state;
+    if (!canUseDOM || count <= 1) {
       return null;
     }
-    const { graph } = this.state;
     return <Graph graph={graph} options={{
       nodes: {
         color: 'rgba(48, 116, 238, 0.3)',
