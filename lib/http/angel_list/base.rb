@@ -24,7 +24,7 @@ module Http::AngelList
         (
           r['name']&.strip&.downcase == query.downcase &&
           (org.blank? || result.description.downcase.include?(org.downcase)) &&
-          (cb_id.blank? || result.crunchbase.downcase.strip == cb_id.downcase.strip)
+          (cb_id.blank? || result.crunchbase&.downcase.strip == cb_id.downcase.strip)
         )
       end.compact
       filtered.present? ? filtered.first['id'] : nil

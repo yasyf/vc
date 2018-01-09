@@ -9,12 +9,13 @@ class Tweet < ApplicationRecord
 
   def self.wrap(tweeter)
     Array.wrap(yield).compact.map do |t|
+      next unless t.id.present?
       where(twitter_id: t.id).first_or_create! do |tweet|
         tweet.tweeter = tweeter
         tweet.tweeted_at = t.created_at
         tweet.text = t.text
       end
-    end
+    end.compact
   end
 
   def method_missing(m, *args, &block)

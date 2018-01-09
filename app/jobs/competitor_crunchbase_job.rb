@@ -59,8 +59,17 @@ class CompetitorCrunchbaseJob < ApplicationJob
         investor = Investor.from_crunchbase(person.permalink)
         if investor.present?
           next unless investor.competitor != competitor
-          investor.update! competitor: competitor, role: job.title, description: person.bio
-          InvestorCrunchbaseJob.perform_later(investor.id)
+          begin
+            investor.update! competitor: competitor, role: job.title, description: person.bio
+          rescue ActiveRecord::RecordInvalid
+            other = competitor.investors.where(first_name: investor.first_name, last_name: investor.last_name).first!
+            investor.update! crunchbase_id: nil
+            other.update! crunchbase_id: person.permalink
+            investor.destroy!
+            InvestorCrunchbaseJob.perform_later(other.id)
+          else
+            InvestorCrunchbaseJob.perform_later(investor.id)
+          end
         else
          investor = competitor.investors.where(first_name: person.first_name, last_name: person.last_name).first
          next unless investor.present?

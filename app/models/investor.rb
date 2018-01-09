@@ -12,7 +12,7 @@ class Investor < ApplicationRecord
   GENDERS = %w(unknown male female)
 
   belongs_to :competitor
-  has_many :target_investors, dependent: :destroy
+  has_many :target_investors, dependent: :nullify
   has_many :notes, as: :subject
   has_many :investments, dependent: :destroy
   has_many :companies, through: :investments

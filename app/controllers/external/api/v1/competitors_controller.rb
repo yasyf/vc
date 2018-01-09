@@ -51,7 +51,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
 
   def update
     if external_founder_signed_in? && (stage = investor_params[:stage]).present?
-      target = current_external_founder.target_investors.where(competitor: competitor).order(stage: :asc, updated_at: :desc).first
+      target = current_external_founder.target_investors.where(competitor: competitor).order(stage: :asc, updated_at: :desc).first!
       current_external_founder.investor_targeted! target.investor.id
       target.update! stage: stage
     end
