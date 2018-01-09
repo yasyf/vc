@@ -209,7 +209,7 @@ class Investor < ApplicationRecord
     self.facebook = angelist_user.facebook
     self.linkedin = angelist_user.linkedin
 
-    self.description ||= angelist_user.bio
+    self.description = angelist_user.bio if self.description.blank? || (self.description.length < 50 && angelist_user.bio.length > self.description.length)
     self.homepage ||= angelist_user.homepage
     self.location ||= angelist_user.locations.first
 

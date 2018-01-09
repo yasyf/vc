@@ -42,13 +42,17 @@ export default class ReadMore extends React.Component {
   }
 
   renderReadMore() {
-    const {children, more, lines} = this.props;
+    const {children, more, lines, length} = this.props;
     const {expanded} = this.state;
+
+    if (length && length < 50) {
+      return children;
+    }
 
     return _.compact([
       <Truncate
         lines={!expanded && lines}
-        ellipsis={<span>.. <a href='#' onClick={this.toggleLines}>{more}</a></span>}
+        ellipsis={<span>... <a href='#' onClick={this.toggleLines}>{more}</a></span>}
         onTruncate={this.handleTruncate}
         key="truncate"
       >
