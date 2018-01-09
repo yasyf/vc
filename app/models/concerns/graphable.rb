@@ -61,7 +61,7 @@ module Concerns
     private
 
     def describe_nodes(nodes)
-      { count: nodes.length, direct: nodes.first.length == 2, nodes: nodes.map(&:second).map { |n| describe_node(n, email: true) } }
+      { count: nodes.length, direct: nodes.first&.length == 2, nodes: nodes.map(&:second).map { |n| describe_node(n, email: true) } }
     end
 
     def describe_node(node, email: false)
