@@ -39,6 +39,14 @@ $filters-blue: #F5F9FA;
   @media only screen and (max-width: 400px) { @content; }
 }
 
+@mixin on-s-desktop {
+  @media only screen and (max-width: 900px) { @content; }
+}
+
+@mixin on-m-desktop {
+  @media only screen and (max-width: 1100px) { @content; }
+}
+
 @mixin only-desktop {
   @media only screen and (min-width: 501px) { @content; }
 }

@@ -538,12 +538,18 @@ img.reversed, i.reversed::before {
           margin-bottom: 5px;
         }
       }
+
+      @include on-s-desktop {
+        h2.subtitle {
+          font-size: 2em;
+        }
+      }
     }
 
     & > div:not(:last-child) {
       margin-bottom: 3em;
 
-      @include on-mobile {
+      @include on-s-desktop {
         margin-bottom: 1.5em;
       }
     }
@@ -594,7 +600,7 @@ img.reversed, i.reversed::before {
         vertical-align: 1.2em;
         margin-right: 10px;
 
-        @include on-s-mobile {
+        @include on-m-desktop {
           vertical-align: middle;
         }
       }
@@ -608,7 +614,7 @@ img.reversed, i.reversed::before {
         }
 
         .subheading {
-          @include on-s-mobile {
+          @include on-m-desktop {
             display: none;
           }
         }
