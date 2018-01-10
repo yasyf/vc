@@ -39,7 +39,8 @@ class Graph
       MATCH (#{match}), path = shortestPath((me)-[*1..#{limit}]-(other))
       WHERE #{where}
       RETURN path, reduce(count = 0, r IN relationships(path) | count + coalesce(r.count, 0)) AS total
-      ORDER BY total DESC;
+      ORDER BY total DESC
+      LIMIT 25;
     CYPHER
   end
 

@@ -61,11 +61,13 @@ module Concerns
     private
 
     def describe_nodes(nodes)
-      { count: nodes.length, direct: nodes.first&.length == 2, nodes: nodes.map(&:second).uniq.map { |n| describe_node(n, email: true) } }
+      unique_nodes = nodes.map(&:second).uniq
+      prep_nodes! unique_nodes
+      { count: nodes.length, direct: nodes.first&.length == 2, nodes: unique_nodes.map { |n| describe_node(n, email: true) } }
     end
 
     def describe_node(node, email: false)
-      person = Founder.where(email: node[:email]).first || Investor.where(email: node[:email]).first
+      person = @node_people[node[:email]]
       first_name, last_name = Util.split_name(node[:name])
       email = email ? node[:email] : nil
       {
@@ -87,6 +89,7 @@ module Concerns
       return nil unless path.present?
       puts path.to_s
       list = node_list_from_path(path).map(&:to_h)
+      prep_nodes! list
       through = list.each_with_index.map { |node, i| describe_node(node, email: i == 0) }
       { first_hop_via: path.first.rel_type, through: through }
     end
@@ -97,6 +100,16 @@ module Concerns
         nodes << (rel.start_node == nodes.last ? rel.end_node : rel.start_node)
       end
       nodes.drop(1)
+    end
+
+    def prep_nodes!(nodes)
+      @node_people ||= {}
+      emails = nodes.map { |n| n[:email] }.reject { |e| @node_people.include? e }
+      return unless emails.present?
+      Founder.where(email: emails).find_each { |f| @node_people[f.email] = f }
+      emails = emails.reject { |e| @node_people.include? e }
+      return unless emails.present?
+      Investor.where(email: emails).find_each { |f| @node_people[f.email] = f }
     end
   end
 end
