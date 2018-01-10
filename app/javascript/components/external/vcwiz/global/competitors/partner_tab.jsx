@@ -304,7 +304,7 @@ export default class PartnerTab extends React.Component {
         {this.renderTweet()}
         {this.renderInteractions()}
         <Row isColumn>
-          <ReadMore initiallyExpanded={initiallyExpanded} onTruncate={this.onTruncate} lines={3} length={description.length}>
+          <ReadMore initiallyExpanded={initiallyExpanded} onTruncate={this.onTruncate} lines={3} length={description && description.length}>
             {description}
             {this.renderReview()}
           </ReadMore>
