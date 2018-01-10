@@ -11,7 +11,7 @@ import Store from '../store';
 import classNames from 'classnames';
 
 // eslint-disable-next-line global-require
-const Graph = canUseDOM && require('react-graph-vis');
+const Graph = canUseDOM && require('react-graph-vis').default;
 
 export default class IntroPathModal extends React.Component {
   state = {
