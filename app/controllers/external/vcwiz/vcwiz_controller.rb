@@ -19,6 +19,10 @@ class External::VCWiz::VCWizController < External::ApplicationController
     render layout: 'external'
   end
 
+  def terms
+    render layout: 'external'
+  end
+
   def firm
     competitor = Competitor.find(params[:id])
     list = CompetitorLists::Single.new(current_external_founder, request, params[:id])
