@@ -9,9 +9,9 @@ export default class Footer extends React.Component {
           Shipped with &hearts; by <a href="https://drf.vc" target="_blank">Dorm Room Fund</a>
         </div>
         <div>
-          <a href={PrivacyPolicyPath} target="_blank">privacy policy</a>
+          <a href={PrivacyPolicyPath} target="_blank">privacy</a>
           <span className="sep">|</span>
-          <a href={TermOfUsePath} target="_blank">terms of use</a>
+          <a href={TermOfUsePath} target="_blank">terms</a>
           <span className="sep">|</span>
           <a href="https://www.twitter.com/yasyf" target="_blank">@yasyf</a> if things break
         </div>
