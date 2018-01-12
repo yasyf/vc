@@ -312,9 +312,25 @@ p.tight {
       }
     }
 
+    .intro_paths {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .graph {
+      flex-grow: 1;
+      position: relative;
+
+      #graph {
+        position: absolute;
+      }
+    }
+
     .paths {
       overflow-y: auto;
-      max-height: 80vh;
+      max-height: 40vh;
+      padding: 40px;
 
       &.no-graph {
         position: absolute;
@@ -345,8 +361,11 @@ p.tight {
 
 .intro-path {
   justify-content: center;
-  padding: 50px;
   font-size: larger;
+
+  &:not(:last-child) {
+    margin-bottom: 50px;
+  }
 
   img {
     vertical-align: baseline;
@@ -811,7 +830,7 @@ input.placeholded {
 .vcwiz {
   &-page {
     background-color: $light-grey;
-    overflow: scroll;
+    overflow: auto;
     display: flex;
     flex-flow: column;
   }
@@ -2436,7 +2455,7 @@ mark.highlighter {
     .tab-list-wrapper {
       position: relative;
       top: 1px;
-      overflow-x: scroll;
+      overflow-x: auto;
       overflow-y: hidden;
       white-space: nowrap;
       height: 40px;

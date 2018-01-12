@@ -22,16 +22,17 @@ export default class IntroPathModal extends React.Component {
 
   static graphFromPaths(paths) {
     const founder = Store.get('founder', {});
-    const nodes = _.uniq(_.flatMap(paths, ({through}) => through.map((node, i) => ({
+    const nodes = _.uniqBy(_.flatMap(paths, ({through}) => through.map((node, i) => ({
       id: node.id,
       label: node.first_name,
       image: node.photo,
       shape: node.photo ? 'circularImage' : 'circle',
-    })))).concat([{id: 'me', label: founder.first_name, image: founder.photo, shape: 'circularImage'}]);
-    const edges = _.uniq(_.flatMap(paths, ({through}) => _.compact(_.map(through, (node, i) => ({
+      level: i + 2,
+    }))), 'id').concat([{id: 'me', label: founder.first_name, image: founder.photo, shape: 'circularImage', level: 1}]);
+    const edges = _.uniqWith(_.flatMap(paths, ({through}) => _.compact(_.map(through, (node, i) => ({
       from: i === 0 ? 'me' : through[i - 1].id,
       to: node.id,
-    })))));
+    })))), _.isEqual);
     return { nodes, edges };
   }
 
@@ -82,26 +83,27 @@ export default class IntroPathModal extends React.Component {
     if (!canUseDOM || count <= 1) {
       return null;
     }
-    return <Graph graph={graph} options={{
-      nodes: {
-        color: 'rgba(48, 116, 238, 0.3)',
-        font: {
-          size: 16,
-          face: 'Circular Std',
-        },
-      },
-      edges: {
-        width: 2,
-        arrowStrikethrough: false,
-        smooth: true,
-      },
-      layout: {
-        randomSeed: 22,
-      },
-      interaction: {
-        zoomView: false,
-      },
-    }} />;
+    return (
+      <div className="graph">
+        <Graph identifier="graph" graph={graph} options={{
+          nodes: {
+            color: 'rgba(48, 116, 238, 0.3)',
+            font: {
+              size: 16,
+              face: 'Circular Std',
+            },
+          },
+          edges: {
+            width: 2,
+            arrowStrikethrough: false,
+            smooth: true,
+          },
+          layout: {
+            hierarchical: true,
+          },
+        }} />
+      </div>
+    );
   }
 
   renderModal() {
