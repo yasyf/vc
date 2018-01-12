@@ -294,6 +294,10 @@ p.tight {
   @include small-modal;
 
   &-wrapper {
+    .metrics {
+      width: 100%;
+    }
+
     .metric-wrapper {
       display: flex;
       justify-content: center;
@@ -321,6 +325,7 @@ p.tight {
     .graph {
       flex-grow: 1;
       position: relative;
+      margin-bottom: 1em;
 
       #graph {
         position: absolute;

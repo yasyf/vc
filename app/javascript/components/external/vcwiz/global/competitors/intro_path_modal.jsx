@@ -61,7 +61,7 @@ export default class IntroPathModal extends React.Component {
 
     if (path === IntroPathTypes.COMPETITOR) {
       return (
-        <Row>
+        <Row className="metrics">
           <Column large={4}>{this.renderMetric(count, 'Paths')}</Column>
           <Column large={4}>{this.renderMetric(startCount, 'Connections')}</Column>
           <Column large={4}>{this.renderMetric(endCount, 'Investors')}</Column>
@@ -69,7 +69,7 @@ export default class IntroPathModal extends React.Component {
       );
     } else {
       return (
-        <Row>
+        <Row className="metrics">
           <Column large={6}>{this.renderMetric(count, 'Paths')}</Column>
           <Column large={6}>{this.renderMetric(startCount, 'Connections')}</Column>
         </Row>
@@ -85,23 +85,31 @@ export default class IntroPathModal extends React.Component {
     }
     return (
       <div className="graph">
-        <Graph identifier="graph" graph={graph} options={{
-          nodes: {
-            color: 'rgba(48, 116, 238, 0.3)',
-            font: {
-              size: 16,
-              face: 'Circular Std',
+        <Graph
+          identifier="graph"
+          graph={graph}
+          getNetwork={network => { this.network = network }}
+          options={{
+            nodes: {
+              color: 'rgba(48, 116, 238, 0.3)',
+              font: {
+                size: 16,
+                face: 'Circular Std',
+              },
             },
-          },
-          edges: {
-            width: 2,
-            arrowStrikethrough: false,
-            smooth: true,
-          },
-          layout: {
-            hierarchical: true,
-          },
-        }} />
+            edges: {
+              width: 2,
+              arrowStrikethrough: false,
+              smooth: true,
+            },
+            layout: {
+              hierarchical: true,
+            },
+          }}
+          events={{
+            stabilized: (a, b, v) => this.network.fit(),
+          }}
+        />
       </div>
     );
   }
