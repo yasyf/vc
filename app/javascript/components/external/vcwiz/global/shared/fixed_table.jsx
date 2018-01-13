@@ -33,6 +33,7 @@ export default class FixedTable extends React.Component {
         header={<Header sort={this.props.sort} name={name} onSort={this.props.onSort} />}
         cell={
           <CellComponent
+            key={key}
             data={this.props.array}
             isFaded={this.props.isFaded}
             onClick={(trackClicks && this.onCellClick(key)) || undefined}
