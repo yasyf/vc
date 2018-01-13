@@ -362,6 +362,12 @@ p.tight {
   & > div:not(:first-child) {
     margin-left: 0.3em;
   }
+
+  .line-icon {
+    position: relative;
+    top: 2px;
+    font-size: large;
+  }
 }
 
 .intro-path {

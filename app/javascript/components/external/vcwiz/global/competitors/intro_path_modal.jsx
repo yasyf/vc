@@ -103,7 +103,9 @@ export default class IntroPathModal extends React.Component {
               smooth: true,
             },
             layout: {
-              hierarchical: true,
+              hierarchical: {
+                direction: 'LR',
+              },
             },
           }}
           events={{

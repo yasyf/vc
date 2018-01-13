@@ -49,12 +49,12 @@ export default class IntroPathCount extends React.Component {
       return _.compact([
         <div key="pre">{short ? 'C' : "You're c"}onnected{short ? '' : ' directly'} to</div>,
         ...humanize(show.map(this.renderPerson)),
-        remaining ? <div key="post">{short ? '&' : 'and'} {remaining} others</div> : null,
+        remaining ? <div key="post">and {remaining} ${inflection.inflect('others', remaining)}</div> : null,
       ]);
     } else {
       return _.compact([
         ...humanize(show.map(this.renderPerson)),
-        remaining ? <div key="post">{short ? '&' : 'and'} {remaining} others</div> : null,
+        remaining ? <div key="post">and {remaining} ${inflection.inflect('others', remaining)}</div> : null,
         <div key="post2">can intro{short ? '' : 'duce you'}</div>,
       ]);
     }
@@ -67,7 +67,7 @@ export default class IntroPathCount extends React.Component {
     }
     return (
       <div>
-        <a>{short ? <span>&rarr;</span> : <span>See all paths &rarr;</span>}</a>
+        <a>{short ? <span><i className="line-icon fi-arrow-right"/></span> : <span>See all paths <i className="line-icon fi-arrow-right"/></span>}</a>
       </div>
     )
   }
