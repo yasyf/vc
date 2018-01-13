@@ -32,8 +32,8 @@ export default class ProfileImage extends React.Component {
     const filters = _.compact([
       `w_${size},h_${size},g_face,c_fill,${rounded ? 'r_max,' : ''}f_auto,q_auto,b_rgb:${transparency}`,
       verified ? 'l_check,w_0.5,fl_relative,g_south_east' : null,
-      badge ? 'l_badge,e_multiply,w_0.5,fl_relative,g_south_east' : null,
-      badge ? `l_text:Helvetica_18_bold_stroke:${badge},co_white,bo_1px_solid_darkgray,g_south_east,x_0.17,y_0.1` : null,
+      badge ? 'l_badge,e_multiply,w_0.59,fl_relative,g_south_east' : null,
+      badge ? `w_0.8,l_text:Helvetica_22_bold_center_stroke:${badge},co_white,bo_2px_solid_rgb:2A2A2A,g_xy_center,x_0.7,y_0.7` : null,
     ]);
     const url = `https://res.cloudinary.com/vcwiz/image/fetch/${filters.join('/')}/${src}`;
     return <img width={size} height={size} src={url} style={this.sizeStyle()} />;
