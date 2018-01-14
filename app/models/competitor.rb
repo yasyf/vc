@@ -193,7 +193,7 @@ class Competitor < ApplicationRecord
           location <> '{}'
           AND location IS NOT NULL
       ) AS s(ulocations)
-      WHERE ulocations ILIKE '#{query.present? ? sanitize_sql_like(query) : ''}%'
+      WHERE ulocations ILIKE '#{query.present? ? sanitize_sql_like(connection.quote_string(query)) : ''}%'
       GROUP BY ulocations
       ORDER BY COUNT(ulocations) DESC
       #{limit.present? ? "LIMIT #{limit}" : ''}
