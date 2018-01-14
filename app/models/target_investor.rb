@@ -125,7 +125,7 @@ class TargetInvestor < ApplicationRecord
   end
 
   def can_intro?
-    intro_requests.size == 0 && investor.present? && investor.opted_in != false
+    intro_requests.size == 0 && investor.present? && investor.opted_in != false && IntroRequest.in_flight(founder) < IntroRequest::MAX_IN_FLIGHT
   end
 
   def overlap

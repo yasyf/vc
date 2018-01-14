@@ -5,6 +5,8 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
     target_investor = TargetInvestor.find(params[:target_investor_id])
     intro = IntroRequest.from_target_investor(target_investor)
     render json: intro.as_json(methods: [])
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.record.errors.first.last }
   end
 
   def show
@@ -18,6 +20,8 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
     target_investor.update! email: intro_request_params[:email] if intro_request_params[:email].present?
     intro.update! intro_request_params.slice(:context, :pitch_deck)
     render json: intro
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.record.errors.first }
   end
 
   def preview

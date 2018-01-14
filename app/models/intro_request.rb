@@ -3,7 +3,7 @@ class IntroRequest < ApplicationRecord
   include Concerns::Tokenable
 
   TOKEN_MAGIC = 'VCWIZ_INTRO_'
-  MAX_IN_FLIGHT = 5
+  MAX_IN_FLIGHT = 2
 
   belongs_to :investor
   belongs_to :company
@@ -126,10 +126,14 @@ class IntroRequest < ApplicationRecord
     )
   end
 
+  def self.in_flight(founder)
+    self.unscoped.where(founder: founder, accepted: nil).count
+  end
+
   private
 
   def limit_outstanding_requests
-    if self.class.unscoped.where(founder: founder, accepted: nil).count > MAX_IN_FLIGHT - 1
+    if self.class.in_flight(founder) > MAX_IN_FLIGHT - 1
       errors.add(:base, 'too many outstanding requests')
     end
   end

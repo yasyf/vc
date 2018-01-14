@@ -198,6 +198,13 @@ export default class IntroModal extends React.Component {
     if (this.state.loading) {
       return <StandardLoader text="Loading Preview" />;
     }
+    if (this.state.intro.error) {
+      return (
+        <div className="intro-form">
+          <p>Sorry, we can't begin this intro request right now. The error was: <span className="error">{this.state.intro.error}</span>.</p>
+        </div>
+      )
+    }
     return <div className="intro-form">{this[`renderStage${this.state.stage}`]()}</div>;
   }
 

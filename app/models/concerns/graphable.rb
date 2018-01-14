@@ -77,7 +77,7 @@ module Concerns
         linkedin: person&.linkedin,
         twitter: person&.twitter,
         photo: person&.photo,
-        id: Digest::MD5.hexdigest(node[:email]),
+        id: Digest::MD5.hexdigest("#{node[:domain]}#{node[:name]}"),
       }
     end
 

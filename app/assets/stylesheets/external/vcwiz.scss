@@ -2247,6 +2247,10 @@ mark.highlighter {
       text-align: left;
     }
 
+    .error {
+      color: $red;
+    }
+
     input {
       width: 50%;
       margin: auto auto 1em;

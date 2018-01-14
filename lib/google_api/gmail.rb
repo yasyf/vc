@@ -18,7 +18,7 @@ module GoogleApi
       else
         sync_full!
       end
-    rescue Signet::AuthorizationError => e
+    rescue Signet::AuthorizationError, Google::Apis::ClientError => e
       Rails.logger.warn e
     end
 

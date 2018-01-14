@@ -34,8 +34,8 @@ module External::Concerns
       paths.each do |path|
         components = path.to_s.split('.')
         current = base
-        current = current[components.shift] while components.length > 1
-        current.delete(components.last)
+        current = current[components.shift] while current.present? && components.length > 1
+        current.delete(components.last) if current.present?
       end
 
       base

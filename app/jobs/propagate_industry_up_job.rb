@@ -30,7 +30,14 @@ class PropagateIndustryUpJob < ApplicationJob
     Investor.connection.update(query)
   end
 
-  def propagate_industry_up_to(klass)
+  def propagate_industry_up_to(klass, limit: 1000)
+    buckets = (klass.count / limit) + 1
+    (0...buckets).each do |i|
+      propagate_industry_up_to_with_offset klass, limit, offset
+    end
+  end
+
+  def propagate_industry_up_to_with_offset(klass, limit, offset)
     #TODO: do this in sql
     name = klass.name.downcase
     table = "#{name}s"
@@ -46,24 +53,24 @@ class PropagateIndustryUpJob < ApplicationJob
       INNER JOIN #{table} ON #{table}.id = investments.#{name}_id
       WHERE (c_t.industry <> '{}' AND c_t.industry IS NOT NULL AND #{table}.verified = FALSE)
       GROUP BY #{table}.id
+      LIMIT #{limit}
+      OFFSET #{offset}
     SQL
-    klass.transaction do
-      klass.connection.execute(query).to_a.each do |result|
-        industries = result['industries'][1...-1].split(',')
-        frequencies = industries.each_with_object(Hash.new(0)) do |i, h|
-          h[i] += 1
-        end
-        top = frequencies
-          .keys
-          .select { |i| frequencies[i] > INDUSTRY_THRESHOLD * result['c_count'] }
-          .sort { |i| frequencies[i] }.first(MAX_INDUSTRIES)
-        INDUSTRY_DEPENDENCIES.each do |k, v|
-          if top.include?(k.to_s) && !top.include?(v.to_s)
-            top << v.to_s
-          end
-        end
-        klass.update(result['id'], industry: top)
+    klass.connection.execute(query).to_a.each do |result|
+      industries = result['industries'][1...-1].split(',')
+      frequencies = industries.each_with_object(Hash.new(0)) do |i, h|
+        h[i] += 1
       end
+      top = frequencies
+        .keys
+        .select { |i| frequencies[i] > INDUSTRY_THRESHOLD * result['c_count'] }
+        .sort { |i| frequencies[i] }.first(MAX_INDUSTRIES)
+      INDUSTRY_DEPENDENCIES.each do |k, v|
+        if top.include?(k.to_s) && !top.include?(v.to_s)
+          top << v.to_s
+        end
+      end
+      klass.update(result['id'], industry: top)
     end
   end
 end

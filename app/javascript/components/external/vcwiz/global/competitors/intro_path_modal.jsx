@@ -109,7 +109,7 @@ export default class IntroPathModal extends React.Component {
             },
           }}
           events={{
-            stabilized: (a, b, v) => this.network.fit(),
+            stabilized: () => this.network.fit(),
           }}
         />
       </div>

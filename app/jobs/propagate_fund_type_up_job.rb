@@ -11,7 +11,7 @@ class PropagateFundTypeUpJob < ApplicationJob
 
   def propagate_fund_type_up(klass, relations)
     #TODO: do this in sql
-    klass.where(verified: false).find_each do |c|
+    klass.where(verified: false).find_each(batch_size: 100) do |c|
       fund_types = Hash.new(0)
       count = 0
       relations.each do |relation|
