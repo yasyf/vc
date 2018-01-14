@@ -200,7 +200,7 @@ class Competitor < ApplicationRecord
     SQL
   end
 
-  def self.lists(founder, request, timeout = 3.seconds)
+  def self.lists(founder, request, timeout = 2.seconds)
     start = Time.now
     results = []
 

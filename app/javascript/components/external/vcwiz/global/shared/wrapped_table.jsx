@@ -4,39 +4,16 @@ import Store from '../store';
 import {timestamp} from '../utils';
 
 class FixedWrappedTable extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dimensions: Store.get('dimensions', {
-        width: 0,
-        height: 0,
-      }),
-    };
-  }
-
-  componentWillMount() {
-    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
-  }
-
-  componentWillUnmount() {
-    Store.unsubscribe(this.subscription);
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
-    return (
-      nextProps.lastUpdate !== this.props.lastUpdate ||
-      nextState.dimensions !== this.state.dimensions
-    );
+    return nextProps.lastUpdate !== this.props.lastUpdate;
   }
 
   render() {
-    const { table, ...rest } = this.props;
-    const { dimensions } = this.state;
+    const { table, fullHeight, ...rest } = this.props;
     const BackingTable = table;
     return (
-      <div className="full-width">
-        <BackingTable dimensions={dimensions} {...rest} />
+      <div className={fullHeight ? 'full-screen' : 'full-width'}>
+        <BackingTable {...rest} />
       </div>
     );
   }

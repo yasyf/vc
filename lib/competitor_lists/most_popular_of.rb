@@ -44,6 +44,10 @@ end
   klass = Class.new(CompetitorLists::MostPopularOf) do
     define_singleton_method(:fund_type) { fund_type }
 
+    def eligible?(founder, request)
+      founder.blank? && super
+    end
+
     def self.derived?
       true
     end

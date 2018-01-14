@@ -1,5 +1,6 @@
 @import "fonts";
 @import "tabs";
+@import "table";
 @import "tutorials";
 @import "variables";
 
@@ -377,7 +378,7 @@ p.tight {
   font-size: larger;
 
   &:not(:last-child) {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
   }
 
   img {
@@ -819,10 +820,6 @@ img.reversed, i.reversed::before {
 
   .results {
     height: 355px;
-
-    .fixedDataTableLayout_bottomShadow {
-      background: white;
-    }
   }
 
   p {
@@ -1638,8 +1635,9 @@ mark.highlighter {
   width: 100%;
   height: 100%;
 
-  .public_fixedDataTableCell_wrap2, .public_fixedDataTableCell_wrap3, .public_fixedDataTableCell_cellContent {
-    width: inherit;
+  .cell-padding {
+    margin-left: 10px;
+    margin-right: 15px;
   }
 
   .floating-image {
@@ -1654,23 +1652,22 @@ mark.highlighter {
     width: 100%;
     height: 100%;
 
-    &.sortable {
-      cursor: pointer;
+    .sort {
+      font-size: larger;
+      font-weight: bold;
+      vertical-align: -5px;
+      margin-left: 3px;
     }
 
-    .sort {
-      font-size: x-large;
-      vertical-align: middle;
-      font-weight: bold;
+    .arrow {
+      margin-left: 5px;
+      font-size: 12px;
+      vertical-align: -1px;
     }
   }
 
   .table-main {
-    border-color: $light-grey;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-
-    &:focus {
+    & > div:focus {
       outline: none;
     }
   }
@@ -1729,6 +1726,7 @@ mark.highlighter {
       overflow: auto;
       outline: none;
       box-shadow: none;
+      resize: none;
     }
 
     span.placeholder {
@@ -1773,6 +1771,8 @@ mark.highlighter {
   }
 
   .null-state-cell {
+    margin-top: 1em;
+
     h5 {
       text-align: center;
       font-weight: bold;
@@ -2532,8 +2532,4 @@ mark.highlighter {
 
 .Select-menu-outer {
   z-index: 2;
-}
-
-div.fixedDataTableRowLayout_rowWrapper > div.fixedDataTableLayout_header > div > div:nth-child(2) {
-  background-color: $header-grey;
 }

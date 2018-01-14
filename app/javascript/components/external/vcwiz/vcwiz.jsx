@@ -71,6 +71,12 @@ export default class VCWiz extends React.Component {
     Store.set('lastScroll', e);
   };
 
+  onResize = () => {
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    Store.set('dimensions', {width, height});
+  };
+
   componentWillMount() {
     Store.set('founder', window.gon.founder);
     Actions.register('refreshFounder', this.refreshFounder);
@@ -80,8 +86,9 @@ export default class VCWiz extends React.Component {
     }
 
     window.addEventListener('scroll', this.onScroll, true);
+    window.addEventListener('resize', this.onResize, false);
 
-    Store.set('dimensions', {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight});
+    this.onResize();
 
     const restoreState = SessionStorage.get(StorageRestoreStateKey);
     if (restoreState) {

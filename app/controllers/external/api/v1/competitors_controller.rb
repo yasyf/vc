@@ -21,7 +21,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def intro_paths
-    paths = current_external_founder.paths_to_domain(competitor.domain)
+    paths = current_external_founder&.paths_to_domain(competitor.domain)
     render json: { paths: paths }
   end
 

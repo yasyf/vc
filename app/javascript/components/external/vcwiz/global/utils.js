@@ -1,11 +1,14 @@
 import React from 'react';
 import 'whatwg-fetch';
 import parseDomain from 'parse-domain';
-import Dimensions from 'react-dimensions';
 import { LocalStorage, SessionStorage } from './storage.js.erb';
-import { FounderEventNames, FounderEventPath, StorageRestoreStateKey, MobileScreenSize } from './constants.js.erb';
+import {
+  FounderEventNames, FounderEventPath, StorageRestoreStateKey,
+  MobileScreenSize, SortDirection,
+} from './constants.js.erb';
 import Breadcrumb from './breadcrumbs';
 import { canUseDOM } from 'exenv';
+import {SortDirection as TableSortDirection} from 'react-virtualized';
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
@@ -129,8 +132,6 @@ export const flattenFilters = filters => _.pickBy(_.mapValues(filters, f => _.un
 export const withSeparators = (sepFn, a) => _.flatMap(_.zip(a, _.times(a.length - 1, sepFn)));
 export const withDots = a => withSeparators(i => <span key={`dot-${i}`} className="dot">·</span>, a);
 
-export const withDims = klass => Dimensions({elementResize: true})(klass);
-
 export const imageExists = url => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -228,4 +229,26 @@ export const doNotPropagate = e => {
   e.preventDefault();
   e.stopPropagation();
   return false;
+};
+
+export const fromTableSD = sd => {
+  switch (sd) {
+    case TableSortDirection.ASC:
+      return SortDirection.Asc;
+    case TableSortDirection.DESC:
+      return SortDirection.Desc;
+    default:
+      return SortDirection.Natural;
+  }
+};
+
+export const toTableSD = sd => {
+  switch (sd) {
+    case SortDirection.Asc:
+      return TableSortDirection.ASC;
+    case SortDirection.Desc:
+      return TableSortDirection.DESC;
+    case SortDirection.Natural:
+      return null;
+  }
 };

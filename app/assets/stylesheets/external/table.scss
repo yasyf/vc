@@ -1,0 +1,31 @@
+@import "variables";
+
+.fixed-table {
+  .ReactVirtualized__Table__headerTruncatedText {
+    vertical-align: middle;
+  }
+
+  .ReactVirtualized__Table__headerRow {
+    border: 1px solid $light-grey;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .ReactVirtualized__Table__rowColumn {
+    margin-right: 0;
+  }
+
+  .ReactVirtualized__Table__headerColumn {
+    margin-right: 0;
+    padding: 10px;
+    border-right: 1px solid #d3d3d3;
+  }
+
+  .ReactVirtualized__Table__row {
+    background-color: $white;
+  }
+
+  .ReactVirtualized__Table__headerColumn:first-of-type, .ReactVirtualized__Table__rowColumn:first-of-type {
+    margin-left: 0;
+  }
+}

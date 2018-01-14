@@ -12,7 +12,6 @@ import {
 import Search from '../discover/search';
 import {Row} from 'react-foundation';
 import FilterRow from '../discover/filter_row';
-import SectionWithDims from '../global/shared/section_with_dims';
 import Filters from '../discover/filters';
 
 export default class FilterPage extends React.Component {
@@ -167,22 +166,20 @@ export default class FilterPage extends React.Component {
 
   renderBody() {
     const { competitors, count, sort, resultsId } = this.state;
-    const { rowHeight, industryLimit, overflowY } = this.props;
+    const { rowHeight, industryLimit, fullHeight } = this.props;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
-      <SectionWithDims dimensionsKey="dimensions">
-        <Results
-          count={count}
-          competitors={competitors}
-          sort={sort}
-          source={source}
-          resultsId={resultsId}
-          rowHeight={rowHeight}
-          industryLimit={industryLimit}
-          overflowY={overflowY}
-          onSort={this.onSort}
-        />
-      </SectionWithDims>
+      <Results
+        count={count}
+        competitors={competitors}
+        sort={sort}
+        source={source}
+        resultsId={resultsId}
+        rowHeight={rowHeight}
+        industryLimit={industryLimit}
+        fullHeight={fullHeight}
+        onSort={this.onSort}
+      />
     );
   }
 

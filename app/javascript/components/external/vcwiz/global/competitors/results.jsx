@@ -1,6 +1,6 @@
 import React from 'react';
 import inflection from 'inflection';
-import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey, LargeScreenSize} from '../constants.js.erb';
 import ResearchModal from './research_modal';
 import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
@@ -54,16 +54,26 @@ class ResultsTable extends FixedTable {
 }
 
 export default class Results extends React.Component {
-  state = {
-    restoreState: null,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      restoreState: null,
+      dimensions: Store.get('dimensions', {
+        width: 0,
+        height: 0,
+      }),
+    };
+  }
 
   componentWillMount() {
     this.subscription = Store.subscribe(StorageRestoreStateKey, restoreState => this.setState({restoreState}));
+    this.subscription2 = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
   }
 
   componentWillUnmount() {
     Store.unsubscribe(this.subscription);
+    Store.unsubscribe(this.subscription2);
   }
 
   onModalClose = () => {
@@ -79,7 +89,10 @@ export default class Results extends React.Component {
   }
 
   render() {
-    let { competitors, ...rest } = this.props;
+    let { competitors, industryLimit, ...rest } = this.props;
+    const { dimensions } = this.state;
+    industryLimit = industryLimit || (dimensions.width > LargeScreenSize ? 3 : 2);
+
     return [
       this.renderModal(),
       <WrappedTable
@@ -87,6 +100,7 @@ export default class Results extends React.Component {
         items={competitors}
         modal={ResearchModal}
         table={ResultsTable}
+        industryLimit={industryLimit}
         {...rest}
       />,
     ];

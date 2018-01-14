@@ -19,7 +19,7 @@ parserOptions:
 # http://eslint.org/docs/rules/
 rules:
   # Possible Errors
-  comma-dangle: [2, never]
+  comma-dangle: [2, always-multiline]
   no-cond-assign: 2
   no-console: 0
   no-constant-condition: 2
@@ -64,7 +64,6 @@ rules:
   no-case-declarations: 2
   no-div-regex: 2
   no-else-return: 0
-  no-empty-label: 2
   no-empty-pattern: 2
   no-eq-null: 2
   no-eval: 2

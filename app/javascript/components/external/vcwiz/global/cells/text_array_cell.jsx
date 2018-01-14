@@ -3,7 +3,7 @@ import TextCell from './text_cell';
 
 export default class TextArrayCell extends TextCell {
   processRow(props, row) {
-    let values = row[props.columnKey];
+    let values = props.data;
     if (!values || !values.length) {
       return {value: ''};
     }

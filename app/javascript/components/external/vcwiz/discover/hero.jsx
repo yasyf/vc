@@ -50,7 +50,7 @@ export default class Hero extends React.Component {
           onQueryChange={this.onQueryChange}
           rowHeight={60}
           industryLimit={2}
-          overflowY="hidden"
+          fullHeight={true}
           applySuggestions={true}
           render={(header, body) => (
             <div>

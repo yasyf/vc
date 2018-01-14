@@ -70,7 +70,7 @@ export default class ImageTextCell extends TextCell {
         {this.renderImage()}
         <div className="image-text" style={{
           marginLeft: `calc(${this.props.size}px + 0.5rem)`,
-          width: `calc(95% - ${this.props.size}px - 1rem)`
+          width: `calc(95% - ${this.props.size}px - 1rem)`,
         }}>
           {this.renderTextfit()}
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Column} from 'fixed-data-table-2';
+import {Table, Column, AutoSizer} from 'react-virtualized';
 import ImageTextCell from '../cells/image_text_cell';
 import TextArrayCell from '../cells/text_array_cell';
 import TrackCell from '../cells/track_cell';
@@ -10,39 +10,70 @@ import IntroCell from '../cells/intro_cell';
 import EmojiCell from '../cells/emoji_cell';
 import CompetitorTrackCell from '../cells/competitor_track_cell';
 import NullStateCell from '../cells/null_state_cell';
-import Header from '../cells/header';
 import PlaceholderCell from '../cells/placeholder_cell';
-import {isMobile} from '../utils';
+import {fromTableSD, isMobile, nullOrUndef, toTableSD} from '../utils';
 import CompetitorCell from '../cells/competitor_cell';
+import {SortDirection} from '../constants.js.erb';
+import tableHeader from './table_header';
 
 export default class FixedTable extends React.Component {
   static defaultProps = {
-    rowHeight: 100,
+    rowHeight: 80,
     headerHeight: 50,
   };
 
-  onCellClick = name => (e, row) => {
-    this.props.onCellClick(row, name);
+  state = {
+    sortBy: null,
+    sortDirection: null,
   };
 
+  onSort = ({ sortBy, sortDirection }) => {
+    const {
+      sortBy: prevSortBy,
+      sortDirection: prevSortDirection
+    } = this.state;
+
+    let direction = fromTableSD(sortDirection);
+    if (sortBy === prevSortBy && prevSortDirection === SortDirection.Desc) {
+      direction = SortDirection.Natural;
+    }
+
+    this.props.onSort(sortBy, direction);
+    this.setState({sortBy, sortDirection: direction});
+  };
+
+  rowGetter = ({ index }) => this.props.array.getSync(index);
+
+  onCellClick = name => (e, row) => this.props.onCellClick(row, name);
+  cellDataGetter = ({ rowData, dataKey }) => _.get(rowData, dataKey);
+
+  cellRenderer = (CellComponent, key, props, trackClicks) => ({ rowIndex, cellData, rowData }) => (
+    <CellComponent
+      key={key}
+      columnKey={key}
+      rowIndex={rowIndex}
+      row={rowData}
+      data={cellData}
+      isFaded={this.props.isFaded}
+      onClick={(trackClicks && this.onCellClick(key)) || undefined}
+      {...props}
+    />
+  );
+
   renderColumn(key, name, CellComponent, props = {}, width = 50, flex = 1, trackClicks = true) {
+    const disableSort = nullOrUndef(this.props.sort[key]);
     return (
       <Column
         key={key}
-        columnKey={key}
-        header={<Header sort={this.props.sort} name={name} onSort={this.props.onSort} />}
-        cell={
-          <CellComponent
-            key={key}
-            data={this.props.array}
-            isFaded={this.props.isFaded}
-            onClick={(trackClicks && this.onCellClick(key)) || undefined}
-            {...props}
-          />
-        }
+        dataKey={key}
+        label={name}
+        cellDataGetter={this.cellDataGetter}
+        cellRenderer={this.cellRenderer(CellComponent, key, props, trackClicks)}
         flexGrow={flex || undefined}
         width={isMobile() ? 200 : width}
-        allowCellsRecycling={true}
+        disableSort={disableSort}
+        headerRenderer={disableSort ? undefined : tableHeader}
+        headerClassName="header"
       />
     );
   }
@@ -65,10 +96,6 @@ export default class FixedTable extends React.Component {
 
   renderPlaceholderColumn = (key, name, flex = 1) => {
     return this.renderColumn(key, name, PlaceholderCell, {onChange: this.props.onRowUpdate}, undefined, flex);
-  };
-
-  renderNullStateColumn = (flex = 1) => {
-    return this.renderColumn(null, null, NullStateCell, {}, undefined, flex, false);
   };
 
   renderDatetimeColumn = (key, name) => {
@@ -96,23 +123,45 @@ export default class FixedTable extends React.Component {
     return this.renderColumn(key, name, EmojiCell, props, 150, null);
   };
 
+  renderNullState = () => <NullStateCell />;
+
+  rowStyle = ({ index }) => ({
+    backgroundColor: index % 2 === 0 ? undefined : '#f6f7f8',
+  });
+
   render() {
-    const { rowHeight, headerHeight, count, dimensions, overflowY } = this.props;
+    const { rowHeight, headerHeight, count, array, sort: allSort } = this.props;
+    const sort = _.pickBy(allSort, Boolean);
+    let sortBy, direction;
+    if (!_.isEmpty(sort)) {
+      [sortBy, direction] = Object.entries(sort)[0];
+      direction = toTableSD(direction);
+      sortBy = direction ? sortBy : null;
+    }
     return (
       <div className="fixed-table">
-        <Table
-          rowHeight={rowHeight}
-          headerHeight={headerHeight}
-          rowsCount={count || 1}
-          width={dimensions.width}
-          height={dimensions.height}
-          showScrollbarX={false}
-          showScrollbarY={false}
-          overflowY={overflowY}
-          className="table-main"
-        >
-          {count ? this.renderColumns() : this.renderNullStateColumn()}
-        </Table>
+        <AutoSizer>
+          {({ width, height }) => (
+            <Table
+              estimatedRowSize={rowHeight}
+              rowHeight={rowHeight}
+              headerHeight={headerHeight}
+              rowCount={count}
+              width={width}
+              height={height}
+              rowGetter={this.rowGetter}
+              rowStyle={this.rowStyle}
+              className="table-main"
+              sort={this.onSort}
+              sortBy={sortBy}
+              sortDirection={direction}
+              noRowsRenderer={this.renderNullState}
+              overscanRowCount={10}
+            >
+              {this.renderColumns()}
+            </Table>
+          )}
+        </AutoSizer>
       </div>
     );
   }

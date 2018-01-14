@@ -9,7 +9,6 @@ import Actions from '../global/actions';
 import {LocalStorage} from '../global/storage.js.erb';
 import Store from '../global/store';
 import ImportInvestorsModal from './import_investors_modal';
-import SectionWithDims from '../global/shared/section_with_dims';
 import EmailIntegrationModal from './email_integration_modal';
 
 const Modals = {
@@ -139,17 +138,16 @@ export default class OutreachPage extends React.Component {
     const source = {path: TargetInvestorsPath, query: {sort}};
 
     return (
-      <SectionWithDims dimensionsKey="dimensions">
-        <Conversations
-          resultsId={resultsId}
-          source={source}
-          onSort={this.onSort}
-          {...this.props}
-          targets={targets}
-          sort={sort}
-          count={count}
-        />
-      </SectionWithDims>
+      <Conversations
+        resultsId={resultsId}
+        source={source}
+        onSort={this.onSort}
+        {...this.props}
+        targets={targets}
+        sort={sort}
+        count={count}
+        rowHeight={100}
+      />
     )
   }
 

@@ -4,8 +4,8 @@ import TextCell from './text_cell';
 
 export default class DatetimeCell extends TextCell {
   processRow(props, row) {
-    let datetime = _.get(row, props.columnKey);
-    let value = datetime && moment(datetime).fromNow();
+    const datetime = props.data;
+    const value = datetime && moment(datetime).fromNow();
     return {value};
   }
 }
