@@ -30,6 +30,8 @@
     <%= logrocket_key(yield(:logrocket)) %>
   <% end %>
 
+  <%= render partial: 'external/mixpanel' %>
+
   <%= javascript_pack_tag 'shared', defer: true %>
   <% if content_for?(:pack) %>
     <%= javascript_pack_tag "external/#{yield(:pack)}", defer: true %>
