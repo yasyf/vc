@@ -22,7 +22,7 @@ class FounderEnhanceJob < ApplicationJob
       attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
       other = Founder.where(attrs).first
       raise unless other.present?
-      raise if other.logged_in_at.present?
+      return if other.logged_in_at.present?
       migrate_founder(founder, other)
     end
   end
