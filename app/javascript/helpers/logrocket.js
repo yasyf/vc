@@ -1,4 +1,3 @@
-import Raven from 'raven-js';
 import LogRocket from 'logrocket';
 require('logrocket-react')(LogRocket);
 
