@@ -19,6 +19,7 @@
     <% else %>
       You didn't send any emails to investors this week!
       If this is wrong, please make sure you're CCing <b><%= ENV['MAILGUN_EMAIL'] %></b>, or enable VCWiz Link <a href="<%= external_vcwiz_outreach_url %>">here</a>.
+      Click <a href="<%= external_vcwiz_founders_unsubscribe_url(token: @founder.token) %>">here</a> to disable these weekly emails.
     <% end %>
   </div>
 <% end %>
