@@ -136,7 +136,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
 
   def signup
     session[:signup_data] = signup_params
-    cookies.permanent[:login_domain] = (PublicSuffix.domain(URI::parse(signup_params[:domain]).host) rescue nil)
+    cookies.permanent[:login_domain] = '*' if signup_params[:domain].present?
     redirect_login
   end
 
@@ -165,7 +165,7 @@ class External::VCWiz::VCWizController < External::ApplicationController
 
   def redirect_login
     store_location_for(:external_founder, request.referer) if (URI::parse(request.referer).host rescue nil) == ENV['SITE_DOMAIN']
-    redirect_to omniauth_path(enable_scanner? ? 'gmail' : 'google_external', hd: params[:domain] || cookies[:login_domain] || '*')
+    redirect_to omniauth_path(enable_scanner? ? 'gmail' : 'google_external', hd: cookies[:login_domain])
   end
 
   def enable_scanner?

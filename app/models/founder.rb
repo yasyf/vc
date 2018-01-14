@@ -148,7 +148,7 @@ class Founder < ApplicationRecord
 
   def domain
     return nil unless email.present?
-    email.split('@').last
+    Mail::Address.new(email).domain
   end
 
   def admin?
