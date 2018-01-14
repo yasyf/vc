@@ -45,6 +45,7 @@ class Graph
   end
 
   def self.connect(type, n1, n2)
+    return if n1 == n2
     Neography::Relationship.create_unique(
       "connected_on_#{type}",
       type,
