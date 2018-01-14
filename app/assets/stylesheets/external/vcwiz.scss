@@ -333,9 +333,11 @@ p.tight {
     }
 
     .paths {
+      @extend .scroll-shadow;
+
       overflow-y: auto;
       max-height: 40vh;
-      padding: 40px;
+      padding: 30px;
 
       &.no-graph {
         position: absolute;
