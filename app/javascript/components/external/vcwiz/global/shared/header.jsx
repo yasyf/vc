@@ -92,16 +92,17 @@ export default class Header extends React.Component {
     if (!this.state.founder.conversations) {
       return null;
     }
-    return <span>({this.state.founder.conversations.total})</span>;
+    return <span>My Conversations ({this.state.founder.conversations.total})</span>;
   }
 
   renderRight() {
+    const { showLogin, inlineSignup, isOutreach } = this.props;
     if (isLoggedIn()) {
       return (
         <div className="title right">
-          <a href={OutreachPath}>
+          <a href={isOutreach ? DiscoverPath : OutreachPath}>
             <h5 className="subtitle nudge-middle">
-              My Conversations {this.renderCount()}
+              {isOutreach ? 'Discover More Investors' : this.renderCount()}
             </h5>
           </a>
           <a onClick={this.openSettingsModal}>
@@ -109,8 +110,8 @@ export default class Header extends React.Component {
           </a>
         </div>
       );
-    } else if (this.props.showLogin) {
-      if (this.props.inlineSignup) {
+    } else if (showLogin) {
+      if (inlineSignup) {
         return (
           <div className="title right">
             Founder?

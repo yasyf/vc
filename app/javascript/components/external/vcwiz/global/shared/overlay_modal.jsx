@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import classNames from 'classnames';
 import Breadcrumb from '../breadcrumbs';
-import {saveCurrentRestoreState} from '../utils';
+import {doNotPropagate, saveCurrentRestoreState} from '../utils';
 
 export default class OverlayModal extends React.Component {
   static defaultProps = {
@@ -48,11 +48,16 @@ export default class OverlayModal extends React.Component {
     )
   }
 
+  onCloseClick = e => {
+    doNotPropagate(e);
+    this.onClose();
+  };
+
   renderCloseButton() {
     if (!this.props.showClose) {
       return null;
     }
-    return <div className="close-icon" onClick={this.props.onClose}>x</div>;
+    return <div className="close-icon" onClick={this.onCloseClick}>x</div>;
   }
 
   stopWheel = event => event.stopPropagation();

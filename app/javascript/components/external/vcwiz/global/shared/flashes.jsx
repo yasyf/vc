@@ -27,8 +27,8 @@ export default class Flashes extends React.Component {
       }
     });
     this.subscription2 = Store.subscribe('lastScroll', e => {
-      const { showFlashes } = this.state;
-      if (showFlashes) {
+      const { ignoreNextClick, showFlashes } = this.state;
+      if (showFlashes && !ignoreNextClick) {
         this.setState({showFlashes: false});
       }
     });
@@ -45,7 +45,7 @@ export default class Flashes extends React.Component {
   };
 
   addFlash = flash => {
-    this.setState({flashes: this.state.flashes.concat([flash]), showFlashes: true, ignoreNextClick: true})
+    this.setState({flashes: this.state.flashes.concat([flash]), showFlashes: true, ignoreNextClick: true});
   };
 
   toggleFlashes = e => {

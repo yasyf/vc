@@ -157,6 +157,7 @@ export default class OutreachPage extends React.Component {
     return (
       <VCWiz
         page="outreach"
+        isOutreach={true}
         header={this.renderHeader()}
         body={this.renderBody()}
         modal={this.renderModal()}

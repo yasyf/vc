@@ -9,10 +9,12 @@ import {Row, Column} from 'react-foundation';
 import { canUseDOM } from 'exenv';
 import Store from '../store';
 import classNames from 'classnames';
+import hasModalErrorBoundary from '../shared/has_modal_error_boundary';
 
 // eslint-disable-next-line global-require
 const Graph = canUseDOM && require('react-graph-vis').default;
 
+@hasModalErrorBoundary
 export default class IntroPathModal extends React.Component {
   state = {
     loading: true,
