@@ -10,7 +10,7 @@ class PropagateIndustryUpJob < ApplicationJob
     saas: :enterprise,
   }
 
-  queue_as :low
+  queue_as :high_mem
 
   def perform(name)
     propagate_industry_up_to(name.constantize)

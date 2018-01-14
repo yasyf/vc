@@ -1,7 +1,7 @@
 class PropagateFundTypeUpJob < ApplicationJob
   FUND_TYPE_THRESHOLD = 0.25
 
-  queue_as :low
+  queue_as :high_mem
 
   def perform(name, relations)
     propagate_fund_type_up name.constantize, relations
