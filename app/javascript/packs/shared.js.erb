@@ -1,7 +1,11 @@
+<% if Rails.env.production? %>
+  import 'helpers/logrocket';
+<% end %>
+
 import 'helpers/raven.js.erb';
 
 <% if Rails.env.production? %>
-  import 'helpers/logrocket';
+  import 'helpers/mixpanel';
 
   <% include Webpacker::Helper %>
   if('serviceWorker' in navigator) {
