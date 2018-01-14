@@ -6,7 +6,9 @@ import Store from '../store';
 import Actions from '../actions';
 import {Row, Column, Colors, Button} from 'react-foundation';
 import SettingsBase from './settings_base';
+import hasModalErrorBoundary from '../shared/has_modal_error_boundary';
 
+@hasModalErrorBoundary
 export default class FounderSettingsModal extends SettingsBase {
   static stateFromFounder = newFounder => {
     const founder = _.clone(newFounder);

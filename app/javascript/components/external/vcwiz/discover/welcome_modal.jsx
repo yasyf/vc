@@ -6,7 +6,9 @@ import {Row, Column} from 'react-foundation';
 import Slider from 'react-slick';
 import Tutorial from './tutorial';
 import {extend} from '../global/utils';
+import hasModalErrorBoundary from '../global/shared/has_modal_error_boundary';
 
+@hasModalErrorBoundary
 export default class WelcomeModal extends React.Component {
   state = {
     moved: {}

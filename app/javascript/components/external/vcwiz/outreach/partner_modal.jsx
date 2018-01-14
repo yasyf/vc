@@ -5,7 +5,9 @@ import PartnerTab from '../global/competitors/partner_tab';
 import ResearchModal from '../global/competitors/research_modal';
 import {ffetch} from '../global/utils';
 import Actions from '../global/actions';
+import hasModalErrorBoundary from '../global/shared/has_modal_error_boundary';
 
+@hasModalErrorBoundary
 export default class PartnerModal extends OverlayModal {
   onTrackChange = update => {
     const { id } = this.props.item;

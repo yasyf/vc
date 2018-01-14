@@ -1,7 +1,9 @@
 import React from 'react';
 import OverlayModal from '../global/shared/overlay_modal';
 import Switch from '../global/fields/switch';
+import hasModalErrorBoundary from '../global/shared/has_modal_error_boundary';
 
+@hasModalErrorBoundary
 export default class MoreFiltersModal extends React.Component {
   renderSwitch(name, label, description) {
     const { options, suggestions, onChange } = this.props;

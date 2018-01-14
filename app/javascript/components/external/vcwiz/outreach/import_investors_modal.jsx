@@ -11,6 +11,7 @@ import { Line } from 'rc-progress';
 import Table from '../global/shared/table';
 import Actions from '../global/actions';
 import StandardLoader from '../global/shared/standard_loader';
+import hasModalErrorBoundary from '../global/shared/has_modal_error_boundary';
 
 const Stage = {
   START: 'START',
@@ -21,6 +22,7 @@ const Stage = {
   ERROR: 'ERROR',
 };
 
+@hasModalErrorBoundary
 export default class ImportInvestorsModal extends React.Component {
   state = {
     stage: Stage.START,

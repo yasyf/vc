@@ -9,9 +9,11 @@ import Store from '../global/store';
 import Actions from '../global/actions';
 import PlaceholderInput from '../global/fields/placeholder_input';
 import StandardLoader from '../global/shared/standard_loader';
+import hasModalErrorBoundary from '../global/shared/has_modal_error_boundary';
 
 const NumStages = 5;
 
+@hasModalErrorBoundary
 export default class IntroModal extends React.Component {
   constructor(props) {
     super(props);
