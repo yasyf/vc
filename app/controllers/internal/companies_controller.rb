@@ -2,7 +2,7 @@ class Internal::CompaniesController < Internal::ApplicationController
   include External::Concerns::Pageable
 
   INCLUDES = [:team, users: :team, pitches: [:votes, :team], cards: :list]
-  LIMIT = 100
+  LIMIT = 25
 
   before_action :authenticate_internal_user!
 
