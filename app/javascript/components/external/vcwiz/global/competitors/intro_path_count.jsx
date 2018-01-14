@@ -2,6 +2,7 @@ import React from 'react';
 import {doNotPropagate, initials} from '../utils';
 import ProfileImage from '../shared/profile_image';
 import IntroPathModal from './intro_path_modal';
+import inflection from 'inflection';
 
 const humanize = pair => {
   if (!pair.length) {
@@ -49,12 +50,12 @@ export default class IntroPathCount extends React.Component {
       return _.compact([
         <div key="pre">{short ? 'C' : "You're c"}onnected{short ? '' : ' directly'} to</div>,
         ...humanize(show.map(this.renderPerson)),
-        remaining ? <div key="post">and {remaining} ${inflection.inflect('others', remaining)}</div> : null,
+        remaining ? <div key="post">and {remaining} {inflection.inflect('others', remaining)}</div> : null,
       ]);
     } else {
       return _.compact([
         ...humanize(show.map(this.renderPerson)),
-        remaining ? <div key="post">and {remaining} ${inflection.inflect('others', remaining)}</div> : null,
+        remaining ? <div key="post">and {remaining} {inflection.inflect('others', remaining)}</div> : null,
         <div key="post2">can intro{short ? '' : 'duce you'}</div>,
       ]);
     }
