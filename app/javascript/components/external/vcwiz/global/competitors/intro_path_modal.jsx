@@ -104,6 +104,9 @@ export default class IntroPathModal extends React.Component {
               arrowStrikethrough: false,
               smooth: true,
             },
+            interaction: {
+              dragNodes: false,
+            },
             layout: {
               hierarchical: {
                 direction: 'LR',
@@ -111,7 +114,7 @@ export default class IntroPathModal extends React.Component {
             },
           }}
           events={{
-            stabilized: () => this.network.fit(),
+            stabilized: () => this.network.focus('me'),
           }}
         />
       </div>

@@ -194,9 +194,9 @@ class Message
         X-Roving-ID
         X-Eventbrite
        ).any? { |h| headers.key?(h) } ||
-      recipients.any? do |a|
+      recipients.push(from).any? do |a|
         (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
-        (a.name.present? && (['mail delivery', 'support', 'team'].any? { |s| a.name.downcase.include?(s) }))
+        (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem'].any? { |s| a.name.downcase.include?(s) }))
       end
     end
   end
