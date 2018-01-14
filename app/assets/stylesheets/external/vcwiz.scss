@@ -336,8 +336,8 @@ p.tight {
       @extend .scroll-shadow;
 
       overflow-y: auto;
-      max-height: 40vh;
-      padding: 30px;
+      max-height: 30vh;
+      padding: 20px 40px;
 
       &.no-graph {
         position: absolute;
