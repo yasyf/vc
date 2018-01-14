@@ -195,8 +195,8 @@ class Message
         X-Eventbrite
        ).any? { |h| headers.key?(h) } ||
       recipients.push(from).any? do |a|
-        (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
-        (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem'].any? { |s| a.name.downcase.include?(s) }))
+        (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info admin master).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
+        (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem', 'accounting', 'payroll', 'admin'].any? { |s| a.name.downcase.include?(s) }))
       end
     end
   end
