@@ -6,6 +6,6 @@ class CrawlTweetsJob < ApplicationJob
   LIMIT_FACTOR = 1
 
   def perform
-    run_job_in_batches(Investor, CrawlInvestorTweetsJob)
+    run_job_in_batches(Investor, CrawlInvestorTweetsJob, queue: :long)
   end
 end
