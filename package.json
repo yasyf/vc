@@ -25,7 +25,6 @@
     "exenv": "1.2.2",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.5",
-    "fixed-data-table-2": "0.8.6",
     "foundation-sites": "^6.4.4-rc1",
     "glob": "^7.1.2",
     "history": "4.7.2",
