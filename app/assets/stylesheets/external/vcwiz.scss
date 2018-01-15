@@ -1870,18 +1870,8 @@ mark.highlighter {
 
   .Select-menu {
     @extend .scroll-shadow;
+    @include standard-scroll-bars;
     overflow-y: scroll;
-
-    &::-webkit-scrollbar {
-      -webkit-appearance: none;
-      width: 7px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 4px;
-      background-color: rgba(0, 0, 0, .5);
-      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-    }
   }
 }
 
@@ -2470,6 +2460,8 @@ mark.highlighter {
 
   .tabs-component {
     .tab-list-wrapper {
+      @include standard-scroll-bars;
+
       position: relative;
       top: 1px;
       overflow-x: auto;
