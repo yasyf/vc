@@ -133,7 +133,7 @@ export default class FixedTable extends React.Component {
   });
 
   render() {
-    const { rowHeight, headerHeight, count, array, sort: allSort, dimensions: windowDimensions } = this.props;
+    const { rowHeight, headerHeight, count, array, lastUpdate, sort: allSort, dimensions: windowDimensions } = this.props;
     const sort = _.pickBy(allSort, Boolean);
     let sortBy, direction;
     if (!_.isEmpty(sort)) {
@@ -161,6 +161,7 @@ export default class FixedTable extends React.Component {
               noRowsRenderer={this.renderNullState}
               overscanRowCount={10}
               windowDimensions={windowDimensions}
+              lastUpdate={lastUpdate}
             >
               {this.renderColumns()}
             </Table>
