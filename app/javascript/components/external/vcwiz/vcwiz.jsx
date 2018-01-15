@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import Header from './global/shared/header';
 import classNames from 'classnames';
-import {currentPage, ffetch} from './global/utils';
+import {currentPage, ffetch, screenHeight, screenWidth} from './global/utils';
 import Store from './global/store';
 import Actions from './global/actions';
 import {SessionStorage} from './global/storage.js.erb';
@@ -12,7 +12,7 @@ import Footer from './global/shared/footer';
 
 class GlobalErrorBoundary extends React.Component {
   state = {
-    error: null
+    error: null,
   };
 
   componentDidCatch(error, info) {
@@ -72,8 +72,8 @@ export default class VCWiz extends React.Component {
   };
 
   onResize = () => {
-    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    const width = screenWidth();
+    const height = screenHeight();
     Store.set('dimensions', {width, height});
   };
 

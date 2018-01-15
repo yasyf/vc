@@ -1,10 +1,10 @@
 import React from 'react';
 import inflection from 'inflection';
-import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey, LargeScreenSize, MobileScreenSize} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey, LargeScreenSize} from '../constants.js.erb';
 import ResearchModal from './research_modal';
 import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
-import {ffetch} from '../utils';
+import {ffetch, isMobile} from '../utils';
 import Store from '../store';
 import Actions from '../actions';
 
@@ -21,7 +21,7 @@ class ResultsTable extends FixedTable {
     let { industryLimit } = this.props;
     industryLimit = industryLimit || (dimensions.width > LargeScreenSize ? 3 : 2);
 
-    if (dimensions.width <= MobileScreenSize) {
+    if (isMobile()) {
       return [];
     }
 

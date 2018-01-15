@@ -3,8 +3,8 @@ import WrappedTable from '../global/shared/wrapped_table';
 import EmojiModal from './emoji_modal';
 import PartnerModal from './partner_modal';
 import FixedTable from '../global/shared/fixed_table';
-import {initials, ffetch} from '../global/utils';
-import {TargetInvestorsPath, TargetInvestorStagesKeys, MobileScreenSize} from '../global/constants.js.erb';
+import {initials, ffetch, isMobile} from '../global/utils';
+import {TargetInvestorsPath, TargetInvestorStagesKeys} from '../global/constants.js.erb';
 import Actions from '../global/actions';
 import Store from '../global/store';
 import IntroModal from './intro_modal';
@@ -24,7 +24,7 @@ class ConversationsTable extends FixedTable {
     const emoji = this.renderEmojiColumn('priority', 'Tag');
 
 
-    if (dimensions.width <= MobileScreenSize) {
+    if (isMobile()) {
       return [partner, emoji];
     }
 
