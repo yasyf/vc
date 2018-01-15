@@ -1,6 +1,6 @@
 import React from 'react';
 import inflection from 'inflection';
-import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey, LargeScreenSize} from '../constants.js.erb';
+import {CompetitorFundTypes, CompetitorIndustries, CompetitorsPath, StorageRestoreStateKey, LargeScreenSize, MobileScreenSize} from '../constants.js.erb';
 import ResearchModal from './research_modal';
 import WrappedTable from '../shared/wrapped_table';
 import FixedTable from '../shared/fixed_table';
@@ -9,11 +9,6 @@ import Store from '../store';
 import Actions from '../actions';
 
 class ResultsTable extends FixedTable {
-  static defaultProps = {
-    ...FixedTable.defaultProps,
-    industryLimit: 3,
-  };
-
   parseColumns(columns, prefix = '') {
     return columns.map(({type, key, name, ...args}) => {
       let method = this[`render${inflection.camelize(type)}Column`];
@@ -22,11 +17,18 @@ class ResultsTable extends FixedTable {
   }
 
   defaultMiddleColumns() {
-    return [];
+    const { dimensions } = this.props;
+    let { industryLimit } = this.props;
+    industryLimit = industryLimit || (dimensions.width > LargeScreenSize ? 3 : 2);
+
+    if (dimensions.width <= MobileScreenSize) {
+      return [];
+    }
+
     return [
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
       { type: 'text', key: 'hq', name: 'Location' },
-      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: this.props.industryLimit },
+      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: industryLimit },
     ]
   }
 
@@ -55,26 +57,16 @@ class ResultsTable extends FixedTable {
 }
 
 export default class Results extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      restoreState: null,
-      dimensions: Store.get('dimensions', {
-        width: 0,
-        height: 0,
-      }),
-    };
-  }
+  state = {
+    restoreState: null,
+  };
 
   componentWillMount() {
     this.subscription = Store.subscribe(StorageRestoreStateKey, restoreState => this.setState({restoreState}));
-    this.subscription2 = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
   }
 
   componentWillUnmount() {
     Store.unsubscribe(this.subscription);
-    Store.unsubscribe(this.subscription2);
   }
 
   onModalClose = () => {
@@ -90,9 +82,7 @@ export default class Results extends React.Component {
   }
 
   render() {
-    let { competitors, industryLimit, ...rest } = this.props;
-    const { dimensions } = this.state;
-    industryLimit = industryLimit || (dimensions.width > LargeScreenSize ? 3 : 2);
+    let { competitors, ...rest } = this.props;
 
     return [
       this.renderModal(),
@@ -101,7 +91,6 @@ export default class Results extends React.Component {
         items={competitors}
         modal={ResearchModal}
         table={ResultsTable}
-        industryLimit={industryLimit}
         {...rest}
       />,
     ];

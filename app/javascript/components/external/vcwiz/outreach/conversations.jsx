@@ -4,7 +4,7 @@ import EmojiModal from './emoji_modal';
 import PartnerModal from './partner_modal';
 import FixedTable from '../global/shared/fixed_table';
 import {initials, ffetch} from '../global/utils';
-import {TargetInvestorsPath, TargetInvestorStagesKeys} from '../global/constants.js.erb';
+import {TargetInvestorsPath, TargetInvestorStagesKeys, MobileScreenSize} from '../global/constants.js.erb';
 import Actions from '../global/actions';
 import Store from '../global/store';
 import IntroModal from './intro_modal';
@@ -18,14 +18,24 @@ class ConversationsTable extends FixedTable {
   };
 
   renderColumns() {
+    const { dimensions } = this.props;
+
+    const partner = this.renderImageTextColumn('full_name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, verifiedKey: 'investor.verified', subKey: 'title', max: 18 }, 2);
+    const emoji = this.renderEmojiColumn('priority', 'Tag');
+
+
+    if (dimensions.width <= MobileScreenSize) {
+      return [partner, emoji];
+    }
+
     return [
-      this.renderImageTextColumn('full_name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, verifiedKey: 'investor.verified', subKey: 'title', max: 18 }, 2),
+      partner,
       this.renderTrackColumn('stage', this.onTrackChange, 'Stage'),
       this.renderIntroColumn('intro_requests[0]', 'VCWiz Intro', { eligibleKey: 'can_intro?', emailKey: 'email_present?', stageKey: 'stage' }),
-      this.renderEmojiColumn('priority', 'Tag'),
+      emoji,
       this.renderPlaceholderColumn('note', 'Notes', 2),
       this.renderDatetimeColumn('last_response', 'Last Response'),
-    ]
+    ];
   }
 }
 

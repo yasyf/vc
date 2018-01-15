@@ -60,7 +60,7 @@ export default class FixedTable extends React.Component {
     />
   );
 
-  renderColumn(key, name, CellComponent, props = {}, width = 50, flex = 1, trackClicks = true) {
+  renderColumn(key, name, CellComponent, props = {}, width = undefined, flex = 1, trackClicks = true) {
     const disableSort = nullOrUndef(this.props.sort[key]);
     return (
       <Column
@@ -70,7 +70,7 @@ export default class FixedTable extends React.Component {
         cellDataGetter={this.cellDataGetter}
         cellRenderer={this.cellRenderer(CellComponent, key, props, trackClicks)}
         flexGrow={flex || undefined}
-        width={isMobile() ? 200 : width}
+        width={width || (isMobile() ? 200 : 50)}
         disableSort={disableSort}
         headerRenderer={disableSort ? undefined : tableHeader}
         headerClassName="header"
@@ -120,7 +120,7 @@ export default class FixedTable extends React.Component {
   };
 
   renderEmojiColumn = (key, name, props) => {
-    return this.renderColumn(key, name, EmojiCell, props, 150, null);
+    return this.renderColumn(key, name, EmojiCell, props, 100, null);
   };
 
   renderNullState = () => <NullStateCell />;
