@@ -22,6 +22,7 @@ class ResultsTable extends FixedTable {
   }
 
   defaultMiddleColumns() {
+    return [];
     return [
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
       { type: 'text', key: 'hq', name: 'Location' },
