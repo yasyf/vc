@@ -1,5 +1,8 @@
 import React from 'react';
-import {Table, Column, AutoSizer} from 'react-virtualized';
+import {
+  Table, Column, AutoSizer,
+  defaultHeaderRenderer,
+} from 'react-virtualized';
 import ImageTextCell from '../cells/image_text_cell';
 import TextArrayCell from '../cells/text_array_cell';
 import TrackCell from '../cells/track_cell';
@@ -72,7 +75,7 @@ export default class FixedTable extends React.Component {
         flexGrow={flex || undefined}
         width={width || (isMobile() ? 200 : 50)}
         disableSort={disableSort}
-        headerRenderer={disableSort ? undefined : tableHeader}
+        headerRenderer={disableSort ? defaultHeaderRenderer : tableHeader}
         headerClassName="header"
       />
     );
