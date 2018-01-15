@@ -2466,6 +2466,50 @@ mark.highlighter {
     padding-top: 1em;
   }
 
+  .sidebar-wrapper {
+    margin-top: 0.5em;
+
+    .sidebar-list {
+      overflow-y: auto;
+      max-height: 85vh;
+
+      .partner-heading-inner {
+        cursor: pointer;
+        height: 60px;
+        margin-bottom: 5px;
+        border: 1px solid $light-grey;
+        border-radius: 6px;
+        padding: 4px 5px 5px;
+        width: 95%;
+
+        &.active {
+          border-color: $grey;
+          background-color: $white;
+        }
+      }
+    }
+
+    .partner-heading-inner {
+      position: relative;
+    }
+
+    & > div {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .partner-tab {
+      background: white;
+      padding: 1.5em 2em;
+
+      .partner-heading {
+        .partner-heading-col {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
   .tabs-component {
     .tab-list-wrapper {
       @include standard-scroll-bars;

@@ -31,7 +31,7 @@ module CompetitorLists::Base::ClassSql
       WHERE NOT EXISTS (SELECT * FROM filtered_partners_results)
     SQL
     partners_sql = <<-SQL
-      SELECT investors.id, investors.first_name, investors.last_name
+      SELECT investors.id, investors.first_name, investors.last_name, investors.photo, investors.role, investors.verified
       FROM investors
       INNER JOIN (#{ids}) AS ids ON investors.id = ids.id
       LEFT OUTER JOIN investments ON investments.investor_id = investors.id

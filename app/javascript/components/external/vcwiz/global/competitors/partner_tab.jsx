@@ -95,7 +95,7 @@ export default class PartnerTab extends React.Component {
     return (
       <div className="partner-heading">
         <Row>
-          <Column large={8}>
+          <Column large={8} className="partner-heading-col">
             <PartnerHeading investor={this.state.investor} />
           </Column>
           <Column offsetOnLarge={1} large={3}>

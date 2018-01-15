@@ -2,11 +2,12 @@ import React from 'react';
 import ProfileImage from '../shared/profile_image';
 import {
   CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath,
-  InvestorPath, CompanyPath, IntroPathTypes,
+  InvestorPath, CompanyPath, IntroPathTypes, CompetitorsListsPath,
+  MediumScreenSize,
 } from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import {
-  ffetch, fullName, isLoggedIn, isMobile, sendEvent,
+  ffetch, fullName, isLoggedIn, isMobile, nullOrUndef, sendEvent,
   withDots,
 } from '../utils';
 import Actions from '../actions';
@@ -19,6 +20,7 @@ import Tabs from '../tabs/tabs';
 import FakeLink from '../shared/fake_link';
 import fetchCompetitorPath from '../fetch_competitor_path';
 import IntroPathCount from './intro_path_count';
+import PartnerHeading from './partner_heading';
 
 export default class CompetitorBase extends React.Component {
   constructor(props) {
@@ -27,16 +29,22 @@ export default class CompetitorBase extends React.Component {
     this.state = {
       tab: null,
       path: null,
+      dimensions: Store.get('dimensions', {
+        width: 0,
+        height: 0,
+      }),
     };
     this.firstTabChange = true;
   }
 
   componentWillMount() {
     this.mounted = true;
+    this.subscription = Store.subscribe('dimensions', dimensions => this.setState({dimensions}));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    Store.unsubscribe(this.subscription);
   }
 
   componentDidMount() {
@@ -163,6 +171,7 @@ export default class CompetitorBase extends React.Component {
 
   renderBottom() {
     const { tab, item } = this.props;
+    const { dimensions, tab: currentTab } = this.state;
     const { partners, matches } = item;
 
     if (!partners || !partners.length) {
@@ -174,15 +183,32 @@ export default class CompetitorBase extends React.Component {
       defaultIndex = undefined;
     }
 
-    return (
-      <Tabs
-        scrollShadows={true}
-        defaultIndex={defaultIndex}
-        tabs={partners.map(p => <FakeLink href={InvestorPath.resource(p.id, inflection.dasherize(fullName(p).toLowerCase()))} value={fullName(p)} />)}
-        panels={partners.map(p => <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />)}
-        onTabChange={this.onTabChange}
-      />
-    );
+    const index = nullOrUndef(currentTab) ? (defaultIndex || 0) : currentTab;
+
+    if (partners.length > 1 && dimensions.width > MediumScreenSize) {
+      return (
+        <Row className="sidebar-wrapper">
+          <Column large={2} className="sidebar-list scroll-shadow">
+            {partners.map((p, i) =>
+              <div key={i} onClick={() => this.onTabChange(i)}>
+                <PartnerHeading investor={p} short={true} transparency="F5F6F7" className={i === index ? 'active' : undefined} />
+              </div>
+            )}
+          </Column>
+          <Column large={10}><PartnerTab key={index} onTrackChange={this.onTrackChange(partners[index].id)} investor={partners[index]} /></Column>
+        </Row>
+      );
+    } else {
+      return (
+        <Tabs
+          scrollShadows={true}
+          defaultIndex={defaultIndex}
+          tabs={partners.map(p => <FakeLink href={InvestorPath.resource(p.id, inflection.dasherize(fullName(p).toLowerCase()))} value={fullName(p)} />)}
+          panels={partners.map(p => <PartnerTab onTrackChange={this.onTrackChange(p.id)} investor={p} />)}
+          onTabChange={this.onTabChange}
+        />
+      );
+    }
   }
 
   renderTop() {

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Table, Column, AutoSizer,
-  defaultHeaderRenderer,
 } from 'react-virtualized';
 import ImageTextCell from '../cells/image_text_cell';
 import TextArrayCell from '../cells/text_array_cell';
@@ -75,7 +74,7 @@ export default class FixedTable extends React.Component {
         flexGrow={flex || undefined}
         width={width || (isMobile() ? 200 : 50)}
         disableSort={disableSort}
-        headerRenderer={disableSort ? defaultHeaderRenderer : tableHeader}
+        headerRenderer={disableSort ? undefined : tableHeader}
         headerClassName="header"
       />
     );
