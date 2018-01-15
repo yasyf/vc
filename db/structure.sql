@@ -1800,6 +1800,13 @@ CREATE INDEX index_companies_on_industry ON companies USING gin (industry);
 
 
 --
+-- Name: index_companies_on_location; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_companies_on_location ON companies USING btree (location);
+
+
+--
 -- Name: index_companies_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2960,6 +2967,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171229082041'),
 ('20180104062301'),
 ('20180104120408'),
-('20180115225738');
+('20180115225738'),
+('20180115230519');
 
 
