@@ -276,18 +276,23 @@ export default class PartnerTab extends React.Component {
     }
     const { first_name } = investor;
     const { last_contact, travel_status, opened_at, open_city, overlap, entities, path } = interactions;
+    const pathInteraction = this.renderPath();
     const fragments = _.compact([
-      this.renderPath(),
-      last_contact && <span key="last_contact">&nbsp;You last heard from {first_name} {moment(last_contact).fromNow()}.</span>,
-      opened_at && !last_contact && <span key="last_contact">&nbsp;You emailed {first_name} {moment(opened_at).fromNow()}.</span>,
-      travel_status && <span key="travel_status">&nbsp;Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}.</span>,
-      overlap && overlap.length && <span key="overlap">&nbsp;You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}!</span>,
-      entities.length && (!overlap || !overlap.length) && <span key="entities">&nbsp;{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}.</span>,
+      last_contact && <div key="last_contact">You last heard from {first_name} {moment(last_contact).fromNow()}.</div>,
+      opened_at && !last_contact && <div key="last_contact">You emailed {first_name} {moment(opened_at).fromNow()}.</div>,
+      travel_status && <div key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}.</div>,
+      overlap && overlap.length && <div key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}!</div>,
+      entities.length && (!overlap || !overlap.length) && <div key="entities">{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}.</div>,
     ]);
-    if (!fragments.length) {
+    if (!fragments.length && !pathInteraction) {
       return null;
     }
-    return <Row isColumn className="interactions">{fragments}</Row>;
+    return (
+      <Row isColumn className="interactions">
+        {pathInteraction}
+        <div className="fragments">{fragments}</div>
+      </Row>
+    );
   }
 
   renderBody() {

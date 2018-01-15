@@ -285,6 +285,10 @@ p.tight {
     font-size: 11px;
     text-align: center;
   }
+
+  img {
+    vertical-align: -1px;
+  }
 }
 
 .inline-image {
@@ -1936,13 +1940,17 @@ mark.highlighter {
   .interactions {
     font-weight: bold;
 
-    & > span:last-child {
-      display: inline-block;
-      margin-bottom: 1em;
+    .fragments {
+      display: flex;
+
+      & > div {
+        margin-right: 0.2em;
+        margin-bottom: 0.5em;
+      }
     }
 
     .intro-path-count {
-      margin-bottom: 1em;
+      margin-bottom: 0.5em;
 
       &.direct {
         display: inline-flex;
