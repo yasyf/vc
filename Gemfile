@@ -82,6 +82,8 @@ gem 'browser'
 gem 'neography'
 gem 'email_reply_parser'
 gem 'prop'
+gem 'pghero'
+gem 'pg_query', '>= 0.9.0'
 
 group :test do
   gem 'minitest', '~> 5.11.1'

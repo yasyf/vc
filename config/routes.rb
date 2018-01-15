@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     authenticate scope, lambda { |u| u.admin? } do
       mount Sidekiq::Web, at: '/sidekiq'
       mount Zhong::Web, at: '/zhong'
+      mount PgHero::Engine, at: '/pghero'
     end
   end
 

@@ -2402,6 +2402,13 @@ CREATE UNIQUE INDEX index_tweets_on_twitter_id ON tweets USING btree (twitter_id
 
 
 --
+-- Name: index_universities_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_universities_on_name ON universities USING btree (name);
+
+
+--
 -- Name: index_users_on_cached_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2952,6 +2959,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171228000038'),
 ('20171229082041'),
 ('20180104062301'),
-('20180104120408');
+('20180104120408'),
+('20180115225738');
 
 

@@ -109,7 +109,7 @@ end
       {
         company_id: lambda do |founder|
           return nil unless (company = founder.primary_company).present?
-          company.competitions.order(:id).pluck(:id)[arg_count]
+          company.competitions.order(:id).offset(arg_count).limit(1).pluck(:id).first
         end
       }
     end
