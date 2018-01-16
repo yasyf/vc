@@ -2,6 +2,7 @@
 
 /* eslint global-require: 0 */
 
+const { env } = require('process');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -39,6 +40,7 @@ module.exports = merge(sharedConfig, {
       include: '.',
       ignoreFile: '.gitignore',
       ignore: ['node_modules', 'webpack.config.js'],
+      release: env.HEROKU_SLUG_COMMIT,
     }),
     new CompressionPlugin({
       asset: '[path].gz[query]',
