@@ -264,6 +264,58 @@ CREATE TABLE competitors (
 
 
 --
+-- Name: investors; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE investors (
+    id bigint NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    email character varying,
+    crunchbase_id character varying,
+    role character varying,
+    competitor_id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    description text,
+    industry character varying[],
+    featured boolean DEFAULT false NOT NULL,
+    target_investors_count integer DEFAULT 0 NOT NULL,
+    photo character varying,
+    twitter character varying,
+    linkedin character varying,
+    facebook character varying,
+    homepage character varying,
+    location character varying,
+    fund_type character varying[],
+    al_id integer,
+    opted_in boolean,
+    gender integer DEFAULT 0 NOT NULL,
+    university_id bigint,
+    time_zone character varying,
+    country character varying,
+    al_url character varying,
+    last_fetched timestamp without time zone,
+    verified boolean DEFAULT false NOT NULL,
+    token character varying,
+    average_response_time integer
+);
+
+
+--
+-- Name: competitor_target_counts; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW competitor_target_counts AS
+ SELECT competitors.id AS competitor_id,
+    COALESCE(sum(investors.target_investors_count), (0)::bigint) AS target_count
+   FROM (competitors
+     JOIN investors ON ((investors.competitor_id = competitors.id)))
+  GROUP BY competitors.id
+  WITH NO DATA;
+
+
+--
 -- Name: competitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -565,45 +617,6 @@ CREATE SEQUENCE investments_id_seq
 --
 
 ALTER SEQUENCE investments_id_seq OWNED BY investments.id;
-
-
---
--- Name: investors; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE investors (
-    id bigint NOT NULL,
-    first_name character varying NOT NULL,
-    last_name character varying NOT NULL,
-    email character varying,
-    crunchbase_id character varying,
-    role character varying,
-    competitor_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    description text,
-    industry character varying[],
-    featured boolean DEFAULT false NOT NULL,
-    target_investors_count integer DEFAULT 0 NOT NULL,
-    photo character varying,
-    twitter character varying,
-    linkedin character varying,
-    facebook character varying,
-    homepage character varying,
-    location character varying,
-    fund_type character varying[],
-    al_id integer,
-    opted_in boolean,
-    gender integer DEFAULT 0 NOT NULL,
-    university_id bigint,
-    time_zone character varying,
-    country character varying,
-    al_url character varying,
-    last_fetched timestamp without time zone,
-    verified boolean DEFAULT false NOT NULL,
-    token character varying,
-    average_response_time integer
-);
 
 
 --
@@ -1856,6 +1869,13 @@ CREATE INDEX index_competitions_on_b_id ON competitions USING btree (b_id);
 
 
 --
+-- Name: index_competitor_target_counts_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_competitor_target_counts_on_competitor_id ON competitor_target_counts USING btree (competitor_id);
+
+
+--
 -- Name: index_competitors_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1867,6 +1887,13 @@ CREATE INDEX index_competitors_on_al_id ON competitors USING btree (al_id);
 --
 
 CREATE UNIQUE INDEX index_competitors_on_crunchbase_id ON competitors USING btree (crunchbase_id);
+
+
+--
+-- Name: index_competitors_on_domain; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_competitors_on_domain ON competitors USING btree (domain);
 
 
 --
@@ -1944,6 +1971,13 @@ CREATE INDEX index_emails_on_investor_id ON emails USING btree (investor_id);
 --
 
 CREATE UNIQUE INDEX index_entities_on_name ON entities USING btree (name);
+
+
+--
+-- Name: index_entities_on_wiki; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_entities_on_wiki ON entities USING btree (wiki);
 
 
 --
@@ -2523,6 +2557,14 @@ ALTER TABLE ONLY intro_requests
 
 
 --
+-- Name: investments fk_rails_0d6258ac3c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY investments
+    ADD CONSTRAINT fk_rails_0d6258ac3c FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
 -- Name: competitions fk_rails_10c7683510; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2560,6 +2602,14 @@ ALTER TABLE ONLY import_tasks
 
 ALTER TABLE ONLY intro_requests
     ADD CONSTRAINT fk_rails_203146869d FOREIGN KEY (investor_id) REFERENCES investors(id);
+
+
+--
+-- Name: investments fk_rails_212f793a38; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY investments
+    ADD CONSTRAINT fk_rails_212f793a38 FOREIGN KEY (competitor_id) REFERENCES competitors(id);
 
 
 --
@@ -2968,6 +3018,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180104062301'),
 ('20180104120408'),
 ('20180115225738'),
-('20180115230519');
+('20180115230519'),
+('20180116003132'),
+('20180116010539'),
+('20180116013512');
 
 

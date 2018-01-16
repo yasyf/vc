@@ -15,13 +15,14 @@ class CompetitorLists::MostRecent < CompetitorLists::Base::Base
       investments.featured DESC,
       COUNT(NULLIF(investors.featured, false)) DESC,
       COUNT(NULLIF(investors.verified, false)) DESC,
-      COALESCE(SUM(investors.target_investors_count), 0) DESC
+      MAX(COALESCE(competitor_target_counts.target_count, 0)) DESC
     SQL
   end
 
   def join
     <<-SQL
       INNER JOIN competitors ON competitors.id = investments.competitor_id
+      INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id
       LEFT OUTER JOIN investors ON investors.competitor_id = competitors.id
     SQL
   end

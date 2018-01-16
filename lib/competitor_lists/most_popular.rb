@@ -41,14 +41,18 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
   end
 
   def self._sql(attrs)
+    by_competitor = Competitor.where('competitors.location && ?', "{#{attrs[:city]}}").select('id').to_sql
+    by_company = Competitor.joins(:companies).where('companies.location = ?', attrs[:city]).select('id').to_sql
+    both = "(#{by_competitor}) UNION (#{by_company})"
     Competitor
+      .where("competitors.id IN (#{both})")
+      .joins('INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id')
       .joins(:companies)
-      .where('competitors.location && ?', "{#{attrs[:city]}}")
-      .or(Competitor.joins(:companies).where('companies.location IN (?)', attrs[:city]))
-      .joins(:investors)
-      .joins("LEFT OUTER JOIN companies AS city_companies ON (city_companies.id = investments.company_id AND #{Util.sanitize_sql('city_companies.location = ?', attrs[:city])})")
-      .select('competitors.id', 'COALESCE(SUM(investors.target_investors_count), 0) AS ti_sum', 'COUNT(city_companies.id) AS c_cnt')
-      .order('ti_sum DESC, c_cnt DESC')
+      .select(
+        'competitors.id',
+        'MAX(COALESCE(competitor_target_counts.target_count, 0)) AS ti_sum',
+        "COUNT(DISTINCT companies.id) FILTER (WHERE #{Util.sanitize_sql('companies.location = ?', attrs[:city])}) AS c_cnt",
+      ).order('ti_sum DESC, c_cnt DESC')
       .group('competitors.id')
       .limit(10)
       .to_sql

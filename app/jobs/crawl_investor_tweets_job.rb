@@ -1,5 +1,5 @@
 class CrawlInvestorTweetsJob < ApplicationJob
-  queue_as :long
+  queue_as :low
 
   def perform(investor_id)
     Investor.find(investor_id).scrape_tweets!

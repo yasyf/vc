@@ -35,7 +35,7 @@ Zhong.schedule do
   if Rails.application.vcwiz?
     category 'crawl' do
       every(4.days, 'investors.posts', at: '01:00') { CrawlPostsJob.perform_later }
-      every(12.hours, 'investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }
+      every(4.hours, 'investors.tweets', skip_first_run: true) { CrawlTweetsJob.perform_later }
       every(2.days, 'refresh', at: '02:00') { RefreshJob.perform_later }
     end
 
@@ -45,7 +45,7 @@ Zhong.schedule do
       every(1.day, 'clean', at: '01:00') { CompanyCleanJob.perform_later }
       every(12.hours, 'gmail',  skip_first_run: true) { FoundersGmailSyncJob.perform_later }
       every(1.hours, 'investors',  skip_first_run: true) { FindInvestorsJob.perform_later }
-      every(1.hour, 'competitor_lists',  skip_first_run: true) { CompetitorListJob.perform_later }
+      every(6.hours, 'competitor_lists',  skip_first_run: true) { CompetitorListJob.perform_later }
     end
 
     category 'bulk' do

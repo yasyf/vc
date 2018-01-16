@@ -106,7 +106,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     end
     if params[:filters][:location].present?
       competitors = if params[:options][:company_cities]
-        competitors.joins(:companies).where('companies.location IN (?)', params[:filters][:location])
+        competitors.joins(:companies).where('companies.location = ANY(ARRAY[?])', params[:filters][:location])
       else
         competitors.where('competitors.location && ?', "{#{params[:filters][:location]}}")
       end
@@ -121,7 +121,8 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     end
     competitors = competitors.where(country: 'US') if params[:options][:us_only]
     competitors = competitors.joins(_industry_overlap_subquery) if overlap_industries.present?
-    competitors.left_outer_joins(:investors)
+    competitors = competitors.left_outer_joins(:investors)
+    competitors.joins('INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id')
   end
 
   def sort
@@ -129,7 +130,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
       'bool_or(COALESCE(investors.featured, false)) DESC',
       overlap_industries.present? && 'MIN(overlap_cnt) DESC',
       overlap_cities.present? && "(#{Util.sanitize_sql('competitors.location && ARRAY[?]::character varying[]', overlap_cities)}) DESC",
-      'COALESCE(SUM(investors.target_investors_count), 0) DESC',
+      'MAX(COALESCE(competitor_target_counts.target_count, 0)) DESC',
       'bool_or(COALESCE(investors.verified, false)) DESC',
     ].select { |x| x }.join(', ')
   end

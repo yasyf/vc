@@ -31,10 +31,10 @@ class CompetitorLists::MostPopularOf < CompetitorLists::MostPopular
     Competitor
       .where('competitors.fund_type && ?', "{#{attrs[:fund_type]}}")
       .joins(:companies)
-      .joins(:investors)
+      .joins('INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id')
       .order('ti_sum DESC, c_cnt DESC')
       .group('competitors.id')
-      .select('competitors.id', 'COALESCE(SUM(investors.target_investors_count), 0) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
+      .select('competitors.id', 'MAX(COALESCE(competitor_target_counts.target_count, 0)) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
       .limit(10)
       .to_sql
   end
