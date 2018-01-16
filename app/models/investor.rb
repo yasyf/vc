@@ -229,7 +229,7 @@ class Investor < ApplicationRecord
     self.gender = gender if gender.in?(GENDERS)
   end
 
-  def self.fuzzy_search(q, existing_ids)
+  def self.fuzzy_search(q, existing_ids = [])
     by_competitor_name = Competitor.where('competitors.name % ?', q).joins(:investors).select('investors.id AS id', 'competitors.name AS name').to_sql
     by_investor_first_name = Investor.where('investors.first_name % ?', q).select('investors.id AS id', 'investors.first_name AS name').to_sql
     by_investor_last_name = Investor.where('investors.last_name % ?', q).select('investors.id AS id', 'investors.last_name AS name').to_sql
