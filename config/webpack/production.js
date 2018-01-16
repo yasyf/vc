@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CompressionPlugin = require('compression-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const SentryCliPlugin = require('@sentry/webpack-plugin');
 const sharedConfig = require('./shared.js');
 
 module.exports = merge(sharedConfig, {
@@ -27,12 +28,17 @@ module.exports = merge(sharedConfig, {
         conditionals: true,
         comparisons: true,
         sequences: true,
-        booleans: true
+        booleans: true,
       },
       output: {
-        comments: false
+        comments: false,
       },
-      exclude: [/\.min\.js$/gi]
+      exclude: [/\.min\.js$/gi],
+    }),
+    new SentryCliPlugin({
+      include: '.',
+      ignoreFile: '.gitignore',
+      ignore: ['node_modules', 'webpack.config.js'],
     }),
     new CompressionPlugin({
       asset: '[path].gz[query]',
@@ -44,5 +50,5 @@ module.exports = merge(sharedConfig, {
       staticFileGlobsIgnorePatterns: [/\.map$/, /manifest\.json$/],
       mergeStaticsConfig: true,
     }),
-  ]
+  ],
 });
