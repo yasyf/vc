@@ -1,7 +1,4 @@
-class External::VCWiz::FoundersController < External::ApplicationController
-  include External::ApplicationHelper
-
-  layout 'vcwiz'
+class External::VCWiz::FoundersController < External::FrontendController
   before_action :check_founder!, except: [:unsubscribe]
 
   def unsubscribe

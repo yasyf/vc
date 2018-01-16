@@ -1,8 +1,4 @@
-class External::VCWiz::InvestorsController < External::ApplicationController
-  include External::ApplicationHelper
-  include External::Concerns::Reactable
-
-  layout 'vcwiz'
+class External::VCWiz::InvestorsController < External::FrontendController
   before_action :check_investor!, only: [:contacts, :settings]
 
   def index

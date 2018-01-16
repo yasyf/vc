@@ -1,8 +1,4 @@
-class External::VCWiz::IntroController < External::ApplicationController
-  include External::Concerns::Reactable
-
-  layout 'vcwiz'
-
+class External::VCWiz::IntroController < External::FrontendController
   def opt_in
     intro_request.investor.update! opted_in: optin?
     intro_request.decide! accept?

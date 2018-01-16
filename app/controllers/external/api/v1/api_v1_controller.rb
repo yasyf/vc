@@ -1,8 +1,13 @@
 class External::Api::V1::ApiV1Controller < External::ApplicationController
   before_action :check_rate_limit!
+  before_action :check_api_auth!
 
   def authenticate_api_user!
     authenticate_external_founder!
+  end
+
+  def check_api_auth!
+    head :unauthorized unless session[:api_auth]
   end
 
   def check_rate_limit!

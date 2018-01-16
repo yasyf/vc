@@ -1,13 +1,10 @@
-class External::VCWiz::VCWizController < External::ApplicationController
+class External::VCWiz::VCWizController < External::FrontendController
   include External::Concerns::Filterable
   include External::Concerns::Sortable
-  include External::Concerns::Reactable
   include External::Concerns::Censorable
-  include External::ApplicationHelper
 
   filter %w(email)
 
-  layout 'vcwiz'
   before_action :check_founder!, only: [:outreach]
   before_action :merge_cookie_filters!, only: [:discover]
 
