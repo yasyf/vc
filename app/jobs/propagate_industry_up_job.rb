@@ -33,7 +33,7 @@ class PropagateIndustryUpJob < ApplicationJob
   def propagate_industry_up_to(klass, limit: 1000)
     buckets = (klass.count / limit) + 1
     (0...buckets).each do |i|
-      propagate_industry_up_to_with_offset klass, limit, offset
+      propagate_industry_up_to_with_offset klass, limit, i * limit
     end
   end
 
