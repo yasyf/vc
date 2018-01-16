@@ -50,7 +50,7 @@ class CompetitorLists::MostPopular < CompetitorLists::Base::Base
       .joins(:companies)
       .select(
         'competitors.id',
-        'MAX(COALESCE(competitor_target_counts.target_count, 0)) AS ti_sum',
+        'SUM(COALESCE(competitor_target_counts.target_count, 0)) AS ti_sum',
         "COUNT(DISTINCT companies.id) FILTER (WHERE #{Util.sanitize_sql('companies.location = ?', attrs[:city])}) AS c_cnt",
       ).order('ti_sum DESC, c_cnt DESC')
       .group('competitors.id')

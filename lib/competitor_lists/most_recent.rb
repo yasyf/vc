@@ -15,7 +15,7 @@ class CompetitorLists::MostRecent < CompetitorLists::Base::Base
       investments.featured DESC,
       COUNT(NULLIF(investors.featured, false)) DESC,
       COUNT(NULLIF(investors.verified, false)) DESC,
-      MAX(COALESCE(competitor_target_counts.target_count, 0)) DESC
+      SUM(COALESCE(competitor_target_counts.target_count, 0)) DESC
     SQL
   end
 

@@ -227,7 +227,9 @@ class Company < ActiveRecord::Base
     @featured_competitors ||= begin
       ids = investments
         .where(featured: true)
-        .order('MAX(COALESCE(competitor_target_counts.target_count, 0)) DESC')
+        .joins(:competitors)
+        .joins('INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id')
+        .order('SUM(COALESCE(competitor_target_counts.target_count, 0)) DESC')
         .limit(3)
         .group(:competitor_id)
         .pluck(:competitor_id)

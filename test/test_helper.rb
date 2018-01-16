@@ -10,6 +10,8 @@ class ActiveSupport::TestCase
     Team.where(name: name).first_or_create!
   end
 
+  RefreshJob.send(:refresh_views!)
+
   setup do
     WebMock.disable_net_connect!(allow_localhost: true)
     stub_request(:get, /api.trello.com/).to_return(status: 404)
