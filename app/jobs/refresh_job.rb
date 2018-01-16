@@ -14,9 +14,9 @@ class RefreshJob < ApplicationJob
 
   private
 
-  def refresh_views!
+  def refresh_views!(concurrently: true)
     %w(competitor_target_counts).each do |view|
-      Scenic.database.refresh_materialized_view(view, concurrently: true, cascade: true)
+      Scenic.database.refresh_materialized_view(view, concurrently: concurrently)
     end
   end
 end

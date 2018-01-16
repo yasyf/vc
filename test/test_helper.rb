@@ -10,7 +10,7 @@ class ActiveSupport::TestCase
     Team.where(name: name).first_or_create!
   end
 
-  RefreshJob.send(:refresh_views!)
+  RefreshJob.new.send(:refresh_views!, concurrently: false)
 
   setup do
     WebMock.disable_net_connect!(allow_localhost: true)
