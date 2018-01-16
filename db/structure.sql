@@ -303,12 +303,14 @@ CREATE TABLE investors (
 
 
 --
--- Name: competitor_target_counts; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+-- Name: competitor_investor_aggs; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW competitor_target_counts AS
+CREATE MATERIALIZED VIEW competitor_investor_aggs AS
  SELECT competitors.id AS competitor_id,
-    COALESCE(sum(investors.target_investors_count), (0)::bigint) AS target_count
+    COALESCE(sum(investors.target_investors_count), (0)::bigint) AS target_count,
+    bool_or(COALESCE(investors.featured, false)) AS featured,
+    bool_or(COALESCE(investors.verified, false)) AS verified
    FROM (competitors
      JOIN investors ON ((investors.competitor_id = competitors.id)))
   GROUP BY competitors.id
@@ -1869,10 +1871,10 @@ CREATE INDEX index_competitions_on_b_id ON competitions USING btree (b_id);
 
 
 --
--- Name: index_competitor_target_counts_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_competitor_investor_aggs_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitor_target_counts_on_competitor_id ON competitor_target_counts USING btree (competitor_id);
+CREATE UNIQUE INDEX index_competitor_investor_aggs_on_competitor_id ON competitor_investor_aggs USING btree (competitor_id);
 
 
 --
@@ -2149,6 +2151,13 @@ CREATE UNIQUE INDEX index_investors_on_facebook ON investors USING btree (facebo
 
 
 --
+-- Name: index_investors_on_featured; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investors_on_featured ON investors USING btree (featured);
+
+
+--
 -- Name: index_investors_on_first_name_and_last_name_and_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2209,6 +2218,13 @@ CREATE UNIQUE INDEX index_investors_on_twitter ON investors USING btree (twitter
 --
 
 CREATE INDEX index_investors_on_university_id ON investors USING btree (university_id);
+
+
+--
+-- Name: index_investors_on_verified; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investors_on_verified ON investors USING btree (verified);
 
 
 --
@@ -3021,6 +3037,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180115230519'),
 ('20180116003132'),
 ('20180116010539'),
-('20180116013512');
+('20180116013512'),
+('20180116192204');
 
 

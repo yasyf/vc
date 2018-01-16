@@ -30,10 +30,10 @@ class CompetitorLists::MostPopularGlobal < CompetitorLists::MostPopular
   def self._sql(attrs)
     Competitor
       .joins(:companies)
-      .joins('INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id')
+      .joins('INNER JOIN competitor_investor_aggs ON competitor_investor_aggs.competitor_id = competitors.id')
       .order('ti_sum DESC, c_cnt DESC')
       .group('competitors.id')
-      .select('competitors.id', 'SUM(COALESCE(competitor_target_counts.target_count, 0)) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
+      .select('competitors.id', 'SUM(COALESCE(competitor_investor_aggs.target_count, 0)) AS ti_sum', 'COUNT(companies.id) AS c_cnt')
       .limit(10)
       .to_sql
   end

@@ -13,17 +13,16 @@ class CompetitorLists::MostRecent < CompetitorLists::Base::Base
     <<-SQL
       investments.funded_at DESC NULLS LAST,
       investments.featured DESC,
-      COUNT(NULLIF(investors.featured, false)) DESC,
-      COUNT(NULLIF(investors.verified, false)) DESC,
-      SUM(COALESCE(competitor_target_counts.target_count, 0)) DESC
+      bool_or(COALESCE(competitor_investor_aggs.featured, false)) DESC,
+      bool_or(COALESCE(competitor_investor_aggs.verified, false)) DESC,
+      SUM(COALESCE(competitor_investor_aggs.target_count, 0)) DESC
     SQL
   end
 
   def join
     <<-SQL
       INNER JOIN competitors ON competitors.id = investments.competitor_id
-      INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id
-      LEFT OUTER JOIN investors ON investors.competitor_id = competitors.id
+      INNER JOIN competitor_investor_aggs ON competitor_investor_aggs.competitor_id = competitors.id
     SQL
   end
 

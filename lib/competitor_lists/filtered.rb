@@ -121,17 +121,16 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     end
     competitors = competitors.where(country: 'US') if params[:options][:us_only]
     competitors = competitors.joins(_industry_overlap_subquery) if overlap_industries.present?
-    competitors = competitors.left_outer_joins(:investors)
-    competitors.joins('INNER JOIN competitor_target_counts ON competitor_target_counts.competitor_id = competitors.id')
+    competitors.joins('INNER JOIN competitor_investor_aggs ON competitor_investor_aggs.competitor_id = competitors.id')
   end
 
   def sort
     [
-      'bool_or(COALESCE(investors.featured, false)) DESC',
+      'bool_or(COALESCE(competitor_investor_aggs.featured, false)) DESC',
       overlap_industries.present? && 'MIN(overlap_cnt) DESC',
       overlap_cities.present? && "(#{Util.sanitize_sql('competitors.location && ARRAY[?]::character varying[]', overlap_cities)}) DESC",
-      'SUM(COALESCE(competitor_target_counts.target_count, 0)) DESC',
-      'bool_or(COALESCE(investors.verified, false)) DESC',
+      'SUM(COALESCE(competitor_investor_aggs.target_count, 0)) DESC',
+      'bool_or(COALESCE(competitor_investor_aggs.verified, false)) DESC',
     ].select { |x| x }.join(', ')
   end
 
