@@ -2,12 +2,10 @@
 
 /* eslint global-require: 0 */
 
-const { env } = require('process');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CompressionPlugin = require('compression-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const SentryCliPlugin = require('@sentry/webpack-plugin');
 const sharedConfig = require('./shared.js');
 
 module.exports = merge(sharedConfig, {
@@ -35,12 +33,6 @@ module.exports = merge(sharedConfig, {
         comments: false,
       },
       exclude: [/\.min\.js$/gi],
-    }),
-    new SentryCliPlugin({
-      include: '.',
-      ignoreFile: '.gitignore',
-      ignore: ['node_modules', 'webpack.config.js'],
-      release: env.HEROKU_SLUG_COMMIT,
     }),
     new CompressionPlugin({
       asset: '[path].gz[query]',

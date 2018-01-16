@@ -76,18 +76,6 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@sentry/cli@^1.28.0":
-  version "1.28.1"
-  resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-1.28.1.tgz#42feaa7f5db056dad1ebfbb80af5c01c1f46b82d"
-  dependencies:
-    progress "2.0.0"
-
-"@sentry/webpack-plugin@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@sentry/webpack-plugin/-/webpack-plugin-1.2.0.tgz#c781125303531fa01c72e8b8d8de0db2e1103531"
-  dependencies:
-    "@sentry/cli" "^1.28.0"
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -5551,7 +5539,7 @@ process@~0.5.1:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/process/-/process-0.5.2.tgz#1638d8a8e34c2f440a91db95ab9aeb677fc185cf"
 
-progress@2.0.0, progress@^2.0.0:
+progress@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.0.tgz#8a1be366bf8fc23db2bd23f10c6fe920b4389d1f"
 
