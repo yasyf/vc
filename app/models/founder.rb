@@ -202,7 +202,7 @@ class Founder < ApplicationRecord
   end
 
   def existing_target_investor_ids
-    target_investors.where.not(investor_id: nil).select('investor_id')
+    target_investors.where.not(investor_id: nil).select('investor_id AS id')
   end
 
   def ensure_target_investors!
