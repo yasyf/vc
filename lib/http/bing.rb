@@ -12,6 +12,8 @@ class Http::Bing
       'Ocp-Apim-Subscription-Key': api_key
     })
     JSON.parse body
+  rescue JSON::ParserError
+    { 'value' => [] }
   end
 
   def self.news(q)
