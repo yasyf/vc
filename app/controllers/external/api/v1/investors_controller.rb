@@ -55,7 +55,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def fuzzy_search
-    results = Investor.fuzzy_search(params[:q], existing_target_investor_ids)
+    results = Investor.custom_fuzzy_search(params[:q], existing_target_investor_ids)
     render_censored results.map(&:as_search_json)
   end
 
