@@ -89,7 +89,7 @@ module CompetitorLists::Base::ClassSql
         AND coinvestors.id != #{competitors_table}.id
       GROUP BY coinvestors.id
       ORDER BY COUNT(investments.id) DESC
-      LIMIT 3
+      LIMIT 5
     SQL
     <<-SQL
         LEFT JOIN LATERAL (

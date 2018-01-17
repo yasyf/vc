@@ -314,7 +314,7 @@ class Competitor < ApplicationRecord
 
   private
 
-  def coinvestors(limit: 3)
+  def coinvestors(limit: 5)
     return self[:coinvestors] if self.attributes.key?('coinvestors')
 
     companies = self.companies.select('id').to_sql

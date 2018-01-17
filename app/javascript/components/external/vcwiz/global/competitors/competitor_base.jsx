@@ -3,7 +3,7 @@ import ProfileImage from '../shared/profile_image';
 import {
   CompetitorFundTypes, CompetitorIndustries, InvestorsPath, OutreachPath,
   InvestorPath, CompanyPath, IntroPathTypes, CompetitorsListsPath,
-  MediumScreenSize,
+  MediumScreenSize, FirmPath
 } from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import {
@@ -107,6 +107,10 @@ export default class CompetitorBase extends React.Component {
     return <a href={CompanyPath.resource(id, inflection.dasherize(name.toLowerCase()))}>{name}</a>;
   }
 
+  renderCompetitor({ id, name }) {
+    return <a href={FirmPath.resource(id, inflection.dasherize(name.toLowerCase()))}>{name}</a>;
+  }
+
   renderIndustries() {
     const { industry } = this.props.item;
     if (!industry || !industry.length) {
@@ -129,6 +133,17 @@ export default class CompetitorBase extends React.Component {
     return <p><b className="info-heading">Recent Investments:</b> {withDots(investments)}</p>
   }
 
+  renderCoinvestors() {
+    const { coinvestors } = this.props.item;
+    if (!coinvestors || !coinvestors.length) {
+      return null;
+    }
+    let competitors = _.take(coinvestors, isMobile() ? 3 : 5).map(c =>
+      <span key={c.id}>{this.renderCompetitor(c)}</span>
+    );
+    return <p><b className="info-heading">Co-Investors:</b> {withDots(competitors)}</p>
+  }
+
   renderPath() {
     const { path } = this.state;
     if (!_.get(path, 'count')) {
@@ -148,6 +163,7 @@ export default class CompetitorBase extends React.Component {
         />
         {this.renderIndustries()}
         {this.renderInvestments()}
+        {this.renderCoinvestors()}
       </div>
     );
   }
