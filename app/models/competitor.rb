@@ -273,6 +273,7 @@ class Competitor < ApplicationRecord
         :al_url,
         :crunchbase_id,
         :matches,
+        :coinvestors,
       ],
       methods: [
         :hq,
@@ -312,6 +313,24 @@ class Competitor < ApplicationRecord
   end
 
   private
+
+  def coinvestors(limit: 3)
+    return self[:coinvestors] if self.attributes.key?('coinvestors')
+
+    companies = self.companies.select('id').to_sql
+    others = <<-SQL
+      SELECT competitors.id, competitors.name, COUNT(investments.id) AS overlap
+      FROM investments
+      INNER JOIN competitors ON competitors.id = investments.competitor_id
+      WHERE
+        investments.company_id IN (#{companies})
+        AND competitors.id != #{id}
+      GROUP BY competitors.id
+      ORDER BY COUNT(investments.id) DESC
+      LIMIT #{limit}
+    SQL
+    Competitor.find_by_sql(others)
+  end
 
   def normalize_location
     self.location = self.location.map(&Util.method(:normalize_city)) if self.location.present?

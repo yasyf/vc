@@ -73,6 +73,32 @@ module CompetitorLists::Base::ClassSql
     SQL
   end
 
+  def coinvestors_sql(competitors_table = 'competitors')
+    companies_sql = <<-SQL
+      SELECT companies.id
+      FROM companies
+      INNER JOIN investments ON investments.company_id = companies.id
+      WHERE investments.competitor_id = #{competitors_table}.id
+    SQL
+    coinvesor_sql = <<-SQL
+      SELECT coinvestors.id, coinvestors.name, COUNT(investments.id) AS overlap
+      FROM investments
+      INNER JOIN competitors AS coinvestors ON coinvestors.id = investments.competitor_id
+      WHERE
+        investments.company_id IN (#{companies_sql})
+        AND coinvestors.id != #{competitors_table}.id
+      GROUP BY coinvestors.id
+      ORDER BY COUNT(investments.id) DESC
+      LIMIT 3
+    SQL
+    <<-SQL
+        LEFT JOIN LATERAL (
+          SELECT array_agg(coinvesors) AS coi_arr
+          FROM (#{coinvesor_sql}) AS coinvesors
+        ) AS coi ON true
+    SQL
+  end
+
   def _meta_select(meta_sql)
     meta_sql.present? ? ', row_to_json(metaquery.*) AS meta' : ''
   end
@@ -103,10 +129,12 @@ module CompetitorLists::Base::ClassSql
         SELECT
           subquery.*,
           array_to_json(partners.partners_arr) AS partners,
-          array_to_json(ri.ri_arr) AS recent_investments
+          array_to_json(ri.ri_arr) AS recent_investments,
+          array_to_json(coi.coi_arr) AS coinvestors
           #{_meta_select(meta_sql)}
         FROM (#{limited_sql}) AS subquery
         #{recent_investments_sql('subquery')}
+        #{coinvestors_sql('subquery')}
         #{partners_sql('subquery')}
         #{_meta_join(meta_sql)}
     SQL
