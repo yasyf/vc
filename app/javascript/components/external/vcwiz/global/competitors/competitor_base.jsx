@@ -188,10 +188,10 @@ export default class CompetitorBase extends React.Component {
     if (partners.length > 1 && dimensions.width > MediumScreenSize) {
       return (
         <Row className="sidebar-wrapper">
-          <Column large={2} className="sidebar-list scroll-shadow">
+          <Column large={2} className="sidebar-list">
             {partners.map((p, i) =>
               <div key={i} onClick={() => this.onTabChange(i)}>
-                <PartnerHeading investor={p} short={true} transparency="F5F6F7" className={i === index ? 'active' : undefined} />
+                <PartnerHeading investor={p} short={true} transparency="F5F6F7" className={i === index ? 'active' : undefined} size={45} />
               </div>
             )}
           </Column>

@@ -2472,8 +2472,10 @@ mark.highlighter {
     .sidebar-list {
       overflow-y: auto;
       max-height: 85vh;
+      padding-right: 1em;
 
       .partner-heading-inner {
+        font-size: 15px;
         cursor: pointer;
         height: 60px;
         margin-bottom: 5px;
@@ -2485,6 +2487,15 @@ mark.highlighter {
         &.active {
           border-color: $grey;
           background-color: $white;
+        }
+
+        .subheading {
+          top: -25px;
+          font-size: 13px;
+
+          span {
+            margin-left: 4px;
+          }
         }
       }
     }
