@@ -1801,6 +1801,13 @@ CREATE UNIQUE INDEX index_companies_on_crunchbase_id ON companies USING btree (c
 
 
 --
+-- Name: index_companies_on_description; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_companies_on_description ON companies USING btree (description);
+
+
+--
 -- Name: index_companies_on_domain; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3038,6 +3045,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180116003132'),
 ('20180116010539'),
 ('20180116013512'),
-('20180116192204');
+('20180116192204'),
+('20180117090330');
 
 

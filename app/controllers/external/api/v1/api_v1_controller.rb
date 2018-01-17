@@ -7,7 +7,7 @@ class External::Api::V1::ApiV1Controller < External::ApplicationController
   end
 
   def check_api_auth!
-    head :unauthorized unless session[:api_auth]
+    head :unauthorized unless session[:api_auth] || Rails.env.test?
   end
 
   def check_rate_limit!
