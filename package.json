@@ -38,7 +38,7 @@
     "logrocket-react": "1.0.0",
     "moment": "^2.19.2",
     "node-sass": "^4.7.2",
-    "parse-domain": "^1.2.0",
+    "parse-domain": "^2.0.0",
     "path-complete-extname": "^0.1.0",
     "postcss-loader": "^2.0.6",
     "postcss-smart-import": "^0.7.5",
