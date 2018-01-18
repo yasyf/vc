@@ -26,8 +26,8 @@ export default class InvestorSettings extends SettingsBase {
     return (
       <Row key={id.toString()}>
         <Column large={7}>
-          <ProfileImage fallback={initials(investor)} src={photo || competitor.photo} size={50} className="inline-image" />
-          <span>{fullName(investor)} ({role})</span>
+          <ProfileImage transparency="E9E9E9" fallback={initials(investor)} src={photo || competitor.photo} size={50} className="inline-image" />
+          <span>{fullName(investor)} {role ? `(${role})` : ''}</span>
         </Column>
         <Column large={5}>
           {this.renderInput(id.toString(), `${investor.first_name}'s ${competitor.domain} email`)}
