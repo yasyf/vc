@@ -13,89 +13,20 @@ module CompetitorLists::Base::ClassSql
   end
 
   def partners_sql(competitors_table = 'competitors')
-    all_results = <<-SQL
-      SELECT id, role
-      FROM investors
-      WHERE investors.competitor_id = #{competitors_table}.id
-    SQL
-    ids = <<-SQL
-      WITH
-        partners_results AS (#{all_results}),
-        filtered_partners_results AS (
-          SELECT * FROM partners_results
-          WHERE LOWER(partners_results.role) ILIKE ANY (ARRAY[#{Competitor::INVESTOR_TITLE.map { |t| "'%#{t}%'" }.join(', ')}])
-        )
-      SELECT id FROM filtered_partners_results
-      UNION
-      SELECT id FROM partners_results
-      WHERE NOT EXISTS (SELECT * FROM filtered_partners_results)
-    SQL
-    partners_sql = <<-SQL
-      SELECT investors.id, investors.first_name, investors.last_name, investors.photo, investors.role, investors.verified
-      FROM investors
-      INNER JOIN (#{ids}) AS ids ON investors.id = ids.id
-      LEFT OUTER JOIN investments ON investments.investor_id = investors.id
-      GROUP BY investors.id
-      ORDER BY
-        investors.featured DESC,
-        investors.verified DESC,
-        MAX(investments.funded_at) DESC NULLS LAST,
-        COUNT(investments.id) DESC
-      LIMIT 25
-    SQL
     <<-SQL
-      LEFT JOIN LATERAL (
-        SELECT array_agg(partners) AS partners_arr
-        FROM (#{partners_sql}) AS partners
-      ) AS partners ON true
+      INNER JOIN competitor_partners ON competitor_partners.competitor_id = #{competitors_table}.id
     SQL
   end
 
   def recent_investments_sql(competitors_table = 'competitors')
-    investments_sql = <<-SQL
-        SELECT companies.id, companies.name, companies.domain, companies.crunchbase_id
-        FROM companies
-        INNER JOIN investments ON investments.company_id = companies.id
-        WHERE investments.competitor_id = #{competitors_table}.id
-        GROUP BY companies.id
-        ORDER BY
-          MAX(investments.funded_at) DESC NULLS LAST,
-          COUNT(NULLIF(investments.featured, false)) DESC,
-          companies.capital_raised DESC,
-          COUNT(investments.id) DESC
-        LIMIT 5
-    SQL
     <<-SQL
-        LEFT JOIN LATERAL (
-          SELECT array_agg(recent_investments) AS ri_arr
-          FROM (#{investments_sql}) AS recent_investments
-        ) AS ri ON true
+      INNER JOIN competitor_recent_investments ON competitor_recent_investments.competitor_id = #{competitors_table}.id
     SQL
   end
 
   def coinvestors_sql(competitors_table = 'competitors')
-    companies_sql = <<-SQL
-      SELECT companies.id
-      FROM companies
-      INNER JOIN investments ON investments.company_id = companies.id
-      WHERE investments.competitor_id = #{competitors_table}.id
-    SQL
-    coinvesor_sql = <<-SQL
-      SELECT coinvestors.id, coinvestors.name, COUNT(investments.id) AS overlap
-      FROM investments
-      INNER JOIN competitors AS coinvestors ON coinvestors.id = investments.competitor_id
-      WHERE
-        investments.company_id IN (#{companies_sql})
-        AND coinvestors.id != #{competitors_table}.id
-      GROUP BY coinvestors.id
-      ORDER BY COUNT(investments.id) DESC
-      LIMIT 5
-    SQL
     <<-SQL
-        LEFT JOIN LATERAL (
-          SELECT array_agg(coinvesors) AS coi_arr
-          FROM (#{coinvesor_sql}) AS coinvesors
-        ) AS coi ON true
+      INNER JOIN competitor_coinvestors ON competitor_coinvestors.competitor_id = #{competitors_table}.id
     SQL
   end
 
@@ -128,9 +59,9 @@ module CompetitorLists::Base::ClassSql
     <<-SQL
         SELECT
           subquery.*,
-          array_to_json(partners.partners_arr) AS partners,
-          array_to_json(ri.ri_arr) AS recent_investments,
-          array_to_json(coi.coi_arr) AS coinvestors
+          competitor_partners.partners AS partners,
+          competitor_recent_investments.recent_investments AS recent_investments,
+          competitor_coinvestors.coinvestors AS coinvestors
           #{_meta_select(meta_sql)}
         FROM (#{limited_sql}) AS subquery
         #{recent_investments_sql('subquery')}

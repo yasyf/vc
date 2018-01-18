@@ -1462,6 +1462,131 @@ ALTER TABLE ONLY votes ALTER COLUMN id SET DEFAULT nextval('votes_id_seq'::regcl
 
 
 --
+-- Name: competitors competitors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitors
+    ADD CONSTRAINT competitors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: competitor_coinvestors; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW competitor_coinvestors AS
+ SELECT competitors.id AS competitor_id,
+    coinvestors_join.coi_arr AS coinvestors
+   FROM (competitors
+     LEFT JOIN LATERAL ( WITH comp_companies AS (
+                 SELECT companies.id
+                   FROM (companies
+                     JOIN investments ON ((investments.company_id = companies.id)))
+                  WHERE (investments.competitor_id = competitors.id)
+                ), comp_coinvestors AS (
+                 SELECT coinvestors.id,
+                    coinvestors.name,
+                    count(investments.id) AS overlap
+                   FROM ((investments
+                     JOIN comp_companies ON ((comp_companies.id = investments.company_id)))
+                     JOIN competitors coinvestors ON ((coinvestors.id = investments.competitor_id)))
+                  WHERE (coinvestors.id <> competitors.id)
+                  GROUP BY coinvestors.id
+                  ORDER BY (count(investments.id)) DESC
+                 LIMIT 5
+                )
+         SELECT array_to_json(array_agg(comp_coinvestors.*)) AS coi_arr
+           FROM comp_coinvestors) coinvestors_join ON (true))
+  WITH NO DATA;
+
+
+--
+-- Name: investors investors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY investors
+    ADD CONSTRAINT investors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: competitor_partners; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW competitor_partners AS
+ SELECT competitors.id AS competitor_id,
+    partners_join.partners_arr AS partners
+   FROM (competitors
+     LEFT JOIN LATERAL ( WITH partners_results AS (
+                 SELECT investors.id,
+                    investors.role
+                   FROM investors
+                  WHERE (investors.competitor_id = competitors.id)
+                ), filtered_partners_results AS (
+                 SELECT partners_results.id,
+                    partners_results.role
+                   FROM partners_results
+                  WHERE (lower((partners_results.role)::text) ~~* ANY (ARRAY['%managing%'::text, '%partner%'::text, '%director%'::text, '%associate%'::text, '%principal%'::text, '%ceo%'::text, '%founder%'::text, '%invest%'::text]))
+                ), all_ids AS (
+                 SELECT filtered_partners_results.id
+                   FROM filtered_partners_results
+                UNION
+                 SELECT partners_results.id
+                   FROM partners_results
+                  WHERE (NOT (EXISTS ( SELECT filtered_partners_results.id,
+                            filtered_partners_results.role
+                           FROM filtered_partners_results)))
+                ), all_partners AS (
+                 SELECT investors.id,
+                    investors.first_name,
+                    investors.last_name,
+                    investors.photo,
+                    investors.role,
+                    investors.verified
+                   FROM ((investors
+                     JOIN all_ids ON ((investors.id = all_ids.id)))
+                     LEFT JOIN investments ON ((investments.investor_id = investors.id)))
+                  GROUP BY investors.id
+                  ORDER BY investors.featured DESC, investors.verified DESC, (max(investments.funded_at)) DESC NULLS LAST, (count(investments.id)) DESC
+                 LIMIT 25
+                )
+         SELECT array_to_json(array_agg(all_partners.*)) AS partners_arr
+           FROM all_partners) partners_join ON (true))
+  WITH NO DATA;
+
+
+--
+-- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY companies
+    ADD CONSTRAINT companies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: competitor_recent_investments; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW competitor_recent_investments AS
+ SELECT competitors.id AS competitor_id,
+    recent_investments_join.ri_arr AS recent_investments
+   FROM (competitors
+     LEFT JOIN LATERAL ( WITH recent_investments AS (
+                 SELECT companies.id,
+                    companies.name,
+                    companies.domain,
+                    companies.crunchbase_id
+                   FROM (companies
+                     JOIN investments ON ((investments.company_id = companies.id)))
+                  WHERE (investments.competitor_id = competitors.id)
+                  GROUP BY companies.id
+                  ORDER BY (max(investments.funded_at)) DESC NULLS LAST, (count(NULLIF(investments.featured, false))) DESC, companies.capital_raised DESC, (count(investments.id)) DESC
+                 LIMIT 5
+                )
+         SELECT array_to_json(array_agg(recent_investments.*)) AS ri_arr
+           FROM recent_investments) recent_investments_join ON (true))
+  WITH NO DATA;
+
+
+--
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1486,27 +1611,11 @@ ALTER TABLE ONLY cards
 
 
 --
--- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY companies
-    ADD CONSTRAINT companies_pkey PRIMARY KEY (id);
-
-
---
 -- Name: competitions competitions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY competitions
     ADD CONSTRAINT competitions_pkey PRIMARY KEY (id);
-
-
---
--- Name: competitors competitors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitors
-    ADD CONSTRAINT competitors_pkey PRIMARY KEY (id);
 
 
 --
@@ -1563,14 +1672,6 @@ ALTER TABLE ONLY intro_requests
 
 ALTER TABLE ONLY investments
     ADD CONSTRAINT investments_pkey PRIMARY KEY (id);
-
-
---
--- Name: investors investors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY investors
-    ADD CONSTRAINT investors_pkey PRIMARY KEY (id);
 
 
 --
@@ -1878,10 +1979,31 @@ CREATE INDEX index_competitions_on_b_id ON competitions USING btree (b_id);
 
 
 --
+-- Name: index_competitor_coinvestors_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_competitor_coinvestors_on_competitor_id ON competitor_coinvestors USING btree (competitor_id);
+
+
+--
 -- Name: index_competitor_investor_aggs_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_competitor_investor_aggs_on_competitor_id ON competitor_investor_aggs USING btree (competitor_id);
+
+
+--
+-- Name: index_competitor_partners_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_competitor_partners_on_competitor_id ON competitor_partners USING btree (competitor_id);
+
+
+--
+-- Name: index_competitor_recent_investments_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_competitor_recent_investments_on_competitor_id ON competitor_recent_investments USING btree (competitor_id);
 
 
 --
@@ -3046,6 +3168,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180116010539'),
 ('20180116013512'),
 ('20180116192204'),
-('20180117090330');
+('20180117090330'),
+('20180117230808'),
+('20180118014509'),
+('20180118015010');
 
 
