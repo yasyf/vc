@@ -4,14 +4,21 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= yield(:title) %></title>
+  <title><%= content_for(:title) %></title>
+  <meta property="og:title" content="<%= @title || content_for(:title) %>" />
   <% if content_for?(:description) %>
-    <meta name="description" content="<%= yield(:description) %>">
+    <meta name="description" content="<%= content_for(:description) %>">
+    <meta property="og:description" content="<%= content_for(:description) %>" />
   <% end %>
 
   <% if content_for?(:canonical) %>
-    <link rel="canonical" href="<%= yield(:canonical) %>">
+    <link rel="canonical" href="<%= content_for(:canonical) %>">
+    <meta property="og:url" content="<%= content_for(:canonical) %>" />
   <% end %>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="<%= image_url('bg/vcwiz-bg-with-logo.png') %>" />
+  <meta property="og:site_name" content="VCWiz" />
 
   <meta name="msvalidate.01" content="7B0592436DCE727FBAD7B26EE16EBBCC" />
 
