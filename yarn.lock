@@ -31,9 +31,9 @@
     "@babel/types" "7.0.0-beta.31"
     lodash "^4.2.0"
 
-"@babel/polyfill@7.0.0-beta.37":
-  version "7.0.0-beta.37"
-  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.37.tgz#ea88836db8481d48f503dc5a076c9cc3386a81b5"
+"@babel/polyfill@7.0.0-beta.38":
+  version "7.0.0-beta.38"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.38.tgz#df9ca32ffe4f6de0b99ab495c197837f422bb12e"
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.11.1"
