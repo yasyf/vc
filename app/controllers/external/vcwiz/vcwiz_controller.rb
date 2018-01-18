@@ -68,7 +68,7 @@ class External::VCWiz::VCWizController < External::FrontendController
     end
     company = current_external_founder&.primary_company
 
-    title 'Discover'
+    title 'Discover Investors'
     default_description
     component 'Discover'
     params.merge!(
@@ -85,7 +85,7 @@ class External::VCWiz::VCWizController < External::FrontendController
   end
 
   def filter
-    title 'Filter'
+    title 'Filter Investors'
     description "View #{description_from_filters} on VCWiz, the easiest way to discover investors that are relevant to your startup."
     component 'Filter'
     result_props 20
@@ -93,7 +93,7 @@ class External::VCWiz::VCWizController < External::FrontendController
   end
 
   def search
-    title 'Search'
+    title 'Search for Investors'
     description "View #{description_from_search} on VCWiz, the easiest way to discover investors that are relevant to your startup."
     component 'Search'
     result_props 20
@@ -120,7 +120,7 @@ class External::VCWiz::VCWizController < External::FrontendController
       .limit(10)
       .as_json
 
-    title 'Outreach'
+    title 'Track Your Investor Conversations'
     default_description
     component 'Outreach'
     props(

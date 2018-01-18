@@ -576,7 +576,7 @@ img.reversed, i.reversed::before {
         }
       }
 
-      @include on-s-desktop {
+      @include on-ms-desktop {
         h2.subtitle {
           font-size: 2em;
         }
