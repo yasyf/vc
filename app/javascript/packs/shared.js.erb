@@ -1,5 +1,6 @@
-// Symbol polyfill
+// ES6 polyfills for IE 11
 require('core-js/modules/es6.symbol');
+require('core-js/modules/es6.promise');
 
 <% if Rails.env.production? %>
   import 'helpers/logrocket';
