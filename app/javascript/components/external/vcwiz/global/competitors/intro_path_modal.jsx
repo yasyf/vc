@@ -109,7 +109,7 @@ export default class IntroPathModal extends React.Component {
             },
             layout: {
               hierarchical: {
-                direction: 'LR',
+                direction: 'DU',
               },
             },
           }}
