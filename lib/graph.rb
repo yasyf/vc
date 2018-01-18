@@ -10,7 +10,7 @@ class Graph
   end
 
   def self.shortest_paths(n1, n2, type: :rels)
-    return [] unless n1.present? && n2.present?
+    return [] unless n1.present? && n2.present? && n1 != n2
     script = all_sp_query 'other:Person', 'id(me) = {neo_id_1} AND id(other) = {neo_id_2}'
     attrs = { neo_id_1: n1.neo_id.to_i, neo_id_2: n2.neo_id.to_i }
     method("fetch_#{type}").call(script, attrs)
