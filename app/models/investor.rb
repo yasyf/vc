@@ -229,6 +229,25 @@ class Investor < ApplicationRecord
     self.gender = gender if gender.in?(GENDERS)
   end
 
+  def save_and_fix_duplicates!
+    begin
+      self.save!
+    rescue ActiveRecord::RecordInvalid => e
+      raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
+      attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
+      other = Investor.where(attrs).first
+      return unless other.present?
+      begin
+        other.destroy!
+        Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present? && other.crunchbase_id != self.crunchbase_id
+      rescue ActiveRecord::InvalidForeignKey
+        other.update! attrs.transform_values { |v| nil }.merge(email: nil, al_id: nil)
+        self.class.perform_later(other.id)
+      end
+      ignore_invalid { self.save! }
+    end
+  end
+
   def self.custom_fuzzy_search(q, existing_ids)
     by_competitor_name = Competitor.where('competitors.name % ?', q).joins(:investors).select('investors.id AS id', 'competitors.name AS name').to_sql
     by_investor_first_name = Investor.where('investors.first_name % ?', q).select('investors.id AS id', 'investors.first_name AS name').to_sql

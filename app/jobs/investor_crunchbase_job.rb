@@ -11,11 +11,11 @@ class InvestorCrunchbaseJob < ApplicationJob
       investor.populate_from_cb!
       investor.populate_from_al!
     end
-    save_and_fix_duplicates!(investor) if investor.changed?
+    investor.save_and_fix_duplicates! if investor.changed?
     %i(homepage facebook twitter).each do |attr|
       save_without!(investor, attr)
       break unless investor.changed?
-      save_and_fix_duplicates!(investor)
+      investor.save_and_fix_duplicates!
       break unless investor.changed?
     end if investor.changed?
     investor.crawl_homepage!
@@ -37,25 +37,6 @@ class InvestorCrunchbaseJob < ApplicationJob
         investor.public_send("#{field}=", investor.public_send("#{field}_was"))
         ignore_invalid { investor.save! }
       end
-    end
-  end
-
-  def save_and_fix_duplicates!(investor)
-    begin
-      investor.save!
-    rescue ActiveRecord::RecordInvalid => e
-      raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
-      attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
-      other = Investor.where(attrs).first
-      return unless other.present?
-      begin
-        other.destroy!
-        Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present? && other.crunchbase_id != investor.crunchbase_id
-      rescue ActiveRecord::InvalidForeignKey
-        other.update! attrs.transform_values { |v| nil }.merge(email: nil, al_id: nil)
-        self.class.perform_later(other.id)
-      end
-      ignore_invalid { investor.save! }
     end
   end
 end

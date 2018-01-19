@@ -43,8 +43,10 @@ class External::VCWiz::InvestorsController < External::FrontendController
       JSON.parse(params[:emails]).each do |id, email|
         address = Mail::Address.new(email) rescue next
         investor = Investor.find(id)
-        investor.update! email: address.address
-        InvestorMailer.invite_email(investor, current_external_investor).deliver_later
+        investor.email = address.address
+        investor.save_and_fix_duplicates!
+        next unless investor.email.present?
+        InvestorMailer.invite_email(investor.id, current_external_investor.id).deliver_later
       end
       flash_success 'Your colleagues have been invited!'
     end
