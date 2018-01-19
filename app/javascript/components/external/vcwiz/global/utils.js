@@ -123,7 +123,7 @@ export const getDomain = (url, withSubdomain = true) => {
   if (!parts) {
     return null;
   } else {
-    return _.compact([withSubdomain ? parts.subdomain : null, parts.domain, parts.tld]).join('.');
+    return _.compact([withSubdomain && (parts.subdomain !== 'wwww') ? parts.subdomain : null, parts.domain, parts.tld]).join('.');
   }
 };
 

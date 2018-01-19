@@ -366,6 +366,8 @@ p.tight {
 }
 
 .intro-path-count {
+  margin-top: -5px;
+
   & > div:not(:first-child) {
     margin-left: 0.3em;
   }
@@ -2441,7 +2443,7 @@ mark.highlighter {
     width: 100%;
   }
 
-  .intro-path-countintro-path-count {
+  .intro-path-count {
     & > div:not(:first-child) {
       margin-left: 0.4em;
     }

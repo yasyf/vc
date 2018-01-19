@@ -21,6 +21,8 @@ import FakeLink from '../shared/fake_link';
 import fetchCompetitorPath from '../fetch_competitor_path';
 import IntroPathCount from './intro_path_count';
 import PartnerHeading from './partner_heading';
+import createHistory from 'history/createBrowserHistory'
+import {canUseDOM} from 'exenv';
 
 export default class CompetitorBase extends React.Component {
   constructor(props) {
@@ -35,6 +37,10 @@ export default class CompetitorBase extends React.Component {
       }),
     };
     this.firstTabChange = true;
+
+    if (canUseDOM) {
+      this.history = createHistory();
+    }
   }
 
   componentWillMount() {
@@ -45,13 +51,23 @@ export default class CompetitorBase extends React.Component {
   componentWillUnmount() {
     this.mounted = false;
     Store.unsubscribe(this.subscription);
+    if (this.props.item.id) {
+      if (this.history) {
+        this.history.go(0);
+      }
+    }
   }
 
   componentDidMount() {
-    if (!isLoggedIn()) {
-      return;
-    }
     if (this.props.item.id) {
+      if (this.history) {
+        this.history.push(FirmPath.resource(this.props.item.id, inflection.dasherize(this.props.item.name.toLowerCase())));
+      }
+
+      if (!isLoggedIn()) {
+        return;
+      }
+
       sendEvent('competitor_clicked', this.props.item.id);
       fetchCompetitorPath(this.props.item.id, path => {
         if (this.mounted && !_.isEmpty(path)) {
@@ -78,10 +94,14 @@ export default class CompetitorBase extends React.Component {
 
   onTabChange = i => {
     this.setState({tab: i});
+    if (this.history) {
+      this.history.push(InvestorPath.resource(partner.id, inflection.dasherize(fullName(partner).toLowerCase())));
+    }
     if (this.firstTabChange) {
       this.firstTabChange = false;
     } else {
-      sendEvent('investor_clicked', this.props.item.partners[i].id);
+      const partner = this.props.item.partners[i];
+      sendEvent('investor_clicked', partner.id);
     }
   };
 
