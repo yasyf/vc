@@ -54,7 +54,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (team = cb_fund.team).present?
       team.each do |job|
-        next if Competitor::NON_INVESTOR_TITLE.any? { |t| job.title.downcase.include?(t) }
+        next if job.title.present? && Competitor::NON_INVESTOR_TITLE.any? { |t| job.title.downcase.include?(t) }
         next unless (person = job.person).present?
         investor = Investor.from_crunchbase(person.permalink)
         if investor.present?

@@ -104,7 +104,9 @@ export default class CompetitorBase extends React.Component {
       this.firstTabChange = false;
     } else {
       const partner = this.props.item.partners[i];
-      sendEvent('investor_clicked', partner.id);
+      if (partner) {
+        sendEvent('investor_clicked', partner.id);
+      }
       if (this.history) {
         this.history.push({hash: i.toString()});
       }
