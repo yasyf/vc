@@ -242,7 +242,7 @@ class Investor < ApplicationRecord
         Investor.from_crunchbase(other.crunchbase_id) if other.crunchbase_id.present? && other.crunchbase_id != self.crunchbase_id
       rescue ActiveRecord::InvalidForeignKey
         other.update! attrs.transform_values { |v| nil }.merge(email: nil, al_id: nil)
-        self.class.perform_later(other.id)
+        InvestorCrunchbaseJob.perform_later(other.id)
       end
       ignore_invalid { self.save! }
     end
