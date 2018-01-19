@@ -71,7 +71,8 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
       investor.update!(verified: true) unless investor.verified?
 
       if investor_update_params.present?
-        investor.update! investor_update_params
+        investor.update_attributes investor_update_params
+        investor.save_and_fix_duplicates!
       end
 
       if investor_industries.present?
