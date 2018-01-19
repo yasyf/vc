@@ -53,7 +53,7 @@ export default class CompetitorBase extends React.Component {
     Store.unsubscribe(this.subscription);
     if (this.props.item.id) {
       if (this.history) {
-        this.history.go(0);
+        this.history.push(this.originalLocation);
       }
     }
   }
@@ -61,7 +61,13 @@ export default class CompetitorBase extends React.Component {
   componentDidMount() {
     if (this.props.item.id) {
       if (this.history) {
-        this.history.push(FirmPath.resource(this.props.item.id, inflection.dasherize(this.props.item.name.toLowerCase())));
+        this.originalLocation = window.location;
+        const tab = document.location.hash && parseInt(document.location.hash.substr(1), 10);
+        const path = FirmPath.resource(this.props.item.id, inflection.dasherize(this.props.item.name.toLowerCase()));
+        this.history.push({pathname: path});
+        if (!this.props.tab && tab) {
+          this.onTabChange(tab);
+        }
       }
 
       if (!isLoggedIn()) {
@@ -94,14 +100,14 @@ export default class CompetitorBase extends React.Component {
 
   onTabChange = i => {
     this.setState({tab: i});
-    if (this.history) {
-      this.history.push(InvestorPath.resource(partner.id, inflection.dasherize(fullName(partner).toLowerCase())));
-    }
     if (this.firstTabChange) {
       this.firstTabChange = false;
     } else {
       const partner = this.props.item.partners[i];
       sendEvent('investor_clicked', partner.id);
+      if (this.history) {
+        this.history.push({hash: i.toString()});
+      }
     }
   };
 
@@ -222,6 +228,7 @@ export default class CompetitorBase extends React.Component {
     const index = nullOrUndef(currentTab) ? (defaultIndex || 0) : currentTab;
 
     if (partners.length > 1 && dimensions.width > MediumScreenSize) {
+      this.firstTabChange = false;
       return (
         <Row className="sidebar-wrapper">
           <Column large={2} className="sidebar-list">
