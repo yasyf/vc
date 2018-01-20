@@ -127,7 +127,7 @@ class IntroRequest < ApplicationRecord
   end
 
   def self.in_flight(founder)
-    self.unscoped.where(founder: founder, accepted: nil).count
+    self.unscoped.where(founder: founder, pending: false, accepted: nil).count
   end
 
   private

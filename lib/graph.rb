@@ -25,13 +25,17 @@ class Graph
   def self.fetch_nodes(script, attrs = {})
     result = server.execute_query(script, attrs)['data']
     return [] unless result.present?
-    result.map { |r| r.first['nodes'].map { |rel| Neography::Node.load(rel, db=server) } }
+    result.map do |r|
+      Parallel.map(r.first['nodes'], in_threads: 16) { |node| Neography::Node.load(node, db=server) }
+    end
   end
 
   def self.fetch_rels(script, attrs = {})
     result = server.execute_query(script, attrs)['data']
     return [] unless result.present?
-    result.map { |r| r.first['relationships'].map { |rel| Neography::Relationship.load(rel, db=server) } }
+    result.map do |r|
+      Parallel.map(r.first['relationships'], in_threads: 16) { |rel| Neography::Relationship.load(rel, db=server) }
+    end
   end
 
   def self.all_sp_query(match, where, limit = 4)

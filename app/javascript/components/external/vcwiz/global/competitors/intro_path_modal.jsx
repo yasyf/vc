@@ -90,7 +90,6 @@ export default class IntroPathModal extends React.Component {
         <Graph
           identifier="graph"
           graph={graph}
-          getNetwork={network => { this.network = network }}
           options={{
             nodes: {
               color: 'rgba(48, 116, 238, 0.3)',
@@ -109,12 +108,9 @@ export default class IntroPathModal extends React.Component {
             },
             layout: {
               hierarchical: {
-                direction: 'DU',
+                direction: count < 5 ? 'LR' : 'DU',
               },
             },
-          }}
-          events={{
-            stabilized: () => this.network.focus('me'),
           }}
         />
       </div>

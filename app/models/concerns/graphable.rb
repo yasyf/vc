@@ -82,14 +82,13 @@ module Concerns
     end
 
     def describe_paths(paths)
-      paths.map { |path| describe_path(path) }.compact
+      nodes = paths.map { |path| node_list_from_path(path) }
+      prep_nodes! nodes.flatten
+      paths.zip(nodes).map { |path, n| describe_path(path, n.map(&:to_h)) }.compact
     end
 
-    def describe_path(path)
+    def describe_path(path, list)
       return nil unless path.present?
-      puts path.to_s
-      list = node_list_from_path(path).map(&:to_h)
-      prep_nodes! list
       through = list.each_with_index.map { |node, i| describe_node(node, email: i == 0) }
       { first_hop_via: path.first.rel_type, through: through }
     end
