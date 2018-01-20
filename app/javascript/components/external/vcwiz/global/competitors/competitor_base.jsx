@@ -62,9 +62,14 @@ export default class CompetitorBase extends React.Component {
     if (this.props.item.id) {
       if (this.history) {
         this.originalLocation = window.location;
-        const tab = document.location.hash && parseInt(document.location.hash.substr(1), 10);
+        let tab = document.location.hash && parseInt(document.location.hash.substr(1), 10);
+        if (!this.props.item.partners || tab >= this.props.item.partners.length) {
+          tab = undefined;
+        }
         const path = FirmPath.resource(this.props.item.id, inflection.dasherize(this.props.item.name.toLowerCase()));
-        this.history.push({pathname: path});
+        if (this.history.location.pathname !== path) {
+          this.history.push({pathname: path, hash: tab ? tab.toString() : null});
+        }
         if (!this.props.tab && tab) {
           this.onTabChange(tab);
         }
