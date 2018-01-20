@@ -54,7 +54,10 @@ class Founder < ApplicationRecord
 
   def self.from_omniauth(auth)
     return nil unless auth.present?
-    from_email(auth.info.email, auth.info.first_name, auth.info.last_name).tap do |founder|
+    first_name, last_name = Util.split_name(auth.info.name)
+    first_name = auth.info.first_name if auth.info.first_name.present?
+    last_name = auth.info.last_name if auth.info.last_name.present?
+    from_email(auth.info.email, first_name, last_name).tap do |founder|
       founder.photo ||= auth.info.image
       founder.access_token = auth.credentials.token
       founder.refresh_token = auth.credentials.refresh_token if auth.credentials.refresh_token.present?
