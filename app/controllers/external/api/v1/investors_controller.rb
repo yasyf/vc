@@ -131,7 +131,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def existing_target_investor_ids
-    current_external_founder&.existing_target_investor_ids || []
+    current_external_founder&.existing_target_investor_ids || Investor.none.select('id')
   end
 
   def filter_params
