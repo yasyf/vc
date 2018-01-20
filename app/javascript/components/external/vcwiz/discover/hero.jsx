@@ -69,7 +69,7 @@ export default class Hero extends React.Component {
     return (
       <div className="search-hero">
         <div className="welcome">
-          <h3><b>Discover Seed-Stage Investors</b></h3>
+          <h3><b>Find Your Perfect Investors</b></h3>
           <p>
             Use the filters to browse through different groups of investors, or use the search tab to find an investor by name or firm.
             Click on a firm's name to view a comprehensive research report on all its investors and investments.
