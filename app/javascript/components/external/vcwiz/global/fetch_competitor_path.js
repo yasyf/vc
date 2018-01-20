@@ -4,7 +4,7 @@ import {LocalStorage} from './storage.js.erb';
 
 let pendingPaths = {};
 
-const fetchPaths = _.debounce(() => {
+const _fetchPaths = _.debounce(() => {
   const pending = pendingPaths;
   pendingPaths = {};
 
@@ -16,6 +16,13 @@ const fetchPaths = _.debounce(() => {
     });
   });
 }, 500);
+
+const fetchPaths = () => {
+  _fetchPaths();
+  if (Object.keys(pendingPaths).length >= 10) {
+    _fetchPaths.flush();
+  }
+};
 
 const fetchCompetitorPath = (id, cb) => {
   const cached = LocalStorage.getExpr(`${StoragePrefix}::IntroPath::${id}`);
