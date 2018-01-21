@@ -44,7 +44,7 @@ class Graph
       WHERE #{where}
       RETURN path, reduce(count = 0, r IN relationships(path) | count + coalesce(r.count, 0)) AS total
       ORDER BY total DESC
-      LIMIT 99;
+      LIMIT 10;
     CYPHER
   end
 
