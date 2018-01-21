@@ -57,7 +57,7 @@
   <p><%= @stats[:investors] %></p>
   <b>Intros Requested</b>
   <p><%= @requests %></p>
-  <% if @stats[:response_time] > 0 %>
+  <% if @stats[:response_time].to_i > 0 %>
     <b>Average Response Time</b>
     <div><%= distance_of_time_in_words @stats[:response_time] %></div>
   <% end %>
