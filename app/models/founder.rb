@@ -5,7 +5,7 @@ class Founder < ApplicationRecord
   include Concerns::Locationable
   include Concerns::Graphable
   include Concerns::Socialable
-  include Concerns::Ignorable
+  extend Concerns::Ignorable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
