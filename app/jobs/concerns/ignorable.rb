@@ -34,6 +34,10 @@ module Concerns
       ignore(invalid_errors, &block)
     end
 
+   def retry_invalid(&block)
+     retry_(invalid_errors, &block)
+    end
+
     def ignore(types)
       yield
     rescue *Array.wrap(types) => e

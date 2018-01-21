@@ -5,6 +5,7 @@ class Founder < ApplicationRecord
   include Concerns::Locationable
   include Concerns::Graphable
   include Concerns::Socialable
+  include Concerns::Ignorable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
@@ -66,9 +67,11 @@ class Founder < ApplicationRecord
   end
 
   def self.from_email(email, first_name = nil, last_name = nil)
-    where(email: email).first_or_create! do |f|
-      f.first_name = first_name
-      f.last_name = last_name
+    retry_invalid do
+      where(email: email).first_or_create! do |f|
+        f.first_name = first_name
+        f.last_name = last_name
+      end
     end
   end
 
