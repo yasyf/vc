@@ -5991,12 +5991,12 @@ react-spinners@0.2.5:
     react-emotion "^8.0.6"
     recompose "0.26.0"
 
-react-tether@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/react-tether/-/react-tether-0.6.0.tgz#428fb676467aa033336790997477ffcebe0aeca8"
+react-tether@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/react-tether/-/react-tether-0.6.1.tgz#de64dd81a5e40053a9f275c4fef0beb0877b3e4e"
   dependencies:
     prop-types "^15.5.8"
-    tether "^1.3.7"
+    tether "^1.4.3"
 
 react-textfit@1.1.0:
   version "1.1.0"
@@ -7179,9 +7179,9 @@ tcomb@^3.2.21:
   version "3.2.24"
   resolved "https://registry.yarnpkg.com/tcomb/-/tcomb-3.2.24.tgz#7f427053cc393b5997c4c3d859ca20411180887b"
 
-tether@^1.3.7:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/tether/-/tether-1.4.2.tgz#ab9605b5ecf38f088b3da3d54d2b439207e48d04"
+tether@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/tether/-/tether-1.4.3.tgz#fd547024c47b6e5c9b87e1880f997991a9a6ad54"
 
 text-table@~0.2.0:
   version "0.2.0"
