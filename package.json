@@ -61,7 +61,7 @@
     "react-tether": "0.6.1",
     "react-textfit": "1.1.0",
     "react-truncate": "^2.3.0",
-    "react-virtualized": "9.17.3",
+    "react-virtualized": "9.18.0",
     "react_ujs": "2.4.3",
     "remove": "0.1.5",
     "resolve-url-loader": "^2.2.0",
