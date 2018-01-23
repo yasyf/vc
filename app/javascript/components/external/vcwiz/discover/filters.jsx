@@ -49,7 +49,7 @@ export default class Filters extends React.Component {
   };
 
   renderFilter(name, optionProps, showMeta = true) {
-    if (this.props.fields && !this.props.fields.includes(name)) {
+    if (this.props.fields && !_.includes(this.props.fields, name)) {
       return null;
     }
     return (

@@ -253,9 +253,9 @@ class Investor < ApplicationRecord
     by_investor_first_name = Investor.where('investors.first_name % ?', q).select('investors.id AS id', 'investors.first_name AS name').to_sql
     by_investor_last_name = Investor.where('investors.last_name % ?', q).select('investors.id AS id', 'investors.last_name AS name').to_sql
     results = "(#{by_competitor_name}) UNION (#{by_investor_first_name}) UNION (#{by_investor_last_name})"
-    Investor
-      .joins("INNER JOIN (#{results}) AS results USING (id)")
-      .where("id NOT IN (#{existing_ids.to_sql})")
+    investors = Investor.joins("INNER JOIN (#{results}) AS results USING (id)")
+    investors = investors.where("id NOT IN (#{existing_ids.to_sql})") if existing_ids.to_sql.present?
+    investors
       .select('investors.*', Util.sanitize_sql('COALESCE(similarity(results.name, ?), 0) AS rank', q))
       .order('rank DESC', 'investors.featured DESC')
       .limit(10)
