@@ -25,7 +25,7 @@ export default class Track extends React.Component {
           <Select
             name={this.props.name}
             value={this.props.value}
-            placeholder="Add"
+            placeholder="Track"
             multi={false}
             searchable={false}
             scrollMenuIntoView={false}
