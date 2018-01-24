@@ -40,6 +40,7 @@ export default class CompetitorBase extends React.Component {
 
     if (canUseDOM) {
       this.history = createHistory();
+      this.originalLocation = window.location.pathname;
     }
   }
 
@@ -61,7 +62,6 @@ export default class CompetitorBase extends React.Component {
   componentDidMount() {
     if (this.props.item.id) {
       if (this.history) {
-        this.originalLocation = window.location;
         let tab = document.location.hash && parseInt(document.location.hash.substr(1), 10);
         if (!this.props.item.partners || tab >= this.props.item.partners.length) {
           tab = undefined;
