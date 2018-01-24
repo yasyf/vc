@@ -249,6 +249,10 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     params.permit(:subject, 'Message-Id')
   end
 
+  def check_api_auth!
+    # allow all
+  end
+
   def check_signature
     digest = OpenSSL::Digest::SHA256.new
     signature = OpenSSL::HMAC.hexdigest(digest, ENV['MAILGUN_API_KEY'], [params[:timestamp], params[:token]].join)
