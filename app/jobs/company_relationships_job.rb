@@ -3,7 +3,7 @@ class CompanyRelationshipsJob < ApplicationJob
 
   TIMEOUT = 5
 
-  queue_as :low
+  queue_as :long
 
   def perform(company_id)
     @company = Company.find(company_id)
