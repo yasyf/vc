@@ -5,7 +5,6 @@ import {SmallScreenSize} from '../global/constants.js.erb';
 import Select from '../global/fields/select';
 import { Button } from 'react-foundation';
 import Highlighter from 'react-highlight-words';
-import inflection from 'inflection';
 import classNames from 'classnames';
 import OptionFactory from './option';
 import Store from '../global/store';
