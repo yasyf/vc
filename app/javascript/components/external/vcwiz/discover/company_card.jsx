@@ -15,8 +15,8 @@ export default class CompanyCard extends React.Component {
     return (
       <div className="company-social">
         {this.renderIconLine('home', location)}
-        {this.renderIconLine('list', '', al_url, `${name} on AngelList`)}
-        {this.renderIconLine('info', '', cb_url, `${name} on Crunchbase`)}
+        {this.renderIconLine('icn-al', '', al_url, `${name} on AngelList`)}
+        {this.renderIconLine('icn-cb', '', cb_url, `${name} on Crunchbase`)}
         {this.renderIconLine('web', domain, 'http://')}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
         {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}

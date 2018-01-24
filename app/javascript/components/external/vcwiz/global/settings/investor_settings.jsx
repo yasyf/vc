@@ -45,7 +45,7 @@ export default class InvestorSettings extends SettingsBase {
           <Column large={6}>{this.renderInput('last_name', 'Last Name')}</Column>
         </Row>
         <Row>
-          <Column large={6}>{this.renderInput('linkedin', 'LinkedIn Username')}</Column>
+          <Column large={6}>{this.renderInput('linkedin', 'LinkedIn Profile')}</Column>
           <Column large={6}>{this.renderInput('email', 'Email')}</Column>
         </Row>
         <Row>

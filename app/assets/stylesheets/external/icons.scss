@@ -1,0 +1,15 @@
+@mixin custom-icon {
+  font-style: normal;
+  font-weight: bold;
+  font-size: small;
+}
+
+.fi-icn-al:before {
+  @include custom-icon;
+  content: "AL";
+}
+
+.fi-icn-cb:before {
+  @include custom-icon;
+  content: "CB";
+}

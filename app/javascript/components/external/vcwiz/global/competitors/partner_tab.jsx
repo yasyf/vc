@@ -148,7 +148,7 @@ export default class PartnerTab extends React.Component {
         <h5>Social</h5>
         {this.renderIconLine('book-bookmark', university && university.name)}
         {this.renderIconLine('home', location)}
-        {this.renderIconLine('list', '', al_url, al_url && _.last(al_url.split('/')))}
+        {this.renderIconLine('icn-al', '', al_url, al_url && _.last(al_url.split('/')))}
         {this.renderIconLine('social-facebook', facebook, 'https://fb.com')}
         {this.renderIconLine('social-twitter', twitter && `@${twitter}`, 'https://twitter.com')}
         {this.renderIconLine('social-linkedin', linkedin, 'https://linkedin.com/in')}
@@ -204,7 +204,7 @@ export default class PartnerTab extends React.Component {
     if (!recent_investments || !recent_investments.length) {
       return null;
     } else {
-      return <Column large={4}>{this.renderRecentInvestments()}</Column>;
+      return this.renderRecentInvestments();
     }
   }
 
@@ -213,16 +213,19 @@ export default class PartnerTab extends React.Component {
     if ((!recent_news || !recent_news.length) && (!public_posts || !public_posts.length)) {
       return null;
     } else {
-      return <Column large={5}>{this.renderRecentPostsAndNews()}</Column>;
+      return this.renderRecentPostsAndNews();
     }
   }
 
   renderDetails() {
+    const social = this.renderSocial();
+    const investments = this.maybeRenderRecentInvestments();
+    const posts = this.maybeRenderRecentPostsAndNews();
     return (
       <Row>
-        <Column large={3}>{this.renderSocial()}</Column>
-        {this.maybeRenderRecentInvestments()}
-        {this.maybeRenderRecentPostsAndNews()}
+        {social && <Column large={3} isLast={!investments && !posts}>{social}</Column>}
+        {investments && <Column large={posts ? 4 : 9} isLast={!posts}>{investments}</Column>}
+        {posts && <Column large={investments ? 5 : 9} isLast={!social && !posts}>{posts}</Column>}
       </Row>
     );
   }
