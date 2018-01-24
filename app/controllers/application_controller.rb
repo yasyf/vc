@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_raven_context
-    user = current_internal_user || current_external_founder
+    user = current_internal_user || current_external_founder || try(:current_external_investor)
     context = {
       id: user.try(:id),
       name: user.try(:name),

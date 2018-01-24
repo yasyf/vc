@@ -296,6 +296,7 @@ GEM
     mini_racer (0.1.15)
       libv8 (~> 6.3)
     minitest (5.11.1)
+    mixpanel-ruby (2.2.0)
     money (6.10.1)
       i18n (>= 0.6.4, < 1.0)
     msgpack (1.2.2)
@@ -646,6 +647,7 @@ DEPENDENCIES
   metainspector
   mini_racer
   minitest (~> 5.11.1)
+  mixpanel-ruby
   neography
   omniauth
   omniauth-google-oauth2

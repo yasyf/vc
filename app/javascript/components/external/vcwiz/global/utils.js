@@ -155,13 +155,12 @@ export const sendEvent = (name, ...args) => {
   if (!isLoggedIn()) {
     return;
   }
-  if (!FounderEventNames.includes(name)) {
-    throw new Error(`invalid event ${name}`);
-  }
   if (canUseDOM && window.mixpanel) {
     mixpanel.track(name, {args});
   }
-  return ffetch(FounderEventPath, 'POST', {event: {name, args}});
+  if (FounderEventNames.includes(name)) {
+    return ffetch(FounderEventPath, 'POST', {event: {name, args}});
+  }
 };
 
 export const withoutIndexes = (arr, idxs) => {
