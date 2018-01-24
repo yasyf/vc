@@ -15,11 +15,11 @@ module Concerns
       def action(*actions)
         Array.wrap(actions).each do |action|
           @event_names << action
-         define_method("#{action}!") do |*args|
-            attrs = args.map.with_index { |x,i| ["arg#{i + 1}", x] }.to_h
-            Event.create!(attrs.merge(subject: self, action: action))
-            self.mixpanel.track(self.id, action, {args: args}) if self.mixpanel.present?
-          end
+          define_method("#{action}!") do |*args|
+           self.mixpanel.track(self.id, action, {args: args}) if self.mixpanel.present?
+           attrs = args.map.with_index { |x,i| ["arg#{i + 1}", x] }.to_h
+           Event.create!(attrs.merge(subject: self, action: action))
+         end
         end
       end
 
