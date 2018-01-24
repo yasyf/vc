@@ -131,6 +131,7 @@ Rails.application.routes.draw do
             post 'open'
             post 'click'
             post 'bounce'
+            post 'unsubscribe'
             post 'demo'
           end
 

@@ -60,6 +60,13 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     head :ok
   end
 
+  def unsubscribe
+    return head :ok unless intro_request.present?
+    intro_request.investor.update! opted_in: false
+    intro_request.decide! false
+    head :ok
+  end
+
   private
 
   def founder_from_from
