@@ -18,7 +18,7 @@ module Concerns
          define_method("#{action}!") do |*args|
             attrs = args.map.with_index { |x,i| ["arg#{i + 1}", x] }.to_h
             Event.create!(attrs.merge(subject: self, action: action))
-            self.mixpanel.track(self.id, action, {args: args})
+            self.mixpanel.track(self.id, action, {args: args}) if self.mixpanel.present?
           end
         end
       end
@@ -41,7 +41,7 @@ module Concerns
           name: self.try(:name),
           email: self.try(:email),
         })
-      end
+      end if ENV['MIXPANEL_TOKEN'].present?
     end
   end
 end
