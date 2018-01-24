@@ -41,6 +41,12 @@ class IntroMailer < ExternalMailer
     mail to: founder_email, subject: "Introduction to #{@investor.name} (#{@competitor.name})"
   end
 
+  def bounce_email(request, email)
+    set_instance_vars! request
+    @email = email
+    mail to: founder_email, subject: "Introduction to #{@investor.name} (#{@competitor.name})"
+  end
+
   private
 
   def founder_email
@@ -56,6 +62,7 @@ class IntroMailer < ExternalMailer
     mail.headers({
       'X-Mailgun-Recipient-Variables': Array.wrap(mail.to).map { |to| [to, vars] }.to_h.to_json,
       'X-Mailgun-Variables': vars.to_json,
+      'X-VCWiz-Intro-Request': @request.public_token,
     })
   end
 

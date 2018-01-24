@@ -130,6 +130,7 @@ Rails.application.routes.draw do
           resource :message, only: [:create] do
             post 'open'
             post 'click'
+            post 'bounce'
             post 'demo'
           end
 

@@ -35,6 +35,11 @@ class IntroRequest < ApplicationRecord
     send_decision!
   end
 
+  def bounce!(email)
+    update! accepted: false
+    IntroMailer.bounce_email(self, email).deliver_later
+  end
+
   def send_decision!
     return unless decided?
     if accepted

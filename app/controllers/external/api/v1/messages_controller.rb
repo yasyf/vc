@@ -52,6 +52,14 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
     head :ok
   end
 
+  def bounce
+    return head :ok unless intro_request.present?
+    recipient_target.update! email: nil if recipient_target.email == recipient.address
+    intro_request.investor.update! email: nil if intro_request.investor.email == recipient.address
+    intro_request.bounce! recipient.address
+    head :ok
+  end
+
   private
 
   def founder_from_from
@@ -110,7 +118,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def intro_request_from_header
-    token = hook_params['intro_request_token'] || (headers['X-Mailgun-Variables'] || {})['intro_request_token']
+    token = hook_params['intro_request_token'] || (headers['X-Mailgun-Variables'] || {})['intro_request_token'] || headers['X-VCWiz-Intro-Request']
     Message.intro_request token
   end
 
