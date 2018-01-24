@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.4.3'
+ruby '2.5.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.4'
@@ -85,6 +85,7 @@ gem 'prop'
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
+gem 'grpc', '1.9.0.pre1' # tmp fix for grpc#13908
 
 group :test do
   gem 'minitest', '~> 5.11.1'
