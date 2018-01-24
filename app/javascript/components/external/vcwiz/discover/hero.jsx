@@ -3,6 +3,7 @@ import {FilterPath, SearchPath, FilterTypes} from '../global/constants.js.erb';
 import Tabs from '../global/tabs/tabs';
 import FilterPage from '../filter/filter_page';
 import inflection from 'inflection';
+import {sendEvent} from '../global/utils';
 
 const MaxCount = 100;
 
@@ -14,6 +15,7 @@ export default class Hero extends React.Component {
   };
 
   onTabChange = tab => {
+    sendEvent('hero_tab_changed', tab);
     this.setState({tab});
   };
 

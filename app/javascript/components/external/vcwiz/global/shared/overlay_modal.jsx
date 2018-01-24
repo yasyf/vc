@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import classNames from 'classnames';
 import Breadcrumb from '../breadcrumbs';
-import {doNotPropagate, saveCurrentRestoreState} from '../utils';
+import {doNotPropagate, saveCurrentRestoreState, sendEvent} from '../utils';
 
 export default class OverlayModal extends React.Component {
   static defaultProps = {
@@ -13,6 +13,7 @@ export default class OverlayModal extends React.Component {
 
   componentDidMount() {
     Breadcrumb.push(this.props.name, 'modal', this.props.idParams);
+    sendEvent(`${this.props.name}_modal_opened`, ...Object.values(this.props.idParams));
     window.onbeforeunload = () => saveCurrentRestoreState();
   }
 

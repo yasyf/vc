@@ -78,10 +78,12 @@ class External::AuthController < Devise::OmniauthCallbacksController
       founder.create_company! session[:signup_data].with_indifferent_access
       session.delete(:signup_data)
       founder.ensure_target_investors!
+      founder.signed_up!
       SummaryMailer.welcome_founder_email(founder).deliver_later
       session[:new_login] = true
       cookies.delete(:filters)
     end
+    founder.logged_in!
     sign_in founder
   end
 end

@@ -155,11 +155,12 @@ export const sendEvent = (name, ...args) => {
   if (!isLoggedIn()) {
     return;
   }
-  if (canUseDOM && window.mixpanel) {
-    mixpanel.track(name, {args});
-  }
   if (FounderEventNames.includes(name)) {
     return ffetch(FounderEventPath, 'POST', {event: {name, args}});
+  } else {
+    if (canUseDOM && window.mixpanel) {
+      mixpanel.track(name, {args});
+    }
   }
 };
 

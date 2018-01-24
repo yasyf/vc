@@ -1,6 +1,6 @@
 import React from 'react';
 import { CompetitorsListsPath, ListPath, SmallScreenSize } from '../global/constants.js.erb'
-import { ffetchCached } from '../global/utils';
+import {ffetchCached, sendEvent} from '../global/utils';
 import ProfileImage from '../global/shared/profile_image';
 import {Row, Column} from 'react-foundation';
 import Loader from '../global/shared/loader';
@@ -45,6 +45,7 @@ export default class Lists extends React.Component {
   }
 
   onListClick = name => () => {
+    sendEvent('list_clicked', name);
     window.location.href = `${ListPath.id(name)}`;
   };
 
