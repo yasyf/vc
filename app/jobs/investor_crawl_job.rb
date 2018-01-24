@@ -10,6 +10,7 @@ class InvestorCrawlJob < ApplicationJob
     investor.fetch_news!
     investor.set_timezone!
     investor.set_gender!
+    investor.fetch_review!
     # investor.set_average_response_time!
     ignore_invalid { investor.save! } if investor.changed?
   end

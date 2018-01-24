@@ -1,5 +1,5 @@
 import React from 'react';
-import {CompetitorIndustries, InvestorsPath, ReviewAPI, IntroPathTypes} from '../constants.js.erb';
+import {CompetitorIndustries, InvestorsPath, IntroPathTypes} from '../constants.js.erb';
 import Store from '../store';
 import {
   ffetchCached, getDomain, humanizeList,
@@ -33,8 +33,6 @@ export default class PartnerTab extends React.Component {
     this.state = {
       investor: props.fetch ? null : props.investor,
       target: _.find(target_investors, {investor_id: props.investor.id}),
-      fetchedReview: !!props.review,
-      review: props.review || null,
       interactions: props.interactions || null,
     };
   }
@@ -236,19 +234,9 @@ export default class PartnerTab extends React.Component {
     return <Row isColumn><Tweet tweet={_.sample(tweets)} /></Row>;
   }
 
-  onTruncate = isTruncated => {
-    if (isTruncated || this.state.fetchedReview) {
-      return;
-    }
-    this.setState({fetchedReview: true});
-    ffetchCached(InvestorsPath.resource(this.props.investor.id, 'review')).then(({review}) => {
-      this.setState({review});
-    })
-  };
-
   renderReview() {
-    const { review } = this.state;
-    if (!review) {
+    const { review } = this.state.investor;
+    if (!review || _.isEmpty(review)) {
       return null;
     }
     return (
@@ -298,7 +286,7 @@ export default class PartnerTab extends React.Component {
 
   renderBody() {
     const { initiallyExpanded } = this.props;
-    const { investor, review } = this.state;
+    const { investor } = this.state;
     if (!investor) {
       return this.renderLoading();
     }
@@ -310,7 +298,7 @@ export default class PartnerTab extends React.Component {
         {this.renderTweet()}
         {this.renderInteractions()}
         <Row isColumn>
-          <ReadMore initiallyExpanded={initiallyExpanded} onTruncate={this.onTruncate} lines={3} length={description && description.length}>
+          <ReadMore initiallyExpanded={initiallyExpanded} lines={3} length={description && description.length}>
             {description}
             {this.renderReview()}
           </ReadMore>

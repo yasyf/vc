@@ -90,7 +90,6 @@ Rails.application.routes.draw do
 
           resources :investors, except: [:index] do
             member do
-              get 'review'
               get 'interactions'
               get 'intro_paths'
               post 'verify'

@@ -18,10 +18,6 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render json: { paths: current_external_founder.paths_to(investor) }
   end
 
-  def review
-    render json: { review: investor.review }
-  end
-
   def locations
     render json: arr_to_options(Investor.locations(params[:q]))
   end

@@ -299,7 +299,8 @@ CREATE TABLE investors (
     verified boolean DEFAULT false NOT NULL,
     token character varying,
     average_response_time integer,
-    hidden boolean DEFAULT false NOT NULL
+    hidden boolean DEFAULT false NOT NULL,
+    review hstore
 );
 
 
@@ -3191,6 +3192,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180124100122'),
 ('20180124101142'),
 ('20180124101553'),
-('20180124102250');
+('20180124102250'),
+('20180124202440');
 
 

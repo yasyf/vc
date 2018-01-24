@@ -328,7 +328,7 @@ class Investor < ApplicationRecord
         :time_zone,
         :al_url,
         :verified,
-        :average_response_time,
+        :review,
       ],
      methods: [
        :competitor,
@@ -432,16 +432,14 @@ class Investor < ApplicationRecord
     founder.entities.where(id: n_popular_entities(50))
   end
 
-  def review
-    cached do
-      url = URI.escape "http://knapi-prod.us-east-2.elasticbeanstalk.com/api/investors/search?name=#{name}"
-      value = HTTP::Fetch.get_one(url)
-      return nil unless value.present?
-      response = JSON.parse(value).with_indifferent_access
-      return nil if response[:errors].present?
-      return nil if response[:review].blank? || !response[:review][:published] || response[:review][:overall] < 4
-      { text: response[:review][:comment], id: response[:investorId] }
-    end
+  def fetch_review!
+    url = URI.escape "http://knapi-prod.us-east-2.elasticbeanstalk.com/api/investors/search?name=#{name}"
+    value = HTTP::Fetch.get_one(url)
+    return unless value.present?
+    response = JSON.parse(value).with_indifferent_access
+    return if response[:errors].present?
+    return if response[:review].blank? || !response[:review][:published] || response[:review][:overall] < 4
+    self.review = { text: response[:review][:comment], id: response[:investorId] }
   end
 
   def interactions(founder)
