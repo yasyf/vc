@@ -118,7 +118,6 @@ export default class PartnerTab extends React.Component {
       linkedin,
       university,
       homepage,
-      average_response_time,
       competitor,
       al_url
     } = this.state.investor;
@@ -137,7 +136,6 @@ export default class PartnerTab extends React.Component {
       linkedin,
       university,
       homepage,
-      average_response_time,
       al_url,
     ]).length) {
       return null;

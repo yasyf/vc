@@ -18,13 +18,8 @@ class InvestorCrunchbaseJob < ApplicationJob
       investor.save_and_fix_duplicates!
       break unless investor.changed?
     end if investor.changed?
-    investor.crawl_homepage!
-    investor.crawl_posts!
-    investor.fetch_news!
-    investor.set_timezone!
-    investor.set_gender!
-    investor.set_average_response_time!
     ignore_invalid { investor.save! } if investor.changed?
+    InvestorCrawlJob.perform_later(investor_id)
   end
 
   private
