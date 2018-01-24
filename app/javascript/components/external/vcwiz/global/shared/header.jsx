@@ -181,7 +181,7 @@ export default class Header extends React.Component {
     } else {
       return (
         <span>
-          VCWiz is the easiest way to discover the investors that are relevant to your startup, research firms, get introduced, and keep track of your conversations with investors.
+          VCWiz is the easiest way to discover relevant investors, get introduced, and keep track of your conversations.
           {' '}
           <a onClick={this.openSignup}>Sign up for conversation tracking, email integrations, and personalized recommendations!</a>
         </span>
