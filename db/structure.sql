@@ -355,7 +355,8 @@ CREATE TABLE emails (
     updated_at timestamp without time zone NOT NULL,
     intro_request_id bigint,
     subject text,
-    email_id character varying
+    email_id character varying,
+    bulk boolean DEFAULT false NOT NULL
 );
 
 
@@ -3171,6 +3172,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180117090330'),
 ('20180117230808'),
 ('20180118014509'),
-('20180118015010');
+('20180118015010'),
+('20180124100122');
 
 

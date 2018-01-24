@@ -104,7 +104,8 @@ class Message
   end
 
   def process_incoming!(founder, skip_graph)
-    founder.connect_from_addr!(from, :email) if valid_connection?(from) && !skip_graph
+    bulk = !valid_connection?(from)
+    founder.connect_from_addr!(from, :email) unless bulk || skip_graph
     target = TargetInvestor.from_addr(founder, from, create: true)
     return unless target.present?
     stage = self.class.stage(reply_text, sentiment)
@@ -122,11 +123,12 @@ class Message
         body: reply_text,
         subject: subject,
         created_at: date,
+        bulk: bulk,
       )
       return unless email.id_previously_changed?
       target.investor_replied!(intro_request&.id, email.id).tap do |event|
         event.update! created_at: date
-      end
+      end unless bulk
     end
     target.email ||= from.address
     target.stage = stage
