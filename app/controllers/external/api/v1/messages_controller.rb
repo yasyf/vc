@@ -3,6 +3,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   NO_PHRASES = %w(no n nope)
 
   before_action :check_signature if Rails.env.production?
+  protect_from_forgery with: :null_session
 
   def create
     if (founder = founder_from_from).present?
