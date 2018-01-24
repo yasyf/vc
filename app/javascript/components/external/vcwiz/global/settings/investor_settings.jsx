@@ -1,17 +1,30 @@
 import React from 'react';
-import {ffetch, fullName} from '../utils';
-import {CompetitorsLocationsPathWithQuery, InvestorsPath, CompaniesSearchPath, CompetitorFullIndustriesOptions, InvestorPath, CCEmail} from '../constants.js.erb';
+import {doNotPropagate, ffetch, fullName} from '../utils';
+import {
+  CompetitorsLocationsPathWithQuery,
+  InvestorsPath,
+  CompaniesSearchPath,
+  CompetitorFullIndustriesOptions,
+  InvestorPath,
+  CCEmail,
+  InvestorsImpersonatePath, DiscoverPath,
+} from '../constants.js.erb';
 import {Row, Column} from 'react-foundation';
 import SettingsBase from './settings_base';
 import Company from '../../discover/company';
+import Partner from '../../investor_contacts/partner';
 
 export default class InvestorSettings extends SettingsBase {
   constructor(props) {
     super(props);
-    this.state.data = {
-      ...props.investor,
-      companies: props.companies,
-      industries: props.industries,
+    this.state = {
+      ...this.state,
+      data: {
+        ...props.investor,
+        companies: props.companies,
+        industries: props.industries,
+      },
+      partners: props.partners,
     };
   }
 
@@ -23,11 +36,21 @@ export default class InvestorSettings extends SettingsBase {
     ffetch(InvestorsPath.id(this.props.investor.id), 'PATCH', {investor});
   };
 
+  onRemove = id => e => {
+    doNotPropagate(e);
+    ffetch(InvestorsPath.id(id), 'PATCH', {investor: {hidden: true}});
+    this.setState({partners: _.reject(this.state.partners, {id})});
+  };
+
+  impersonate = id => () => {
+    window.location.href = InvestorsImpersonatePath.id(id);
+  };
+
   renderTop() {
     return <h3>Investor Profile: {fullName(this.props.investor)}</h3>;
   }
 
-  renderBottom() {
+  renderFields() {
     const competitor = this.props.investor.competitor;
     return (
       <div className="fields">
@@ -77,6 +100,37 @@ export default class InvestorSettings extends SettingsBase {
         </Row>
       </div>
     );
+  }
+
+  renderInvestor = investor => {
+    const { competitor } = this.props.investor;
+    const { id } = investor;
+    return <Partner key={id.toString()} onClick={this.impersonate(id)} investor={investor} competitor={competitor} onRemove={this.onRemove} showRole={false} />;
+  };
+
+  renderOthers() {
+    const { competitor } = this.props.investor;
+    const { partners } = this.state;
+    return (
+      <div className="fields">
+        <p className="info">
+          These are the other investors at {competitor.name} that VCWiz knows about.
+          Please help us remove people who have left the firm.
+          You can also fill in the profile information for any of your coworkers, by clicking on their name.
+        </p>
+        <div className="contacts">{partners.map(this.renderInvestor)}</div>
+      </div>
+    );
+  }
+
+  renderBottom() {
+    return (
+      <div>
+        {this.renderFields()}
+        <h3>Your Partners</h3>
+        {this.renderOthers()}
+      </div>
+    )
   }
 
   render() {

@@ -358,6 +358,10 @@ class Investor < ApplicationRecord
     ).merge(competitor: competitor.as_search_json)
   end
 
+  def as_light_json
+    as_json(only: [:first_name, :last_name, :photo, :id, :role], methods: [])
+  end
+
   def crunchbase_person
     @crunchbase_person ||= begin
       person = Http::Crunchbase::Person.new(crunchbase_id, nil)

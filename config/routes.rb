@@ -67,6 +67,7 @@ Rails.application.routes.draw do
         scope :investors, as: :investors, controller: 'vcwiz/investors' do
           root action: 'index'
           get 'token/:token', action: :token, as: :token
+          get 'impersonate/:investor_id', action: :impersonate, as: :impersonate
           get 'signup'
           get 'settings'
           get 'contacts'

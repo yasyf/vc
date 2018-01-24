@@ -14,6 +14,7 @@ import {
   CompetitorIndustries,
   GoogleLoginImagePath,
   GoogleLoginLightImagePath,
+  InvestorsRootPath,
 } from '../constants.js.erb';
 import {Button, Row, Column, Colors} from 'react-foundation';
 import HiddenForm from './hidden_form';
@@ -102,10 +103,6 @@ export default class LoginModal extends React.Component {
     this.setState({stage: this.state.stage + 1, path: SignupPath});
   };
 
-  skipToLogin = () => {
-    this.setState({stage: 4});
-  };
-
   beforeLogin() {
     flush();
     SessionStorage.set(StorageRestoreStateKey, this.state.restoreState);
@@ -129,7 +126,7 @@ export default class LoginModal extends React.Component {
     }
     const skipToLogin = (stage === 0) && (
       <p className="skip">
-        <a onClick={this.skipToLogin}>I already have an account</a>
+        <a href={InvestorsRootPath}>I'm an investor</a>
       </p>
     );
     return (

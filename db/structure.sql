@@ -298,7 +298,8 @@ CREATE TABLE investors (
     last_fetched timestamp without time zone,
     verified boolean DEFAULT false NOT NULL,
     token character varying,
-    average_response_time integer
+    average_response_time integer,
+    hidden boolean DEFAULT false NOT NULL
 );
 
 
@@ -1520,7 +1521,7 @@ CREATE MATERIALIZED VIEW competitor_partners AS
                  SELECT investors.id,
                     investors.role
                    FROM investors
-                  WHERE (investors.competitor_id = competitors.id)
+                  WHERE ((investors.competitor_id = competitors.id) AND (investors.hidden = false))
                 ), filtered_partners_results AS (
                  SELECT partners_results.id,
                     partners_results.role
@@ -2057,6 +2058,13 @@ CREATE UNIQUE INDEX index_competitors_on_name ON competitors USING btree (name);
 
 
 --
+-- Name: index_emails_on_bulk; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_emails_on_bulk ON emails USING btree (bulk);
+
+
+--
 -- Name: index_emails_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2299,6 +2307,13 @@ CREATE UNIQUE INDEX index_investors_on_first_name_and_last_name_and_competitor_i
 --
 
 CREATE INDEX index_investors_on_fund_type ON investors USING gin (fund_type);
+
+
+--
+-- Name: index_investors_on_hidden; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investors_on_hidden ON investors USING btree (hidden);
 
 
 --
@@ -3173,6 +3188,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180117230808'),
 ('20180118014509'),
 ('20180118015010'),
-('20180124100122');
+('20180124100122'),
+('20180124101142'),
+('20180124101553'),
+('20180124102250');
 
 

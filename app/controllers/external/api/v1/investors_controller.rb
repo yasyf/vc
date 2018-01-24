@@ -92,6 +92,8 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
           Investment.where(company_id: id, competitor: investor.competitor, investor: investor).update_all(investor_id: nil)
         end
       end
+    elsif investor.competitor == current_external_investor.competitor
+      investor.update! coinvestor_update_params
     end
 
     render_censored investor.as_search_json
@@ -112,6 +114,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def investor_update_params
     params.require(:investor).permit(:city, :twitter, :linkedin, :homepage, :email, :facebook, :description, :role, :photo, :al_username, :crunchbase_id, :first_name, :last_name)
+  end
+
+  def coinvestor_update_params
+    params.require(:investor).permit(:hidden)
   end
 
   def investor_companies
