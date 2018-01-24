@@ -194,6 +194,9 @@ class Message
         X-Roving-ID
         X-Eventbrite
        ).any? { |h| headers.key?(h) } ||
+      %w(
+        feedblitz
+      ).any? { |s| header('Return-Path').include?(s) || header('Sender').include?(s) } ||
       recipients.push(from).any? do |a|
         (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info admin master).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
         (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem', 'accounting', 'payroll', 'admin', 'clara thompson'].any? { |s| a.name.downcase.include?(s) }))
