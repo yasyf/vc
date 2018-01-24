@@ -181,11 +181,6 @@ class Founder < ApplicationRecord
     super
   end
 
-  def twitter=(twitter)
-    twitter = twitter&.split('/')&.last || twitter
-    super twitter&.first == '@' ? twitter[1..-1] : twitter
-  end
-
   def scanner_enabled?
     history_id.present?
   end

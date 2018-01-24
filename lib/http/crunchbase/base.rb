@@ -37,7 +37,7 @@ module Http::Crunchbase
     end
 
     def linkedin
-      username = extract_website_id 'linkedin', 4
+      username = extract_website_id 'linkedin', 4, join: true
       username unless username.in?(%w(view))
     end
 
@@ -67,11 +67,15 @@ module Http::Crunchbase
 
     private
 
-    def extract_website_id(name, index)
+    def extract_website_id(name, index, join: false)
       site = website_of_type(name)
       url = site&.url&.split('/')
       return nil unless url.present? && url.length > [3, index].max
-      url[index].downcase.split(/[?#]/).first
+      if join
+        url.drop(index).join('/')
+      else
+        url[index]
+      end.downcase.split(/[?#]/).first
     end
 
     def website_of_type(type)

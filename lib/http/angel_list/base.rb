@@ -72,7 +72,7 @@ module Http::AngelList
 
     def linkedin
       return nil unless found? && @data['linkedin_url'].present?
-      @data['linkedin_url'].split('/')[4]
+      @data['linkedin_url'].split('/').drop(4).join('/')
     end
 
     def crunchbase

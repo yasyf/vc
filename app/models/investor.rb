@@ -44,7 +44,7 @@ class Investor < ApplicationRecord
   before_save :titleize_role
   after_commit :start_crunchbase_job, on: :create
   after_update :check_competitor_domain
-  before_validation :normalize_location, :set_first_name
+  before_validation :normalize_location, :set_first_name, :fix_linkedin!
 
   scope :with_token, Proc.new { |token| where.not(token: nil).where(token: token) }
 
@@ -102,7 +102,7 @@ class Investor < ApplicationRecord
     return unless person.present? && person.found?
 
     Founder::SOCIAL_KEYS.each do |attr|
-      self[attr] = person.public_send(attr)
+      self[attr] = person.public_send(attr) if person.public_send(attr).present?
     end
 
     populate_from_cb_basic!
@@ -204,10 +204,10 @@ class Investor < ApplicationRecord
     self.first_name ||= name.first
     self.last_name ||= name.drop(1).join(' ')
 
-    self.photo = angelist_user.image
-    self.twitter = angelist_user.twitter
-    self.facebook = angelist_user.facebook
-    self.linkedin = angelist_user.linkedin
+    self.photo = angelist_user.image if angelist_user.image.present?
+    self.twitter = angelist_user.twitter if angelist_user.twitter.present?
+    self.facebook = angelist_user.facebook if angelist_user.facebook.present?
+    self.linkedin = angelist_user.linkedin if angelist_user.linkedin.present?
 
     self.description = angelist_user.bio if self.description.blank? || (self.description.length < 50 && angelist_user.bio.length > self.description.length)
     self.homepage ||= angelist_user.homepage
@@ -383,10 +383,6 @@ class Investor < ApplicationRecord
 
   def public_posts(n: 3)
     posts.order(published_at: :desc).limit(n)
-  end
-
-  def twitter=(twitter)
-    super twitter&.first == '@' ? twitter[1..-1] : twitter
   end
 
   def tweeter
