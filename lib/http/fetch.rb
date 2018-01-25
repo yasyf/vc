@@ -57,7 +57,11 @@ class Http::Fetch
         exception = e
       end
     end if remaining.present?
-    GC.start
+    begin
+      GC.start
+    rescue Curl::Err::MultiBadEasyHandle
+      # ignored
+    end
     raise exception if exception.present?
     results
   end

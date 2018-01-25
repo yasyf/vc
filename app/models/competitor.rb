@@ -273,6 +273,7 @@ class Competitor < ApplicationRecord
         :crunchbase_id,
         :matches,
         :coinvestors,
+        :velocity,
       ],
       methods: [
         :hq,
@@ -312,6 +313,11 @@ class Competitor < ApplicationRecord
   end
 
   private
+
+  def velocity
+    return self[:velocity] if self.attributes.key?('velocity')
+    self.investments.count
+  end
 
   def coinvestors(limit: 5)
     return self[:coinvestors] if self.attributes.key?('coinvestors')

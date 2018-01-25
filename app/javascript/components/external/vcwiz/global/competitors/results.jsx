@@ -29,6 +29,7 @@ class ResultsTable extends FixedTable {
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
       { type: 'text', key: 'hq', name: 'Location' },
       { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: industryLimit },
+      { type: 'text', key: 'velocity', name: 'Pace (YTD)', width: 150 },
     ]
   }
 

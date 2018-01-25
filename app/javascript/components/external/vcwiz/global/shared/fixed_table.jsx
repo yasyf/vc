@@ -93,7 +93,7 @@ export default class FixedTable extends React.Component {
   };
 
   renderTextColumn = (key, name, props, flex = 1) => {
-    return this.renderColumn(key, name, TextCell, props, undefined, flex);
+    return this.renderColumn(key, name, TextCell, props, props.width, props.width ? null : flex);
   };
 
   renderPlaceholderColumn = (key, name, flex = 1) => {

@@ -24,6 +24,12 @@ module CompetitorLists::Base::ClassSql
     SQL
   end
 
+  def velocity_sql(competitors_table = 'competitors')
+    <<-SQL
+      INNER JOIN competitor_velocities ON competitor_velocities.competitor_id = #{competitors_table}.id
+    SQL
+  end
+
   def coinvestors_sql(competitors_table = 'competitors')
     <<-SQL
       INNER JOIN competitor_coinvestors ON competitor_coinvestors.competitor_id = #{competitors_table}.id
@@ -49,9 +55,10 @@ module CompetitorLists::Base::ClassSql
         FROM (#{sql}) AS fullquery
     SQL
     limited_sql = <<-SQL
-        SELECT distincted.* #{fetch_targets ? ', ti.*' : ''}
+        SELECT distincted.*, competitor_velocities.velocity #{fetch_targets ? ', ti.*' : ''}
         FROM (#{distinct_sql}) AS distincted
         #{target_investor_sql(founder, 'distincted') if fetch_targets}
+        #{velocity_sql('distincted')}
         #{_order_clause(order)}
         OFFSET #{offset}
         LIMIT #{limit}

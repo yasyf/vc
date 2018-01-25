@@ -1715,7 +1715,7 @@ mark.highlighter {
   }
 
   .table-main {
-    & > div:focus {
+    & div:focus {
       outline: none;
     }
   }

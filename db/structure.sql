@@ -320,6 +320,36 @@ CREATE MATERIALIZED VIEW competitor_investor_aggs AS
 
 
 --
+-- Name: investments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE investments (
+    company_id integer NOT NULL,
+    competitor_id integer NOT NULL,
+    funded_at timestamp without time zone,
+    id bigint NOT NULL,
+    investor_id bigint,
+    featured boolean DEFAULT false,
+    funding_type character varying,
+    series character varying,
+    round_size bigint
+);
+
+
+--
+-- Name: competitor_velocities; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW competitor_velocities AS
+ SELECT competitors.id AS competitor_id,
+    count(investments.id) AS velocity
+   FROM (competitors
+     JOIN investments ON ((investments.competitor_id = competitors.id)))
+  GROUP BY competitors.id
+  WITH NO DATA;
+
+
+--
 -- Name: competitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -586,23 +616,6 @@ CREATE SEQUENCE intro_requests_id_seq
 --
 
 ALTER SEQUENCE intro_requests_id_seq OWNED BY intro_requests.id;
-
-
---
--- Name: investments; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE investments (
-    company_id integer NOT NULL,
-    competitor_id integer NOT NULL,
-    funded_at timestamp without time zone,
-    id bigint NOT NULL,
-    investor_id bigint,
-    featured boolean DEFAULT false,
-    funding_type character varying,
-    series character varying,
-    round_size bigint
-);
 
 
 --
@@ -2010,6 +2023,13 @@ CREATE UNIQUE INDEX index_competitor_recent_investments_on_competitor_id ON comp
 
 
 --
+-- Name: index_competitor_velocities_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_competitor_velocities_on_competitor_id ON competitor_velocities USING btree (competitor_id);
+
+
+--
 -- Name: index_competitors_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3193,6 +3213,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180124101142'),
 ('20180124101553'),
 ('20180124102250'),
-('20180124202440');
+('20180124202440'),
+('20180124235326');
 
 
