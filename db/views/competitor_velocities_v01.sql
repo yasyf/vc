@@ -4,4 +4,3 @@ SELECT
 FROM competitors
 INNER JOIN investments ON investments.competitor_id = competitors.id
 GROUP BY competitors.id
-LIMIT 5
