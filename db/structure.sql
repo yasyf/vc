@@ -1533,22 +1533,21 @@ CREATE MATERIALIZED VIEW competitor_partners AS
    FROM (competitors
      LEFT JOIN LATERAL ( WITH partners_results AS (
                  SELECT investors.id,
-                    investors.role
+                    investors.role,
+                    investors.verified
                    FROM investors
                   WHERE ((investors.competitor_id = competitors.id) AND (investors.hidden = false))
                 ), filtered_partners_results AS (
-                 SELECT partners_results.id,
-                    partners_results.role
+                 SELECT partners_results.id
                    FROM partners_results
-                  WHERE (lower((partners_results.role)::text) ~~* ANY (ARRAY['%managing%'::text, '%partner%'::text, '%director%'::text, '%associate%'::text, '%principal%'::text, '%ceo%'::text, '%founder%'::text, '%invest%'::text]))
+                  WHERE ((lower((partners_results.role)::text) ~~* ANY (ARRAY['%managing%'::text, '%partner%'::text, '%director%'::text, '%associate%'::text, '%principal%'::text, '%ceo%'::text, '%founder%'::text, '%invest%'::text])) OR (partners_results.verified = true))
                 ), all_ids AS (
                  SELECT filtered_partners_results.id
                    FROM filtered_partners_results
                 UNION
                  SELECT partners_results.id
                    FROM partners_results
-                  WHERE (NOT (EXISTS ( SELECT filtered_partners_results.id,
-                            filtered_partners_results.role
+                  WHERE (NOT (EXISTS ( SELECT filtered_partners_results.id
                            FROM filtered_partners_results)))
                 ), all_partners AS (
                  SELECT investors.id,
@@ -3214,6 +3213,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180124101553'),
 ('20180124102250'),
 ('20180124202440'),
-('20180124235326');
+('20180124235326'),
+('20180125174538');
 
 
