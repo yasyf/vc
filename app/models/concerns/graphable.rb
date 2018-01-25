@@ -55,7 +55,8 @@ module Concerns
     end
 
     def graph_node
-      @graph_node ||= Graph.get(Mail::Address.new("\"#{name}\" <#{email}>")) if email.present?
+      address = Mail::Address.new("\"#{name}\" <#{email}>") rescue nil if email.present?
+      @graph_node ||= Graph.get(address) if address.present?
     end
 
     private
