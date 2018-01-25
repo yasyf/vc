@@ -33,7 +33,7 @@ class IntroRequest < ApplicationRecord
   end
 
   def opt_in!(opted_in)
-    update! opted_in: opted_in
+    investor.update! opted_in: opted_in
     request_opted_in! opted_in
   end
 
