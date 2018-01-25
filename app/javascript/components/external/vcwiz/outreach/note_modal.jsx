@@ -15,6 +15,7 @@ export default class NoteModal extends React.Component {
           name={this.props.rowKey}
           wrap={false}
           debounced={true}
+          inputRef={input => input &&input.focus()}
           onChange={this.onChange}
         />
       </div>
