@@ -12,7 +12,10 @@ class External::VCWiz::InvestorsController < External::FrontendController
   def token
     investor = Investor.with_token(params[:token]).first!
     sign_in_external_investor! investor
-    investor.update! email: params[:email] if params[:email].present?
+    if params[:email].present?
+      investor.email = params[:email]
+      investor.save_and_fix_duplicates!
+    end
     redirect_to action: :index
   end
 
