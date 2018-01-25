@@ -8,6 +8,7 @@ class PropagateIndustryUpJob < ApplicationJob
     government: :enterprise,
     security: :enterprise,
     saas: :enterprise,
+    automotive: :transportation,
   }
 
   queue_as :high_mem
