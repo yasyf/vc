@@ -17,22 +17,22 @@ class InvestorEmailJob < ApplicationJob
   def augment_with_hunter(investor)
     social = Http::Hunter.new(investor, investor.competitor).social&.with_indifferent_access
     return unless social.present?
-    investor.email ||= social[:email] if social[:email].present?
-    investor.role ||= social[:position] if social[:position].present?
-    investor.twitter ||= social[:twitter] if social[:twitter].present?
-    investor.linkedin ||= social[:linkedin] if social[:linkedin].present?
+    investor.email = social[:email] if social[:email].present? && investor.email.blank?
+    investor.role = social[:position] if social[:position].present? && investor.role.blank?
+    investor.twitter = social[:twitter] if social[:twitter].present? && investor.twitter.blank?
+    investor.linkedin = social[:linkedin] if social[:linkedin].present? && investor.linkedin.blank?
     investor.save!
   end
 
   def augment_with_clearbit(investor)
     response = Http::Clearbit.new(investor, investor.competitor).enhance
-    investor.location ||= response.person.geo.city
-    investor.time_zone ||= response.person.time_zone
-    investor.description ||= response.person.bio
-    investor.homepage ||= response.person.site
-    investor.facebook ||= response.person.facebook.handle
-    investor.twitter ||= response.person.twitter.handle
-    investor.linkedin ||= response.person.linkedin.handle
+    investor.location = response.person.geo.city if investor.location.blank?
+    investor.time_zone = response.person.time_zone if investor.time_zone.blank?
+    investor.description = response.person.bio if investor.description.blank?
+    investor.homepage = response.person.site if investor.homepage.blank?
+    investor.facebook = response.person.facebook.handle if investor.facebook.blank?
+    investor.twitter = response.person.twitter.handle if investor.twitter.blank?
+    investor.linkedin = response.person.linkedin.handle if investor.linkedin.blank?
     investor.save!
   rescue Http::Clearbit::Error
   end

@@ -29,14 +29,14 @@ class FounderEnhanceJob < ApplicationJob
     response = Http::Clearbit.new(founder, founder.primary_company).enhance
     return unless response&.person.present?
 
-    founder.city ||= response.person.geo.city
-    founder.time_zone ||= response.person.time_zone
-    founder.bio ||= response.person.bio
-    founder.homepage ||= response.person.site
-    founder.facebook ||= response.person.facebook.handle
-    founder.twitter ||= response.person.twitter.handle
-    founder.linkedin ||= response.person.linkedin.handle&.split('/')&.last
-    founder.photo ||= response.person.avatar
+    founder.city = response.person.geo.city if founder.city.blank?
+    founder.time_zone = response.person.time_zone if founder.time_zone.blank?
+    founder.bio = response.person.bio if founder.bio.blank?
+    founder.homepage = response.person.site if founder.homepage.blank?
+    founder.facebook = response.person.facebook.handle if founder.facebook.blank?
+    founder.twitter = response.person.twitter.handle if founder.twitter.blank?
+    founder.linkedin = response.person.linkedin.handle if founder.linkedin.blank?
+    founder.photo = response.person.avatar if founder.photo.blank?
   rescue Http::Clearbit::Error
   end
 

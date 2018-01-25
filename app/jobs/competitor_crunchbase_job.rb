@@ -32,7 +32,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
     cb_fund = competitor.crunchbase_fund
     al_fund = competitor.angellist_startup
 
-    competitor.description ||= cb_fund.description || al_fund.description
+    competitor.description = cb_fund.description || al_fund.description if competitor.description.blank?
     competitor.location = (competitor.location || []) + (al_fund.locations || []) + (cb_fund.locations || [])
     competitor.hq = cb_fund.hq
     competitor.country = cb_fund.country

@@ -3,12 +3,15 @@ module Concerns
     extend ActiveSupport::Concern
 
     def twitter=(twitter)
-      twitter = twitter&.split('/')&.last || twitter
+      parsed = twitter&.split('/')&.last
+      twitter = parsed.present? ? parsed : twitter
       super twitter&.first == '@' ? twitter[1..-1] : twitter
     end
 
     def linkedin=(linkedin)
-      super (linkedin && linkedin.split('/').drop(4).join('/')) || linkedin
+      super linkedin and return unless linkedin.present?
+      parsed = linkedin.split('/').drop(4).join('/')
+      parsed.present? ? super(parsed) : super(linkedin)
     end
 
     def fix_linkedin!
