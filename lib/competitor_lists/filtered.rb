@@ -13,26 +13,22 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
   end
 
   def _filtered_by_search_subquery(search)
-    first_name = search[:first_name].present? ? Util.escape_sql_argument(search[:first_name]) : nil
-    last_name = search[:last_name].present? ? Util.escape_sql_argument(search[:last_name]) : nil
-    firm_name = search[:firm_name].present? ? Util.escape_sql_argument(search[:firm_name]) : nil
-
     <<-SQL
       SELECT
         competitors.id AS id,
         investors.id AS match_id,
         #{[
-          first_name && "COALESCE(similarity(investors.first_name, '#{first_name}'), 0)",
-          last_name && "COALESCE(similarity(investors.last_name, '#{last_name}'), 0)",
-          firm_name && "COALESCE(similarity(competitors.name, '#{firm_name}'), 0)",
+          search[:first_name] && Util.sanitize_sql('COALESCE(similarity(investors.first_name, ?), 0)', search[:first_name]),
+          search[:last_name] && Util.sanitize_sql('COALESCE(similarity(investors.last_name, ?), 0)', search[:last_name]),
+          search[:firm_name] && Util.sanitize_sql('COALESCE(similarity(competitors.name, ?), 0)', search[:firm_name]),
         ].compact.join(' + ')} AS rank
       FROM investors
       INNER JOIN competitors on investors.competitor_id = competitors.id
       WHERE
         #{[
-          first_name && "((investors.first_name % '#{first_name}') OR (investors.first_name ILIKE '#{first_name}%'))",
-          last_name && "((investors.last_name % '#{last_name}') OR (investors.last_name ILIKE '#{last_name}%'))",
-          firm_name && "((competitors.name % '#{firm_name}') OR (competitors.name ILIKE '#{firm_name}%'))",
+          search[:first_name] && Util.sanitize_sql('((investors.first_name % ?) OR (investors.first_name ILIKE ?))', search[:first_name], "#{search[:first_name]}%"),
+          search[:last_name] && Util.sanitize_sql('((investors.last_name % ?) OR (investors.last_name ILIKE ?))', search[:last_name], "#{search[:last_name]}%"),
+          search[:firm_name] && Util.sanitize_sql('((competitors.name % ?) OR (competitors.name ILIKE ?))', search[:firm_name], "#{search[:firm_name]}%"),
         ].compact.join(' AND ')}
       ORDER BY rank DESC
     SQL
