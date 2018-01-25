@@ -26,7 +26,7 @@ module CompetitorLists::Base::ClassSql
 
   def velocity_sql(competitors_table = 'competitors')
     <<-SQL
-      INNER JOIN competitor_velocities ON competitor_velocities.competitor_id = #{competitors_table}.id
+      LEFT OUTER JOIN competitor_velocities ON competitor_velocities.competitor_id = #{competitors_table}.id
     SQL
   end
 
