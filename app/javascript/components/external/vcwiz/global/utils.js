@@ -160,7 +160,7 @@ export const sendEvent = (name, ...args) => {
   if (!isLoggedIn()) {
     return;
   }
-  if (FounderEventNames.includes(name)) {
+  if (_.includes(FounderEventNames, name)) {
     return ffetch(FounderEventPath, 'POST', {event: {name, args}});
   } else {
     if (canUseDOM && window.mixpanel) {
