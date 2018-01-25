@@ -9,7 +9,10 @@ module Concerns
     end
 
     def linkedin=(linkedin)
-      super linkedin and return unless linkedin.present?
+      unless linkedin.present?
+        super linkedin
+        return
+      end
       parsed = linkedin.split('/').drop(4).join('/')
       parsed.present? ? super(parsed) : super(linkedin)
     end
