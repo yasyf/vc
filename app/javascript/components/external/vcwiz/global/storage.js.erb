@@ -17,7 +17,13 @@ class Storage {
     this.storage = storage;
   }
 
-  _get = key => JSON.parse(this.storage.getItem(key));
+  _get = key => {
+    try {
+      return JSON.parse(this.storage.getItem(key));
+    } catch (err) {
+      return null;
+    }
+  };
   get = key => this._get(storageKey(key));
 
   _remove = key => this.storage.removeItem(key);
