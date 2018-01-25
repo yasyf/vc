@@ -232,6 +232,30 @@ class Founder < ApplicationRecord
     events(Event.limit(3)).select('events.action, events.id, events.arg1, events.arg2, target_investors.first_name, target_investors.last_name, target_investors.firm_name')
   end
 
+  def save_and_fix_duplicates!
+    begin
+      self.save! if self.changed?
+    rescue ActiveRecord::RecordInvalid => e
+      raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
+      attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
+      other = Founder.where(attrs).first
+      raise unless other.present?
+      raise if other.logged_in_at.present?
+      self.class.migrate_other(self, other)
+    end
+  end
+
+  def self.migrate_other(founder, other)
+    other.companies.find_each do |company|
+      founder.companies << company unless founder.companies.include?(company)
+    end
+    other.entities.find_each do |entity|
+      founder.entities << entity unless founder.entities.include?(entity)
+    end
+    other.destroy!
+    founder.save!
+  end
+
   private
 
   def normalize_city

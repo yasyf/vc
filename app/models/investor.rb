@@ -231,7 +231,7 @@ class Investor < ApplicationRecord
 
   def save_and_fix_duplicates!
     begin
-      self.save!
+      self.save! if self.changed?
     rescue ActiveRecord::RecordInvalid => e
       raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
       attrs = e.record.errors.details.transform_values { |v| v.first[:value] }

@@ -14,7 +14,8 @@ class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
 
   def update
     if founder_params.present?
-      founder.update! founder_params
+      founder.assign_attributes founder_params
+      founder.save_and_fix_duplicates!
     end
     if founder_company_params[:primary_company].present?
       founder.primary_company.update! founder_company_params[:primary_company].merge(primary: true)

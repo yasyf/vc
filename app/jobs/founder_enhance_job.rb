@@ -15,30 +15,10 @@ class FounderEnhanceJob < ApplicationJob
       update_location_info founder
     end
 
-    begin
-      founder.save! if founder.changed?
-    rescue ActiveRecord::RecordInvalid => e
-      raise unless e.record.errors.details.all? { |k,v| v.all? { |e| e[:error].to_sym == :taken } }
-      attrs = e.record.errors.details.transform_values { |v| v.first[:value] }
-      other = Founder.where(attrs).first
-      raise unless other.present?
-      return if other.logged_in_at.present?
-      migrate_founder(founder, other)
-    end
+    founder.save_and_fix_duplicates!
   end
 
   private
-
-  def migrate_founder(founder, other)
-    other.companies.find_each do |company|
-      founder.companies << company unless founder.companies.include?(company)
-    end
-    other.entities.find_each do |entity|
-      founder.entities << entity unless founder.entities.include?(entity)
-    end
-    other.destroy!
-    founder.save!
-  end
 
   def update_location_info(founder)
     founder.city = Geocoder.search(founder.ip_address).first&.city if founder.ip_address.present?
