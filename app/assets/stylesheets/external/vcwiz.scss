@@ -2540,7 +2540,10 @@ mark.highlighter {
     .sidebar-list {
       overflow-y: auto;
       max-height: 85vh;
-      padding-right: 1em;
+
+      @include only-l-desktop {
+        padding-right: 1em;
+      }
 
       .partner-heading-inner {
         font-size: 15px;

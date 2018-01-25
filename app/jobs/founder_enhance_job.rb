@@ -2,6 +2,8 @@ class FounderEnhanceJob < ApplicationJob
   include Concerns::Ignorable
   queue_as :now
 
+  GOOGLE_DEFAULT = 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
+
   def perform(founder_id, augment: false)
     founder = Founder.find(founder_id)
 
@@ -37,7 +39,7 @@ class FounderEnhanceJob < ApplicationJob
     founder.facebook = response.person.facebook.handle if founder.facebook.blank?
     founder.twitter = response.person.twitter.handle if founder.twitter.blank?
     founder.linkedin = response.person.linkedin.handle if founder.linkedin.blank?
-    founder.photo = response.person.avatar if founder.photo.blank?
+    founder.photo = response.person.avatar if founder.photo.blank? || founder.photo == GOOGLE_DEFAULT
   rescue Http::Clearbit::Error
   end
 
