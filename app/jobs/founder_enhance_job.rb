@@ -1,4 +1,5 @@
 class FounderEnhanceJob < ApplicationJob
+  include Concerns::Ignorable
   queue_as :now
 
   def perform(founder_id, augment: false)
@@ -15,7 +16,7 @@ class FounderEnhanceJob < ApplicationJob
       update_location_info founder
     end
 
-    founder.save_and_fix_duplicates!
+    ignore_invalid { founder.save_and_fix_duplicates! }
   end
 
   private
