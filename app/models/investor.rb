@@ -144,7 +144,7 @@ class Investor < ApplicationRecord
   def set_timezone!
     return unless self.location.present?
     return unless (timezone = Http::GoogleMaps.new.timezone(self.location)).present?
-    self.time_zone = timezone.name
+    update! time_zone: timezone.name
   end
 
   def add_entities!(owner, entities)
@@ -226,7 +226,7 @@ class Investor < ApplicationRecord
     return unless self.gender == :unknown
     gender = GenderDetector.new.get_gender(self.first_name)
     gender = gender.to_s.remove('mostly_').to_sym if gender.to_s.starts_with?('mostly_')
-    self.gender = gender if gender.in?(GENDERS)
+    update! gender: gender if gender.in?(GENDERS)
   end
 
   def save_and_fix_duplicates!
@@ -439,7 +439,7 @@ class Investor < ApplicationRecord
     response = JSON.parse(value).with_indifferent_access
     return if response[:errors].present?
     return if response[:review].blank? || !response[:review][:published] || response[:review][:overall] < 4
-    self.review = { text: response[:review][:comment], id: response[:investorId] }
+    update! review: { text: response[:review][:comment], id: response[:investorId] }
   end
 
   def interactions(founder)

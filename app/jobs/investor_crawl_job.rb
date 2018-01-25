@@ -5,13 +5,13 @@ class InvestorCrawlJob < ApplicationJob
 
   def perform(investor_id)
     investor = Investor.find(investor_id)
-    investor.crawl_homepage!
-    investor.crawl_posts!
-    investor.fetch_news!
     investor.set_timezone!
     investor.set_gender!
     investor.fetch_review!
     # investor.set_average_response_time!
+    investor.crawl_homepage!
+    investor.crawl_posts!
+    investor.fetch_news!
     ignore_invalid { investor.save! } if investor.changed?
   end
 end
