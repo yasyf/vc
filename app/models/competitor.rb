@@ -76,6 +76,7 @@ class Competitor < ApplicationRecord
     security: ['Network Security', 'Cyber Security'],
     government: ['GovTech'],
     lifesci: ['Biotechnology', 'Pharmaceutical'],
+    space: ['Aerospace', 'Satellite Communication', 'Space Travel'],
   }.with_indifferent_access.freeze
 
   NON_INVESTOR_TITLE = ['Executive Assistant', 'Consultant', 'Accountant', 'Team Member', 'Accounting', 'Advisor'].map(&:downcase)
