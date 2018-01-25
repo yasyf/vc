@@ -18,8 +18,11 @@ module GoogleApi
       else
         sync_full!
       end
-    rescue Signet::AuthorizationError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+    rescue Signet::AuthorizationError, Google::Apis::ClientError => e
       Rails.logger.warn e
+    rescue Google::Apis::AuthorizationError
+      @user.update! history_id: nil
+      FounderMailer.bad_link_email(@user).deliver_later
     end
 
     private
