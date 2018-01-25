@@ -18,12 +18,6 @@ class News < ApplicationRecord
     @body ||= Http::Fetch.get_one(url)
   end
 
-  def page
-    @page ||= MetaInspector.new(url, document: body)
-  rescue MetaInspector::Error
-    raise ActiveRecord::RecordInvalid.new(self)
-  end
-
   def sentiment
     @sentiment ||= Http::TextProcessing.sentiment(body) if body.present?
   end
@@ -38,7 +32,15 @@ class News < ApplicationRecord
 
   private
 
+  def parse_body!
+    MetaInspector.new(url, document: body, download_images: false)
+  rescue MetaInspector::Error
+    raise ActiveRecord::RecordInvalid.new(self)
+  end
+
   def set_meta!
+    page = parse_body!
+
     self.title ||= page.best_title
     self.description ||= page.best_description
     self.sentiment_score ||= sentiment&.score

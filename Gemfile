@@ -97,7 +97,9 @@ group :production do
   gem 'puma'
   gem 'dalli'
   gem 'connection_pool'
-  gem 'hive_geoip2'
+  install_if -> { RUBY_PLATFORM =~ /linux/ } do
+    gem 'hive_geoip2'
+  end
   gem 'scout_apm', '~> 3.0.x'
   gem 'puma_worker_killer', require: false
 end

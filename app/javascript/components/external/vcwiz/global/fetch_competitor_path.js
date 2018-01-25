@@ -19,7 +19,7 @@ const _fetchPaths = _.debounce(() => {
 
 const fetchPaths = () => {
   _fetchPaths();
-  if (Object.keys(pendingPaths).length >= 10) {
+  if (Object.keys(pendingPaths).length >= 5) {
     _fetchPaths.flush();
   }
 };
