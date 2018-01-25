@@ -58,6 +58,7 @@ class Founder < ApplicationRecord
     first_name, last_name = Util.split_name(auth.info.name)
     first_name = auth.info.first_name if auth.info.first_name.present?
     last_name = auth.info.last_name if auth.info.last_name.present?
+    last_name = auth.info.name unless last_name.present?
     from_email(auth.info.email, first_name, last_name).tap do |founder|
       founder.photo ||= auth.info.image
       founder.access_token = auth.credentials.token
@@ -67,9 +68,11 @@ class Founder < ApplicationRecord
   end
 
   def self.from_email(email, first_name = nil, last_name = nil)
-    where(email: email).first_or_create! do |f|
-      f.first_name = first_name
-      f.last_name = last_name
+    retry_invalid do
+      where(email: email).first_or_create! do |f|
+        f.first_name = first_name
+        f.last_name = last_name
+      end
     end
   end
 
