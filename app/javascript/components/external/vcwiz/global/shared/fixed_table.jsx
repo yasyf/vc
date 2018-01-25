@@ -17,6 +17,7 @@ import {fromTableSD, isMobile, nullOrUndef, toTableSD} from '../utils';
 import CompetitorCell from '../cells/competitor_cell';
 import {SortDirection} from '../constants.js.erb';
 import tableHeader from './table_header';
+import TruncatedTextCell from '../cells/truncated_text_cell';
 
 export default class FixedTable extends React.Component {
   static defaultProps = {
@@ -94,6 +95,10 @@ export default class FixedTable extends React.Component {
 
   renderTextColumn = (key, name, props, flex = 1) => {
     return this.renderColumn(key, name, TextCell, props, props.width, props.width ? null : flex);
+  };
+
+  renderTruncatedTextColumn = (key, name, props, flex = 1) => {
+    return this.renderColumn(key, name, TruncatedTextCell, props, flex);
   };
 
   renderPlaceholderColumn = (key, name, flex = 1) => {

@@ -8,6 +8,7 @@ import {TargetInvestorsPath, TargetInvestorStagesKeys} from '../global/constants
 import Actions from '../global/actions';
 import Store from '../global/store';
 import IntroModal from './intro_modal';
+import NoteModal from './note_modal';
 
 class ConversationsTable extends FixedTable {
   onTrackChange = (row, update) => {
@@ -33,7 +34,7 @@ class ConversationsTable extends FixedTable {
       this.renderTrackColumn('stage', this.onTrackChange, 'Stage'),
       this.renderIntroColumn('intro_requests[0]', 'VCWiz Intro', { eligibleKey: 'can_intro?', emailKey: 'email_present?', stageKey: 'stage' }),
       emoji,
-      this.renderPlaceholderColumn('note', 'Notes', 2),
+      this.renderTruncatedTextColumn('note', 'Notes', {lines: 2}, 2),
       this.renderDatetimeColumn('last_response', 'Last Response'),
     ];
   }
@@ -55,6 +56,8 @@ export default class Conversations extends React.Component {
               break;
             case 'priority':
               return EmojiModal;
+            case 'note':
+              return NoteModal;
             case 'intro_requests[0]':
               if (item['can_intro?'] && target.stage === _.first(TargetInvestorStagesKeys))
                 return IntroModal;

@@ -1766,6 +1766,15 @@ mark.highlighter {
     }
   }
 
+  .plain-text-cell {
+    @include standard-scroll-bars;
+    height: 75px;
+    width: 100%;
+    white-space: normal;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   .placeholder-cell {
     textarea.placeholded {
       background-color: inherit;
@@ -2332,6 +2341,21 @@ mark.highlighter {
 
   .emoji-mart-scroll {
     height: 250px;
+  }
+}
+
+.note-modal {
+  @include small-modal;
+  height: 100%;
+
+  &-content {
+    width: 500px;
+    margin: auto;
+  }
+
+  textarea {
+    height: 100%;
+    padding: 1em;
   }
 }
 
