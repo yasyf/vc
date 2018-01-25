@@ -1,6 +1,6 @@
 :concurrency: 4
 :queues:
   - long_now
-  - long
   - high_mem
+  - long
   - low
