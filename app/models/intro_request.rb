@@ -1,6 +1,7 @@
 class IntroRequest < ApplicationRecord
   include Concerns::Openable
   include Concerns::Tokenable
+  include Concerns::Eventable
 
   TOKEN_MAGIC = 'VCWIZ_INTRO_'
   MAX_IN_FLIGHT = 5
@@ -19,6 +20,8 @@ class IntroRequest < ApplicationRecord
 
   before_validation :check_opt_out!, on: :create
 
+  actions :request_decided, :request_opted_in
+
   def self.from_target_investor(target_investor)
     where(target_investor: target_investor).first_or_create! do |intro|
       intro.update_attributes(
@@ -29,9 +32,15 @@ class IntroRequest < ApplicationRecord
     end
   end
 
+  def opt_in!(opted_in)
+    update! opted_in: opted_in
+    request_opted_in! opted_in
+  end
+
   def decide!(decision)
     return unless accepted.nil?
     update! accepted: decision
+    request_decided! decision
     send_decision!
   end
 

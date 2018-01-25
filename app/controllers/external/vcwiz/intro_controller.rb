@@ -1,6 +1,6 @@
 class External::VCWiz::IntroController < External::FrontendController
   def opt_in
-    intro_request.investor.update! opted_in: optin?
+    intro_request.opt_in! optin?
     intro_request.decide! accept?
 
     title 'Opt-In'
