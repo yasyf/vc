@@ -135,6 +135,7 @@ export default class IntroModal extends React.Component {
       <p key="welcome">
         Welcome to VCWiz Intro Requests! There's a few things we need from you.
         We'll give {first_name} a chance to review everything we collect here, and then get back to you with a response as fast as we can.
+        Intro requests are always double opt-in, just like a human intro.
       </p>,
       <p key="request">
         {
