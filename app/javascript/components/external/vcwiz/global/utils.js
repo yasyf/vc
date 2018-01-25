@@ -119,8 +119,13 @@ export const getDomain = (url, withSubdomain = true) => {
   if (!url) {
     return null;
   }
-  let parts = parseDomain(url);
-  if (!parts) {
+  let parts;
+  try {
+    parts = parseDomain(url);
+  } catch (err) {
+    parts = null;
+  }
+  if (!parts || _.isEmpty(parts)) {
     return null;
   } else {
     return _.compact([withSubdomain && (parts.subdomain !== 'wwww') ? parts.subdomain : null, parts.domain, parts.tld]).join('.');
