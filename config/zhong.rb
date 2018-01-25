@@ -46,6 +46,7 @@ Zhong.schedule do
       every(12.hours, 'gmail',  skip_first_run: true) { FoundersGmailSyncJob.perform_later }
       every(1.hours, 'investors',  skip_first_run: true) { FindInvestorsJob.perform_later }
       every(6.hours, 'competitor_lists',  skip_first_run: true) { CompetitorListJob.perform_later }
+      every(1.hours, 'refresh_views') { RefreshJob.perform_later(only_views: true) }
     end
 
     category 'bulk' do

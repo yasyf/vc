@@ -5,8 +5,9 @@ class RefreshJob < ApplicationJob
   MAX_DELAY = 1.days
   LIMIT_FACTOR = 10
 
-  def perform(max_delay: nil, limit_factor: nil)
+  def perform(max_delay: nil, limit_factor: nil, only_views: false)
     refresh_views!
+    return if only_views
     run_job_in_batches(Investor, InvestorCrunchbaseJob, max_delay: max_delay, limit_factor: limit_factor, queue: :long)
     run_job_in_batches(Competitor, CompetitorCrunchbaseJob, max_delay: max_delay, limit_factor: limit_factor)
     run_job_in_batches(Company, CompanyRelationshipsJob, max_delay: max_delay, limit_factor: limit_factor)
