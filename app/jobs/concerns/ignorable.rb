@@ -41,7 +41,7 @@ module Concerns
     def ignore(types)
       yield
     rescue *Array.wrap(types) => e
-      Rails.logger.info e
+      Rails.logger.error e
       nil
     end
 
@@ -50,7 +50,7 @@ module Concerns
       yield
     rescue *Array.wrap(types) => e
       retry unless (remaining -= 1).zero?
-      Rails.logger.info e
+      Rails.logger.error e
       nil
     end
   end

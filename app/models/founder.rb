@@ -67,11 +67,9 @@ class Founder < ApplicationRecord
   end
 
   def self.from_email(email, first_name = nil, last_name = nil)
-    retry_invalid do
-      where(email: email).first_or_create! do |f|
-        f.first_name = first_name
-        f.last_name = last_name
-      end
+    where(email: email).first_or_create! do |f|
+      f.first_name = first_name
+      f.last_name = last_name
     end
   end
 

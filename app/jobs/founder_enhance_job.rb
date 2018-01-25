@@ -22,7 +22,7 @@ class FounderEnhanceJob < ApplicationJob
 
   def update_location_info(founder)
     founder.city = Geocoder.search(founder.ip_address).first&.city if founder.ip_address.present?
-    founder.time_zone = Http::GoogleMaps.new.timezone(founder.city).name if founder.city.present?
+    founder.time_zone = Http::GoogleMaps.new.timezone(founder.city)&.name if founder.city.present?
   end
 
   def augment_with_clearbit(founder)
