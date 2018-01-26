@@ -32,17 +32,19 @@ class CompetitorCrunchbaseJob < ApplicationJob
     cb_fund = competitor.crunchbase_fund
     al_fund = competitor.angellist_startup
 
-    competitor.description = cb_fund.description || al_fund.description if competitor.description.blank?
-    competitor.location = (competitor.location || []) + (al_fund.locations || []) + (cb_fund.locations || [])
-    competitor.hq = cb_fund.hq
-    competitor.country = cb_fund.country
-    competitor.photo = al_fund.logo || cb_fund.image
-    competitor.facebook = al_fund.facebook || cb_fund.facebook
-    competitor.twitter = al_fund.twitter || cb_fund.twitter
-    competitor.domain = al_fund.url || cb_fund.url
-    competitor.al_url = al_fund.angellist_url
-    competitor.fund_type = (competitor.fund_type || []) + cb_fund.fund_types
-    competitor.save! if competitor.changed?
+    unless competitor.verified?
+      competitor.description = cb_fund.description || al_fund.description if competitor.description.blank?
+      competitor.location = (competitor.location || []) + (al_fund.locations || []) + (cb_fund.locations || [])
+      competitor.hq = cb_fund.hq
+      competitor.country = cb_fund.country
+      competitor.photo = al_fund.logo || cb_fund.image
+      competitor.facebook = al_fund.facebook || cb_fund.facebook
+      competitor.twitter = al_fund.twitter || cb_fund.twitter
+      competitor.domain = al_fund.url || cb_fund.url
+      competitor.al_url = al_fund.angellist_url
+      competitor.fund_type = (competitor.fund_type || []) + cb_fund.fund_types
+      competitor.save! if competitor.changed?
+    end
 
     if competitor.description.present?
       FUND_TYPE_KEYWORDS.each do |fund_type, keywords|

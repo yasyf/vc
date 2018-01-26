@@ -11,7 +11,7 @@ export default class IntroPath extends React.Component {
       twitter && `https://twitter.com/${twitter}`,
     ]));
     if (href) {
-      return <a target="_blank" href={href}>{fullName(person)}</a>;
+      return <a target="_blank" href={href} onClick={() => window.open(href)}>{fullName(person)}</a>;
     } else {
       return fullName(person);
     }
@@ -24,7 +24,7 @@ export default class IntroPath extends React.Component {
     const { photo } = person;
     return _.compact([
       <div key={`image-${i}`}><ProfileImage fallback={initials(person)} src={photo} size={50} /></div>,
-      <div key={`link-${i}`}>{this.renderLink(person)}</div>
+      <div key={`link-${i}`}>{this.renderLink(person)}</div>,
     ]);
   };
 

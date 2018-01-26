@@ -275,6 +275,7 @@ class Competitor < ApplicationRecord
         :matches,
         :coinvestors,
         :velocity,
+        :verified,
       ],
       methods: [
         :hq,
