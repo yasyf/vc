@@ -123,6 +123,10 @@ export default class InvestorSettings extends SettingsBase {
     );
   }
 
+  renderAdd() {
+    // modal to add investor
+  }
+
   renderBottom() {
     return (
       <div>

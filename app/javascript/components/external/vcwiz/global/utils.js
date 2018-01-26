@@ -13,7 +13,7 @@ import {SortDirection as TableSortDirection} from 'react-virtualized';
 const __fetch = (...args) => {
   return fetch(...args).then(resp => {
     if (!resp.ok) {
-      throw Error(response.statusText);
+      throw Error(resp.statusText);
     }
     return resp.json();
   }).catch(e => Raven.captureException(e));
