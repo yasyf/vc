@@ -89,7 +89,7 @@ gem 'grpc', '1.9.0.pre1' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
 
 group :test do
-  gem 'minitest', '~> 5.11.1'
+  gem 'minitest', '~> 5.11.2'
   gem 'webmock'
 end
 
