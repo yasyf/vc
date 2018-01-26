@@ -10,6 +10,15 @@ import Breadcrumb from './breadcrumbs';
 import { canUseDOM } from 'exenv';
 import {SortDirection as TableSortDirection} from 'react-virtualized';
 
+const __fetch = (...args) => {
+  return fetch(...args).then(resp => {
+    if (!resp.ok) {
+      throw Error(response.statusText);
+    }
+    return resp.json();
+  }).catch(e => Raven.captureException(e));
+};
+
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
     delete opts.form;
@@ -29,14 +38,14 @@ export const _ffetch = function(path, data, opts) {
     if (cached) {
       return new Promise(cb => cb(cached));
     } else {
-      return fetch(path, opts).then(resp => resp.json()).then(res => {
+      return __fetch(path, opts).then(res => {
         Storage.setExpr(path, res, 3600);
         return res;
       });
     }
   }
 
-  return fetch(path, opts).then(resp => resp.json());
+  return __fetch(path, opts);
 };
 
 export const ffetch = function(path, method = 'GET', data = null, opts = {}) {
