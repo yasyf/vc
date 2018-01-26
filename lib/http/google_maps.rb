@@ -17,7 +17,7 @@ class Http::GoogleMaps
   end
 
   def lat_lng(location)
-    result = geocode(location).first
+    result = geocode(location)&.first
     result['geometry']['location'] if result.present?
   end
 

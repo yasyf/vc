@@ -85,7 +85,7 @@ class CompetitorCrunchbaseJob < ApplicationJob
 
     if (investments = cb_fund.investments(deep: true)).present?
       investments.each do |investment|
-        partners = investment.partners.map do |partner|
+        partners = (investment.partners || []).map do |partner|
           Investor.from_crunchbase(partner.permalink)
         end
         funding_round = investment.funding_round
