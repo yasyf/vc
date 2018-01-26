@@ -92,7 +92,8 @@ class CompetitorCrunchbaseJob < ApplicationJob
         company = funding_round&.funded_organization
         next unless funding_round.present? && company.present?
         retry_record_errors do
-          c = Company.where(crunchbase_id: company.permalink).first_or_create! do |c|
+          c = competitor.companies.where(name: company.name).first
+          c ||= Company.where(crunchbase_id: company.permalink).first_or_create! do |c|
             c.name = company.name
           end
           cc = c.investments.where(competitor: competitor).first_or_initialize
