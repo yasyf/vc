@@ -6,7 +6,10 @@ class AppWarmupJob < ApplicationJob
     url = "http://#{host}/?bypass_force_ssl_for_warmup=1"
     Rails.logger.info "[Warmup] Fetching #{url}"
     5.times do
-      5.times { Http::Fetch.get_one url }
+      5.times do
+        Http::Fetch.get((0..10).map { |i| "#{url}&n=#{i}" })
+        sleep 1
+      end
       sleep 5
     end
   end
