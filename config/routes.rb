@@ -45,7 +45,7 @@ Rails.application.routes.draw do
       end
 
       scope controller: 'vcwiz/vcwiz', as: :vcwiz do
-        root action: 'index'
+        root action: 'discover'
         get 'firm/:id(/:slug)', action: :firm, as: :firm
         get 'investor/:id(/:slug)', action: :investor, as: :investor
         get 'company/:id(/:slug)', action: :company, as: :company

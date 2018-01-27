@@ -8,10 +8,6 @@ class External::VCWiz::VCWizController < External::FrontendController
   before_action :check_founder!, only: [:outreach]
   before_action :merge_cookie_filters!, only: [:discover]
 
-  def index
-    redirect_to action: :discover
-  end
-
   def privacy
     render layout: 'external'
   end
