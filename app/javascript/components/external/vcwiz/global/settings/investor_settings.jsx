@@ -15,6 +15,7 @@ import Company from '../../discover/company';
 import Partner from '../../investor_contacts/partner';
 import Tabs from '../tabs/tabs';
 import AddInvestor from './add_investor';
+import CompetitorProfile from './competitor_profile';
 
 export default class InvestorSettings extends SettingsBase {
   constructor(props) {
@@ -23,8 +24,7 @@ export default class InvestorSettings extends SettingsBase {
       ...this.state,
       data: {
         ...props.investor,
-        companies: props.companies,
-        industries: props.industries,
+        ...props.investor_fields,
       },
       partners: props.partners,
     };
@@ -124,18 +124,21 @@ export default class InvestorSettings extends SettingsBase {
 
 
   renderBottom() {
-    const { competitor } = this.props.investor;
+    const { investor, competitor_fields } = this.props;
+    const { competitor } = investor;
     return (
       <div className="full-width">
         <p>Welcome to your VCWiz investor portal. This page will auto-save as you make changes!</p>
         <Tabs
           tabs={[
-            "Edit Your Profile",
+            "Your Profile",
+            `${competitor.name}'s Profile`,
             "Manage Coworkers",
             "Add a Coworker",
           ]}
           panels={[
             this.renderInvestorProfile(),
+            <CompetitorProfile competitor={competitor} competitor_fields={competitor_fields} />,
             this.renderOthers(),
             <AddInvestor competitor={competitor} />,
           ]}

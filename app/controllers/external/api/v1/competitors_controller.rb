@@ -55,10 +55,60 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
       current_external_founder.investor_targeted! target.investor.id
       target.update! stage: stage
     end
+    if competitor == current_external_investor.competitor
+      competitor.update!(verified: true) unless competitor.verified?
+
+      if competitor_update_params.present?
+        competitor.update! competitor_update_params
+      end
+
+      if competitor_industries.present?
+        competitor.update! industry: competitor_industries.map { |i| i['value'] }
+      end
+
+      if competitor_locations.present?
+        competitor.update! location: competitor_locations.map { |i| i['value'] }
+      end
+
+      if competitor_fund_types.present?
+        competitor.update! fund_type: competitor_fund_types.map { |i| i['value'] }
+      end
+
+      if competitor_companies.present?
+        ids = competitor_companies.to_a
+        existing = competitor.companies.pluck(:id)
+        (ids - existing).each do |id|
+          Investment.where(company_id: id, competitor: competitor).first_or_create!
+        end
+        (existing - ids).each do |id|
+          Investment.where(company_id: id, competitor: competitor).destroy_all
+        end
+      end
+    end
     render json: {}
   end
 
   private
+
+  def competitor_update_params
+    params.require(:competitor).permit(:name, :domain, :photo, :twitter, :facebook, :al_id, :crunchbase_id, :description)
+  end
+
+  def competitor_industries
+    params.require(:competitor).permit![:industries]
+  end
+
+  def competitor_companies
+    params.require(:competitor).permit![:companies]
+  end
+
+  def competitor_locations
+    params.require(:competitor).permit![:locations]
+  end
+
+  def competitor_fund_types
+    params.require(:competitor).permit![:fund_types]
+  end
 
   def competitor
     @competitor ||= Competitor.find(params[:id])

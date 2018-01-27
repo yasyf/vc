@@ -58,13 +58,26 @@ class External::VCWiz::InvestorsController < External::FrontendController
   end
 
   def settings
-    companies = records_to_options(current_external_investor.companies.map(&:as_json_search))
-    industries = hash_to_options(Competitor::INDUSTRIES.slice(*(current_external_investor.industry || [])))
+    investor_fields = {
+      companies: records_to_options(current_external_investor.companies.map(&:as_json_search)),
+      industries: hash_to_options(Competitor::INDUSTRIES.slice(*(current_external_investor.industry || []))),
+    }
+    competitor_fields = {
+      companies: records_to_options(current_external_investor.competitor.companies.map(&:as_json_search)),
+      industries: hash_to_options(Competitor::INDUSTRIES.slice(*(current_external_investor.competitor.industry || []))),
+      locations: arr_to_options(current_external_investor.competitor.location),
+      fund_types: hash_to_options(Competitor::FUND_TYPES.slice(*(current_external_investor.competitor.fund_type || []))),
+    }
+
     partners = current_partners.map(&:as_light_json)
 
     title 'Investor Settings'
     component 'InvestorSettings'
-    investor_props companies: companies, industries: industries, partners: partners
+    investor_props(
+      investor_fields: investor_fields,
+      competitor_fields: competitor_fields,
+      partners: partners,
+    )
     render_default
   end
 
@@ -79,7 +92,7 @@ class External::VCWiz::InvestorsController < External::FrontendController
   end
 
   def investor_props(other_props = {})
-    props other_props.merge(investor: current_external_investor.as_json(only: nil, methods: [:competitor, :al_username]))
+    props other_props.merge(investor: current_external_investor.as_json(only: nil, methods: [:al_username]).merge(competitor: current_external_investor.competitor.as_settings_json))
   end
 
   def render_default

@@ -76,11 +76,10 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
       end
 
       if investor_companies.present?
-        existing = investor.companies.pluck(:id)
         ids = investor_companies.map { |c| c['id'] }
-        puts "#{existing}, #{ids}"
+        existing = investor.companies.pluck(:id)
         (ids - existing).each do |id|
-          Investment.where(company: Company.find(id), competitor: investor.competitor).first_or_create!.tap do |inv|
+          Investment.where(company_id: id, competitor: investor.competitor).first_or_create!.tap do |inv|
             inv.update! investor: investor
           end
         end
@@ -109,6 +108,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     investor.competitor = current_external_investor.competitor
     investor.start_job_now!
     investor.save!
+    InvestorMailer.invite_email(investor.id, current_external_investor.id).deliver_later
     flash_success "#{investor.first_name} has been added to #{investor.competitor.name}! Please complete their profile below."
     render json: { investor: investor.as_light_json }
   rescue ActiveRecord::RecordInvalid => e

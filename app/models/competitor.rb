@@ -255,6 +255,25 @@ class Competitor < ApplicationRecord
     )
   end
 
+  def as_settings_json
+    as_json(
+      only: [
+        :industry,
+        :name,
+        :fund_type,
+        :location,
+        :photo,
+        :facebook,
+        :twitter,
+        :domain,
+        :crunchbase_id,
+        :al_id,
+        :id,
+      ],
+      methods: []
+    )
+  end
+
   def as_meta_json
     as_json(
       only: [
@@ -282,7 +301,7 @@ class Competitor < ApplicationRecord
         :acronym,
         :recent_investments,
         :cb_url,
-      ].compact
+      ],
     )
   end
 
