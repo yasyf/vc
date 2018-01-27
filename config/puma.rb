@@ -44,6 +44,7 @@ before_fork do
     PumaWorkerKiller.enable_rolling_restart
   end
 
+  ServerSideRendering::Render.snapshot
   ActiveRecord::Base.connection.disconnect!
 end
 

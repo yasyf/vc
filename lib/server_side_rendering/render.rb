@@ -1,13 +1,20 @@
 class ServerSideRendering::Render
   RENDERER_ENTRY_POINT = 'external/server_side_render.js'
 
-  def self.renderer
-    @renderer ||= begin
+  # Worker level
+  def self.snapshot
+    @snapshot ||= begin
       server_pack = ServerSideRendering::WebpackerManifestContainer.new.find_asset(RENDERER_ENTRY_POINT)
-      ServerSideRendering::ExecJs.new(server_pack)
+      ServerSideRendering::Backends::MiniRacer.snapshot(server_pack)
     end
   end
 
+  # Thread level
+  def self.renderer
+    Thread.current[:ssr_renderer] ||= ServerSideRendering::Backends::MiniRacer.new(snapshot)
+  end
+
+  # Request level
   def self.render(request, component_name, props)
     renderer.render request, component_name, props
   end
