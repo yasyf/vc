@@ -10,7 +10,15 @@ import Breadcrumb from './breadcrumbs';
 import { canUseDOM } from 'exenv';
 import {SortDirection as TableSortDirection} from 'react-virtualized';
 
-const __fetch = (...args) => fetch(...args).then(resp => resp.json()).catch(e => Raven.captureException(e));
+const __fetch = (...args) =>
+  fetch(...args).then(resp => {
+    try {
+      return resp.json();
+    } catch (err) {
+      Raven.captureException(err, {extra: { url: resp.url, body: resp.text() }});
+    }
+  }).catch(e => Raven.captureException(e))
+;
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
