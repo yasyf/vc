@@ -78,7 +78,15 @@ class VolatileStorage extends Storage {
   const StorageClass = VolatileStorage;
 <% end %>
 
-const SessionStorage = window.sessionStorage ? new StorageClass(window.sessionStorage) : StorageMock;
-const LocalStorage = window.localStorage ? new StorageClass(window.localStorage) : StorageMock;
+const createStorageInstance = storage => {
+  try {
+    return storage ? new StorageClass(storage) : StorageMock;
+  } catch (err) {
+    return StorageMock;
+  }
+};
+
+const SessionStorage = createStorageInstance(window.sessionStorage);
+const LocalStorage = createStorageInstance(window.localStorage);
 
 export { SessionStorage, LocalStorage, CookieStorage };

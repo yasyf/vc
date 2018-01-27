@@ -14,4 +14,8 @@ module ApplicationHelper
   def split_name(name)
     Util.split_name(name)
   end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
 end

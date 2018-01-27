@@ -2,12 +2,20 @@ class External::Api::V1::ApiV1Controller < External::ApplicationController
   before_action :check_rate_limit!
   before_action :check_api_auth!
 
+  def append_info_to_payload(payload)
+    super
+    payload[:api_auth] = session[:api_auth]
+  end
+
   def authenticate_api_user!
     authenticate_external_founder!
   end
 
   def check_api_auth!
-    head :unauthorized unless session[:api_auth] || Rails.env.test?
+    unless session[:api_auth] || Rails.env.test?
+      Rails.logger.warn "api.auth: failed check. session: #{session.as_json}"
+      head :unauthorized
+    end
   end
 
   def check_rate_limit!

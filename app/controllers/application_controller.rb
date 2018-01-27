@@ -42,8 +42,4 @@ class ApplicationController < ActionController::Base
       messages.each { |message| flash[:alert] << "#{attribute.to_s.titleize} #{message}" }
     end
   end
-
-  def not_found
-    raise ActionController::RoutingError.new('Not Found')
-  end
 end

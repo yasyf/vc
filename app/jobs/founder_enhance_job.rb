@@ -19,6 +19,9 @@ class FounderEnhanceJob < ApplicationJob
     end
 
     ignore_invalid { founder.save_and_fix_duplicates! }
+
+    founder.add_entities! Entity.from_html(founder.bio)
+    founder.scrape_tweets!
   end
 
   private

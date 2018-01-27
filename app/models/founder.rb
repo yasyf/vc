@@ -5,6 +5,7 @@ class Founder < ApplicationRecord
   include Concerns::Locationable
   include Concerns::Graphable
   include Concerns::Socialable
+  include Concerns::Entityable
   extend Concerns::Ignorable
 
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
@@ -15,8 +16,6 @@ class Founder < ApplicationRecord
   has_many :emails, dependent: :destroy
   has_many :intro_requests, -> { where(pending: false) }, dependent: :destroy
   has_many :target_investors, dependent: :destroy
-  has_many :person_entities, as: :person, dependent: :destroy
-  has_many :entities, through: :person_entities
 
   validates :first_name, presence: true
   validates :last_name, presence: true

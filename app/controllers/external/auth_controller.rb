@@ -44,6 +44,12 @@ class External::AuthController < Devise::OmniauthCallbacksController
     end
   end
 
+  def impersonate
+    not_found unless current_external_founder&.admin?
+    signin_founder Founder.find(params[:id])
+    redirect_to external_vcwiz_root_path
+  end
+
   private
 
   def process_gmail_auth(founder)

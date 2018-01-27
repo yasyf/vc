@@ -39,6 +39,9 @@ Rails.application.routes.draw do
         get 'auth/create', to: 'auth#create'
         get 'auth/enhance', to: 'auth#enhance'
         get 'auth/failure', to: 'auth#failure'
+        authenticate :external_founder, lambda { |u| u.admin? } do
+          get 'auth/impersonate/:id', to: 'auth#impersonate', as: :impersonate
+        end
       end
 
       scope controller: 'vcwiz/vcwiz', as: :vcwiz do

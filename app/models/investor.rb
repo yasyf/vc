@@ -2,12 +2,12 @@ class Investor < ApplicationRecord
   extend Concerns::Ignorable
   include Concerns::AttributeArrayable
   include Concerns::Cacheable
-  include Concerns::Twitterable
   include Concerns::Ignorable
   include Concerns::TimeZonable
   include Concerns::Locationable
   include Concerns::Graphable
   include Concerns::Socialable
+  include Concerns::Entityable
 
   GENDERS = %w(unknown male female)
 
@@ -18,12 +18,9 @@ class Investor < ApplicationRecord
   has_many :companies, through: :investments
   belongs_to :university
   has_many :news, dependent: :destroy
-  has_many :person_entities, as: :person
-  has_many :entities, through: :person_entities
   has_many :emails
   has_many :posts, dependent: :destroy
   has_many :intro_requests
-  has_one :tweeter, as: :owner, dependent: :destroy
 
   validates :competitor, presence: true
   validates :first_name, presence: true, uniqueness: { scope: [:last_name, :competitor_id] }
@@ -107,6 +104,8 @@ class Investor < ApplicationRecord
 
     populate_from_cb_basic!
 
+    add_entities! Entity.from_html(description)
+
     return unless self.competitor.present?
 
     person.affiliated_companies.each do |job|
@@ -147,12 +146,6 @@ class Investor < ApplicationRecord
     update! time_zone: timezone.name
   end
 
-  def add_entities!(owner, entities)
-    entities.each do |entity|
-      ignore_unique { PersonEntity.where(person: owner, entity: entity).first_or_create! }
-    end
-  end
-
   def crawl_homepage!
     return unless self.homepage.present?
     body = Http::Fetch.get_one self.homepage
@@ -160,7 +153,7 @@ class Investor < ApplicationRecord
       self.homepage = nil
       return
     end
-    add_entities! self, Entity.from_html(body)
+    add_entities! Entity.from_html(body)
     self.competitor.companies.find_each do |company|
       if body.include?(company.name)
         assign_company! company, featured: true
@@ -186,7 +179,7 @@ class Investor < ApplicationRecord
       rescue ActiveRecord::RecordInvalid
         next
       end
-      add_entities! post, Entity.from_html(body)
+      add_entities! Entity.from_html(body), owner: post
       meta[:categories].each do |category|
         entity = Entity.from_name(category)
         next unless entity.present?
@@ -389,10 +382,6 @@ class Investor < ApplicationRecord
     posts.order(published_at: :desc).limit(n)
   end
 
-  def tweeter
-    super || (create_tweeter(username: twitter) if twitter.present?)
-  end
-
   def token
     update! token: Util.token unless super.present?
     super
@@ -401,17 +390,6 @@ class Investor < ApplicationRecord
   def tweets(n = 3)
     return [] unless tweeter.present?
     tweeter.tweets.order(tweeted_at: :desc).limit(n)
-  end
-
-  def scrape_tweets!
-    return unless tweeter.present?
-    return if tweeter.private?
-    tweeter.latest_tweets.each do |tweet|
-      add_entities! self, Entity.from_text(tweet.text)
-    end
-  rescue Twitter::Error::Unauthorized # private account
-    tweeter.update! private: true
-    nil
   end
 
   def travel_status(city)

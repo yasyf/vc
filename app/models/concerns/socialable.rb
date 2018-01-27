@@ -2,10 +2,18 @@ module Concerns
   module Socialable
     extend ActiveSupport::Concern
 
+    included do
+      has_one :tweeter, as: :owner, dependent: :destroy
+    end
+
     def twitter=(twitter)
       parsed = twitter&.split('/')&.last
       twitter = parsed.present? ? parsed : twitter
       super twitter&.first == '@' ? twitter[1..-1] : twitter
+    end
+
+    def tweeter
+      super || (create_tweeter(username: twitter) if twitter.present?)
     end
 
     def linkedin=(linkedin)
