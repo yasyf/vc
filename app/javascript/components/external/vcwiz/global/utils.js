@@ -10,6 +10,14 @@ import Breadcrumb from './breadcrumbs';
 import { canUseDOM } from 'exenv';
 import {SortDirection as TableSortDirection} from 'react-virtualized';
 
+axios.interceptors.response.use(undefined, err => {
+  if (err.status === 503 && err.config && !err.config.__isRetryRequest) {
+    err.config.__isRetryRequest = true;
+    return axios(err.config);
+  }
+  throw err;
+});
+
 const __fetch = (path, opts) => axios({url: path, ...opts}).then(resp => resp.data).catch(e => Raven.captureException(e));
 
 export const _ffetch = function(path, data, opts) {
