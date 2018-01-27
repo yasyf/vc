@@ -4,10 +4,10 @@ class AppWarmupJob < ApplicationJob
   def perform(host = ENV['SITE_DOMAIN'])
     return unless Rails.env.production?
     url = "http://#{host}/?bypass_force_ssl_for_warmup=1"
-    3.times do
+    Rails.logger.info "[Warmup] Fetching #{url}"
+    5.times do
+      5.times { Http::Fetch.get_one url }
       sleep 5
-      Rails.logger.info "[Warmup] Fetching #{url}"
-      Http::Fetch.get_one url
     end
   end
 end
