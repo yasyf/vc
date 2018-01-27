@@ -77,7 +77,7 @@ export const csrfToken = function() {
 };
 
 export const isLoggedIn = function() {
-  return !!window.gon.founder;
+  return !!(window.gon && window.gon.founder);
 };
 
 export const fullName = function(founder) {

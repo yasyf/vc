@@ -462,6 +462,10 @@ class Investor < ApplicationRecord
     })
   end
 
+  def start_job_now!
+    @start_job_now = true
+  end
+
   private
 
   def check_competitor_domain
@@ -570,6 +574,6 @@ class Investor < ApplicationRecord
   end
 
   def start_crunchbase_job
-    InvestorCrunchbaseJob.perform_later(id)
+    InvestorCrunchbaseJob.set(queue: @start_job_now ? :long_now : :long).perform_later(id)
   end
 end

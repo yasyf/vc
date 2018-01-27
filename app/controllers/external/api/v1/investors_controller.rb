@@ -100,6 +100,21 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render json: { error: nil }
   end
 
+  def add
+    cb_id = investor_add_params[:crunchbase_id]&.split('/')&.last || investor_add_params[:crunchbase_id]
+    investor = cb_id.present? ? Investor.where(crunchbase_id: cb_id).first_or_initialize : Investor.new
+    investor.verified = true
+    investor.update_attributes investor_add_params
+    investor.update_attributes investor_add_titlized_params.transform_values(&:titleize)
+    investor.competitor = current_external_investor.competitor
+    investor.start_job_now!
+    investor.save!
+    flash_success "#{investor.first_name} has been added to #{investor.competitor.name}! Please complete their profile below."
+    render json: { investor: investor.as_light_json }
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: 'investor already exists' }
+  end
+
   private
 
   def investor
@@ -108,6 +123,14 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
 
   def investor_update_params
     params.require(:investor).permit(:location, :twitter, :linkedin, :homepage, :email, :facebook, :description, :role, :photo, :al_username, :crunchbase_id, :first_name, :last_name)
+  end
+
+  def investor_add_titlized_params
+    params.require(:investor).permit(:first_name, :last_name, :role)
+  end
+
+  def investor_add_params
+    params.require(:investor).permit(:crunchbase_id, :linkedin, :email)
   end
 
   def coinvestor_update_params

@@ -1028,6 +1028,14 @@ input.placeholded {
       margin-bottom: 0.25em;
     }
 
+    p {
+      padding: 1em;
+    }
+
+    span.error {
+      color: $red;
+    }
+
     .info {
       width: 80%;
     }
@@ -1037,6 +1045,15 @@ input.placeholded {
 
       .row {
         max-width: 100%;
+      }
+
+      .button-wrapper {
+        text-align: center;
+        margin-top: 1em;
+
+        .button {
+          width: 30%;
+        }
       }
     }
 

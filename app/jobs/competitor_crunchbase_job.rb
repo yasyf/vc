@@ -21,6 +21,10 @@ class CompetitorCrunchbaseJob < ApplicationJob
       return
     end
 
+    if competitor.angellist_startup.name != competitor.name || competitor.angellist_startup.crunchbase != competitor.crunchbase_id
+      competitor.al_id = nil
+    end
+
     competitor.al_id ||= Http::AngelList::Startup.find_id(competitor.name, cb_id: competitor.crunchbase_id)
     begin
       competitor.save!

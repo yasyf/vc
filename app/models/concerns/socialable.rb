@@ -17,6 +17,16 @@ module Concerns
       parsed.present? ? super(parsed) : super(linkedin)
     end
 
+    def crunchbase_id=(cb_id)
+      parsed = cb_id&.split('/')&.last
+      parsed.present? ? super(parsed) : super(cb_id)
+    end
+
+    def al_id=(al_id)
+      parsed = al_id&.split('/')&.last if al_id.is_a?(String)
+      parsed.present? ? super(parsed) : super(al_id)
+    end
+
     def fix_linkedin!
       return unless self.linkedin.present?
       self.linkedin = nil if self.linkedin.include?('view')

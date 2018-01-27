@@ -3,6 +3,7 @@ class External::Api::V1::IntrosController < External::Api::V1::ApiV1Controller
 
   def index
     target_investor = TargetInvestor.find(params[:target_investor_id])
+    head :unauthorized and return unless target_investor.founder == current_external_founder
     intro = IntroRequest.from_target_investor(target_investor)
     render json: intro.as_json(methods: [])
   rescue ActiveRecord::RecordInvalid => e

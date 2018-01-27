@@ -13,6 +13,8 @@ import {Row, Column} from 'react-foundation';
 import SettingsBase from './settings_base';
 import Company from '../../discover/company';
 import Partner from '../../investor_contacts/partner';
+import Tabs from '../tabs/tabs';
+import AddInvestor from './add_investor';
 
 export default class InvestorSettings extends SettingsBase {
   constructor(props) {
@@ -47,20 +49,16 @@ export default class InvestorSettings extends SettingsBase {
   };
 
   renderTop() {
-    return <h3>Investor Profile: {fullName(this.props.investor)}</h3>;
+    return <h3>Investor Portal: {fullName(this.props.investor)}</h3>;
   }
 
-  renderFields() {
+  renderInvestorProfile() {
     const competitor = this.props.investor.competitor;
     return (
       <div className="fields">
         <p className="info">
           These fields will be used to generate your VCWiz Investor Profile, which will be shown to founders.
-          Please fill out the information specific to you, not {competitor.name} as a whole.
-          This page will auto-save as you make changes.
           To view your external profile, click <a href={InvestorPath.id(this.props.investor.id)} target="_blank">here</a>.
-        </p>
-        <p className="info">
           All communication with founders occurs over email—make sure to add <b>{CCEmail}</b> to your address book!
         </p>
         <Row>
@@ -123,16 +121,25 @@ export default class InvestorSettings extends SettingsBase {
     );
   }
 
-  renderAdd() {
-    // modal to add investor
-  }
+
 
   renderBottom() {
+    const { competitor } = this.props.investor;
     return (
-      <div>
-        {this.renderFields()}
-        <h3>Your Partners</h3>
-        {this.renderOthers()}
+      <div className="full-width">
+        <p>Welcome to your VCWiz investor portal. This page will auto-save as you make changes!</p>
+        <Tabs
+          tabs={[
+            "Edit Your Profile",
+            "Manage Coworkers",
+            "Add a Coworker",
+          ]}
+          panels={[
+            this.renderInvestorProfile(),
+            this.renderOthers(),
+            <AddInvestor competitor={competitor} />,
+          ]}
+        />
       </div>
     )
   }

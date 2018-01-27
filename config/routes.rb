@@ -101,6 +101,7 @@ Rails.application.routes.draw do
               get 'fuzzy_search'
               get 'recommendations'
               get 'locations'
+              post 'add'
             end
           end
 

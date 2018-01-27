@@ -27,7 +27,7 @@ export default class IntroPathModal extends React.Component {
     const nodes = _.uniqBy(_.flatMap(paths, ({through}) => through.map((node, i) => ({
       id: node.id,
       label: node.first_name,
-      image: node.photo,
+      image: node.photo || undefined,
       shape: node.photo ? 'circularImage' : 'circle',
       level: i + 2,
     }))), 'id').concat([{id: 'me', label: founder.first_name, image: founder.photo, shape: 'circularImage', level: 1}]);
