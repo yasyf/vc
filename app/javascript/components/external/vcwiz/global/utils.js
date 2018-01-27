@@ -1,5 +1,5 @@
 import React from 'react';
-import 'whatwg-fetch';
+import axios from 'axios';
 import parseDomain from 'parse-domain';
 import { LocalStorage, SessionStorage } from './storage.js.erb';
 import {
@@ -10,15 +10,7 @@ import Breadcrumb from './breadcrumbs';
 import { canUseDOM } from 'exenv';
 import {SortDirection as TableSortDirection} from 'react-virtualized';
 
-const __fetch = (...args) =>
-  fetch(...args).then(resp => {
-    try {
-      return resp.json();
-    } catch (err) {
-      Raven.captureException(err, {extra: { url: resp.url, body: resp.text() }});
-    }
-  }).catch(e => Raven.captureException(e))
-;
+const __fetch = (path, opts) => axios({url: path, ...opts}).then(resp => resp.data).catch(e => Raven.captureException(e));
 
 export const _ffetch = function(path, data, opts) {
   if (opts.form) {
@@ -27,9 +19,9 @@ export const _ffetch = function(path, data, opts) {
     Object.entries(data || {}).forEach(([k, v]) => {
       formData.append(k, v);
     });
-    opts.body = formData;
+    opts.data = formData;
   } else if (data) {
-    opts.body = JSON.stringify(data);
+    opts.data = JSON.stringify(data);
     opts.headers['Content-Type'] = 'application/json';
   } else if (opts.method === 'GET' && opts.cache) {
     delete opts.cache;
@@ -52,7 +44,6 @@ export const _ffetch = function(path, data, opts) {
 export const ffetch = function(path, method = 'GET', data = null, opts = {}) {
   const allOpts = {
     ...opts,
-    credentials: 'same-origin',
     headers: {
       'X-CSRF-Token': csrfToken(),
     },
