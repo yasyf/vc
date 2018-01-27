@@ -422,7 +422,7 @@ class Investor < ApplicationRecord
 
   def interactions(founder)
     interactions = {
-      entities: n_popular_entities(10, Entity.where.not(wiki: nil)).sample(3)
+      entities: n_popular_entities(3, Entity.where.not(wiki: nil))
     }
     return interactions unless founder.present?
     email_scope = emails.where(founder: founder).order(created_at: :desc)
