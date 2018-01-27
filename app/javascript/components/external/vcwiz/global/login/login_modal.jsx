@@ -238,12 +238,13 @@ export default class LoginModal extends React.Component {
   renderStage1() {
     const description = this.state.data.description;
     const charsRemaining = (description && description.length < 50) && `Your description needs ${50 - description.length} more characters.`;
+    const charsOver = (description && description.length >= 600) && `Your description needs ${description.length - 600} fewer characters.`;
     return [
       <p className="info" key="text">What's your Startup?</p>,
       this.renderInput('name', 'Company Name'),
       this.renderTextArea('description', 'A short description that will help investors better understand your startup'),
       this.renderFilters(['industry', 'companies']),
-      this.renderStandardButton(description && description.length > 50, charsRemaining),
+      this.renderStandardButton(description && description.length > 50 && description.length < 600, charsRemaining || charsOver),
     ];
   }
 
