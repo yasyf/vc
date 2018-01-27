@@ -9,7 +9,8 @@ threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests, default is 3000.
 #
-port        ENV.fetch("PORT") { 3000 }.to_i
+server_port = ENV.fetch("PORT") { 3000 }.to_i
+port server_port
 
 # Specifies the `environment` that Puma will run in.
 #
@@ -54,7 +55,12 @@ end
 # cannot share connections between processes.
 #
 on_worker_boot do
-  ActiveRecord::Base.establish_connection
+  ActiveSupport.on_load(:active_record) do
+    ActiveRecord::Base.establish_connection
+  end
+  Thread.new do
+    AppWarmupJob.new.perform("localhost:#{server_port}")
+  end
 end
 
 # Allow puma to be restarted by `rails restart` command.

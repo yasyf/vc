@@ -56,7 +56,7 @@ export default class InvestorSettings extends SettingsBase {
     const competitor = this.props.investor.competitor;
     return (
       <div className="fields">
-        <p className="info">
+        <p className="info padded">
           These fields will be used to generate your VCWiz Investor Profile, which will be shown to founders.
           To view your external profile, click <a href={InvestorPath.id(this.props.investor.id)} target="_blank">here</a>.
           All communication with founders occurs over email—make sure to add <b>{CCEmail}</b> to your address book!
@@ -111,7 +111,7 @@ export default class InvestorSettings extends SettingsBase {
     const { partners } = this.state;
     return (
       <div className="fields">
-        <p className="info">
+        <p className="info padded">
           These are the other investors at {competitor.name} that VCWiz knows about.
           Please help us remove people who have left the firm.
           You can also fill in the profile information for any of your coworkers, by clicking on their name.

@@ -68,7 +68,7 @@ export default class AddInvestor extends SettingsBase {
 
     return (
       <div className="fields">
-        <p>Fill out these basic fields to add your coworker to VCWiz.</p>
+        <p className="padded">Fill out these basic fields to add your coworker to VCWiz.</p>
         <Row>
           <Column large={6}>{this.renderInput('first_name', 'First Name')}</Column>
           <Column large={6}>{this.renderInput('last_name', 'Last Name')}</Column>
