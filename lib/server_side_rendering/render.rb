@@ -11,7 +11,7 @@ class ServerSideRendering::Render
 
   # Thread level
   def self.renderer
-    Thread.current[:ssr_renderer] ||= ServerSideRendering::Backends::MiniRacer.new(snapshot)
+    @renderer ||= ServerSideRendering::Backends::MiniRacer.new(snapshot)
   end
 
   # Request level
