@@ -7,6 +7,6 @@ class External::VCWiz::FoundersController < External::FrontendController
       founder.update! unsubscribed: true
       flash_warning 'You will no longer receive weekly updates.'
     end
-    redirect_to action: :index, controller: :vcwiz
+    redirect_to action: :discover, controller: :vcwiz
   end
 end
