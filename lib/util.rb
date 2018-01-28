@@ -85,8 +85,14 @@ class Util
     env['HTTP_X_FORWARDED_FOR'].try(:split, ',').try(:first) || env['REMOTE_ADDR']
   end
 
+  def self.geo_search_ip(ip)
+    Geocoder.search(ip, ip_lookup: :maxmind_geoip2)
+  rescue Geocoder::LookupTimeout
+    Geocoder.search(ip, ip_lookup: :geoip2)
+  end
+
   def self.city(request)
-    normalize_city Geocoder.search(ip_address(request.env)).first&.city
+    normalize_city geo_search_ip(ip_address(request.env)).first&.city
   end
 
   def self.split_slice(str, const)

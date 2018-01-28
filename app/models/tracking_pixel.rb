@@ -14,7 +14,7 @@ class TrackingPixel < ApplicationRecord
   end
 
   def ip_address=(ip_address)
-    location = Geocoder.search(ip_address).first
+    location = Util.geo_search_ip(ip_address).first
     self.open_city = location&.city
     self.open_country = location&.country_code
   end
