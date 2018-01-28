@@ -44,7 +44,7 @@ before_fork do
     PumaWorkerKiller.enable_rolling_restart
   end
 
-  ServerSideRendering::Render.snapshot if Rails.application.vcwiz?
+  ServerSideRendering::Render.snapshot if Rails.application.vcwiz? && !Rails.env.development?
   ActiveRecord::Base.connection.disconnect!
 end
 
