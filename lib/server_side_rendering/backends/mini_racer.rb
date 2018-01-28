@@ -6,7 +6,6 @@ class ServerSideRendering::Backends::MiniRacer < ServerSideRendering::Backends::
   def render(request, component_name, props)
     context =  MiniRacer::Context.new(isolate: @isolate)
     result = context.eval(render_code(request, component_name, props)).html_safe
-    context.dispose
     @isolate.idle_notification(100)
     result
   end
