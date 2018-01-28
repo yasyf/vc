@@ -1,6 +1,7 @@
 if Rails.env.production?
   Geocoder.configure(
     cache: Redis.new(url: ENV['REDIS_CACHE_URL']),
+    timeout: 1,
     ip_lookup: ENV['MAXMIND_KEY'].present? ? :maxmind_geoip2 : :geoip2,
     geoip2: {
       lib: 'hive_geoip2',
