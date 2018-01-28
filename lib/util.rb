@@ -86,7 +86,7 @@ class Util
   end
 
   def self.geo_search_ip(ip)
-    Geocoder.search(ip, ip_lookup: :maxmind_geoip2)
+    Geocoder.search(ip)
   rescue Geocoder::LookupTimeout
     Geocoder.search(ip, ip_lookup: :geoip2)
   end
