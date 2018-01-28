@@ -11,7 +11,6 @@ RSpec.describe 'vcwiz request', type: :request do
 
   it 'renders the react component' do
     get external_vcwiz_root_path
-    follow_redirect!
     assert_select 'div[data-react-class=Discover]'
   end
 
