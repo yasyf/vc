@@ -22,7 +22,7 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
 
   def demo
     return head :ok unless (founder = founder_from_from).present?
-    target = TargetInvestor.from_addr!(founder, ENV['DEMO_EMAIL']).tap(&:investor_opened!)
+    target = TargetInvestor.from_addr!(founder, Mail::Address.new(ENV['DEMO_EMAIL'])).tap(&:investor_opened!)
     DemoMailer.demo_email(founder, target, demo_params[:subject], demo_params['Message-Id']).deliver_later
     head :ok
   end

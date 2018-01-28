@@ -1,6 +1,7 @@
 module Concerns
   module Entityable
     extend ActiveSupport::Concern
+    include Concerns::Ignorable
 
     included do
       has_many :person_entities, as: :person, dependent: :destroy
