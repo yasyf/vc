@@ -73,8 +73,12 @@ export default class WrappedTable extends React.Component {
     this.setState({lastUpdate: timestamp()});
   };
 
-  onRowUpdate = (i, update) => {
-    this.setState({array: this.state.array.dup().set(i, update)});
+  onRowUpdate = (i, update, localOnly = false) => {
+    if (localOnly) {
+      this.setState({array: this.state.array.dup().setLocal(i, update), lastUpdate: timestamp()});
+    } else {
+      this.setState({array: this.state.array.dup().set(i, update)});
+    }
   };
 
   onModalClose = () => {

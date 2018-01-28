@@ -84,7 +84,11 @@ export default class LazyArray {
     }
   }
 
-  set(index, update, id = 'id') {
+  setLocal(index, update, id = 'id') {
+    return this.set(index, update, id, true);
+  }
+
+  set(index, update, id = 'id', localOnly = false) {
     const [bucket, bucketIndex] = this.bucketFromIndex(index);
     if (!this.buckets.has(bucket)) {
       throw `missing bucket ${bucket}!`;
@@ -93,10 +97,12 @@ export default class LazyArray {
     Object.entries(update).forEach(([k, v]) => {
       _.set(row, k, v);
     });
-    ffetch(this.urlWithId(row[id]), 'PATCH', update).then(resp => {
-      this.buckets.get(bucket)[bucketIndex] = resp;
-      this.onUpdate(bucket);
-    });
+    if (!localOnly) {
+      ffetch(this.urlWithId(row[id]), 'PATCH', update).then(resp => {
+        this.buckets.get(bucket)[bucketIndex] = resp;
+        this.onUpdate(bucket);
+      });
+    }
     return this;
   }
 }

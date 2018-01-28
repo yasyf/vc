@@ -6,9 +6,7 @@ import {TargetInvestorsPath} from '../constants.js.erb';
 
 export default class TrackCell extends UnpureTextCell {
   processRow(props, row) {
-    const { target_investors } = Store.get('founder', {});
-    const target = _.find(target_investors, {id: row.id});
-    return {value:_.get(target, props.columnKey), id: row.id};
+    return {id: row.id, value: props.data};
   };
 
   componentWillMount() {

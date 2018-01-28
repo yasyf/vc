@@ -194,7 +194,7 @@ class Founder < ApplicationRecord
       only: [:id, :first_name, :last_name, :city, :linkedin, :twitter, :homepage, :unsubscribed, :email, :photo],
       methods: [:drf?, :primary_company, :utc_offset, :conversations, :events_with_meta, :stats, :scanner_enabled?]
     )).reverse_merge(
-      target_investors: target_investors.includes(:intro_requests).order(stage: :asc, updated_at: :desc).as_json(include: [], methods: [:intro_requests])
+      target_investors: target_investors.undeleted.includes(:intro_requests).order(stage: :asc, updated_at: :desc).as_json(include: [], methods: [:intro_requests])
     )
   end
 

@@ -111,6 +111,7 @@ class External::VCWiz::VCWizController < External::FrontendController
 
     targets = current_external_founder
       .target_investors
+      .undeleted
       .includes(*External::Api::V1::TargetInvestorsController::INCLUDES)
       .order(stage: :asc, updated_at: :desc)
       .limit(10)
@@ -121,7 +122,7 @@ class External::VCWiz::VCWizController < External::FrontendController
     component 'Outreach'
     props(
       targets: targets,
-      count: current_external_founder.target_investors.count,
+      count: current_external_founder.target_investors.undeleted.count,
       sort: sorts,
     )
     render_default

@@ -1,14 +1,14 @@
 module CompetitorLists::Base::ClassSql
   def target_investor_sql(founder, competitors_table = 'competitors')
     <<-SQL
-        LEFT JOIN LATERAL (
-          SELECT target_investors.stage
-          FROM investors
-          INNER JOIN target_investors ON target_investors.investor_id = investors.id AND target_investors.founder_id = #{founder.id}
-          WHERE investors.competitor_id = #{competitors_table}.id
-          ORDER BY target_investors.updated_at DESC
-          LIMIT 1
-        ) AS ti ON true
+      LEFT JOIN LATERAL (
+        SELECT target_investors.stage
+        FROM investors
+        INNER JOIN target_investors ON target_investors.investor_id = investors.id AND target_investors.founder_id = #{founder.id}
+        WHERE investors.competitor_id = #{competitors_table}.id AND target_investors.stage != #{TargetInvestor::RAW_STAGES.keys.index(:deleted)}
+        ORDER BY target_investors.updated_at DESC
+        LIMIT 1
+      ) AS ti ON true
     SQL
   end
 

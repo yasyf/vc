@@ -33,6 +33,7 @@ class TargetInvestor < ApplicationRecord
     interested: ['Committed', :committed],
     pass: ['Passed', :passed],
     removed: ['Not Interested', :removed],
+    deleted: ['Remove', :removed],
   }
 
   STAGES_WITH_CATEGORIES = RAW_STAGES.each_with_index.map { |(k, v), i| ["#{i}_#{k}", v] }.to_h
@@ -56,6 +57,7 @@ class TargetInvestor < ApplicationRecord
   actions :state_changed, :investor_clicked, :investor_opened, :investor_replied, :intro_requested
 
   scope :investor_fields_filled, -> { where.not(INVESTOR_FIELDS.map {|f| [f, nil]}.to_h) }
+  scope :undeleted, -> { where.not(stage: RAW_STAGES.keys.index(:deleted)) }
 
   def self.from_investor!(founder, investor)
     existing = TargetInvestor.where(founder: founder, investor: investor)

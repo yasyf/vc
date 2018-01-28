@@ -1932,6 +1932,10 @@ mark.highlighter {
   &-pass, &-removed {
     color: $red;
   }
+
+  &-deleted {
+    color: $grey;
+  }
 }
 
 .track-select-tether {

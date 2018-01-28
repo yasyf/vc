@@ -14,6 +14,7 @@ class ConversationsTable extends FixedTable {
   onTrackChange = (row, update) => {
     const id = this.props.array.getSync(row, false).id;
     ffetch(TargetInvestorsPath.id(id), 'PATCH', {target_investor: update}).then(() => {
+      this.props.onRowUpdate(row, update, true);
       Actions.trigger('refreshFounder');
     });
   };
@@ -64,7 +65,7 @@ export default class Conversations extends React.Component {
               break;
           }
         }}
-        isFaded={row => row.stage === _.last(TargetInvestorStagesKeys)}
+        isFaded={row => _.includes(_.takeRight(TargetInvestorStagesKeys, 3), row.stage)}
         table={ConversationsTable}
         {...rest}
       />
