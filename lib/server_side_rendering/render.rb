@@ -1,6 +1,5 @@
 class ServerSideRendering::Render
   RENDERER_ENTRY_POINT = 'external/server_side_render.js'
-  POOL_SIZE = 2
 
   # Worker level
   def self.snapshot
@@ -10,13 +9,9 @@ class ServerSideRendering::Render
     end
   end
 
-  def self.renderer_pool
-    @renderer_pool ||= (0...POOL_SIZE).map { ServerSideRendering::Backends::MiniRacer.new(snapshot) }
-  end
-
-  # Thread level, try sharing context?
+  # Thread level
   def self.renderer
-    renderer_pool.sample
+    Thread.current[:ssr_renderer] ||= ServerSideRendering::Backends::MiniRacer.new(snapshot)
   end
 
   # Request level
