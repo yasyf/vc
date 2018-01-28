@@ -76,6 +76,7 @@ class Graph
       node.set_labels('Person')
     rescue Neography::BadInputException
       node.del
+      sleep 0.1
       get addr
     else
       node
