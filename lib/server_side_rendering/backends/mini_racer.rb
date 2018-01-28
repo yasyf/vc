@@ -1,12 +1,14 @@
 class ServerSideRendering::Backends::MiniRacer < ServerSideRendering::Backends::Base
   def initialize(snapshot)
-    @snapshot = snapshot
+    @isolate = MiniRacer::Isolate.new(snapshot)
+    @isolate_ref = MiniRacer::Context.new(isolate: @isolate) # Keep until discourse/mini_racer#75 is closed
   end
 
   def render(request, component_name, props)
-    context =  MiniRacer::Context.new(snapshot: @snapshot)
+    context =  MiniRacer::Context.new(isolate: @isolate)
     result = context.eval(render_code(request, component_name, props)).html_safe
     context.dispose
+    @isolate.idle_notification(100)
     result
   end
 
