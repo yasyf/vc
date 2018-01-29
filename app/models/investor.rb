@@ -242,9 +242,11 @@ class Investor < ApplicationRecord
   end
 
   def self.custom_fuzzy_search(q, existing_ids)
+    first_name, last_name = Util.split_name(q)
+    last_name = first_name unless last_name.present?
     by_competitor_name = Competitor.where('competitors.name % ?', q).joins(:investors).select('investors.id AS id', 'competitors.name AS name').to_sql
-    by_investor_first_name = Investor.where('investors.first_name % ?', q).select('investors.id AS id', 'investors.first_name AS name').to_sql
-    by_investor_last_name = Investor.where('investors.last_name % ?', q).select('investors.id AS id', 'investors.last_name AS name').to_sql
+    by_investor_first_name = Investor.where('investors.first_name % ?', first_name).select('investors.id AS id', 'investors.first_name AS name').to_sql
+    by_investor_last_name = Investor.where('investors.last_name % ?', last_name).select('investors.id AS id', 'investors.last_name AS name').to_sql
     results = "(#{by_competitor_name}) UNION (#{by_investor_first_name}) UNION (#{by_investor_last_name})"
     investors = Investor.joins("INNER JOIN (#{results}) AS results USING (id)")
     investors = investors.where("id NOT IN (#{existing_ids.to_sql})") if existing_ids.to_sql.present?
