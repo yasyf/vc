@@ -40,7 +40,13 @@ class ImportTask < ApplicationRecord
 
   def preview!
     csv = CSV.foreach(filename, headers: false, liberal_parsing: true).lazy
-    headers = csv.first
+    begin
+      headers = csv.first
+    rescue ArgumentError
+      csv = CSV.foreach(filename, headers: false, liberal_parsing: true, encoding: 'iso-8859-1:utf-8').lazy
+      headers = csv.first
+    end
+
     error! 'Your CSV is empty.' and return unless headers.present?
 
     total = Util.count_lines(filename) - 1
