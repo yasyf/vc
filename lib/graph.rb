@@ -74,9 +74,9 @@ class Graph
     node = Neography::Node.create({ name: addr.name, email: addr.address, domain: addr.domain }, server)
     begin
       node.set_labels('Person')
-    rescue Neography::BadInputException
+    rescue Neography::BadInputException => e
+      Raven.capture_exception(e)
       node.del
-      sleep 0.1
       get addr
     else
       node
