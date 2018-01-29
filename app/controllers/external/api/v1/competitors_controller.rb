@@ -55,7 +55,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
       current_external_founder.investor_targeted! target.investor.id
       target.update! stage: stage
     end
-    if competitor == current_external_investor.competitor
+    if competitor == current_external_investor&.competitor
       competitor.update!(verified: true) unless competitor.verified?
 
       if competitor_update_params.present?
