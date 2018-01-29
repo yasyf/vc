@@ -1,5 +1,6 @@
 class External::Api::V1::FoundersController < External::Api::V1::ApiV1Controller
   include External::ApplicationHelper
+  include Concerns::Ignorable
 
   before_action :authenticate_api_user!
 
