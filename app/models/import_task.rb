@@ -45,6 +45,7 @@ class ImportTask < ApplicationRecord
 
     total = Util.count_lines(filename) - 1
     error! "Your CSV is too large! There are #{total} rows, which is larger than the maximum of #{MAX_ROWS}." and return if total > MAX_ROWS
+    error! "There are no valid rows in your CSV." and return unless total > 0
 
     suggestions = headers.each_with_index.with_object({}) do |(header, i), suggestions|
       next unless header.present?
