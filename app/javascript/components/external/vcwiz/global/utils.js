@@ -18,8 +18,7 @@ const delayPromise = duration => {
 
 axios.interceptors.response.use(undefined, err => {
   if (
-    err.response.status >= 500 &&
-    err.response.status <= 599 &&
+    (!err.response || (err.response.status >= 500 && err.response.status <= 599)) &&
     err.config &&
     (err.config.__retryCount || 0) <= 3
   ) {
