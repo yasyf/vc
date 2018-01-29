@@ -10,10 +10,21 @@ import Breadcrumb from './breadcrumbs';
 import { canUseDOM } from 'exenv';
 import {SortDirection as TableSortDirection} from 'react-virtualized';
 
+const delayPromise = duration => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, duration);
+  })
+};
+
 axios.interceptors.response.use(undefined, err => {
-  if (err.status === 503 && err.config && !err.config.__isRetryRequest) {
-    err.config.__isRetryRequest = true;
-    return axios(err.config);
+  if (
+    err.response.status >= 500 &&
+    err.response.status <= 599 &&
+    err.config &&
+    (err.config.__retryCount || 0) <= 3
+  ) {
+    err.config.__retryCount = (err.config.__retryCount || 0) + 1;
+    return delayPromise(1000).then(() => axios(err.config));
   }
   throw err;
 });
