@@ -30,7 +30,7 @@ class FindInvestorsJob < ApplicationJob
       .group(*TargetInvestor::INVESTOR_FIELDS)
       .having('count(*) > 2')
       .pluck('array_agg(id)', *TargetInvestor::INVESTOR_FIELDS)
-      .map { |x| TargetInvestor::INVESTOR_FIELDS.unshift(:ids).zip(x).to_h.with_indifferent_access }
+      .map { |x| ([:ids] + TargetInvestor::INVESTOR_FIELDS).zip(x).to_h.with_indifferent_access }
       .each do |ti|
         competitor = Competitor.create_from_name!(ti[:firm_name])
         investor = Investor.where(ti.slice(:first_name, :last_name).merge(competitor: competitor)).first_or_create!
