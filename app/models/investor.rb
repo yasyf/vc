@@ -244,15 +244,14 @@ class Investor < ApplicationRecord
   def self.custom_fuzzy_search(q, existing_ids)
     first_name, last_name = Util.split_name(q)
     last_name = first_name unless last_name.present?
-    by_competitor_name = Competitor.where('competitors.name % ?', q).joins(:investors).select('investors.id AS id', 'competitors.name AS name').to_sql
-    by_investor_first_name = Investor.where('investors.first_name % ?', first_name).select('investors.id AS id', 'investors.first_name AS name').to_sql
-    by_investor_last_name = Investor.where('investors.last_name % ?', last_name).select('investors.id AS id', 'investors.last_name AS name').to_sql
-    results = "(#{by_competitor_name}) UNION (#{by_investor_first_name}) UNION (#{by_investor_last_name})"
-    investors = Investor.joins("INNER JOIN (#{results}) AS results USING (id)")
-    investors = investors.where("id NOT IN (#{existing_ids.to_sql})") if existing_ids.to_sql.present?
+    results = Search.search_investors({ first_name: first_name, last_name: last_name, firm_name: q }, condition: :or)
+    investors = Investor
+      .joins("INNER JOIN (#{results}) AS results ON results.match_id = investors.id")
+      .joins("INNER JOIN competitors ON results.id = competitors.id")
+    investors = investors.where("investors.id NOT IN (#{existing_ids.to_sql})") if existing_ids.to_sql.present?
     investors
-      .select('investors.*', Util.sanitize_sql('COALESCE(similarity(results.name, ?), 0) AS rank', q))
-      .order('rank DESC', 'investors.featured DESC')
+      .select('investors.*')
+      .order('results.rank DESC', 'investors.featured DESC')
       .limit(10)
   end
 

@@ -29,11 +29,13 @@ export default class Typeahead extends React.Component {
     this.engine = new Bloodhound({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       datumTokenizer: this.props.dataFields ? Bloodhound.tokenizers.obj.whitespace(...this.props.dataFields) : Bloodhound.tokenizers.whitespace,
-      identify: (o) => o.id,
+      identify: o => o.id,
       remote: {
         url: this.props.path,
         wildcard: this.props.querySub,
-      }
+        rateLimitBy: 'debouce',
+        rateLimitWait: 200,
+      },
     });
     this.engine.initialize().then(() => this.setState({loaded: true}));
   }

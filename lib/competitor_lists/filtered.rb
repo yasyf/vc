@@ -14,22 +14,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
 
   def _filtered_by_search_subquery(search)
     <<-SQL
-      SELECT
-        competitors.id AS id,
-        investors.id AS match_id,
-        #{[
-          search[:first_name] && Util.sanitize_sql('COALESCE(similarity(investors.first_name, ?), 0)', search[:first_name]),
-          search[:last_name] && Util.sanitize_sql('COALESCE(similarity(investors.last_name, ?), 0)', search[:last_name]),
-          search[:firm_name] && Util.sanitize_sql('COALESCE(similarity(competitors.name, ?), 0)', search[:firm_name]),
-        ].compact.join(' + ')} AS rank
-      FROM investors
-      INNER JOIN competitors on investors.competitor_id = competitors.id
-      WHERE
-        #{[
-          search[:first_name] && Util.sanitize_sql('((investors.first_name % ?) OR (investors.first_name ILIKE ?))', search[:first_name], "#{search[:first_name]}%"),
-          search[:last_name] && Util.sanitize_sql('((investors.last_name % ?) OR (investors.last_name ILIKE ?))', search[:last_name], "#{search[:last_name]}%"),
-          search[:firm_name] && Util.sanitize_sql('((competitors.name % ?) OR (competitors.name ILIKE ?))', search[:firm_name], "#{search[:firm_name]}%"),
-        ].compact.join(' AND ')}
+      #{Search.search_investors(search)}
       ORDER BY rank DESC
     SQL
   end
