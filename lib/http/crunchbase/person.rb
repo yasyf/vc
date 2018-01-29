@@ -63,6 +63,7 @@ module Http::Crunchbase
       results = api_get('/', name: name.gsub('&') { '\\&' }, types: 'investor')
       return results.first&.permalink unless org.present?
       results.find do |result|
+        result.organization_name.downcase == org.downcase ||
         self.new(result.permalink).affiliated_companies.any? { |job| job.organization.name.downcase == org.downcase }
       end&.permalink
     end
