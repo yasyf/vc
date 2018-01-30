@@ -43,6 +43,7 @@ export const FilterTypes = Object.freeze({
   FILTER: 0,
   SEARCH: 1,
   COMPANY: 2,
+  ENTITY: 3,
 });
 export const FounderEventNames = Object.freeze(<%= Founder.event_names.to_json %>);
 export const LargeScreenSize = 1500;
@@ -86,6 +87,7 @@ export const CompetitorsPath = idPath('<%= external_api_v1_competitor_path(id: '
 export const CompaniesSearchPath = '<%= search_external_api_v1_companies_path %>';
 export const CompaniesQueryPath = '<%= query_external_api_v1_companies_path %>';
 export const InvestorsFuzzySearchPath = '<%= fuzzy_search_external_api_v1_investors_path(q: 'QUERY') %>';
+export const InvestorsEntitiesPath = '<%= entities_external_api_v1_investors_path %>';
 export const InvestorsSearchPath = '<%= search_external_api_v1_investors_path %>';
 export const InvestorsFilterPath = '<%= filter_external_api_v1_investors_path %>';
 export const InvestorsRecommendationsPath = '<%= recommendations_external_api_v1_investors_path %>';

@@ -1848,6 +1848,13 @@ CREATE INDEX competitors_name_gin_trgm_idx ON competitors USING gin (name gin_tr
 
 
 --
+-- Name: entities_to_tsvector_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX entities_to_tsvector_idx ON entities USING gin (to_tsvector('english'::regconfig, (name)::text));
+
+
+--
 -- Name: founders_city_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2716,6 +2723,13 @@ CREATE INDEX investors_to_tsvector_lname ON investors USING gin (to_tsvector('en
 
 
 --
+-- Name: trgm_name_indx_on_entities; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX trgm_name_indx_on_entities ON entities USING gist (name gist_trgm_ops);
+
+
+--
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3216,6 +3230,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180124202440'),
 ('20180124235326'),
 ('20180125174538'),
-('20180130063518');
+('20180130063518'),
+('20180130064719'),
+('20180130165807');
 
 

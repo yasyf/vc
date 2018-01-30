@@ -77,8 +77,8 @@ export default class Hero extends React.Component {
           </p>
         </div>
         <Tabs
-          tabs={['Filter investors', 'Search for an investor', "Find a startup's investors"]}
-          panels={[null, null, null]}
+          tabs={['Filter investors', 'Search for an investor', "Find a startup's investors", "Browse investors by topics"]}
+          panels={[null, null, null, null]}
           onTabChange={this.onTabChange}
         />
         {this.renderBrowse()}

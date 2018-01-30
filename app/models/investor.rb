@@ -129,6 +129,7 @@ class Investor < ApplicationRecord
       next unless body.present?
       next unless name.downcase.in?(body.downcase) || competitor.name.downcase.in?(body.downcase)
       meta = news[url]
+      next unless meta.present?
       import_news_with_attrs(url, body, title: meta['name'], description: meta['description'], published_at: meta['datePublished'])
     end
 

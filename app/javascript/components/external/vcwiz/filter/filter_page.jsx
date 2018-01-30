@@ -52,6 +52,10 @@ export default class FilterPage extends React.Component {
       params.filters = {companies: filters.source_companies};
       params.options = {};
       params.apply_suggestions = false;
+    } else if (types === FilterTypes.ENTITY) {
+      params.filters = _.pick(filters, ['entities']);
+      params.options = {};
+      params.apply_suggestions = false;
     }
     return params;
   }
@@ -93,6 +97,10 @@ export default class FilterPage extends React.Component {
   };
 
   onCompaniesChange = filters => {
+    this.setState({filters});
+  };
+
+  onEntitiesChange = filters => {
     this.setState({filters});
   };
 
@@ -140,6 +148,17 @@ export default class FilterPage extends React.Component {
     );
   }
 
+  renderEntities() {
+    return (
+      <div className="filters">
+        <Filters
+          fields={['entities']}
+          onChange={this.onEntitiesChange}
+        />
+      </div>
+    );
+  }
+
   renderSearchAndFilters() {
     const { types } = this.props;
     if (types === FilterTypes.FILTER) {
@@ -148,6 +167,8 @@ export default class FilterPage extends React.Component {
       return <Row isColumn>{this.renderSearch()}</Row>;
     } else if (types === FilterTypes.COMPANY) {
       return <Row isColumn>{this.renderCompany()}</Row>;
+    } else if (types === FilterTypes.ENTITY) {
+      return <Row isColumn>{this.renderEntities()}</Row>;
     } else {
       return null;
     }

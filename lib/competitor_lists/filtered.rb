@@ -19,6 +19,19 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     SQL
   end
 
+  def _filtered_by_entity_subquery
+    <<-SQL
+      SELECT
+        competitors.id AS id,
+        investors.id AS match_id
+      FROM investors
+      INNER JOIN competitors ON investors.competitor_id = competitors.id
+      INNER JOIN person_entities ON person_entities.person_type = 'Investor' AND person_entities.person_id = investors.id
+      INNER JOIN entities ON person_entities.entity_id = entities.id
+      WHERE entities.id IN (#{Util.escape_sql_argument(params[:filters][:entities])})
+    SQL
+  end
+
   def _filtered_by_related_subquery
     industry_subquery = <<-SQL
       SELECT array_agg(related_industries)
@@ -100,6 +113,9 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
         competitors.where('companies.id': params[:filters][:companies].split(','))
       end
     end
+    if params[:filters][:entities].present?
+      competitors = competitors.joins("INNER JOIN (#{_filtered_by_entity_subquery}) AS entities_searched ON competitors.id = entities_searched.id")
+    end
     competitors = competitors.where(country: 'US') if params[:options][:us_only]
     competitors = competitors.joins(_industry_overlap_subquery) if overlap_industries.present?
     competitors.joins('INNER JOIN competitor_investor_aggs ON competitor_investor_aggs.competitor_id = competitors.id')
@@ -122,7 +138,11 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
   end
 
   def match_sql
-    params[:search].present? ? ', array_agg(DISTINCT searched.match_id) AS matches' : ''
+    cols = [
+      params[:search].present? ? 'searched.match_id' : nil,
+      params[:filters][:entities].present? ? 'entities_searched.match_id' : nil,
+    ].compact
+    cols.present? ? ", array_agg(DISTINCT COALESCE(#{cols.join(', ')})) AS matches" : ''
   end
 
   def sql

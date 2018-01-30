@@ -5,7 +5,7 @@ module External::Concerns
     private
 
     def filter_params
-      filters = params.permit(filters: [:industry, :location, :fund_type, :companies])[:filters]
+      filters = params.permit(filters: [:industry, :location, :fund_type, :companies, :entities])[:filters]
       filters = (filters || {}).merge(JSON.parse(cookies[:filters]).symbolize_keys) if @merge_cookie_filters && cookies[:filters].present?
       { filters: filters || {} }
     end

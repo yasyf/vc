@@ -55,6 +55,11 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
     render_censored results.map(&:as_search_json)
   end
 
+  def entities
+    results = Entity.custom_fuzzy_search(params[:q], Investor.name)
+    render_censored records_to_options(results.map(&:as_search_json))
+  end
+
   def update
     if external_founder_signed_in? && (stage = investor_params[:stage]).present?
       target = TargetInvestor.from_investor!(current_external_founder, investor)

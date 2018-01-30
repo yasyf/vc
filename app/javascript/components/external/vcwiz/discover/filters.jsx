@@ -5,6 +5,7 @@ import {
   CompetitorFundTypesOptions,
   CompetitorsLocationsPath,
   CompaniesSearchPath,
+  InvestorsEntitiesPath,
 } from '../global/constants.js.erb';
 import {CookieStorage} from '../global/storage.js.erb';
 import Company from './company';
@@ -18,6 +19,7 @@ const defaultLabels = {
   location: 'Cities',
   companies: 'Related Startups',
   source_companies: 'Startups',
+  entities: 'Topics',
 };
 
 export default class Filters extends React.Component {
@@ -43,7 +45,7 @@ export default class Filters extends React.Component {
   onChange = (update) => {
     const filters = extend(this.state.filters, update);
     const flattened = flattenFilters(filters);
-    CookieStorage.set(CookieStorageKey, _.omit(flattened, ['source_companies']));
+    CookieStorage.set(CookieStorageKey, _.omit(flattened, ['source_companies', 'entities']));
     this.setState({filters});
     this.props.onChange(flattened);
   };
@@ -75,6 +77,7 @@ export default class Filters extends React.Component {
       this.renderFilter('location', { path: CompetitorsLocationsPath }),
       this.renderFilter('companies', { path: CompaniesSearchPath, optionComponent: Company }, false),
       this.renderFilter('source_companies', { path: CompaniesSearchPath, optionComponent: Company }),
+      this.renderFilter('entities', { path: InvestorsEntitiesPath }),
     ]);
     return withSeparators(i => <hr key={`hr-${i}`} className="vr"/>, filters);
   }
