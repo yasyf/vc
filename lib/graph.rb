@@ -77,6 +77,8 @@ class Graph
     CYPHER
     result = server.execute_query(script, { name: addr.name, email: addr.address, domain: addr.domain })['data']
     Neography::Node.load(result.first, server)
+  rescue Neography::NeographyError
+    find addr
   end
 
   def self.find(addr)
