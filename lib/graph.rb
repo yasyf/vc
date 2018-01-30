@@ -75,9 +75,8 @@ class Graph
     begin
       node.set_labels('Person')
     rescue Neography::BadInputException => e
-      Raven.capture_exception(e)
       node.del
-      get addr
+      find addr
     else
       node
     end
