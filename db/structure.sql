@@ -345,6 +345,7 @@ CREATE MATERIALIZED VIEW competitor_velocities AS
     count(investments.id) AS velocity
    FROM (competitors
      JOIN investments ON ((investments.competitor_id = competitors.id)))
+  WHERE (investments.funded_at > (now() - '1 year'::interval))
   GROUP BY competitors.id
   WITH NO DATA;
 
@@ -3214,6 +3215,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180124102250'),
 ('20180124202440'),
 ('20180124235326'),
-('20180125174538');
+('20180125174538'),
+('20180130063518');
 
 
