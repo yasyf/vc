@@ -71,15 +71,12 @@ class Graph
   end
 
   def self.add(addr)
-    node = Neography::Node.create({ name: addr.name, email: addr.address, domain: addr.domain }, server)
-    begin
-      node.set_labels('Person')
-    rescue Neography::BadInputException => e
-      node.del
-      find addr
-    else
-      node
-    end
+    script = <<-CYPHER
+      CREATE (n:Person { name: {name}, email: {email}, domain: {domain} })
+      RETURN n;
+    CYPHER
+    result = server.execute_query(script, { name: addr.name, email: addr.address, domain: addr.domain })['data']
+    Neography::Node.load(result.first, server)
   end
 
   def self.find(addr)
