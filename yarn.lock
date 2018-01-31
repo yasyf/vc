@@ -31,11 +31,11 @@
     "@babel/types" "7.0.0-beta.31"
     lodash "^4.2.0"
 
-"@babel/polyfill@7.0.0-beta.38":
-  version "7.0.0-beta.38"
-  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.38.tgz#df9ca32ffe4f6de0b99ab495c197837f422bb12e"
+"@babel/polyfill@7.0.0-beta.39":
+  version "7.0.0-beta.39"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.39.tgz#3711a88b11f5982b936d5a60f239410ce75c6529"
   dependencies:
-    core-js "^2.4.0"
+    core-js "^2.5.3"
     regenerator-runtime "^0.11.1"
 
 "@babel/template@7.0.0-beta.36":
@@ -1882,7 +1882,7 @@ copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
 
-core-js@2.5.3, core-js@^2.4.0:
+core-js@2.5.3, core-js@^2.4.0, core-js@^2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
 
