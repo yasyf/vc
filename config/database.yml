@@ -78,5 +78,5 @@ test:
 
 production:
   url: <%= ENV['DATABASE_URL'] %>
-  pool: 50
+  pool: <%= (ENV['DATABASE_POOL'] || 50).to_i %>
   min_messages: warning
