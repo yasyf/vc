@@ -12,6 +12,10 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     false
   end
 
+  def self.matches?
+    true
+  end
+
   def _filtered_by_search_subquery(search)
     <<-SQL
       #{Search.search_investors(search)}
@@ -142,11 +146,11 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
       params[:search].present? ? 'searched.match_id' : nil,
       params[:filters][:entities].present? ? 'entities_searched.match_id' : nil,
     ].compact
-    cols.present? ? ", array_agg(DISTINCT COALESCE(#{cols.join(', ')})) AS matches" : ''
+    cols.present? ? "array_agg(DISTINCT COALESCE(#{cols.join(', ')})) AS matches" : 'array[]::integer[] AS matches'
   end
 
   def sql
-    _filtered.group('competitors.id').select("competitors.*#{match_sql}#{order_sql}").limit(500).to_sql
+    _filtered.group('competitors.id').select("competitors.*, #{match_sql}#{order_sql}").limit(500).to_sql
   end
 
   def order

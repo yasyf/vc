@@ -71,4 +71,8 @@ module CompetitorLists::Base::ClassBulk
   def personalized?
     false
   end
+
+  def matches?
+    false
+  end
 end

@@ -288,7 +288,6 @@ class Competitor < ApplicationRecord
         :domain,
         :facebook,
         :twitter,
-        :partners,
         :al_url,
         :crunchbase_id,
         :matches,
@@ -301,6 +300,7 @@ class Competitor < ApplicationRecord
         :acronym,
         :recent_investments,
         :cb_url,
+        :partners,
       ],
     )
   end
@@ -334,6 +334,11 @@ class Competitor < ApplicationRecord
   end
 
   private
+
+  def partners
+    return self[:partners].concat(self[:matched_parters] || []) if self[:partners].present?
+    investors.to_a
+  end
 
   def velocity
     return self[:velocity] if self.attributes.key?('velocity')

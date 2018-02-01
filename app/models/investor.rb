@@ -413,7 +413,7 @@ class Investor < ApplicationRecord
   end
 
   def fetch_review!
-    url = URI.escape "http://knapi-prod.us-east-2.elasticbeanstalk.com/api/investors/search?name=#{name}"
+    url = URI.escape "https://knapi-prod.knowyourvc.com/api/investors/search?name=#{name}"
     value = HTTP::Fetch.get_one(url)
     return unless value.present?
     response = JSON.parse(value).with_indifferent_access

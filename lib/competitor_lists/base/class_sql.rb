@@ -18,6 +18,20 @@ module CompetitorLists::Base::ClassSql
     SQL
   end
 
+  def matched_partners_sql(competitors_table = 'competitors')
+    return '' unless matches?
+    <<-SQL
+      LEFT JOIN LATERAL (
+        WITH matched AS (
+          SELECT id, role, verified FROM investors
+          WHERE investors.id = ANY(#{competitors_table}.matches)
+        )
+        SELECT array_to_json(array_agg(matched)) AS matched_parters_arr
+        FROM matched
+      ) AS matched_parters ON true
+    SQL
+  end
+
   def recent_investments_sql(competitors_table = 'competitors')
     <<-SQL
       INNER JOIN competitor_recent_investments ON competitor_recent_investments.competitor_id = #{competitors_table}.id
@@ -67,6 +81,7 @@ module CompetitorLists::Base::ClassSql
         SELECT
           subquery.*,
           competitor_partners.partners AS partners,
+          #{matches? ? 'matched_parters.matched_parters_arr AS matched_partners,' : ''}
           competitor_recent_investments.recent_investments AS recent_investments,
           competitor_coinvestors.coinvestors AS coinvestors
           #{_meta_select(meta_sql)}
@@ -74,6 +89,7 @@ module CompetitorLists::Base::ClassSql
         #{recent_investments_sql('subquery')}
         #{coinvestors_sql('subquery')}
         #{partners_sql('subquery')}
+        #{matched_partners_sql('subquery')}
         #{_meta_join(meta_sql)}
     SQL
   end
