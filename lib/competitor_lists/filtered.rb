@@ -153,6 +153,22 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
     _filtered.group('competitors.id').select("competitors.*, #{match_sql}#{order_sql}").limit(500).to_sql
   end
 
+  def meta_cols
+    return nil unless params[:search].present? || params[:filters][:entities].present?
+    [
+      {
+        key: 'matched_partners[0].full_name',
+        name: 'Partner',
+        type: :partner,
+        noPrefix: true,
+        imageKey: 'matched_partners[0].photo',
+        verifiedKey: 'matched_partners[0].verified',
+        subKey: 'matched_partners[0].role',
+        fallbackFnKey: 'matched_partners[0]',
+      },
+    ]
+  end
+
   def order
     :rn
   end

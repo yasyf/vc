@@ -32,8 +32,12 @@ module External::Concerns
       Competitor.filtered(current_external_founder, request, competitor_params, opts)
     end
 
+    def filtered_count_and_cols
+      Competitor.filtered_count_and_cols(current_external_founder, request, competitor_params)
+    end
+
     def filtered_count
-      Competitor.filtered_count(current_external_founder, request, competitor_params)
+      filtered_count_and_cols[:count]
     end
 
     def filtered_suggestions

@@ -827,6 +827,13 @@ img.reversed, i.reversed::before {
 
   .results {
     height: 355px;
+
+    .image-text-cell {
+      .subheading {
+        margin-top: -2px;
+        font-size: small;
+      }
+    }
   }
 
   p {

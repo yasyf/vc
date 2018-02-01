@@ -13,7 +13,10 @@ import EmojiCell from '../cells/emoji_cell';
 import CompetitorTrackCell from '../cells/competitor_track_cell';
 import NullStateCell from '../cells/null_state_cell';
 import PlaceholderCell from '../cells/placeholder_cell';
-import {fromTableSD, isMobile, nullOrUndef, toTableSD} from '../utils';
+import {
+  fromTableSD, initials, isMobile, nullOrUndef,
+  toTableSD,
+} from '../utils';
 import CompetitorCell from '../cells/competitor_cell';
 import {SortDirection} from '../constants.js.erb';
 import tableHeader from './table_header';
@@ -87,6 +90,10 @@ export default class FixedTable extends React.Component {
 
   renderImageTextColumn = (key, name, props, flex = 1) => {
     return this.renderColumn(key, name, ImageTextCell, { size: this.props.rowHeight / 2 , ...props }, undefined, flex);
+  };
+
+  renderPartnerColumn = (key, name, props, flex = 1) => {
+    return this.renderImageTextColumn(key, name, { fallbackFn: initials, max: 18, ...props }, flex);
   };
 
   renderCompetitorColumn = (key, name, props, flex = 1) => {

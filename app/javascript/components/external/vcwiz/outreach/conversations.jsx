@@ -22,7 +22,7 @@ class ConversationsTable extends FixedTable {
   renderColumns() {
     const { dimensions } = this.props;
 
-    const partner = this.renderImageTextColumn('full_name', 'Partner', { imageKey: 'investor.photo', fallbackFn: initials, verifiedKey: 'investor.verified', subKey: 'title', max: 18 }, 2);
+    const partner = this.renderPartnerColumn('full_name', 'Partner', { imageKey: 'investor.photo', verifiedKey: 'investor.verified', subKey: 'title' }, 2);
     const emoji = this.renderEmojiColumn('priority', 'Tag');
 
 

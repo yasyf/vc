@@ -23,7 +23,15 @@ module CompetitorLists::Base::ClassSql
     <<-SQL
       LEFT JOIN LATERAL (
         WITH matched AS (
-          SELECT id, role, verified FROM investors
+          SELECT 
+            id,
+            role,
+            verified,
+            first_name,
+            last_name,
+            photo,
+            first_name || ' ' || last_name AS full_name
+          FROM investors
           WHERE investors.id = ANY(#{competitors_table}.matches)
         )
         SELECT array_to_json(array_agg(matched)) AS matched_parters_arr

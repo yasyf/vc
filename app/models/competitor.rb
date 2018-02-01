@@ -180,8 +180,9 @@ class Competitor < ApplicationRecord
     CompetitorLists::Filtered.new(founder, request, params).results(**opts)
   end
 
-  def self.filtered_count(founder, request, params)
-    CompetitorLists::Filtered.new(founder, request, params).result_count
+  def self.filtered_count_and_cols(founder, request, params)
+    list = CompetitorLists::Filtered.new(founder, request, params)
+    { count: list.result_count, cols: list.meta_cols }
   end
 
   def self.locations(query, limit = 5)
@@ -294,6 +295,7 @@ class Competitor < ApplicationRecord
         :coinvestors,
         :velocity,
         :verified,
+        :matched_partners,
       ],
       methods: [
         :hq,
@@ -336,8 +338,10 @@ class Competitor < ApplicationRecord
   private
 
   def partners
-    return self[:partners].concat(self[:matched_parters] || []) if self[:partners].present?
-    investors.to_a
+    return investors.to_a unless self[:partners].present?
+    matched_partners = self[:matched_partners] || []
+    matched_ids = Set.new matched_partners.map { |p| p['id'] }
+    matched_partners + self[:partners].reject { |p| matched_ids.include? p['id'] }
   end
 
   def velocity

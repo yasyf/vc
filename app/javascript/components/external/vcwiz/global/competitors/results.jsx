@@ -10,9 +10,9 @@ import Actions from '../actions';
 
 class ResultsTable extends FixedTable {
   parseColumns(columns, prefix = '') {
-    return columns.map(({type, key, name, ...args}) => {
+    return columns.map(({type, key, name, noPrefix, ...args}) => {
       let method = this[`render${inflection.camelize(type)}Column`];
-      return method(`${prefix}${key}`, name, args);
+      return method(`${noPrefix ? '' : prefix}${key}`, name, args);
     });
   }
 
@@ -28,9 +28,9 @@ class ResultsTable extends FixedTable {
     return [
       { type: 'text_array', key: 'fund_type', name: 'Types', translate: CompetitorFundTypes },
       { type: 'text', key: 'hq', name: 'Location' },
-      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: industryLimit },
       { type: 'text', key: 'velocity', name: 'Pace (1 Yr)', width: 150 },
-    ]
+      { type: 'text_array', key: 'industry', name: 'Industries', translate: CompetitorIndustries, limit: industryLimit },
+    ];
   }
 
   middleColumns() {

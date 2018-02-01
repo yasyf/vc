@@ -9,7 +9,7 @@ export default class ImageTextCell extends TextCell {
       value: _.get(row, props.columnKey),
       subValue: _.get(row, props.subKey),
       src: _.get(row, props.imageKey),
-      fallback: props.fallbackFn ? props.fallbackFn(row) : row[props.fallbackKey],
+      fallback: props.fallbackFn ? props.fallbackFn(props.fallbackFnKey ? _.get(row, props.fallbackFnKey) : row) : row[props.fallbackKey],
       verified: _.get(row, props.verifiedKey),
       badge: _.get(row, props.badgeKey),
     };

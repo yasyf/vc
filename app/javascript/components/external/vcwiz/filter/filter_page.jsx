@@ -32,6 +32,7 @@ export default class FilterPage extends React.Component {
       search: props.search,
       options: props.options,
       sort: props.sort,
+      columns: props.columns,
       resultsId: timestamp(),
     };
   }
@@ -77,8 +78,8 @@ export default class FilterPage extends React.Component {
   }
 
   fetchNumInvestors() {
-    ffetch(`${CompetitorsFilterCountPath}?${this.query()}`).then(({count, suggestions}) => {
-      const newState = {count, suggestions, resultsId: timestamp(), competitors: null};
+    ffetch(`${CompetitorsFilterCountPath}?${this.query()}`).then(({count, cols, suggestions}) => {
+      const newState = {count, suggestions, columns: cols, resultsId: timestamp(), competitors: null};
       if (this.props.applySuggestions && this.state.canApplySuggestions) {
         newState.options = suggestions;
         newState.canApplySuggestions = false;
@@ -186,7 +187,7 @@ export default class FilterPage extends React.Component {
   }
 
   renderBody() {
-    const { competitors, count, sort, resultsId } = this.state;
+    const { competitors, count, sort, columns, resultsId } = this.state;
     const { rowHeight, industryLimit, fullHeight } = this.props;
     const source = {path: CompetitorsFilterPath, query: this.queryParams()};
     return (
@@ -196,6 +197,7 @@ export default class FilterPage extends React.Component {
         sort={sort}
         source={source}
         resultsId={resultsId}
+        columns={columns}
         rowHeight={rowHeight}
         industryLimit={industryLimit}
         fullHeight={fullHeight}

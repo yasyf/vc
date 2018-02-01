@@ -38,7 +38,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
 
   def filter_count
     apply_suggestions! if apply_suggestions?
-    render json: { count: filtered_count, suggestions: filtered_suggestions }
+    render json: { suggestions: filtered_suggestions, **filtered_count_and_cols }
   end
 
   def locations
