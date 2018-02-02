@@ -30,7 +30,7 @@ class Founder < ApplicationRecord
   after_commit :start_augment_job, on: :create
   after_commit :start_enhance_job, on: :update
 
-  action :signed_up, :logged_in, :competitor_clicked, :investor_clicked, :investor_targeted
+  action :signed_up, :logged_in, :session_refreshed, :competitor_clicked, :investor_clicked, :investor_targeted
   locationable_with :city
 
   devise
