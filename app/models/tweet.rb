@@ -6,6 +6,7 @@ class Tweet < ApplicationRecord
   belongs_to :tweeter
   validates :twitter_id, presence: true, uniqueness: true
   validates :shared, inclusion: [true, false]
+  scope :unseen, -> { where(shared: false) }
 
   def self.wrap(tweeter)
     Array.wrap(yield).compact.map do |t|
@@ -23,7 +24,7 @@ class Tweet < ApplicationRecord
   end
 
   def share!
-    update! shared: true
+    mark_as_seen!
     slack_send! ENV['NEWS_CHANNEL'], "#{tweeter.owner.name} has a newsworthy tweet!\n#{url}"
     prepare_for_writing!
     twitter_client.with_client { |c| c.retweet! raw_tweet }
@@ -39,6 +40,10 @@ class Tweet < ApplicationRecord
 
   def prepare_for_writing!
     self.twitter_opts.merge!(write: true)
+  end
+
+  def mark_as_seen!
+    update! shared: true
   end
 
   private

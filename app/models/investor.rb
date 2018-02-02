@@ -104,7 +104,7 @@ class Investor < ApplicationRecord
 
     populate_from_cb_basic!
 
-    add_entities! Entity.from_html(description)
+    add_entities! Entity.from_html(self.description)
 
     return unless self.competitor.present?
 
@@ -180,7 +180,7 @@ class Investor < ApplicationRecord
       rescue ActiveRecord::RecordInvalid
         next
       end
-      add_entities! Entity.from_html(body), owner: post
+      add_entities! Entity.from_html(body), owner: post, bump_counts: true
       meta[:categories].each do |category|
         entity = Entity.from_name(category)
         next unless entity.present?

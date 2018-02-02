@@ -878,7 +878,8 @@ CREATE TABLE person_entities (
     person_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    featured boolean DEFAULT false
+    featured boolean DEFAULT false,
+    count integer DEFAULT 1 NOT NULL
 );
 
 
@@ -3232,6 +3233,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180125174538'),
 ('20180130063518'),
 ('20180130064719'),
-('20180130165807');
+('20180130165807'),
+('20180202174934');
 
 
