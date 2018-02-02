@@ -3,6 +3,10 @@ import Filters from './filters';
 import MoreFilters from './more_filters';
 
 export default class FilterRow extends React.Component {
+  static defaultProps = {
+    fields: ['fund_type', 'industry', 'location', 'companies'],
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.initialCount !== this.props.initialCount
@@ -27,8 +31,8 @@ export default class FilterRow extends React.Component {
   }
 
   render() {
-    const { initialCount, onFiltersChange, onOptionChange, onButtonClick, options, suggestions, ...rest } = this.props;
-    const filters = <Filters onChange={this.onFiltersChange} meta={this.meta()} fields={['fund_type', 'industry', 'location', 'companies']} {...rest} />;
+    const { initialCount, onFiltersChange, onOptionChange, onButtonClick, options, suggestions, fields, ...rest } = this.props;
+    const filters = <Filters onChange={this.onFiltersChange} meta={this.meta()} fields={fields} {...rest} />;
     return (
       <div className="filters">
         <div className="filters-wrapper">

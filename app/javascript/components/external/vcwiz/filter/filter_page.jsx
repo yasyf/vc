@@ -48,6 +48,8 @@ export default class FilterPage extends React.Component {
     if (types === FilterTypes.SEARCH) {
       params.search = search;
     } else if (types === FilterTypes.FILTER) {
+      params.filters = _.omit(filters, ['source_companies', 'entities']);
+    } else if (types === FilterTypes.FILTER_ALL) {
       params.filters = _.omit(filters, ['source_companies']);
     } else if (types === FilterTypes.COMPANY) {
       params.filters = {companies: filters.source_companies};
@@ -119,6 +121,7 @@ export default class FilterPage extends React.Component {
       <FilterRow
         onFiltersChange={this.onFiltersChange}
         onOptionChange={this.onOptionChange}
+        fields={this.props.fields}
         initialFilters={this.props.filters}
         filters={this.state.filters}
         options={this.state.options}
@@ -161,7 +164,7 @@ export default class FilterPage extends React.Component {
 
   renderSearchAndFilters() {
     const { types } = this.props;
-    if (types === FilterTypes.FILTER) {
+    if (types === FilterTypes.FILTER || types === FilterTypes.FILTER_ALL) {
       return <Row isColumn>{this.renderFilterRow()}</Row>;
     } else if (types === FilterTypes.SEARCH) {
       return <Row isColumn>{this.renderSearch()}</Row>;

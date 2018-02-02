@@ -206,6 +206,7 @@ class External::VCWiz::VCWizController < External::FrontendController
       filters[:industry] = hash_to_options(Util.split_slice(from_params[:industry], Competitor::INDUSTRIES)) if from_params[:industry].present?
       filters[:location] = arr_to_options(from_params[:location].split(',')) if from_params[:location].present?
       filters[:companies] = records_to_options(Company.find(from_params[:companies].split(',')).map(&:as_json_search)) if from_params[:companies].present?
+      filters[:entities] = records_to_options(Entity.find(from_params[:entities].split(',')).map(&:as_search_json)) if from_params[:entities].present?
     end
   end
 

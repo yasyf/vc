@@ -25,7 +25,8 @@ export default class Filter extends React.Component {
       <FilterPage
         {...this.props}
         title="Filter Investors"
-        types={FilterTypes.FILTER}
+        fields={['fund_type', 'industry', 'location', 'companies', 'entities']}
+        types={FilterTypes.FILTER_ALL}
         onQueryChange={this.pushState}
         render={(header, body) => (
           <VCWiz
