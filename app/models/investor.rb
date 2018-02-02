@@ -245,7 +245,7 @@ class Investor < ApplicationRecord
   def self.custom_fuzzy_search(q, existing_ids)
     first_name, last_name = Util.split_name(q)
     last_name = first_name unless last_name.present?
-    results = Search.search_investors({ first_name: first_name, last_name: last_name, firm_name: q }, condition: :or)
+    results = Search.search_investors({ first_name: first_name, last_name: last_name, firm_name: q })
     investors = Investor
       .joins("INNER JOIN (#{results}) AS results ON results.match_id = investors.id")
       .joins("INNER JOIN competitors ON results.id = competitors.id")

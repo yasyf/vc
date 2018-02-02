@@ -16,8 +16,11 @@ module External::Concerns
     end
 
     def search_params
-      search = params.permit(search: [:first_name, :last_name, :firm_name])[:search]
-      { search: search || {} }
+      search = params.permit(:search)[:search]
+      return { search: {} } unless search.present?
+      first_name, last_name = Util.split_name(search)
+      last_name = first_name unless last_name.present?
+      { search: { first_name: first_name, last_name: last_name, firm_name: search } }
     end
 
     def competitor_params

@@ -92,8 +92,7 @@ export default class FilterPage extends React.Component {
     this.setState({filters, canApplySuggestions: true});
   };
 
-  onSearchChange = update => {
-    const search = extend(this.state.search, update);
+  onSearchChange = ({ search }) => {
     this.setState({search});
   };
 

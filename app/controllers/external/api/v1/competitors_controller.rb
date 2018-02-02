@@ -46,6 +46,7 @@ class External::Api::V1::CompetitorsController < External::Api::V1::ApiV1Control
   end
 
   def lists
+    render json: [] and return if Rails.env.development? && ENV['SKIP_LISTS']
     render json: Competitor.lists(current_external_founder, request).sort_by { |l| [l[:personalized] ? 0 : 1, rand] }
   end
 

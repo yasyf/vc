@@ -217,7 +217,7 @@ class External::VCWiz::VCWizController < External::FrontendController
       filters: full_filters,
       options: options_params[:options].to_h,
       sort: sorts,
-      search: search_params[:search].to_h,
+      search: search_params[:search][:firm_name],
     )
   end
 end
