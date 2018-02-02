@@ -1,7 +1,7 @@
 require 'sidekiq'
 
-CLIENT_SIZE = 5
-CONNECTION_LIMIT = 40 - CLIENT_SIZE - 2
+CLIENT_SIZE = (ENV['SIDEKIQ_POOL'] || 5).to_i
+CONNECTION_LIMIT = (ENV['DATABASE_POOL'] || 50).to_i - CLIENT_SIZE - 2
 
 Sidekiq.configure_client do |config|
   config.redis = { size: CLIENT_SIZE }
