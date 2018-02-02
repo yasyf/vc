@@ -10,7 +10,8 @@ module Concerns
       define_method(:scrape_tweets!) do
         return unless tweeter.present?
         return if tweeter.private?
-        tweeter.latest_tweets.unseen.each do |tweet|
+        tweeter.latest_tweets.each do |tweet|
+          next if tweet.shared?
           tweet.mark_as_seen!
           add_entities! Entity.from_text(tweet.text), bump_counts: true
         end
