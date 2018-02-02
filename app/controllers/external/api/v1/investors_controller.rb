@@ -56,7 +56,7 @@ class External::Api::V1::InvestorsController < External::Api::V1::ApiV1Controlle
   end
 
   def entities
-    results = Entity.custom_fuzzy_search(params[:q], Investor.name)
+    results = Entity.custom_fuzzy_search(params[:q])
     render_censored records_to_options(results.map(&:as_search_json))
   end
 

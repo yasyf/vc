@@ -639,6 +639,57 @@ ALTER SEQUENCE investments_id_seq OWNED BY investments.id;
 
 
 --
+-- Name: person_entities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE person_entities (
+    id bigint NOT NULL,
+    entity_id bigint NOT NULL,
+    person_type character varying NOT NULL,
+    person_id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    featured boolean DEFAULT false,
+    count integer DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE posts (
+    id bigint NOT NULL,
+    investor_id bigint NOT NULL,
+    url character varying NOT NULL,
+    title character varying NOT NULL,
+    published_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    description text
+);
+
+
+--
+-- Name: investor_entities; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW investor_entities AS
+ SELECT competitors.id AS competitor_id,
+    investors.id AS investor_id,
+    entities.id AS entity_id,
+    (COALESCE(max(investor_person_entities.count), 0) + COALESCE(max(post_person_entities.count), 0)) AS count
+   FROM (((((investors
+     LEFT JOIN posts ON ((posts.investor_id = investors.id)))
+     LEFT JOIN person_entities investor_person_entities ON ((((investor_person_entities.person_type)::text = 'Investor'::text) AND (investor_person_entities.person_id = investors.id))))
+     LEFT JOIN person_entities post_person_entities ON ((((post_person_entities.person_type)::text = 'Post'::text) AND (post_person_entities.person_id = posts.id))))
+     JOIN entities ON (((investor_person_entities.entity_id = entities.id) OR (post_person_entities.entity_id = entities.id))))
+     JOIN competitors ON ((competitors.id = investors.competitor_id)))
+  GROUP BY competitors.id, investors.id, entities.id
+  WITH NO DATA;
+
+
+--
 -- Name: investors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -868,22 +919,6 @@ ALTER SEQUENCE notes_id_seq OWNED BY notes.id;
 
 
 --
--- Name: person_entities; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE person_entities (
-    id bigint NOT NULL,
-    entity_id bigint NOT NULL,
-    person_type character varying NOT NULL,
-    person_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    featured boolean DEFAULT false,
-    count integer DEFAULT 1 NOT NULL
-);
-
-
---
 -- Name: person_entities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -939,22 +974,6 @@ CREATE SEQUENCE pitches_id_seq
 --
 
 ALTER SEQUENCE pitches_id_seq OWNED BY pitches.id;
-
-
---
--- Name: posts; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE posts (
-    id bigint NOT NULL,
-    investor_id bigint NOT NULL,
-    url character varying NOT NULL,
-    title character varying NOT NULL,
-    published_at timestamp without time zone NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    description text
-);
 
 
 --
@@ -2283,6 +2302,34 @@ CREATE INDEX index_investments_on_investor_id ON investments USING btree (invest
 
 
 --
+-- Name: index_investor_entities_on_competitor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investor_entities_on_competitor_id ON investor_entities USING btree (competitor_id);
+
+
+--
+-- Name: index_investor_entities_on_count; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investor_entities_on_count ON investor_entities USING btree (count);
+
+
+--
+-- Name: index_investor_entities_on_entity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investor_entities_on_entity_id ON investor_entities USING btree (entity_id);
+
+
+--
+-- Name: index_investor_entities_on_investor_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_investor_entities_on_investor_id ON investor_entities USING btree (investor_id);
+
+
+--
 -- Name: index_investors_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3234,6 +3281,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180130063518'),
 ('20180130064719'),
 ('20180130165807'),
-('20180202174934');
+('20180202174934'),
+('20180202175706');
 
 

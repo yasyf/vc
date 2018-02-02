@@ -44,11 +44,10 @@ class Entity < ApplicationRecord
     end
   end
 
-  def self.custom_fuzzy_search(q, person_type, limit: 5)
+  def self.custom_fuzzy_search(q, limit: 5)
     sql = <<-SQL
       SELECT entities.*
       FROM entities
-      INNER JOIN person_entities ON person_entities.entity_id = entities.id AND person_entities.person_type = '#{person_type}'
       WHERE #{Util.sanitize_sql('((entities.name % ?) OR (entities.name ILIKE ?))', q, "#{q}%")}
       GROUP BY entities.id
       ORDER BY #{Util.sanitize_sql('COALESCE(similarity(entities.name, ?), 0) DESC', q)}

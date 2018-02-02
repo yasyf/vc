@@ -26,13 +26,11 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
   def _filtered_by_entity_subquery
     <<-SQL
       SELECT
-        competitors.id AS id,
-        investors.id AS match_id
-      FROM investors
-      INNER JOIN competitors ON investors.competitor_id = competitors.id
-      INNER JOIN person_entities ON person_entities.person_type = 'Investor' AND person_entities.person_id = investors.id
-      INNER JOIN entities ON person_entities.entity_id = entities.id
-      WHERE entities.id IN (#{Util.escape_sql_argument(params[:filters][:entities])})
+        investor_entities.competitor_id AS id,
+        investor_entities.investor_id AS match_id,
+        investor_entities.count AS entities_count
+      FROM investor_entities
+      WHERE investor_entities.entity_id IN (#{Util.escape_sql_argument(params[:filters][:entities])})
     SQL
   end
 
@@ -127,6 +125,7 @@ class CompetitorLists::Filtered < CompetitorLists::Base::Base
 
   def sort
     [
+      params[:filters][:entities].present? && 'MAX(entities_searched.entities_count) DESC',
       'bool_or(COALESCE(competitor_investor_aggs.featured, false)) DESC',
       overlap_industries.present? && 'MIN(overlap_cnt) DESC',
       overlap_cities.present? && "(#{Util.sanitize_sql('competitors.location && ARRAY[?]::character varying[]', overlap_cities)}) DESC",

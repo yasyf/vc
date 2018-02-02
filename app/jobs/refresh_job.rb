@@ -16,7 +16,14 @@ class RefreshJob < ApplicationJob
   private
 
   def refresh_views!(concurrently: true)
-    %w(competitor_investor_aggs competitor_coinvestors competitor_recent_investments competitor_partners competitor_velocities).each do |view|
+    %w(
+      competitor_investor_aggs
+      competitor_coinvestors
+      competitor_recent_investments
+      competitor_partners
+      competitor_velocities
+      investor_entities
+    ).each do |view|
       Scenic.database.refresh_materialized_view(view, concurrently: concurrently)
     end
   end
