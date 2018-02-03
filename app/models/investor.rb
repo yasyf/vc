@@ -124,14 +124,14 @@ class Investor < ApplicationRecord
   end
 
   def fetch_news!
-    news = Http::Bing.news("#{name} + #{competitor.name}").map { |n| [n['url'], n] }.to_h
-    Http::Fetch.get(news.keys).each do |url, body|
-      next unless body.present?
-      next unless name.downcase.in?(body.downcase) || competitor.name.downcase.in?(body.downcase)
-      meta = news[url]
-      next unless meta.present?
-      import_news_with_attrs(url, body, title: meta['name'], description: meta['description'], published_at: meta['datePublished'])
-    end
+    # news = Http::Bing.news("#{name} + #{competitor.name}").map { |n| [n['url'], n] }.to_h
+    # Http::Fetch.get(news.keys).each do |url, body|
+    #   next unless body.present?
+    #   next unless name.downcase.in?(body.downcase) || competitor.name.downcase.in?(body.downcase)
+    #   meta = news[url]
+    #   next unless meta.present?
+    #   import_news_with_attrs(url, body, title: meta['name'], description: meta['description'], published_at: meta['datePublished'])
+    # end
 
     Http::Newsriver.news(name, competitor.name).each do |item|
       next unless item['text'].present?
