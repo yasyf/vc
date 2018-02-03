@@ -32,7 +32,7 @@ export default class FilterPage extends React.Component {
       search: props.search,
       options: props.options,
       sort: props.sort,
-      columns: props.columns,
+      columns: props.cols,
       resultsId: timestamp(),
     };
   }

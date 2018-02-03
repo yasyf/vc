@@ -213,12 +213,12 @@ class External::VCWiz::VCWizController < External::FrontendController
   def result_props(limit)
     props(
       competitors: filtered_results(sort: sorts, limit: limit, meta: true),
-      count: filtered_count,
       suggestions: filtered_suggestions,
       filters: full_filters,
       options: options_params[:options].to_h,
       sort: sorts,
       search: search_params[:search][:firm_name],
+      **filtered_count_and_cols,
     )
   end
 end
