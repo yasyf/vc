@@ -16,6 +16,7 @@ class ApplicationJob < ActiveJob::Base
 
   # Rate Limits
   retry_with_exp_backoff Google::Apis::RateLimitError
+  retry_with_exp_backoff Twitter::Error::TooManyRequests
 
   # Retries
   retry_on PG::UniqueViolation
