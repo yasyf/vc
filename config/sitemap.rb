@@ -20,6 +20,11 @@ SitemapGenerator::Sitemap.create do
   CompetitorLists::CompanyInvestors.cache_values_span.each do |v|
     add external_vcwiz_list_path(list: 'company_investors', key: :company_id, value: v[:company_id]), changefreq: :weekly, priority: 0.4
   end
+  Entity.in_batches do |scope|
+    scope.pluck(:name).each do |name|
+      add external_vcwiz_list_path(list: 'topic_investors', key: :topic, value: name), changefreq: :weekly, priority: 0.6
+    end
+  end
   Investor.in_batches do |scope|
     scope.pluck(:id, :first_name, :last_name).each do |investor|
       add external_vcwiz_investor_path(id: investor.first, slug: "#{investor.second} #{investor.third}".parameterize), changefreq: :weekly, priority: 0.5

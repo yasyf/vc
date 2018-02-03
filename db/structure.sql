@@ -2330,6 +2330,13 @@ CREATE INDEX index_investor_entities_on_investor_id ON investor_entities USING b
 
 
 --
+-- Name: index_investor_entities_on_investor_id_and_entity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_investor_entities_on_investor_id_and_entity_id ON investor_entities USING btree (investor_id, entity_id);
+
+
+--
 -- Name: index_investors_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3282,6 +3289,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180130064719'),
 ('20180130165807'),
 ('20180202174934'),
-('20180202175706');
+('20180202175706'),
+('20180203050854');
 
 
