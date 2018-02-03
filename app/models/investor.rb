@@ -514,7 +514,7 @@ class Investor < ApplicationRecord
   def n_popular_entities(n = 3, scope = Entity.all)
     popular = post_entities(n)
     return popular unless (count = popular.count) < n
-    Entity.where(id: entities.order(person_entities_count: :desc).limit(n - count)).or(popular).merge(scope)
+    Entity.where(id: entities.where('entities.count > ?', 1).order(person_entities_count: :desc).limit(n - count)).or(popular).merge(scope)
   end
 
   def post_entities(n = 3)
