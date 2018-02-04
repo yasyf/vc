@@ -38,6 +38,7 @@ before_fork do
 
   if ENV['TOTAL_MEMORY'].present?
     PumaWorkerKiller.ram = ENV['TOTAL_MEMORY'].to_i
+    PumaWorkerKiller.rolling_restart_frequency = false
     PumaWorkerKiller.start
   else
     PumaWorkerKiller.rolling_restart_frequency = 1 * 3600
