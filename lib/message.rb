@@ -84,6 +84,7 @@ class Message
 
   def process!(founder, skip_graph = false)
     return if sent_to?(ENV['MAILGUN_EMAIL'])
+    return if recipients.size > 5
     if from.address == founder.email || from.name == founder.name
       process_outgoing!(founder, skip_graph)
     else
