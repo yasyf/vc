@@ -83,7 +83,7 @@ class GraphBulkJob < ApplicationJob
   # Shared
 
   def calculate!(name)
-    public_send("run_vanilla_#{name}!")
-    public_send("scale_#{name}!")
+    send("run_vanilla_#{name}!")
+    send("scale_#{name}!")
   end
 end
