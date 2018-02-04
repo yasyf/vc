@@ -5,7 +5,7 @@ class Internal::Api::V1::VotesController < Internal::Api::V1::ApiV1Controller
     votes = params[:team].present? ? Vote.joins(:company).where('companies.team_id = ?', team.id) : Vote.all
     respond_to do |format|
       format.json { render json: { votes: votes } }
-      format.csv { render text: votes.includes(:company, :user).to_csv }
+      format.csv { send_data votes.includes(:company, :user).to_csv, filename: 'votes.csv', type: 'text/csv' }
     end
   end
 
