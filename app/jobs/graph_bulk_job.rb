@@ -64,7 +64,7 @@ class GraphBulkJob < ApplicationJob
   end
 
   def scale_betweenness!
-    GraphBulk.scale_metric! :betweenness, @betweenness_minmax
+    GraphBulk.scale_metric! :betweenness, minmax: @betweenness_minmax
   end
 
   # Harmonic
