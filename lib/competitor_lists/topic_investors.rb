@@ -35,7 +35,7 @@ class CompetitorLists::TopicInvestors < CompetitorLists::Base::Base
         investor_entities.investor_id AS match_id,
         investor_entities.count AS entities_count
       FROM investor_entities
-      WHERE investor_entities.entity_id = #{@entity.id}
+      WHERE investor_entities.entity_id = #{entity.id}
     SQL
   end
 
