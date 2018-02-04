@@ -231,7 +231,7 @@ export default class PartnerTab extends React.Component {
     if (!tweets || !tweets.length) {
       return null;
     }
-    return <Row isColumn><Tweet tweet={_.sample(tweets)} /></Row>;
+    return <Row isColumn><Tweet tweet={_.last(tweets)} /></Row>;
   }
 
   renderReview() {
