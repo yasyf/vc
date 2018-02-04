@@ -23,7 +23,7 @@ class Graph
   end
 
   def self.fetch_nodes(script, attrs = {})
-    result = server.execute_query(script, attrs)['data']
+    result = execute(script, attrs)
     return [] unless result.present?
     result.map do |r|
       Parallel.map(r.first['nodes'], in_threads: 16) { |node| Neography::Node.load(node, db=server) }
@@ -31,7 +31,7 @@ class Graph
   end
 
   def self.fetch_rels(script, attrs = {})
-    result = server.execute_query(script, attrs)['data']
+    result = execute(script, attrs)
     return [] unless result.present?
     result.map do |r|
       Parallel.map(r.first['relationships'], in_threads: 16) { |rel| Neography::Relationship.load(rel, db=server) }
@@ -75,14 +75,18 @@ class Graph
       CREATE (n:Person { name: {name}, email: {email}, domain: {domain} })
       RETURN n;
     CYPHER
-    result = server.execute_query(script, { name: addr.name, email: addr.address, domain: addr.domain })['data']
+    result = execute(script, { name: addr.name, email: addr.address, domain: addr.domain })
     Neography::Node.load(result.first, server)
   rescue Neography::NeographyError
     find addr
   end
 
-  def self.find(addr)
-    results = retry_([Excon::Error::Socket, Neography::NeographyError]) { server.find_nodes_labeled('Person', {email: addr.address}) }
+  def self.execute(script, params = {})
+    server.execute_query(script, params)['data']
+  end
+
+  def self.find(addr, label: 'Person')
+    results = retry_([Excon::Error::Socket, Neography::NeographyError]) { server.find_nodes_labeled(label, {email: addr.address}) }
     Neography::Node.load(results.first, server) if results.present?
   end
 
@@ -93,7 +97,7 @@ class Graph
   end
 
   def self.add_constraint!(name, property)
-    server.execute_query("CREATE CONSTRAINT ON (#{name.downcase}:#{name}) ASSERT #{name.downcase}.#{property} IS UNIQUE")
+    execute("CREATE CONSTRAINT ON (#{name.downcase}:#{name}) ASSERT #{name.downcase}.#{property} IS UNIQUE")
   end
 
   def self.ensure_index!(name, properties)
