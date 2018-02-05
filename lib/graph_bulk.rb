@@ -45,7 +45,7 @@ class GraphBulk
     klass.where.not(email: nil).find_each do |i|
       return unless i.graph_node.present?
       i.graph_node.add_label(klass.name)
-      i.graph_node.model_id = i.id
+      i.graph_node[:model_id] = i.id
     end
   end
 end
