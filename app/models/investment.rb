@@ -23,6 +23,7 @@ class Investment < ApplicationRecord
   private
 
   def add_graph_relationship!
+    return unless investor.present?
     company.founders.each do |founder|
       investor.connect_to! founder, :invest
     end

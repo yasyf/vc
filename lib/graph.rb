@@ -50,6 +50,7 @@ class Graph
 
   def self.connect(type, n1, n2)
     return if n1 == n2
+    return unless n1.present? && n2.present?
     Neography::Relationship.create_unique(
       "connected_on_#{type}",
       type,
