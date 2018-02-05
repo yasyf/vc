@@ -256,6 +256,13 @@ class Founder < ApplicationRecord
     founder.save!
   end
 
+  def graph_node
+    @graph_node ||= super || begin
+      address = Mail::Address.new("\"#{name}\" <#{first_name}@#{primary_company.domain}>") rescue nil
+      Graph.get(address) if address.present?
+    end
+  end
+
   private
 
   def normalize_city
