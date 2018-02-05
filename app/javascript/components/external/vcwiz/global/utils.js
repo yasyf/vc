@@ -25,6 +25,9 @@ axios.interceptors.response.use(undefined, err => {
     err.config.__retryCount = (err.config.__retryCount || 0) + 1;
     return delayPromise(1000).then(() => axios(err.config));
   }
+  if (canUseDOM && err.response && err.response.status == 401) {
+    window.location.reload(true);
+  }
   throw err;
 });
 
