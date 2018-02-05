@@ -54,7 +54,7 @@ class Graph
     Neography::Relationship.create_unique(
       "connected_on_#{type}",
       type,
-      "#{n1[type]} -> #{n2[type]}",
+      "#{n1.email} -> #{n2.email}",
       type,
       n1,
       n2
