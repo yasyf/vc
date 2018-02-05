@@ -66,6 +66,14 @@ class Graph
     end
   end
 
+  def self.increment_or_connect(type, n1, n2)
+    if type.to_sym == :email
+      increment type, n1, n2
+    else
+      connect type, n1, n2
+    end
+  end
+
   def self.get(addr)
     find(addr) || add(addr)
   end
@@ -94,6 +102,7 @@ class Graph
     add_constraint! 'Person', 'email'
     ensure_index! 'Person', 'domain'
     ensure_relationship_index! 'email'
+    ensure_relationship_index! 'invest'
   end
 
   def self.add_constraint!(name, property)

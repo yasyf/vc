@@ -3,6 +3,8 @@ class Investment < ApplicationRecord
   belongs_to :competitor
   belongs_to :investor
 
+  after_commit :add_graph_relationship!, on: :create
+
   def self.assign_to_investor(investor, company, featured: false, no_replace: false)
     scope = where(competitor: investor.competitor, company: company)
     if (existing = scope.first).present?
@@ -16,5 +18,13 @@ class Investment < ApplicationRecord
 
   def fund_type
     [funding_type, series && "series_#{series}"].compact
+  end
+
+  private
+
+  def add_graph_relationship!
+    company.founders.each do |founder|
+      investor.connect_to! founder, :invest
+    end
   end
 end
