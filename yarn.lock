@@ -6006,9 +6006,9 @@ react-slick@0.16.0:
     object-assign "^4.1.0"
     slick-carousel "^1.6.0"
 
-react-spinners@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.2.5.tgz#5d88b4eb9d9fd1b2c21760f3c6d76f8da6f70042"
+react-spinners@0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.2.6.tgz#15ba678d07636c3cf760563b0efb7b2566f465cb"
   dependencies:
     babel-plugin-emotion "^8.0.6"
     emotion "^8.0.8"
