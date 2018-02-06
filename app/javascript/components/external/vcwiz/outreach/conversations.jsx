@@ -60,7 +60,7 @@ export default class Conversations extends React.Component {
             case 'note':
               return NoteModal;
             case 'intro_requests[0]':
-              if (item['can_intro?'] && target.stage === _.first(TargetInvestorStagesKeys))
+              if (item['can_intro?'] && target && target.stage === _.first(TargetInvestorStagesKeys))
                 return IntroModal;
               break;
           }
