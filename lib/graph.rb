@@ -90,8 +90,20 @@ class Graph
     find addr
   end
 
-  def self.execute(script, params = {})
-    server.execute_query(script, params)['data']
+  def self.execute(script, params = {}, transaction: false)
+    if transaction
+      tx = server.begin_transaction
+      thread = Thread.new do
+        server.keep_transaction(tx)
+        sleep(1)
+      end
+      result = server.execute_query(script, params)['data']
+      thread.kill.join
+      server.commit_transaction(tx)
+      result
+    else
+      server.execute_query(script, params)['data']
+    end
   end
 
   def self.find(addr, label: 'Person')

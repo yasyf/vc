@@ -1,15 +1,14 @@
 class GraphBulk
-  def self.scale_metric!(metric, minmax: nil)
-    if minmax.present?
-      min, max = minmax
-    else
-      script = <<-CYPHER
-        MATCH (n:Person)
-        RETURN max(n.#{metric}), MIN(n.#{metric})
-      CYPHER
-      min, max = Graph.execute(script).first
-    end
+  def self.get_minmax(metric)
+    script = <<-CYPHER
+      MATCH (n:Person)
+      RETURN max(n.#{metric}), MIN(n.#{metric})
+    CYPHER
+    Graph.execute(script).first
+  end
 
+  def self.scale_metric!(metric, minmax: nil)
+    min, max = minmax.present ? minmax : self.get_minmax(metric)
     scale = <<-CYPHER
       CALL apoc.periodic.iterate(
         "MATCH (n:Person) RETURN n",
@@ -22,7 +21,7 @@ class GraphBulk
 
   def self.run_vanilla_metric!(name, options, params: {}, yields: nil)
     nodes = <<-CYPHER
-      MATCH (p:Person) RETURN id(p) as id
+      MATCH (p:Person)-[:email]-() RETURN DISTINCT id(p) as id
     CYPHER
     rels = <<-CYPHER
       MATCH (p1:Person)-[r1:email]->(p2:Person), (p2)-[r2:email]->(p1)
@@ -37,7 +36,7 @@ class GraphBulk
       )
       #{yields ? "YIELD #{yields};" : ';'}
     CYPHER
-    Graph.execute(cypher, params)
+    Graph.execute(cypher, params, transaction: true)
   end
 
 

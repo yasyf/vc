@@ -2,7 +2,6 @@ class GraphBulkJob < ApplicationJob
   queue_as :long
 
   DAMPING_FACTOR = 0.85
-  EPSILON = 1 - DAMPING_FACTOR
 
   def perform
     GraphBulk.add_labels_to_nodes! Founder
@@ -23,25 +22,8 @@ class GraphBulkJob < ApplicationJob
     GraphBulk.run_vanilla_metric! 'pageRank', options, params: { dampingFactor: DAMPING_FACTOR }
   end
 
-  def get_dangling_rank
-    cypher = <<-CYPHER
-      MATCH (n:Person)
-      WHERE NOT (n)--()
-      RETURN SUM(n.pagerank);
-    CYPHER
-    Graph.execute(cypher).first.sum
-  end
-
-  def get_count
-    cypher = <<-CYPHER
-      MATCH (n:Person)
-      RETURN count(*);
-    CYPHER
-    Graph.execute(cypher).first.first
-  end
-
   def scale_pagerank!
-    r_low = (1.0 / get_count) * (EPSILON + DAMPING_FACTOR * get_dangling_rank)
+    r_low = GraphBulk.get_minmax(:pagerank).last
     normalize = <<-CYPHER
       CALL apoc.periodic.iterate(
         "MATCH (n:Person) RETURN n",
