@@ -23,7 +23,7 @@ class Graph
   end
 
   def self.fetch_nodes(script, attrs = {})
-    result = execute(script, attrs)
+    result = execute(script, params: attrs)
     return [] unless result.present?
     result.map do |r|
       Parallel.map(r.first['nodes'], in_threads: 16) { |node| Neography::Node.load(node, db=server) }
@@ -31,7 +31,7 @@ class Graph
   end
 
   def self.fetch_rels(script, attrs = {})
-    result = execute(script, attrs)
+    result = execute(script, params: attrs)
     return [] unless result.present?
     result.map do |r|
       Parallel.map(r.first['relationships'], in_threads: 16) { |rel| Neography::Relationship.load(rel, db=server) }
@@ -84,13 +84,13 @@ class Graph
       CREATE (n:Person { name: {name}, email: {email}, domain: {domain} })
       RETURN n;
     CYPHER
-    result = execute(script, { name: addr.name, email: addr.address, domain: addr.domain })
+    result = execute(script, params: { name: addr.name, email: addr.address, domain: addr.domain })
     Neography::Node.load(result.first, server)
   rescue Neography::NeographyError
     find addr
   end
 
-  def self.execute(script, params = {}, transaction: false)
+  def self.execute(script, params: {}, transaction: false)
     if transaction
       tx = server.begin_transaction
       thread = Thread.new do
