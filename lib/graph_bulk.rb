@@ -8,7 +8,7 @@ class GraphBulk
   end
 
   def self.scale_metric!(metric, minmax: nil)
-    min, max = minmax.present ? minmax : self.get_minmax(metric)
+    min, max = minmax.present? ? minmax : self.get_minmax(metric)
     scale = <<-CYPHER
       CALL apoc.periodic.iterate(
         "MATCH (n:Person) RETURN n",
