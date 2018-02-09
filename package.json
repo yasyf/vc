@@ -46,7 +46,7 @@
     "precss": "^3.1.0",
     "prop-types": "^15.5.10",
     "rails-erb-loader": "^5.0.2",
-    "raven-js": "3.22.1",
+    "raven-js": "3.22.2",
     "rc-progress": "2.2.5",
     "react": "16.2.0",
     "react-autosuggest": "9.3.3",
