@@ -70,7 +70,7 @@ gem 'googlemaps-services'
 gem 'sinatra', '~> 2.0', require: false
 gem 'rack-timeout'
 gem 'ruby-readability'
-gem 'countries', '~> 2.1.x', :require => 'countries/global'
+gem 'countries', '~> 2.1.4', :require => 'countries/global'
 gem 'execjs'
 gem 'geocoder'
 gem 'redcarpet'
