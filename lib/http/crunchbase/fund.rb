@@ -16,7 +16,7 @@ module Http::Crunchbase
     end
 
     def description
-      Util.fix_encoding(response.description)
+      Util.fix_encoding(response.description || response.short_description)
     end
 
     def team
