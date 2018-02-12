@@ -93,11 +93,15 @@ class Graph
   def self.execute(script, params: {}, transaction: false)
     if transaction
       tx = server.begin_transaction
+      done = false
       thread = Thread.new do
-        server.keep_transaction(tx)
-        sleep(1)
+        until done do
+          server.keep_transaction(tx)
+          sleep(1)
+        end
       end
-      result = server.execute_query(script, params)['data']
+      result = server.in_transaction(tx, [script, params])['data']
+      done = true
       thread.kill.join
       server.commit_transaction(tx)
       result
