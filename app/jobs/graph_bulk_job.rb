@@ -39,7 +39,7 @@ class GraphBulkJob < ApplicationJob
 
   def run_vanilla_betweenness!
     options = <<-CYPHER
-      {graph: 'cypher', direction: 'incoming', writeProperty: 'betweenness',  write: true, stats: true}
+      {graph: 'cypher', direction: 'outgoing', writeProperty: 'betweenness',  write: true, stats: true}
     CYPHER
     result = GraphBulk.run_vanilla_metric! 'betweenness', options, yields: 'minCentrality, maxCentrality'
     @betweenness_minmax = result.first
