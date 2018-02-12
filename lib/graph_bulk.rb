@@ -36,7 +36,7 @@ class GraphBulk
       )
       #{yields ? "YIELD #{yields};" : ';'}
     CYPHER
-    Graph.execute(cypher, params: params, transaction: true)
+    Graph.execute(cypher, params: params)
   end
 
 
