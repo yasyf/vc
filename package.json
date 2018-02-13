@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@babel/polyfill": "7.0.0-beta.39",
+    "@babel/polyfill": "7.0.0-beta.40",
     "autoprefixer": "^8.0.0",
     "axios": "0.17.1",
     "babel-core": "^6.25.0",
