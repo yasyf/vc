@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@babel/polyfill": "7.0.0-beta.39",
+    "@babel/polyfill": "7.0.0-beta.40",
     "autoprefixer": "^8.0.0",
     "axios": "0.17.1",
     "babel-core": "^6.25.0",
@@ -35,7 +35,7 @@
     "js-yaml": "^3.9.0",
     "linkifyjs": "^2.1.4",
     "lodash": "^4.17.5",
-    "logrocket": "^0.6.3",
+    "logrocket": "^0.6.5",
     "logrocket-react": "1.0.0",
     "moment": "^2.19.2",
     "node-sass": "^4.7.2",
@@ -46,7 +46,7 @@
     "precss": "^3.1.0",
     "prop-types": "^15.5.10",
     "rails-erb-loader": "^5.0.2",
-    "raven-js": "3.22.2",
+    "raven-js": "3.22.3",
     "rc-progress": "2.2.5",
     "react": "16.2.0",
     "react-autosuggest": "9.3.3",

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.5.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.4'
+gem 'rails', '~> 5.1.5'
 # Use postgresql as the database for Active Record
 gem 'pg', '< 1.0.0'
 # Use SCSS for stylesheets
@@ -85,7 +85,7 @@ gem 'prop'
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
-gem 'grpc', '1.9.0.pre3' # tmp fix for grpc#13908
+gem 'grpc', '1.9.1' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
 
 group :test do
