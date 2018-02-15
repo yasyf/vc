@@ -2,7 +2,7 @@ class Tweeter < ApplicationRecord
   include Concerns::Twitterable
 
   NEWSWORTHY_THRESHOLD = 2.5
-  NEWSWORTHY_MIN = 10
+  NEWSWORTHY_MIN = 5
 
   belongs_to :owner, polymorphic: true
   has_many :tweets, dependent: :destroy
