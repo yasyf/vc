@@ -5956,9 +5956,9 @@ react-select@1.2.1:
     prop-types "^15.5.8"
     react-input-autosize "^2.1.2"
 
-react-slick@0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.16.0.tgz#27385fb88503d208be081d37267ddec961209a7b"
+react-slick@0.18.1:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.18.1.tgz#9dd119af80d2f1276213b6fe04ff39edca12d9a1"
   dependencies:
     can-use-dom "^0.1.0"
     classnames "^2.2.5"
@@ -5966,7 +5966,6 @@ react-slick@0.16.0:
     enquire.js "^2.1.6"
     json2mq "^0.2.0"
     object-assign "^4.1.0"
-    slick-carousel "^1.6.0"
 
 react-spinners@0.2.6:
   version "0.2.6"
@@ -6677,10 +6676,6 @@ slice-ansi@1.0.0:
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-1.0.0.tgz#044f1a49d8842ff307aad6b505ed178bd950134d"
   dependencies:
     is-fullwidth-code-point "^2.0.0"
-
-slick-carousel@^1.6.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/slick-carousel/-/slick-carousel-1.8.1.tgz#a4bfb29014887bb66ce528b90bd0cda262cc8f8d"
 
 slide@^1.1.5:
   version "1.1.6"
