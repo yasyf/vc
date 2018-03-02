@@ -7,8 +7,8 @@ class GraphBulkJob < ApplicationJob
     GraphBulk.add_labels_to_nodes! Founder
     GraphBulk.add_labels_to_nodes! Investor
     calculate! :pagerank
-    calculate! :betweenness
-    calculate! :harmonic
+    # calculate! :betweenness
+    # calculate! :harmonic
   end
 
   private
