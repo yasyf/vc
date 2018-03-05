@@ -65,7 +65,7 @@
     "react-virtualized": "9.18.5",
     "react_ujs": "2.4.4",
     "remove": "0.1.5",
-    "resolve-url-loader": "^2.2.0",
+    "resolve-url-loader": "^2.3.0",
     "sass-loader": "^6.0.6",
     "script-loader": "^0.7.0",
     "showdown": "1.8.6",
