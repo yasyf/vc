@@ -4248,9 +4248,9 @@ logrocket-react@1.0.0:
     react "16"
     react-dom "16"
 
-logrocket@^0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-0.6.7.tgz#3b49ba5e30e1c7d69db9a691e8b2e360953ada23"
+logrocket@^0.6.9:
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-0.6.9.tgz#c05b4ba8206318541f236a4470440d37d369a06f"
 
 longest@^1.0.1:
   version "1.0.1"
