@@ -651,6 +651,7 @@ DEPENDENCIES
   minitest (~> 5.11.2)
   mixpanel-ruby
   neography
+  nokogiri
   omniauth
   omniauth-google-oauth2
   ox (>= 2.1.2)

@@ -53,6 +53,8 @@ nyc:
     - '0B40v9HWp1QGqMnlCLXVxYUswa00'
     - '0BxwhX9OPjSH_M0ozSGZKRzVMV1k'
     - '0BxwhX9OPjSH_blpueVNpVlIzZHc'
+    - '1ARR7WwvAn7m4jp5WyVb-hpBaZIFamz3X' # 2018
+  snapshot_template: '1PVZIpOTQOiS-m8nEKeE-Fgl6xB6uXvwWyygWBW0Lup4'
   prevote_discussions: '0B5YV7AKNT7yocjBRa3NrdmtQWk0'
   coffee_chats: '0B5YV7AKNT7yoZW9MUC1nTktyeEU'
   lists:

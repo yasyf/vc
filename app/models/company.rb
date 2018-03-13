@@ -1,8 +1,11 @@
+require 'nokogiri'
+
 class Company < ActiveRecord::Base
   include Concerns::Cacheable
   include ActionView::Helpers::NumberHelper
   include Concerns::AttributeArrayable
   include Concerns::Domainable
+  include ActionView::Helpers::UrlHelper
 
   has_one :tweeter, as: :owner, dependent: :destroy
   has_many :pitches, -> { order(when: :desc ) }
@@ -236,7 +239,43 @@ class Company < ActiveRecord::Base
     end
   end
 
+  def create_snapshot_doc!
+    # Download template doc
+    content = google_drive.export(team.snapshot_template, 'text/html').string
+
+    # Fill in fields
+    content.gsub! '{COMPANY_NAME}', name
+    content.gsub! '{TRELLO_URL}', link_to(card.trello_url, card.trello_url)
+    content.gsub! '{PARTNER_NAMES}', users.map(&:cached_name).join(', ')
+
+    # Extract body (avoids style problems)
+    content = Nokogiri::HTML(content).at('body').inner_html
+
+    # Create new doc
+    snapshot = google_drive.create(
+      "#{name.gsub(/['"]/, '')} Snapshot",
+      'application/vnd.google-apps.document',
+      StringIO.new(content),
+      team.snapshot_folder_ids.last,
+      'text/html'
+    ).web_view_link
+
+    # Update pitch if it exists
+    # Otherwise, this snapshot will get associated by name when the pitch is created
+    if pitch.present?
+      pitch.snapshot = snapshot
+      pitch.save!
+    end
+
+    snapshot
+  end
+
   private
+
+  def google_drive
+    users = self.users.present? ? self.users : team.users
+    @google_drive ||= GoogleApi::Drive.new(users.order(created_at: :desc).first)
+  end
 
   def normalize_location
     self.location = Util.normalize_city(self.location) if self.location.present?

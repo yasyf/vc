@@ -9,6 +9,12 @@
       <a class="btn btn-default" href="<%= @company.pitch.snapshot %>" role="button" target="_blank">
         <h4>View Snapshot</h4>
       </a>
+    <% else %>
+      <%= form_tag({controller: 'internal/companies', id: @company.id, action: 'create_snapshot'}, target: '_blank') do %>
+        <button class="btn btn-primary" type="submit">
+          <h4>Create Snapshot</h4>
+        </button>
+      <% end %>
     <% end %>
     <% if @vote.present? %>
       <% if @vote.final? %>
