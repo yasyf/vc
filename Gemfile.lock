@@ -132,7 +132,7 @@ GEM
     ffi (1.9.21)
     formatador (0.2.5)
     gender_detector (2.0.0)
-    geocoder (1.4.5)
+    geocoder (1.4.7)
     get_process_mem (0.2.1)
     gli (2.17.1)
     globalid (0.4.1)
