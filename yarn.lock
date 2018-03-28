@@ -5940,11 +5940,12 @@ react-emotion@^8.0.6:
     babel-plugin-emotion "^8.0.11"
     emotion-utils "^8.0.11"
 
-react-foundation@^0.9.2:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/react-foundation/-/react-foundation-0.9.2.tgz#7803a6cb9c3e4e461086dbade8c68b7fe6e9e718"
+react-foundation@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/react-foundation/-/react-foundation-0.9.4.tgz#20520b4025ae1cfc7ec09bfc19af4b8b399f592e"
   dependencies:
     classnames "^2.2.3"
+    fbjs "^0.8.16"
     prop-types "^15.5.10"
 
 react-graph-vis@1.0.2:
