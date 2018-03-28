@@ -203,7 +203,7 @@ class Message
       ).any? { |s| header('Return-Path')&.include?(s) || header('Sender')&.include?(s) } ||
       recipients.push(from).any? do |a|
         (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info admin master hello).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
-        (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem', 'accounting', 'payroll', 'admin', 'clara thompson'].any? { |s| a.name.downcase.include?(s) })) ||
+        (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem', 'accounting', 'payroll', 'admin', 'clara'].any? { |s| a.name.downcase.include?(s) })) ||
         (a.domain.present? && ['docusign.net'].any? { |s| a.domain.downcase.include?(s) })
       end
     end
