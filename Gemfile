@@ -85,7 +85,7 @@ gem 'prop'
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
-gem 'grpc', '1.9.1' # tmp fix for grpc#13908
+gem 'grpc', '1.10.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
 
 group :test do
