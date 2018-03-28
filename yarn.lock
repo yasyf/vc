@@ -2335,9 +2335,9 @@ emitter-component@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/emitter-component/-/emitter-component-1.1.1.tgz#065e2dbed6959bf470679edabeaf7981d1003ab6"
 
-emoji-mart@2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-2.4.2.tgz#df8051df6842e23b081df7d5b21418c491c44fcc"
+emoji-mart@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-2.5.1.tgz#34fb63a342a4de9f8c570f142dcb24cf9bbd9b54"
 
 emojis-list@^2.0.0:
   version "2.1.0"
