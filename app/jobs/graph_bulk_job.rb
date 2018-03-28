@@ -7,8 +7,8 @@ class GraphBulkJob < ApplicationJob
     GraphBulk.add_labels_to_nodes! Founder
     GraphBulk.add_labels_to_nodes! Investor
     calculate! :pagerank
-    # calculate! :betweenness
-    # calculate! :harmonic
+    calculate! :betweenness
+    calculate! :harmonic
   end
 
   private
@@ -62,10 +62,47 @@ class GraphBulkJob < ApplicationJob
     GraphBulk.scale_metric! :harmonic
   end
 
+  # Label Propagation
+
+  def run_vanilla_label_propagation!
+    options = <<-CYPHER
+      'OUTGOING',
+      {graph: 'cypher', partitionProperty: 'partition',  write: true, iterations: 10}
+    CYPHER
+    GraphBulk.run_vanilla_metric! 'labelPropagation', options, yields: 'didConverge'
+  end
+
+  # Louvain
+
+  def run_vanilla_louvain!
+    options = <<-CYPHER
+      {graph: 'cypher', writeProperty: 'community',  write: true}
+    CYPHER
+    GraphBulk.run_vanilla_metric! 'louvain', options, yields: 'communityCount'
+  end
+
+  # UnionFind
+
+  def run_vanilla_union_find!
+    options = <<-CYPHER
+      {graph: 'cypher', partitionProperty: 'component',  write: true}
+    CYPHER
+    GraphBulk.run_vanilla_metric! 'unionFind', options
+  end
+
+  # SCC
+
+  def run_vanilla_scc!
+    options = <<-CYPHER
+      {graph: 'cypher', partitionProperty: 'component',  write: true}
+    CYPHER
+    GraphBulk.run_vanilla_metric! 'scc', options
+  end
+
   # Shared
 
   def calculate!(name)
     send("run_vanilla_#{name}!")
-    send("scale_#{name}!")
+    send("scale_#{name}!") if respond_to?("scale_#{name}!")
   end
 end
