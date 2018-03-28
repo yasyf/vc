@@ -122,7 +122,11 @@ class Message
     founder.connect_from_addr!(from, :email) unless bulk || skip_graph
     target = TargetInvestor.from_addr(founder, from, create: true)
     return unless target.present?
-    stage = self.class.stage(reply_text, sentiment)
+    stage = if TargetInvestor.stages[target.stage] <= TargetInvestor::RAW_STAGES.keys.index(:respond)
+      self.class.stage(reply_text, sentiment)
+    else
+      TargetInvestor.stages[target.stage]
+    end
     if target.investor.present?
       email = Email.where(email_id: id).first_or_create!(
         intro_request: intro_request,
@@ -154,7 +158,11 @@ class Message
       founder.connect_to_addr!(addr, :email) if valid_connection?(addr) && !skip_graph
       target = TargetInvestor.from_addr(founder, addr, create: true)
       next unless target.present?
-      stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
+      stage = if TargetInvestor.stages[target.stage] <= TargetInvestor::RAW_STAGES.keys.index(:respond)
+        TargetInvestor::RAW_STAGES.keys.index(:waiting)
+      else
+        TargetInvestor.stages[target.stage]
+      end
       if target.investor.present?
         email = Email.where(email_id: id).first_or_create!(
           intro_request: intro_request,

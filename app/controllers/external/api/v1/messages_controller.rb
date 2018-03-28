@@ -175,7 +175,11 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_outgoing_from_target(founder, target)
-    stage =  TargetInvestor::RAW_STAGES.keys.index(:waiting)
+    stage = if TargetInvestor.stages[target.stage] <= TargetInvestor::RAW_STAGES.keys.index(:respond)
+      TargetInvestor::RAW_STAGES.keys.index(:waiting)
+    else
+      TargetInvestor.stages[target.stage]
+    end
 
     founder.connect_to! target, :email if target.last_name.present?
 
@@ -206,8 +210,13 @@ class External::Api::V1::MessagesController < External::Api::V1::ApiV1Controller
   end
 
   def create_incoming(founder, from)
-    stage = Message.stage(text, sentiment)
     target = TargetInvestor.from_addr! founder, from
+
+    stage = if TargetInvestor.stages[target.stage] <= TargetInvestor::RAW_STAGES.keys.index(:respond)
+      Message.stage(text, sentiment)
+    else
+      TargetInvestor.stages[target.stage]
+    end
 
     founder.connect_from! target, :email if target.last_name.present?
 
