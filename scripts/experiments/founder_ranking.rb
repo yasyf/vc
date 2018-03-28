@@ -2,13 +2,13 @@ require_relative '../config/boot'
 require_relative '../config/environment'
 
 active_founders = Founder.where.not(history_id: nil).where.not(logged_in_at: nil).where.not("email LIKE '%dormroomfund.com'")
-active_founders.count # 547 -> number of founders who gave us their graph
+active_founders.count # 549 -> number of founders who gave us their graph
 
 # Survey Mailer
 
 def mail_survey!
   Founder.where.not(logged_in_at: nil).find_each do |founder|
-    query = { link: founder.history_id != nil }
+    query = { link: founder.history_id != nil, email: founder.email }
     BulkMailer.nps_survey_email(founder, 'oDrLgx', "VCWiz Feedback - I'll buy you dinner!", query).deliver_later
   end
 end
