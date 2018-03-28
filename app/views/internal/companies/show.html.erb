@@ -29,7 +29,7 @@
       </a>
     <% else %>
       <h4>
-        <% if @company.pitch.past_deadline? %>
+        <% if @company.pitch&.past_deadline? %>
           You did not vote for this pitch
         <% elsif @company.passed? %>
           We passed on this company without seeing a pitch
@@ -54,11 +54,11 @@
         </div>
       </div>
     </a>
-    <% if @company.pitch.past_deadline? %>
+    <% if @company.pitch&.past_deadline? %>
       <a class="list-group-item companies--item" href="#">
         <%= render partial: 'internal/shared/stats', locals: {vote: @vote, stats: @company.pitch.stats} %>
       </a>
-      <% @company.pitch.votes.final.each do |vote| %>
+      <% @company.pitch&.votes&.final&.each do |vote| %>
         <a class="list-group-item companies--item" href="<%= internal_company_vote_path(@company, vote) %>">
           <p class='companies--name-heading'>
             <%= vote.user.name %>
@@ -69,7 +69,7 @@
         </a>
       <% end %>
     <% else %>
-      <% @company.pitch.votes.where(final: false).each do |vote| %>
+      <% @company.pitch&.votes&.where(final: false)&.each do |vote| %>
         <a class="list-group-item companies--item" href="<%= internal_company_vote_path(@company, vote) %>">
           <p class='companies--name-heading'>
             <%= vote.user.name %>
