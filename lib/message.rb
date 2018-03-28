@@ -3,6 +3,10 @@ class Message
     'love the opportunity',
     'move forward',
     'allocation of',
+    'work with you',
+    'offer term sheet',
+    'confirmatory diligence',
+    'due diligence',
   ]
   PASS_PHRASES = [
     'keep in touch',
