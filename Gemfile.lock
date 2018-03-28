@@ -492,7 +492,7 @@ GEM
     scenic (1.4.1)
       activerecord (>= 4.0.0)
       railties (>= 4.0.0)
-    scout_apm (3.0.0.pre20)
+    scout_apm (3.0.0.pre21)
     sentry-raven (2.7.2)
       faraday (>= 0.7.6, < 1.0)
     shellany (0.0.1)
@@ -676,7 +676,7 @@ DEPENDENCIES
   ruby-trello
   sass-rails
   scenic
-  scout_apm (~> 3.0.x)
+  scout_apm (~> 3.0.pre21)
   sentry-raven
   sidekiq
   sinatra (~> 2.0)
