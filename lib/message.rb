@@ -1,4 +1,9 @@
 class Message
+  INTERESTED_PRHASES = [
+    'love the opportunity',
+    'move forward',
+    'allocation of',
+  ]
   PASS_PHRASES = [
     'keep in touch',
     'not interested',
@@ -6,6 +11,10 @@ class Message
     'not a good fit',
     'keep in touch',
     'i can be helpful',
+    'not able to build conviction',
+    'love to reconsider',
+    'incredibly tough',
+    'good luck',
   ]
 
   def initialize(message)
@@ -210,8 +219,10 @@ class Message
   end
 
   def self.stage(text, sentiment)
-    if sentiment&.negative? && PASS_PHRASES.any? { |p| p.in?(text.downcase) }
+    if PASS_PHRASES.any? { |p| p.in?(text.downcase) }
       TargetInvestor::RAW_STAGES.keys.index(:pass)
+    elsif INTERESTED_PRHASES.any? { |p| p.in?(text.downcase) }
+      TargetInvestor::RAW_STAGES.keys.index(:interested)
     else
       TargetInvestor::RAW_STAGES.keys.index(:respond)
     end
