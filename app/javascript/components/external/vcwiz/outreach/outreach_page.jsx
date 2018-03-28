@@ -35,7 +35,7 @@ export default class OutreachPage extends React.Component {
 
   componentWillMount() {
     this.subscription = Store.subscribe(StorageRestoreStateKey, restoreState => this.setState({restoreState}));
-    if (!LocalStorage.get(EmailIntegrationModalShown) && !Store.get('founder', {})['scanner_enabled?']) {
+    if ((this.props.show_link || !LocalStorage.get(EmailIntegrationModalShown)) && !Store.get('founder', {})['scanner_enabled?']) {
       LocalStorage.set(EmailIntegrationModalShown, true);
       this.openEmailIntegrationModal();
     }

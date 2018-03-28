@@ -164,7 +164,7 @@
 
               <% unless @founder.history_id.present? %>
                   <p>
-                    P.S. To get even more out of VCWiz, make sure to enable VCWiz Link <a href="<%= external_vcwiz_outreach_url %>">here</a>!
+                    P.S. To get even more out of VCWiz, make sure to enable VCWiz Link <a href="<%= external_vcwiz_outreach_url(show_link: true) %>">here</a>!
                   </p>
               <% end %>
             </div>

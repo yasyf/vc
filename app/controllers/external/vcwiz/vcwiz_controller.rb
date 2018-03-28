@@ -124,6 +124,7 @@ class External::VCWiz::VCWizController < External::FrontendController
       targets: targets,
       count: current_external_founder.target_investors.undeleted.count,
       sort: sorts,
+      show_link: params[:show_link].present?,
     )
     render_default
   end
