@@ -211,6 +211,8 @@ class Message
        'could not be delivered',
        'this message was sent to you',
        "wasn't delivered",
+       'do not reply',
+       'automated message',
       ].any? { |s| text&.downcase&.include?(s) || html&.downcase&.include?(s) } ||
       %w(
         List-Unsubscribe
@@ -223,12 +225,14 @@ class Message
         X-Mandrill-User
         X-Roving-ID
         X-Eventbrite
+        X-CL-Originating-Ip
        ).any? { |h| headers.key?(h) } ||
       %w(
         feedblitz
+        bounce-post
       ).any? { |s| header('Return-Path')&.include?(s) || header('Sender')&.include?(s) } ||
       recipients.push(from).any? do |a|
-        (a.local.present? && (%w(noreply no-reply do-not-reply daemon notification support orders team help info admin master hello).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
+        (a.local.present? && (%w(robot noreply no-reply do-not-reply daemon notification support orders team help info admin master hello bounce).any? { |s| a.local.downcase.include?(s) } || a.local.include?('+'))) ||
         (a.name.present? && (['mail delivery', 'support', 'team', 'subsystem', 'accounting', 'payroll', 'admin', 'clara'].any? { |s| a.name.downcase.include?(s) })) ||
         (a.domain.present? && ['docusign.net'].any? { |s| a.domain.downcase.include?(s) })
       end
