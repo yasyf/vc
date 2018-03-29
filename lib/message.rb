@@ -2,11 +2,14 @@ class Message
   INTERESTED_PRHASES = [
     'love the opportunity',
     'move forward',
-    'allocation of',
+    'allocation',
     'work with you',
-    'offer term sheet',
+    'term sheet',
     'confirmatory diligence',
     'due diligence',
+    'congratulations',
+    'would be excited',
+    'are excited',
   ]
   PASS_PHRASES = [
     'keep in touch',
@@ -19,6 +22,8 @@ class Message
     'love to reconsider',
     'incredibly tough',
     'good luck',
+    'sorry',
+    'unfortunately',
   ]
 
   def initialize(message)

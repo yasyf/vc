@@ -4,8 +4,9 @@ module GoogleApi
   class Gmail < Base
     SCOPES = [Google::Apis::GmailV1::AUTH_GMAIL_READONLY]
 
-    def initialize(user)
+    def initialize(user, skip_graph: false)
       @user = user
+      @skip_graph = skip_graph
       @gmail = Google::Apis::GmailV1::GmailService.new
       @gmail.authorization = authorization
       @gmail.quota_user = @user.id.to_s
@@ -31,7 +32,7 @@ module GoogleApi
       begin
         response = list_histories
       rescue Google::Apis::ClientError
-        @skip_graph = @user.history_id != 0
+        @skip_graph ||= @user.history_id != 0
         sync_full!
         return
       end
