@@ -26,6 +26,12 @@ module GoogleApi
       FounderMailer.bad_link_email(@user).deliver_later
     end
 
+    def backfill!(oldest, newest)
+      sync_range! oldest, newest, track: false
+    rescue => e
+      Rails.logger.warn e
+    end
+
     private
 
     def sync_partial!
@@ -52,7 +58,11 @@ module GoogleApi
     end
 
     def sync_full!
-      response = list_threads
+      sync_range! '2y', nil
+    end
+
+    def sync_range!(oldest, newest, track: true)
+      response = list_threads(oldest: oldest, newest: newest)
       history_id = response.threads.first.history_id
       loop do
         thread_ids = response.threads.map(&:id)
@@ -60,9 +70,9 @@ module GoogleApi
           process_thread thread
         end if thread_ids.present?
         break unless response.next_page_token.present?
-        response = list_threads response.next_page_token
+        response = list_threads(response.next_page_token, oldest: oldest, newest: newest)
       end
-      @user.update! history_id: history_id
+      @user.update! history_id: history_id if track
     end
 
     def process_thread(thread)
@@ -100,8 +110,12 @@ module GoogleApi
       @gmail.list_user_histories(@user.email, history_types: 'messageAdded', start_history_id: @user.history_id, page_token: token)
     end
 
-    def list_threads(token = nil, limit = '1y')
-      @gmail.list_user_threads(@user.email, page_token: token, q: "newer_than:#{limit}")
+    def list_threads(token = nil, oldest: nil, newest: nil)
+      q = [
+        oldest.present? ? "newer_than:#{oldest}" : nil,
+        newest.present? ? "older_than:#{newest}" : nil,
+      ].compact.join(' ')
+      @gmail.list_user_threads(@user.email, page_token: token, q: q)
     end
   end
 end
