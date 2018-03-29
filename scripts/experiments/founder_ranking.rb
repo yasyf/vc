@@ -90,6 +90,7 @@ indexes = WEIGHTS.map do |metric, weight|
 end.transpose.map(&:sum)
 
 sorted = dataset.map.with_index.sort_by { |x,i| indexes[i] }.reverse.map(&:first)
+puts sorted.first(5)
 
 # Naive Founder Rank:
 
@@ -98,6 +99,10 @@ naive_fr = active_founders.find_each.map do |founder|
 end
 
 sorted_by_nrf = dataset.zip(naive_fr).sort_by(&:last).reverse.map(&:first)
+puts sorted_by_nrf.first(5)
 
-# fix 0-1 scaling
+# Weighted Founder Rank
 
+# Founder Rank + Investment
+
+# Weighted Founder Rank + Investment
