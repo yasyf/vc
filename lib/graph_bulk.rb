@@ -2,7 +2,7 @@ class GraphBulk
   def self.get_minmax(metric)
     script = <<-CYPHER
       MATCH (n:Person)
-      RETURN max(n.#{metric}), MIN(n.#{metric})
+      RETURN MIN(n.#{metric}), MAX(n.#{metric})
     CYPHER
     Graph.execute(script).first
   end

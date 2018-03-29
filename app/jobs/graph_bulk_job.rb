@@ -103,6 +103,6 @@ class GraphBulkJob < ApplicationJob
 
   def calculate!(name)
     send("run_vanilla_#{name}!")
-    send("scale_#{name}!") if respond_to?("scale_#{name}!")
+    send("scale_#{name}!") if respond_to?("scale_#{name}!", true)
   end
 end
