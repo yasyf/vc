@@ -3,9 +3,10 @@ class GraphBulkJob < ApplicationJob
 
   DAMPING_FACTOR = 0.85
 
-  def perform
+  def perform(shallow: false)
     GraphBulk.add_labels_to_nodes! Founder
     GraphBulk.add_labels_to_nodes! Investor
+    return if shallow
     calculate! :pagerank
     calculate! :betweenness
     calculate! :harmonic
