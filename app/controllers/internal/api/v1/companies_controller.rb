@@ -54,13 +54,13 @@ class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controlle
 
   def reject
     company = Company.find(params[:id])
-    return head :bad_request if company.list.in?([
+    return head :bad_request if company.card.list.in?([
       company.team.lists.rejected,
       company.team.lists.passed,
       company.team.lists.scheduled,
       company.team.lists.pre_funded,
     ] + company.team.funded_lists)
-    company.move_to_rejected_list!
+    company.card.move_to_rejected_list!
 
     head :ok
   end
