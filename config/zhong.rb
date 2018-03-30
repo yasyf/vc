@@ -8,7 +8,7 @@ Zhong.schedule do
     category 'sync' do
       every(1.hour, 'list') { List.sync! }
       every(5.minutes, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
-      every(15.minutes, 'company.deep', at: '00:00') { Company.sync!(quiet: false, deep: true) }
+      every(15.minutes, 'company.deep') { Company.sync!(quiet: false, deep: true) }
       every(1.hour, 'evergreen') { Slack::CollectEvergreensJob.perform_later }
     end
 
