@@ -7,13 +7,13 @@ Zhong.schedule do
   if Rails.application.drfvote?
     category 'sync' do
       every(1.hour, 'list') { List.sync! }
-      every(1.hour, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
-      every(1.day, 'company.deep', at: '00:00') { Company.sync!(quiet: false, deep: true) }
+      every(5.minutes, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
+      every(15.minutes, 'company.deep', at: '00:00') { Company.sync!(quiet: false, deep: true) }
       every(1.hour, 'evergreen') { Slack::CollectEvergreensJob.perform_later }
     end
 
     category 'cache' do
-      every(2.weeks, 'warm', at: 'Monday 08:00') { CacheWarmJob.perform_later }
+      every(1.day, 'warm', at: '08:00') { CacheWarmJob.perform_later }
     end
 
     category 'pitch' do
@@ -29,7 +29,7 @@ Zhong.schedule do
     end
 
     category 'users' do
-      every(1.hours, 'calendar') { UserCalendarJob.perform_later }
+      every(15.minutes, 'calendar') { UserCalendarJob.perform_later }
     end
   end
   if Rails.application.vcwiz?
