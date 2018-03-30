@@ -397,7 +397,7 @@ class Investor < ApplicationRecord
   def travel_status(city)
     if city == location
       :working
-    elsif city.in?(competitor.location)
+    elsif city.in?(competitor.location || [])
       :work_traveling
     else
       :pleasure_traveling
