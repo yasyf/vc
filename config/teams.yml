@@ -15,6 +15,7 @@ default:
 # Define teams below
 
 boston: &boston
+  full_name: 'Boston'
   listserv: 'iteambos'
   channel: 'iteambos'
   boards:
@@ -43,6 +44,7 @@ boston: &boston
   voting_period: 1
 
 nyc:
+  full_name: 'New York'
   ignore: <%= !Rails.env.production? %>
   listserv: 'iteamnyc'
   channel: 'iteamnyc'
@@ -70,6 +72,7 @@ nyc:
   voting_period: 1
 
 sf:
+  full_name: 'SF / Bay Area'
   ignore: <%= !Rails.env.production? %>
   listserv: 'iteamsfbay'
   channel: 'iteamsf'
@@ -97,6 +100,7 @@ sf:
   voting_period: 1
 
 phl:
+  full_name: 'Philly'
   ignore: <%= !Rails.env.production? %>
   listserv: 'iteamphl'
   channel: 'philly-iteam'

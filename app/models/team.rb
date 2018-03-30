@@ -46,6 +46,10 @@ class Team < ApplicationRecord
     config['time_zone']
   end
 
+  def full_name
+    config['full_name']
+  end
+
   def time_now
     Time.current.in_time_zone(time_zone)
   end

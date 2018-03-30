@@ -107,6 +107,7 @@ class Company < ActiveRecord::Base
     ) do
       pitch_on = pitch.when.to_time.to_i if pitch.present?
       as_json(options).merge(
+        team: team.full_name,
         capital_raised: capital_raised(format: true),
         pitch_on: pitch_on,
         funded: funded?,
