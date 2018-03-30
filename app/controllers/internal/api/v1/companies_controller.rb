@@ -16,7 +16,7 @@ class Internal::Api::V1::CompaniesController < Internal::Api::V1::ApiV1Controlle
   end
 
   def search
-    render json: { results: Company.includes(*INCLUDES).search(params[:q]).map(&:as_json_api) }
+    render json: { results: Company.where.not(team: nil).includes(*INCLUDES).search(params[:q]).map(&:as_json_api) }
   end
 
   def voting_status
