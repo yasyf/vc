@@ -47,7 +47,6 @@ module Importers::Internal
         parsed.merge! parse_pitch_on(card) if card.list_id == @team.lists.scheduled.trello_id
       rescue DateTimeNotFound => dtnf
         dtnf.log! card, @team
-        return nil
       end
       parsed
     rescue ::Trello::Error => e
