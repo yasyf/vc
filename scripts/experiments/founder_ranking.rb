@@ -13,6 +13,14 @@ def mail_survey!
   end
 end
 
+# Graph Backfill
+
+def backfill_graph!
+  Founder.where.not(history_id: nil).pluck(:id).each do |id|
+    FounderGmailBackfillJob.set(wait: 30.minutes * rand).perform_later(id, '5y', '1y')
+  end
+end
+
 # Utilities
 
 def total_funding(companies)
