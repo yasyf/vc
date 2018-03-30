@@ -7,8 +7,8 @@ Zhong.schedule do
   if Rails.application.drfvote?
     category 'sync' do
       every(1.hour, 'list') { List.sync! }
-      every(10.minutes, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
-      every(30.minutes, 'company.deep') { Company.sync!(quiet: false, deep: true) }
+      every(15.minutes, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
+      every(1.day, 'company.deep', at: '00:00') { Company.sync!(quiet: false, deep: true) }
       every(1.hour, 'evergreen') { Slack::CollectEvergreensJob.perform_later }
     end
 
