@@ -8,7 +8,7 @@ class CardSyncJob < ApplicationJob
 
     list = List.where(trello_id: card_data.delete(:trello_list_id)).first!
     card = Card.where(trello_id: card_data[:trello_id]).first_or_initialize
-    card.company ||= Company.where(name: card_data[:name]).first_or_initialize
+    card.company ||= Company.where(name: card_data[:name]).first_or_initialize(team: team)
 
     company = card.company
     pitch = company.pitch
