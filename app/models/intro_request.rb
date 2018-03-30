@@ -4,7 +4,7 @@ class IntroRequest < ApplicationRecord
   include Concerns::Eventable
 
   TOKEN_MAGIC = 'VCWIZ_INTRO_'
-  MAX_IN_FLIGHT = 5
+  MAX_IN_FLIGHT = 10
 
   belongs_to :investor
   belongs_to :company
