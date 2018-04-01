@@ -81,33 +81,60 @@ puts top_by_metric(dataset, :current_funding) # best
 puts top_by_metric(dataset, :incoming_sentiment) # surprisingly good, lots of DRF and YC companies. SHOW how high sentiment correlates with number of well-respected investors.
 puts top_by_metric(dataset, :incoming_investors) # good, shows lots of inbound interest
 puts top_by_metric(dataset, :email_success) # not as good, because some people just never send (maybe the cofounder is doing it)
-puts top_by_metric(dataset, :manual_target_success) # not as good, absolute number would be better
+puts top_by_metric(dataset, :manual_target_success) # not as good, absolute number would be better, since they might have only targetted a few who they know will want to fund them
 puts top_by_metric(dataset, :manual_target_responds) # high-signal for companies in their early days of raising, indicates consistent success capturing attention
 
 # Baseline: weighted combo of ranking in each of these schemes
+
+def normalize(x, min, max)
+  (x - min).to_f / (max - min).to_f
+end
+
+def data_and_sorted(dataset, scores, relevance: nil)
+  min_score, max_score = [scores.min, scores.max]
+
+  data_raw = dataset.zip(scores).sort_by(&:last)
+  data = data_raw
+    .map.with_index
+    .map { |(x, score), rank| [x[:id], normalize(score, min_score, max_score), relevance.present? ? relevance[x[:id]] : rank + 1] } # [[id, score, relevance]]
+    .reverse
+
+  sorted = data_raw.map(&:first).reverse
+
+  [data, sorted]
+end
 
 WEIGHTS = {
   total_funding: 4,
   incoming_investors: 3,
   manual_target_responds: 2,
-  incoming_sentiment: 1.5,
+  incoming_sentiment: 1,
 }
 
-indexes = WEIGHTS.map do |metric, weight|
+baseline_scores = WEIGHTS.map do |metric, weight|
   sort_indexes_by_metric(dataset, metric).map { |x| x * weight }
 end.transpose.map(&:sum)
 
-sorted = dataset.map.with_index.sort_by { |x,i| indexes[i] }.reverse.map(&:first)
-puts sorted.first(5)
+baseline_data, baseline_sorted = data_and_sorted(dataset, baseline_scores)
+relevance = baseline_data.each_with_object({}) { |x, h| h[x.first] = x.last }
+puts baseline_sorted.first(5)
+
+# Random
+
+random_scores = active_founders.size.times.map { rand }
+random_data, random_sorted = data_and_sorted(dataset, random_scores, relevance: relevance)
+puts random_sorted.first(5)
 
 # Naive Founder Rank:
 
-naive_fr = active_founders.find_each.map do |founder|
+naive_fr_scores = active_founders.find_each.map do |founder|
   %w(pagerank betweenness harmonic).map { |prop| founder.graph_node[prop] || 0.0 }.sum / 3.0
 end
 
-sorted_by_nrf = dataset.zip(naive_fr).sort_by(&:last).reverse.map(&:first)
-puts sorted_by_nrf.first(5)
+naive_fr_data, naive_fr_sorted = data_and_sorted(dataset, naive_fr_scores, relevance: relevance)
+puts naive_fr_sorted.first(5)
+
+# export to run calculations in python
 
 # Weighted Founder Rank
 
