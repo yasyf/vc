@@ -36,3 +36,13 @@ class Metrics(object):
     n = a.shape[0]
     differences = np.power(a[:, 2] - self.baseline[:, 2], 2)
     return 1 - ((6 * np.sum(differences)) / (n * (np.power(n, 2) - 1)))
+
+  def rmse(self, a):
+    n = a.shape[0]
+    differences = np.power(a[:, 1] - self.baseline[:, 1], 2)
+    return np.sqrt(np.sum(differences) / float(n))
+
+  def mae(self, a):
+    n = a.shape[0]
+    differences = np.abs(a[:, 1] - self.baseline[:, 1])
+    return np.sum(differences) / float(n)
