@@ -52,7 +52,7 @@ Zhong.schedule do
 
     category 'bulk' do
       every(1.month, 'crunchbase') { CrunchbasePullJob.perform_later }
-      every(1.week, 'crunchbase') { FounderCompanyRefreshJob.perform_later }
+      every(1.week, 'founder.companies') { FounderCompanyRefreshJob.perform_later }
     end
   end
 end
