@@ -128,11 +128,11 @@ puts random_sorted.first(5)
 # Naive Founder Rank:
 
 active_founder_graph_metrics = active_founders.find_each.map do |founder|
-  %w(pagerank betweenness harmonic).each_with_object({}) { |prop, h| h[prop] = founder.graph_node[prop] || 0.0 }
+  %w(pagerank betweenness harmonic).map { |prop| founder.graph_node[prop] || 0.0 }
 end
 
 naive_fr_scores = active_founder_graph_metrics.map do |metrics|
-  metrics.values.sum / 3.0
+  metrics.sum / 3.0
 end
 
 naive_fr_data, naive_fr_sorted = data_and_sorted(dataset, naive_fr_scores, relevance: relevance)
@@ -140,7 +140,9 @@ puts naive_fr_sorted.first(5)
 
 # Weighted Founder Rank
 
-weighted_fr_X = active_founder_graph_metrics.map(&:values)
+weighted_fr_X =  dataset.map.with_index do |x, i|
+  [x[:id]] + active_founder_graph_metrics[i]
+end
 
 # Founder Rank + Investment
 
