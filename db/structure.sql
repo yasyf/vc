@@ -3,6 +3,7 @@ SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
@@ -77,8 +78,6 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
-SET search_path = public, pg_catalog;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -87,7 +86,7 @@ SET default_with_oids = false;
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE ar_internal_metadata (
+CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
     created_at timestamp without time zone NOT NULL,
@@ -99,7 +98,7 @@ CREATE TABLE ar_internal_metadata (
 -- Name: calendar_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE calendar_events (
+CREATE TABLE public.calendar_events (
     id character varying NOT NULL,
     user_id integer NOT NULL,
     company_id integer,
@@ -114,7 +113,7 @@ CREATE TABLE calendar_events (
 -- Name: cards; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE cards (
+CREATE TABLE public.cards (
     id bigint NOT NULL,
     trello_id character varying NOT NULL,
     archived boolean DEFAULT false NOT NULL,
@@ -129,7 +128,7 @@ CREATE TABLE cards (
 -- Name: cards_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE cards_id_seq
+CREATE SEQUENCE public.cards_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -141,14 +140,14 @@ CREATE SEQUENCE cards_id_seq
 -- Name: cards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE cards_id_seq OWNED BY cards.id;
+ALTER SEQUENCE public.cards_id_seq OWNED BY public.cards.id;
 
 
 --
 -- Name: companies; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE companies (
+CREATE TABLE public.companies (
     id integer NOT NULL,
     name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -162,7 +161,10 @@ CREATE TABLE companies (
     verified boolean DEFAULT false NOT NULL,
     "primary" boolean DEFAULT false NOT NULL,
     al_id integer,
-    location character varying
+    location character varying,
+    acquisition_date date,
+    ipo_date date,
+    ipo_valuation bigint
 );
 
 
@@ -170,7 +172,7 @@ CREATE TABLE companies (
 -- Name: companies_founders; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE companies_founders (
+CREATE TABLE public.companies_founders (
     company_id bigint NOT NULL,
     founder_id bigint NOT NULL
 );
@@ -180,7 +182,7 @@ CREATE TABLE companies_founders (
 -- Name: companies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE companies_id_seq
+CREATE SEQUENCE public.companies_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -192,14 +194,14 @@ CREATE SEQUENCE companies_id_seq
 -- Name: companies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE companies_id_seq OWNED BY companies.id;
+ALTER SEQUENCE public.companies_id_seq OWNED BY public.companies.id;
 
 
 --
 -- Name: companies_users; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE companies_users (
+CREATE TABLE public.companies_users (
     company_id integer NOT NULL,
     user_id integer NOT NULL
 );
@@ -209,7 +211,7 @@ CREATE TABLE companies_users (
 -- Name: competitions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE competitions (
+CREATE TABLE public.competitions (
     id bigint NOT NULL,
     a_id bigint NOT NULL,
     b_id bigint NOT NULL,
@@ -222,7 +224,7 @@ CREATE TABLE competitions (
 -- Name: competitions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE competitions_id_seq
+CREATE SEQUENCE public.competitions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -234,14 +236,14 @@ CREATE SEQUENCE competitions_id_seq
 -- Name: competitions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE competitions_id_seq OWNED BY competitions.id;
+ALTER SEQUENCE public.competitions_id_seq OWNED BY public.competitions.id;
 
 
 --
 -- Name: competitors; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE competitors (
+CREATE TABLE public.competitors (
     id integer NOT NULL,
     name character varying,
     crunchbase_id character varying,
@@ -267,7 +269,7 @@ CREATE TABLE competitors (
 -- Name: investors; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE investors (
+CREATE TABLE public.investors (
     id bigint NOT NULL,
     first_name character varying NOT NULL,
     last_name character varying NOT NULL,
@@ -300,7 +302,7 @@ CREATE TABLE investors (
     token character varying,
     average_response_time integer,
     hidden boolean DEFAULT false NOT NULL,
-    review hstore
+    review public.hstore
 );
 
 
@@ -308,13 +310,13 @@ CREATE TABLE investors (
 -- Name: competitor_investor_aggs; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW competitor_investor_aggs AS
+CREATE MATERIALIZED VIEW public.competitor_investor_aggs AS
  SELECT competitors.id AS competitor_id,
     COALESCE(sum(investors.target_investors_count), (0)::bigint) AS target_count,
     bool_or(COALESCE(investors.featured, false)) AS featured,
     bool_or(COALESCE(investors.verified, false)) AS verified
-   FROM (competitors
-     JOIN investors ON ((investors.competitor_id = competitors.id)))
+   FROM (public.competitors
+     JOIN public.investors ON ((investors.competitor_id = competitors.id)))
   GROUP BY competitors.id
   WITH NO DATA;
 
@@ -323,7 +325,7 @@ CREATE MATERIALIZED VIEW competitor_investor_aggs AS
 -- Name: investments; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE investments (
+CREATE TABLE public.investments (
     company_id integer NOT NULL,
     competitor_id integer NOT NULL,
     funded_at timestamp without time zone,
@@ -340,11 +342,11 @@ CREATE TABLE investments (
 -- Name: competitor_velocities; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW competitor_velocities AS
+CREATE MATERIALIZED VIEW public.competitor_velocities AS
  SELECT competitors.id AS competitor_id,
     count(investments.id) AS velocity
-   FROM (competitors
-     JOIN investments ON ((investments.competitor_id = competitors.id)))
+   FROM (public.competitors
+     JOIN public.investments ON ((investments.competitor_id = competitors.id)))
   WHERE (investments.funded_at > (now() - '1 year'::interval))
   GROUP BY competitors.id
   WITH NO DATA;
@@ -354,7 +356,7 @@ CREATE MATERIALIZED VIEW competitor_velocities AS
 -- Name: competitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE competitors_id_seq
+CREATE SEQUENCE public.competitors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -366,14 +368,14 @@ CREATE SEQUENCE competitors_id_seq
 -- Name: competitors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE competitors_id_seq OWNED BY competitors.id;
+ALTER SEQUENCE public.competitors_id_seq OWNED BY public.competitors.id;
 
 
 --
 -- Name: emails; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE emails (
+CREATE TABLE public.emails (
     id bigint NOT NULL,
     body text,
     sentiment_score double precision,
@@ -397,7 +399,7 @@ CREATE TABLE emails (
 -- Name: emails_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE emails_id_seq
+CREATE SEQUENCE public.emails_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -409,14 +411,14 @@ CREATE SEQUENCE emails_id_seq
 -- Name: emails_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
+ALTER SEQUENCE public.emails_id_seq OWNED BY public.emails.id;
 
 
 --
 -- Name: entities; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE entities (
+CREATE TABLE public.entities (
     id bigint NOT NULL,
     name character varying NOT NULL,
     category character varying DEFAULT 'OTHER'::character varying NOT NULL,
@@ -432,7 +434,7 @@ CREATE TABLE entities (
 -- Name: entities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE entities_id_seq
+CREATE SEQUENCE public.entities_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -444,14 +446,14 @@ CREATE SEQUENCE entities_id_seq
 -- Name: entities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE entities_id_seq OWNED BY entities.id;
+ALTER SEQUENCE public.entities_id_seq OWNED BY public.entities.id;
 
 
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE events (
+CREATE TABLE public.events (
     id bigint NOT NULL,
     subject_type character varying NOT NULL,
     subject_id bigint NOT NULL,
@@ -468,7 +470,7 @@ CREATE TABLE events (
 -- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE events_id_seq
+CREATE SEQUENCE public.events_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -480,14 +482,14 @@ CREATE SEQUENCE events_id_seq
 -- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE events_id_seq OWNED BY events.id;
+ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 
 --
 -- Name: founders; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE founders (
+CREATE TABLE public.founders (
     id bigint NOT NULL,
     first_name character varying NOT NULL,
     last_name character varying NOT NULL,
@@ -510,7 +512,9 @@ CREATE TABLE founders (
     refresh_token character varying,
     history_id bigint,
     unsubscribed boolean DEFAULT false NOT NULL,
-    token character varying
+    token character varying,
+    affiliated_exits integer,
+    cb_id character varying
 );
 
 
@@ -518,7 +522,7 @@ CREATE TABLE founders (
 -- Name: founders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE founders_id_seq
+CREATE SEQUENCE public.founders_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -530,14 +534,14 @@ CREATE SEQUENCE founders_id_seq
 -- Name: founders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE founders_id_seq OWNED BY founders.id;
+ALTER SEQUENCE public.founders_id_seq OWNED BY public.founders.id;
 
 
 --
 -- Name: import_tasks; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE import_tasks (
+CREATE TABLE public.import_tasks (
     id bigint NOT NULL,
     founder_id bigint NOT NULL,
     headers jsonb DEFAULT '"{}"'::jsonb,
@@ -558,7 +562,7 @@ CREATE TABLE import_tasks (
 -- Name: import_tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE import_tasks_id_seq
+CREATE SEQUENCE public.import_tasks_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -570,14 +574,14 @@ CREATE SEQUENCE import_tasks_id_seq
 -- Name: import_tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE import_tasks_id_seq OWNED BY import_tasks.id;
+ALTER SEQUENCE public.import_tasks_id_seq OWNED BY public.import_tasks.id;
 
 
 --
 -- Name: intro_requests; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE intro_requests (
+CREATE TABLE public.intro_requests (
     id bigint NOT NULL,
     token character varying NOT NULL,
     accepted boolean,
@@ -604,7 +608,7 @@ CREATE TABLE intro_requests (
 -- Name: intro_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE intro_requests_id_seq
+CREATE SEQUENCE public.intro_requests_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -616,14 +620,14 @@ CREATE SEQUENCE intro_requests_id_seq
 -- Name: intro_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE intro_requests_id_seq OWNED BY intro_requests.id;
+ALTER SEQUENCE public.intro_requests_id_seq OWNED BY public.intro_requests.id;
 
 
 --
 -- Name: investments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE investments_id_seq
+CREATE SEQUENCE public.investments_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -635,14 +639,14 @@ CREATE SEQUENCE investments_id_seq
 -- Name: investments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE investments_id_seq OWNED BY investments.id;
+ALTER SEQUENCE public.investments_id_seq OWNED BY public.investments.id;
 
 
 --
 -- Name: person_entities; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE person_entities (
+CREATE TABLE public.person_entities (
     id bigint NOT NULL,
     entity_id bigint NOT NULL,
     person_type character varying NOT NULL,
@@ -658,7 +662,7 @@ CREATE TABLE person_entities (
 -- Name: posts; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE posts (
+CREATE TABLE public.posts (
     id bigint NOT NULL,
     investor_id bigint NOT NULL,
     url character varying NOT NULL,
@@ -674,17 +678,17 @@ CREATE TABLE posts (
 -- Name: investor_entities; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW investor_entities AS
+CREATE MATERIALIZED VIEW public.investor_entities AS
  SELECT competitors.id AS competitor_id,
     investors.id AS investor_id,
     entities.id AS entity_id,
     (COALESCE(max(investor_person_entities.count), 0) + COALESCE(max(post_person_entities.count), 0)) AS count
-   FROM (((((investors
-     LEFT JOIN posts ON ((posts.investor_id = investors.id)))
-     LEFT JOIN person_entities investor_person_entities ON ((((investor_person_entities.person_type)::text = 'Investor'::text) AND (investor_person_entities.person_id = investors.id))))
-     LEFT JOIN person_entities post_person_entities ON ((((post_person_entities.person_type)::text = 'Post'::text) AND (post_person_entities.person_id = posts.id))))
-     JOIN entities ON (((investor_person_entities.entity_id = entities.id) OR (post_person_entities.entity_id = entities.id))))
-     JOIN competitors ON ((competitors.id = investors.competitor_id)))
+   FROM (((((public.investors
+     LEFT JOIN public.posts ON ((posts.investor_id = investors.id)))
+     LEFT JOIN public.person_entities investor_person_entities ON ((((investor_person_entities.person_type)::text = 'Investor'::text) AND (investor_person_entities.person_id = investors.id))))
+     LEFT JOIN public.person_entities post_person_entities ON ((((post_person_entities.person_type)::text = 'Post'::text) AND (post_person_entities.person_id = posts.id))))
+     JOIN public.entities ON (((investor_person_entities.entity_id = entities.id) OR (post_person_entities.entity_id = entities.id))))
+     JOIN public.competitors ON ((competitors.id = investors.competitor_id)))
   GROUP BY competitors.id, investors.id, entities.id
   WITH NO DATA;
 
@@ -693,7 +697,7 @@ CREATE MATERIALIZED VIEW investor_entities AS
 -- Name: investors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE investors_id_seq
+CREATE SEQUENCE public.investors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -705,14 +709,14 @@ CREATE SEQUENCE investors_id_seq
 -- Name: investors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE investors_id_seq OWNED BY investors.id;
+ALTER SEQUENCE public.investors_id_seq OWNED BY public.investors.id;
 
 
 --
 -- Name: knowledges; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE knowledges (
+CREATE TABLE public.knowledges (
     id integer NOT NULL,
     body text NOT NULL,
     user_id integer,
@@ -727,7 +731,7 @@ CREATE TABLE knowledges (
 -- Name: knowledges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE knowledges_id_seq
+CREATE SEQUENCE public.knowledges_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -739,14 +743,14 @@ CREATE SEQUENCE knowledges_id_seq
 -- Name: knowledges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE knowledges_id_seq OWNED BY knowledges.id;
+ALTER SEQUENCE public.knowledges_id_seq OWNED BY public.knowledges.id;
 
 
 --
 -- Name: lists; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE lists (
+CREATE TABLE public.lists (
     id integer NOT NULL,
     trello_id character varying NOT NULL,
     name character varying NOT NULL,
@@ -761,7 +765,7 @@ CREATE TABLE lists (
 -- Name: lists_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE lists_id_seq
+CREATE SEQUENCE public.lists_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -773,14 +777,14 @@ CREATE SEQUENCE lists_id_seq
 -- Name: lists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE lists_id_seq OWNED BY lists.id;
+ALTER SEQUENCE public.lists_id_seq OWNED BY public.lists.id;
 
 
 --
 -- Name: logged_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE logged_events (
+CREATE TABLE public.logged_events (
     id integer NOT NULL,
     reason text NOT NULL,
     record_id integer NOT NULL,
@@ -795,7 +799,7 @@ CREATE TABLE logged_events (
 -- Name: logged_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE logged_events_id_seq
+CREATE SEQUENCE public.logged_events_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -807,14 +811,14 @@ CREATE SEQUENCE logged_events_id_seq
 -- Name: logged_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE logged_events_id_seq OWNED BY logged_events.id;
+ALTER SEQUENCE public.logged_events_id_seq OWNED BY public.logged_events.id;
 
 
 --
 -- Name: models; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE models (
+CREATE TABLE public.models (
     id bigint NOT NULL,
     name character varying NOT NULL,
     version integer NOT NULL,
@@ -823,7 +827,7 @@ CREATE TABLE models (
     last_trained timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    metrics hstore
+    metrics public.hstore
 );
 
 
@@ -831,7 +835,7 @@ CREATE TABLE models (
 -- Name: models_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE models_id_seq
+CREATE SEQUENCE public.models_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -843,14 +847,14 @@ CREATE SEQUENCE models_id_seq
 -- Name: models_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE models_id_seq OWNED BY models.id;
+ALTER SEQUENCE public.models_id_seq OWNED BY public.models.id;
 
 
 --
 -- Name: news; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE news (
+CREATE TABLE public.news (
     id bigint NOT NULL,
     investor_id bigint,
     company_id bigint,
@@ -869,7 +873,7 @@ CREATE TABLE news (
 -- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE news_id_seq
+CREATE SEQUENCE public.news_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -881,14 +885,14 @@ CREATE SEQUENCE news_id_seq
 -- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE news_id_seq OWNED BY news.id;
+ALTER SEQUENCE public.news_id_seq OWNED BY public.news.id;
 
 
 --
 -- Name: notes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE notes (
+CREATE TABLE public.notes (
     id bigint NOT NULL,
     founder_id bigint NOT NULL,
     body text NOT NULL,
@@ -903,7 +907,7 @@ CREATE TABLE notes (
 -- Name: notes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE notes_id_seq
+CREATE SEQUENCE public.notes_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -915,14 +919,14 @@ CREATE SEQUENCE notes_id_seq
 -- Name: notes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE notes_id_seq OWNED BY notes.id;
+ALTER SEQUENCE public.notes_id_seq OWNED BY public.notes.id;
 
 
 --
 -- Name: person_entities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE person_entities_id_seq
+CREATE SEQUENCE public.person_entities_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -934,14 +938,14 @@ CREATE SEQUENCE person_entities_id_seq
 -- Name: person_entities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE person_entities_id_seq OWNED BY person_entities.id;
+ALTER SEQUENCE public.person_entities_id_seq OWNED BY public.person_entities.id;
 
 
 --
 -- Name: pitches; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE pitches (
+CREATE TABLE public.pitches (
     id bigint NOT NULL,
     "when" timestamp without time zone NOT NULL,
     decision timestamp without time zone,
@@ -961,7 +965,7 @@ CREATE TABLE pitches (
 -- Name: pitches_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE pitches_id_seq
+CREATE SEQUENCE public.pitches_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -973,14 +977,14 @@ CREATE SEQUENCE pitches_id_seq
 -- Name: pitches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE pitches_id_seq OWNED BY pitches.id;
+ALTER SEQUENCE public.pitches_id_seq OWNED BY public.pitches.id;
 
 
 --
 -- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE posts_id_seq
+CREATE SEQUENCE public.posts_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -992,14 +996,14 @@ CREATE SEQUENCE posts_id_seq
 -- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE posts_id_seq OWNED BY posts.id;
+ALTER SEQUENCE public.posts_id_seq OWNED BY public.posts.id;
 
 
 --
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE schema_migrations (
+CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
 
@@ -1008,7 +1012,7 @@ CREATE TABLE schema_migrations (
 -- Name: target_investors; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE target_investors (
+CREATE TABLE public.target_investors (
     id bigint NOT NULL,
     investor_id bigint,
     founder_id bigint NOT NULL,
@@ -1033,7 +1037,7 @@ CREATE TABLE target_investors (
 -- Name: target_investors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE target_investors_id_seq
+CREATE SEQUENCE public.target_investors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1045,14 +1049,14 @@ CREATE SEQUENCE target_investors_id_seq
 -- Name: target_investors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE target_investors_id_seq OWNED BY target_investors.id;
+ALTER SEQUENCE public.target_investors_id_seq OWNED BY public.target_investors.id;
 
 
 --
 -- Name: teams; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE teams (
+CREATE TABLE public.teams (
     id integer NOT NULL,
     name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -1064,7 +1068,7 @@ CREATE TABLE teams (
 -- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE teams_id_seq
+CREATE SEQUENCE public.teams_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1076,14 +1080,14 @@ CREATE SEQUENCE teams_id_seq
 -- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
+ALTER SEQUENCE public.teams_id_seq OWNED BY public.teams.id;
 
 
 --
 -- Name: tracking_pixels; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE tracking_pixels (
+CREATE TABLE public.tracking_pixels (
     id bigint NOT NULL,
     email_id bigint NOT NULL,
     token character varying NOT NULL,
@@ -1100,7 +1104,7 @@ CREATE TABLE tracking_pixels (
 -- Name: tracking_pixels_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE tracking_pixels_id_seq
+CREATE SEQUENCE public.tracking_pixels_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1112,14 +1116,14 @@ CREATE SEQUENCE tracking_pixels_id_seq
 -- Name: tracking_pixels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE tracking_pixels_id_seq OWNED BY tracking_pixels.id;
+ALTER SEQUENCE public.tracking_pixels_id_seq OWNED BY public.tracking_pixels.id;
 
 
 --
 -- Name: tweeters; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE tweeters (
+CREATE TABLE public.tweeters (
     id integer NOT NULL,
     username character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -1134,7 +1138,7 @@ CREATE TABLE tweeters (
 -- Name: tweeters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE tweeters_id_seq
+CREATE SEQUENCE public.tweeters_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1146,14 +1150,14 @@ CREATE SEQUENCE tweeters_id_seq
 -- Name: tweeters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE tweeters_id_seq OWNED BY tweeters.id;
+ALTER SEQUENCE public.tweeters_id_seq OWNED BY public.tweeters.id;
 
 
 --
 -- Name: tweets; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE tweets (
+CREATE TABLE public.tweets (
     id integer NOT NULL,
     twitter_id bigint,
     tweeter_id integer NOT NULL,
@@ -1169,7 +1173,7 @@ CREATE TABLE tweets (
 -- Name: tweets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE tweets_id_seq
+CREATE SEQUENCE public.tweets_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1181,14 +1185,14 @@ CREATE SEQUENCE tweets_id_seq
 -- Name: tweets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE tweets_id_seq OWNED BY tweets.id;
+ALTER SEQUENCE public.tweets_id_seq OWNED BY public.tweets.id;
 
 
 --
 -- Name: universities; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE universities (
+CREATE TABLE public.universities (
     id bigint NOT NULL,
     name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -1200,7 +1204,7 @@ CREATE TABLE universities (
 -- Name: universities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE universities_id_seq
+CREATE SEQUENCE public.universities_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1212,14 +1216,14 @@ CREATE SEQUENCE universities_id_seq
 -- Name: universities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE universities_id_seq OWNED BY universities.id;
+ALTER SEQUENCE public.universities_id_seq OWNED BY public.universities.id;
 
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE users (
+CREATE TABLE public.users (
     id integer NOT NULL,
     username character varying NOT NULL,
     inactive_since timestamp without time zone,
@@ -1241,7 +1245,7 @@ CREATE TABLE users (
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE users_id_seq
+CREATE SEQUENCE public.users_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1253,14 +1257,14 @@ CREATE SEQUENCE users_id_seq
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE users_id_seq OWNED BY users.id;
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
 -- Name: votes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE votes (
+CREATE TABLE public.votes (
     id integer NOT NULL,
     fit integer NOT NULL,
     team integer NOT NULL,
@@ -1280,7 +1284,7 @@ CREATE TABLE votes (
 -- Name: votes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE votes_id_seq
+CREATE SEQUENCE public.votes_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1292,217 +1296,217 @@ CREATE SEQUENCE votes_id_seq
 -- Name: votes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE votes_id_seq OWNED BY votes.id;
+ALTER SEQUENCE public.votes_id_seq OWNED BY public.votes.id;
 
 
 --
 -- Name: cards id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cards ALTER COLUMN id SET DEFAULT nextval('cards_id_seq'::regclass);
+ALTER TABLE ONLY public.cards ALTER COLUMN id SET DEFAULT nextval('public.cards_id_seq'::regclass);
 
 
 --
 -- Name: companies id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq'::regclass);
+ALTER TABLE ONLY public.companies ALTER COLUMN id SET DEFAULT nextval('public.companies_id_seq'::regclass);
 
 
 --
 -- Name: competitions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY competitions ALTER COLUMN id SET DEFAULT nextval('competitions_id_seq'::regclass);
+ALTER TABLE ONLY public.competitions ALTER COLUMN id SET DEFAULT nextval('public.competitions_id_seq'::regclass);
 
 
 --
 -- Name: competitors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY competitors ALTER COLUMN id SET DEFAULT nextval('competitors_id_seq'::regclass);
+ALTER TABLE ONLY public.competitors ALTER COLUMN id SET DEFAULT nextval('public.competitors_id_seq'::regclass);
 
 
 --
 -- Name: emails id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
+ALTER TABLE ONLY public.emails ALTER COLUMN id SET DEFAULT nextval('public.emails_id_seq'::regclass);
 
 
 --
 -- Name: entities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entities ALTER COLUMN id SET DEFAULT nextval('entities_id_seq'::regclass);
+ALTER TABLE ONLY public.entities ALTER COLUMN id SET DEFAULT nextval('public.entities_id_seq'::regclass);
 
 
 --
 -- Name: events id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
 
 
 --
 -- Name: founders id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY founders ALTER COLUMN id SET DEFAULT nextval('founders_id_seq'::regclass);
+ALTER TABLE ONLY public.founders ALTER COLUMN id SET DEFAULT nextval('public.founders_id_seq'::regclass);
 
 
 --
 -- Name: import_tasks id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY import_tasks ALTER COLUMN id SET DEFAULT nextval('import_tasks_id_seq'::regclass);
+ALTER TABLE ONLY public.import_tasks ALTER COLUMN id SET DEFAULT nextval('public.import_tasks_id_seq'::regclass);
 
 
 --
 -- Name: intro_requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY intro_requests ALTER COLUMN id SET DEFAULT nextval('intro_requests_id_seq'::regclass);
+ALTER TABLE ONLY public.intro_requests ALTER COLUMN id SET DEFAULT nextval('public.intro_requests_id_seq'::regclass);
 
 
 --
 -- Name: investments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investments ALTER COLUMN id SET DEFAULT nextval('investments_id_seq'::regclass);
+ALTER TABLE ONLY public.investments ALTER COLUMN id SET DEFAULT nextval('public.investments_id_seq'::regclass);
 
 
 --
 -- Name: investors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investors ALTER COLUMN id SET DEFAULT nextval('investors_id_seq'::regclass);
+ALTER TABLE ONLY public.investors ALTER COLUMN id SET DEFAULT nextval('public.investors_id_seq'::regclass);
 
 
 --
 -- Name: knowledges id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY knowledges ALTER COLUMN id SET DEFAULT nextval('knowledges_id_seq'::regclass);
+ALTER TABLE ONLY public.knowledges ALTER COLUMN id SET DEFAULT nextval('public.knowledges_id_seq'::regclass);
 
 
 --
 -- Name: lists id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY lists ALTER COLUMN id SET DEFAULT nextval('lists_id_seq'::regclass);
+ALTER TABLE ONLY public.lists ALTER COLUMN id SET DEFAULT nextval('public.lists_id_seq'::regclass);
 
 
 --
 -- Name: logged_events id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY logged_events ALTER COLUMN id SET DEFAULT nextval('logged_events_id_seq'::regclass);
+ALTER TABLE ONLY public.logged_events ALTER COLUMN id SET DEFAULT nextval('public.logged_events_id_seq'::regclass);
 
 
 --
 -- Name: models id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY models ALTER COLUMN id SET DEFAULT nextval('models_id_seq'::regclass);
+ALTER TABLE ONLY public.models ALTER COLUMN id SET DEFAULT nextval('public.models_id_seq'::regclass);
 
 
 --
 -- Name: news id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
+ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id_seq'::regclass);
 
 
 --
 -- Name: notes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY notes ALTER COLUMN id SET DEFAULT nextval('notes_id_seq'::regclass);
+ALTER TABLE ONLY public.notes ALTER COLUMN id SET DEFAULT nextval('public.notes_id_seq'::regclass);
 
 
 --
 -- Name: person_entities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY person_entities ALTER COLUMN id SET DEFAULT nextval('person_entities_id_seq'::regclass);
+ALTER TABLE ONLY public.person_entities ALTER COLUMN id SET DEFAULT nextval('public.person_entities_id_seq'::regclass);
 
 
 --
 -- Name: pitches id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY pitches ALTER COLUMN id SET DEFAULT nextval('pitches_id_seq'::regclass);
+ALTER TABLE ONLY public.pitches ALTER COLUMN id SET DEFAULT nextval('public.pitches_id_seq'::regclass);
 
 
 --
 -- Name: posts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY posts ALTER COLUMN id SET DEFAULT nextval('posts_id_seq'::regclass);
+ALTER TABLE ONLY public.posts ALTER COLUMN id SET DEFAULT nextval('public.posts_id_seq'::regclass);
 
 
 --
 -- Name: target_investors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY target_investors ALTER COLUMN id SET DEFAULT nextval('target_investors_id_seq'::regclass);
+ALTER TABLE ONLY public.target_investors ALTER COLUMN id SET DEFAULT nextval('public.target_investors_id_seq'::regclass);
 
 
 --
 -- Name: teams id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regclass);
+ALTER TABLE ONLY public.teams ALTER COLUMN id SET DEFAULT nextval('public.teams_id_seq'::regclass);
 
 
 --
 -- Name: tracking_pixels id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tracking_pixels ALTER COLUMN id SET DEFAULT nextval('tracking_pixels_id_seq'::regclass);
+ALTER TABLE ONLY public.tracking_pixels ALTER COLUMN id SET DEFAULT nextval('public.tracking_pixels_id_seq'::regclass);
 
 
 --
 -- Name: tweeters id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tweeters ALTER COLUMN id SET DEFAULT nextval('tweeters_id_seq'::regclass);
+ALTER TABLE ONLY public.tweeters ALTER COLUMN id SET DEFAULT nextval('public.tweeters_id_seq'::regclass);
 
 
 --
 -- Name: tweets id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tweets ALTER COLUMN id SET DEFAULT nextval('tweets_id_seq'::regclass);
+ALTER TABLE ONLY public.tweets ALTER COLUMN id SET DEFAULT nextval('public.tweets_id_seq'::regclass);
 
 
 --
 -- Name: universities id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY universities ALTER COLUMN id SET DEFAULT nextval('universities_id_seq'::regclass);
+ALTER TABLE ONLY public.universities ALTER COLUMN id SET DEFAULT nextval('public.universities_id_seq'::regclass);
 
 
 --
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
 -- Name: votes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY votes ALTER COLUMN id SET DEFAULT nextval('votes_id_seq'::regclass);
+ALTER TABLE ONLY public.votes ALTER COLUMN id SET DEFAULT nextval('public.votes_id_seq'::regclass);
 
 
 --
 -- Name: competitors competitors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY competitors
+ALTER TABLE ONLY public.competitors
     ADD CONSTRAINT competitors_pkey PRIMARY KEY (id);
 
 
@@ -1510,22 +1514,22 @@ ALTER TABLE ONLY competitors
 -- Name: competitor_coinvestors; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW competitor_coinvestors AS
+CREATE MATERIALIZED VIEW public.competitor_coinvestors AS
  SELECT competitors.id AS competitor_id,
     coinvestors_join.coi_arr AS coinvestors
-   FROM (competitors
+   FROM (public.competitors
      LEFT JOIN LATERAL ( WITH comp_companies AS (
                  SELECT companies.id
-                   FROM (companies
-                     JOIN investments ON ((investments.company_id = companies.id)))
+                   FROM (public.companies
+                     JOIN public.investments ON ((investments.company_id = companies.id)))
                   WHERE (investments.competitor_id = competitors.id)
                 ), comp_coinvestors AS (
                  SELECT coinvestors.id,
                     coinvestors.name,
                     count(investments.id) AS overlap
-                   FROM ((investments
+                   FROM ((public.investments
                      JOIN comp_companies ON ((comp_companies.id = investments.company_id)))
-                     JOIN competitors coinvestors ON ((coinvestors.id = investments.competitor_id)))
+                     JOIN public.competitors coinvestors ON ((coinvestors.id = investments.competitor_id)))
                   WHERE (coinvestors.id <> competitors.id)
                   GROUP BY coinvestors.id
                   ORDER BY (count(investments.id)) DESC
@@ -1540,7 +1544,7 @@ CREATE MATERIALIZED VIEW competitor_coinvestors AS
 -- Name: investors investors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investors
+ALTER TABLE ONLY public.investors
     ADD CONSTRAINT investors_pkey PRIMARY KEY (id);
 
 
@@ -1548,15 +1552,15 @@ ALTER TABLE ONLY investors
 -- Name: competitor_partners; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW competitor_partners AS
+CREATE MATERIALIZED VIEW public.competitor_partners AS
  SELECT competitors.id AS competitor_id,
     partners_join.partners_arr AS partners
-   FROM (competitors
+   FROM (public.competitors
      LEFT JOIN LATERAL ( WITH partners_results AS (
                  SELECT investors.id,
                     investors.role,
                     investors.verified
-                   FROM investors
+                   FROM public.investors
                   WHERE ((investors.competitor_id = competitors.id) AND (investors.hidden = false))
                 ), filtered_partners_results AS (
                  SELECT partners_results.id
@@ -1577,9 +1581,9 @@ CREATE MATERIALIZED VIEW competitor_partners AS
                     investors.photo,
                     investors.role,
                     investors.verified
-                   FROM ((investors
+                   FROM ((public.investors
                      JOIN all_ids ON ((investors.id = all_ids.id)))
-                     LEFT JOIN investments ON ((investments.investor_id = investors.id)))
+                     LEFT JOIN public.investments ON ((investments.investor_id = investors.id)))
                   GROUP BY investors.id
                   ORDER BY investors.featured DESC, investors.verified DESC, (max(investments.funded_at)) DESC NULLS LAST, (count(investments.id)) DESC
                  LIMIT 25
@@ -1593,7 +1597,7 @@ CREATE MATERIALIZED VIEW competitor_partners AS
 -- Name: companies companies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY companies
+ALTER TABLE ONLY public.companies
     ADD CONSTRAINT companies_pkey PRIMARY KEY (id);
 
 
@@ -1601,17 +1605,17 @@ ALTER TABLE ONLY companies
 -- Name: competitor_recent_investments; Type: MATERIALIZED VIEW; Schema: public; Owner: -
 --
 
-CREATE MATERIALIZED VIEW competitor_recent_investments AS
+CREATE MATERIALIZED VIEW public.competitor_recent_investments AS
  SELECT competitors.id AS competitor_id,
     recent_investments_join.ri_arr AS recent_investments
-   FROM (competitors
+   FROM (public.competitors
      LEFT JOIN LATERAL ( WITH recent_investments AS (
                  SELECT companies.id,
                     companies.name,
                     companies.domain,
                     companies.crunchbase_id
-                   FROM (companies
-                     JOIN investments ON ((investments.company_id = companies.id)))
+                   FROM (public.companies
+                     JOIN public.investments ON ((investments.company_id = companies.id)))
                   WHERE (investments.competitor_id = competitors.id)
                   GROUP BY companies.id
                   ORDER BY (max(investments.funded_at)) DESC NULLS LAST, (count(NULLIF(investments.featured, false))) DESC, companies.capital_raised DESC, (count(investments.id)) DESC
@@ -1626,7 +1630,7 @@ CREATE MATERIALIZED VIEW competitor_recent_investments AS
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY ar_internal_metadata
+ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
 
 
@@ -1634,7 +1638,7 @@ ALTER TABLE ONLY ar_internal_metadata
 -- Name: calendar_events calendar_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY calendar_events
+ALTER TABLE ONLY public.calendar_events
     ADD CONSTRAINT calendar_events_pkey PRIMARY KEY (id);
 
 
@@ -1642,7 +1646,7 @@ ALTER TABLE ONLY calendar_events
 -- Name: cards cards_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cards
+ALTER TABLE ONLY public.cards
     ADD CONSTRAINT cards_pkey PRIMARY KEY (id);
 
 
@@ -1650,7 +1654,7 @@ ALTER TABLE ONLY cards
 -- Name: competitions competitions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY competitions
+ALTER TABLE ONLY public.competitions
     ADD CONSTRAINT competitions_pkey PRIMARY KEY (id);
 
 
@@ -1658,7 +1662,7 @@ ALTER TABLE ONLY competitions
 -- Name: emails emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails
+ALTER TABLE ONLY public.emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
 
 
@@ -1666,7 +1670,7 @@ ALTER TABLE ONLY emails
 -- Name: entities entities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entities
+ALTER TABLE ONLY public.entities
     ADD CONSTRAINT entities_pkey PRIMARY KEY (id);
 
 
@@ -1674,7 +1678,7 @@ ALTER TABLE ONLY entities
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY events
+ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 
@@ -1682,7 +1686,7 @@ ALTER TABLE ONLY events
 -- Name: founders founders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY founders
+ALTER TABLE ONLY public.founders
     ADD CONSTRAINT founders_pkey PRIMARY KEY (id);
 
 
@@ -1690,7 +1694,7 @@ ALTER TABLE ONLY founders
 -- Name: import_tasks import_tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY import_tasks
+ALTER TABLE ONLY public.import_tasks
     ADD CONSTRAINT import_tasks_pkey PRIMARY KEY (id);
 
 
@@ -1698,7 +1702,7 @@ ALTER TABLE ONLY import_tasks
 -- Name: intro_requests intro_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY intro_requests
+ALTER TABLE ONLY public.intro_requests
     ADD CONSTRAINT intro_requests_pkey PRIMARY KEY (id);
 
 
@@ -1706,7 +1710,7 @@ ALTER TABLE ONLY intro_requests
 -- Name: investments investments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investments
+ALTER TABLE ONLY public.investments
     ADD CONSTRAINT investments_pkey PRIMARY KEY (id);
 
 
@@ -1714,7 +1718,7 @@ ALTER TABLE ONLY investments
 -- Name: knowledges knowledges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY knowledges
+ALTER TABLE ONLY public.knowledges
     ADD CONSTRAINT knowledges_pkey PRIMARY KEY (id);
 
 
@@ -1722,7 +1726,7 @@ ALTER TABLE ONLY knowledges
 -- Name: lists lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY lists
+ALTER TABLE ONLY public.lists
     ADD CONSTRAINT lists_pkey PRIMARY KEY (id);
 
 
@@ -1730,7 +1734,7 @@ ALTER TABLE ONLY lists
 -- Name: logged_events logged_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY logged_events
+ALTER TABLE ONLY public.logged_events
     ADD CONSTRAINT logged_events_pkey PRIMARY KEY (id);
 
 
@@ -1738,7 +1742,7 @@ ALTER TABLE ONLY logged_events
 -- Name: models models_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY models
+ALTER TABLE ONLY public.models
     ADD CONSTRAINT models_pkey PRIMARY KEY (id);
 
 
@@ -1746,7 +1750,7 @@ ALTER TABLE ONLY models
 -- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY news
+ALTER TABLE ONLY public.news
     ADD CONSTRAINT news_pkey PRIMARY KEY (id);
 
 
@@ -1754,7 +1758,7 @@ ALTER TABLE ONLY news
 -- Name: notes notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY notes
+ALTER TABLE ONLY public.notes
     ADD CONSTRAINT notes_pkey PRIMARY KEY (id);
 
 
@@ -1762,7 +1766,7 @@ ALTER TABLE ONLY notes
 -- Name: person_entities person_entities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY person_entities
+ALTER TABLE ONLY public.person_entities
     ADD CONSTRAINT person_entities_pkey PRIMARY KEY (id);
 
 
@@ -1770,7 +1774,7 @@ ALTER TABLE ONLY person_entities
 -- Name: pitches pitches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY pitches
+ALTER TABLE ONLY public.pitches
     ADD CONSTRAINT pitches_pkey PRIMARY KEY (id);
 
 
@@ -1778,7 +1782,7 @@ ALTER TABLE ONLY pitches
 -- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY posts
+ALTER TABLE ONLY public.posts
     ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
 
 
@@ -1786,7 +1790,7 @@ ALTER TABLE ONLY posts
 -- Name: target_investors target_investors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY target_investors
+ALTER TABLE ONLY public.target_investors
     ADD CONSTRAINT target_investors_pkey PRIMARY KEY (id);
 
 
@@ -1794,7 +1798,7 @@ ALTER TABLE ONLY target_investors
 -- Name: teams teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY teams
+ALTER TABLE ONLY public.teams
     ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
 
 
@@ -1802,7 +1806,7 @@ ALTER TABLE ONLY teams
 -- Name: tracking_pixels tracking_pixels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tracking_pixels
+ALTER TABLE ONLY public.tracking_pixels
     ADD CONSTRAINT tracking_pixels_pkey PRIMARY KEY (id);
 
 
@@ -1810,7 +1814,7 @@ ALTER TABLE ONLY tracking_pixels
 -- Name: tweeters tweeters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tweeters
+ALTER TABLE ONLY public.tweeters
     ADD CONSTRAINT tweeters_pkey PRIMARY KEY (id);
 
 
@@ -1818,7 +1822,7 @@ ALTER TABLE ONLY tweeters
 -- Name: tweets tweets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tweets
+ALTER TABLE ONLY public.tweets
     ADD CONSTRAINT tweets_pkey PRIMARY KEY (id);
 
 
@@ -1826,7 +1830,7 @@ ALTER TABLE ONLY tweets
 -- Name: universities universities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY universities
+ALTER TABLE ONLY public.universities
     ADD CONSTRAINT universities_pkey PRIMARY KEY (id);
 
 
@@ -1834,7 +1838,7 @@ ALTER TABLE ONLY universities
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users
+ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
@@ -1842,7 +1846,7 @@ ALTER TABLE ONLY users
 -- Name: votes votes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY votes
+ALTER TABLE ONLY public.votes
     ADD CONSTRAINT votes_pkey PRIMARY KEY (id);
 
 
@@ -1850,1241 +1854,1241 @@ ALTER TABLE ONLY votes
 -- Name: companies_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX companies_name_gin_trgm_idx ON companies USING gin (name gin_trgm_ops);
+CREATE INDEX companies_name_gin_trgm_idx ON public.companies USING gin (name public.gin_trgm_ops);
 
 
 --
 -- Name: companies_to_tsvector_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX companies_to_tsvector_idx ON companies USING gin (to_tsvector('english'::regconfig, (name)::text));
+CREATE INDEX companies_to_tsvector_idx ON public.companies USING gin (to_tsvector('english'::regconfig, (name)::text));
 
 
 --
 -- Name: competitors_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX competitors_name_gin_trgm_idx ON competitors USING gin (name gin_trgm_ops);
+CREATE INDEX competitors_name_gin_trgm_idx ON public.competitors USING gin (name public.gin_trgm_ops);
 
 
 --
 -- Name: entities_to_tsvector_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX entities_to_tsvector_idx ON entities USING gin (to_tsvector('english'::regconfig, (name)::text));
+CREATE INDEX entities_to_tsvector_idx ON public.entities USING gin (to_tsvector('english'::regconfig, (name)::text));
 
 
 --
 -- Name: founders_city_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX founders_city_gin_trgm_idx ON founders USING gin (city gin_trgm_ops);
+CREATE INDEX founders_city_gin_trgm_idx ON public.founders USING gin (city public.gin_trgm_ops);
 
 
 --
 -- Name: index_calendar_events_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_calendar_events_on_company_id ON calendar_events USING btree (company_id);
+CREATE INDEX index_calendar_events_on_company_id ON public.calendar_events USING btree (company_id);
 
 
 --
 -- Name: index_calendar_events_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_calendar_events_on_user_id ON calendar_events USING btree (user_id);
+CREATE INDEX index_calendar_events_on_user_id ON public.calendar_events USING btree (user_id);
 
 
 --
 -- Name: index_cards_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_cards_on_company_id ON cards USING btree (company_id);
+CREATE INDEX index_cards_on_company_id ON public.cards USING btree (company_id);
 
 
 --
 -- Name: index_cards_on_list_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_cards_on_list_id ON cards USING btree (list_id);
+CREATE INDEX index_cards_on_list_id ON public.cards USING btree (list_id);
 
 
 --
 -- Name: index_cards_on_trello_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_cards_on_trello_id ON cards USING btree (trello_id);
+CREATE UNIQUE INDEX index_cards_on_trello_id ON public.cards USING btree (trello_id);
 
 
 --
 -- Name: index_companies_founders_on_company_id_and_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_companies_founders_on_company_id_and_founder_id ON companies_founders USING btree (company_id, founder_id);
+CREATE UNIQUE INDEX index_companies_founders_on_company_id_and_founder_id ON public.companies_founders USING btree (company_id, founder_id);
 
 
 --
 -- Name: index_companies_founders_on_founder_id_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_companies_founders_on_founder_id_and_company_id ON companies_founders USING btree (founder_id, company_id);
+CREATE UNIQUE INDEX index_companies_founders_on_founder_id_and_company_id ON public.companies_founders USING btree (founder_id, company_id);
 
 
 --
 -- Name: index_companies_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_companies_on_al_id ON companies USING btree (al_id);
+CREATE UNIQUE INDEX index_companies_on_al_id ON public.companies USING btree (al_id);
 
 
 --
 -- Name: index_companies_on_crunchbase_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_companies_on_crunchbase_id ON companies USING btree (crunchbase_id);
+CREATE UNIQUE INDEX index_companies_on_crunchbase_id ON public.companies USING btree (crunchbase_id);
 
 
 --
 -- Name: index_companies_on_description; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_on_description ON companies USING btree (description);
+CREATE INDEX index_companies_on_description ON public.companies USING btree (description);
 
 
 --
 -- Name: index_companies_on_domain; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_companies_on_domain ON companies USING btree (domain);
+CREATE UNIQUE INDEX index_companies_on_domain ON public.companies USING btree (domain);
 
 
 --
 -- Name: index_companies_on_industry; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_on_industry ON companies USING gin (industry);
+CREATE INDEX index_companies_on_industry ON public.companies USING gin (industry);
 
 
 --
 -- Name: index_companies_on_location; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_on_location ON companies USING btree (location);
+CREATE INDEX index_companies_on_location ON public.companies USING btree (location);
 
 
 --
 -- Name: index_companies_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_on_name ON companies USING btree (name);
+CREATE INDEX index_companies_on_name ON public.companies USING btree (name);
 
 
 --
 -- Name: index_companies_on_team_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_on_team_id ON companies USING btree (team_id);
+CREATE INDEX index_companies_on_team_id ON public.companies USING btree (team_id);
 
 
 --
 -- Name: index_companies_users_on_company_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_users_on_company_id_and_user_id ON companies_users USING btree (company_id, user_id);
+CREATE INDEX index_companies_users_on_company_id_and_user_id ON public.companies_users USING btree (company_id, user_id);
 
 
 --
 -- Name: index_companies_users_on_user_id_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_companies_users_on_user_id_and_company_id ON companies_users USING btree (user_id, company_id);
+CREATE INDEX index_companies_users_on_user_id_and_company_id ON public.companies_users USING btree (user_id, company_id);
 
 
 --
 -- Name: index_competitions_on_a_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitions_on_a_id ON competitions USING btree (a_id);
+CREATE INDEX index_competitions_on_a_id ON public.competitions USING btree (a_id);
 
 
 --
 -- Name: index_competitions_on_a_id_and_b_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitions_on_a_id_and_b_id ON competitions USING btree (a_id, b_id);
+CREATE UNIQUE INDEX index_competitions_on_a_id_and_b_id ON public.competitions USING btree (a_id, b_id);
 
 
 --
 -- Name: index_competitions_on_b_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitions_on_b_id ON competitions USING btree (b_id);
+CREATE INDEX index_competitions_on_b_id ON public.competitions USING btree (b_id);
 
 
 --
 -- Name: index_competitor_coinvestors_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitor_coinvestors_on_competitor_id ON competitor_coinvestors USING btree (competitor_id);
+CREATE UNIQUE INDEX index_competitor_coinvestors_on_competitor_id ON public.competitor_coinvestors USING btree (competitor_id);
 
 
 --
 -- Name: index_competitor_investor_aggs_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitor_investor_aggs_on_competitor_id ON competitor_investor_aggs USING btree (competitor_id);
+CREATE UNIQUE INDEX index_competitor_investor_aggs_on_competitor_id ON public.competitor_investor_aggs USING btree (competitor_id);
 
 
 --
 -- Name: index_competitor_partners_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitor_partners_on_competitor_id ON competitor_partners USING btree (competitor_id);
+CREATE UNIQUE INDEX index_competitor_partners_on_competitor_id ON public.competitor_partners USING btree (competitor_id);
 
 
 --
 -- Name: index_competitor_recent_investments_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitor_recent_investments_on_competitor_id ON competitor_recent_investments USING btree (competitor_id);
+CREATE UNIQUE INDEX index_competitor_recent_investments_on_competitor_id ON public.competitor_recent_investments USING btree (competitor_id);
 
 
 --
 -- Name: index_competitor_velocities_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitor_velocities_on_competitor_id ON competitor_velocities USING btree (competitor_id);
+CREATE UNIQUE INDEX index_competitor_velocities_on_competitor_id ON public.competitor_velocities USING btree (competitor_id);
 
 
 --
 -- Name: index_competitors_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitors_on_al_id ON competitors USING btree (al_id);
+CREATE INDEX index_competitors_on_al_id ON public.competitors USING btree (al_id);
 
 
 --
 -- Name: index_competitors_on_crunchbase_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitors_on_crunchbase_id ON competitors USING btree (crunchbase_id);
+CREATE UNIQUE INDEX index_competitors_on_crunchbase_id ON public.competitors USING btree (crunchbase_id);
 
 
 --
 -- Name: index_competitors_on_domain; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitors_on_domain ON competitors USING btree (domain);
+CREATE INDEX index_competitors_on_domain ON public.competitors USING btree (domain);
 
 
 --
 -- Name: index_competitors_on_fund_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitors_on_fund_type ON competitors USING gin (fund_type);
+CREATE INDEX index_competitors_on_fund_type ON public.competitors USING gin (fund_type);
 
 
 --
 -- Name: index_competitors_on_industry; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitors_on_industry ON competitors USING gin (industry);
+CREATE INDEX index_competitors_on_industry ON public.competitors USING gin (industry);
 
 
 --
 -- Name: index_competitors_on_location; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_competitors_on_location ON competitors USING gin (location);
+CREATE INDEX index_competitors_on_location ON public.competitors USING gin (location);
 
 
 --
 -- Name: index_competitors_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_competitors_on_name ON competitors USING btree (name);
+CREATE UNIQUE INDEX index_competitors_on_name ON public.competitors USING btree (name);
 
 
 --
 -- Name: index_emails_on_bulk; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_bulk ON emails USING btree (bulk);
+CREATE INDEX index_emails_on_bulk ON public.emails USING btree (bulk);
 
 
 --
 -- Name: index_emails_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_company_id ON emails USING btree (company_id);
+CREATE INDEX index_emails_on_company_id ON public.emails USING btree (company_id);
 
 
 --
 -- Name: index_emails_on_email_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_emails_on_email_id ON emails USING btree (email_id);
+CREATE UNIQUE INDEX index_emails_on_email_id ON public.emails USING btree (email_id);
 
 
 --
 -- Name: index_emails_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_founder_id ON emails USING btree (founder_id);
+CREATE INDEX index_emails_on_founder_id ON public.emails USING btree (founder_id);
 
 
 --
 -- Name: index_emails_on_intro_request_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_intro_request_id ON emails USING btree (intro_request_id);
+CREATE INDEX index_emails_on_intro_request_id ON public.emails USING btree (intro_request_id);
 
 
 --
 -- Name: index_emails_on_investor_founder_dir_ca; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_investor_founder_dir_ca ON emails USING gin (investor_id, founder_id, direction, created_at);
+CREATE INDEX index_emails_on_investor_founder_dir_ca ON public.emails USING gin (investor_id, founder_id, direction, created_at);
 
 
 --
 -- Name: index_emails_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_investor_id ON emails USING btree (investor_id);
+CREATE INDEX index_emails_on_investor_id ON public.emails USING btree (investor_id);
 
 
 --
 -- Name: index_entities_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_entities_on_name ON entities USING btree (name);
+CREATE UNIQUE INDEX index_entities_on_name ON public.entities USING btree (name);
 
 
 --
 -- Name: index_entities_on_wiki; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entities_on_wiki ON entities USING btree (wiki);
+CREATE INDEX index_entities_on_wiki ON public.entities USING btree (wiki);
 
 
 --
 -- Name: index_events_on_subject_type_and_subject_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_events_on_subject_type_and_subject_id ON events USING btree (subject_type, subject_id);
+CREATE INDEX index_events_on_subject_type_and_subject_id ON public.events USING btree (subject_type, subject_id);
 
 
 --
 -- Name: index_founders_on_crunchbase_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_crunchbase_id ON founders USING btree (crunchbase_id);
+CREATE UNIQUE INDEX index_founders_on_crunchbase_id ON public.founders USING btree (crunchbase_id);
 
 
 --
 -- Name: index_founders_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_email ON founders USING btree (email);
+CREATE UNIQUE INDEX index_founders_on_email ON public.founders USING btree (email);
 
 
 --
 -- Name: index_founders_on_facebook; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_facebook ON founders USING btree (facebook);
+CREATE UNIQUE INDEX index_founders_on_facebook ON public.founders USING btree (facebook);
 
 
 --
 -- Name: index_founders_on_homepage; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_homepage ON founders USING btree (homepage);
+CREATE UNIQUE INDEX index_founders_on_homepage ON public.founders USING btree (homepage);
 
 
 --
 -- Name: index_founders_on_linkedin; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_linkedin ON founders USING btree (linkedin);
+CREATE UNIQUE INDEX index_founders_on_linkedin ON public.founders USING btree (linkedin);
 
 
 --
 -- Name: index_founders_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_token ON founders USING btree (token);
+CREATE UNIQUE INDEX index_founders_on_token ON public.founders USING btree (token);
 
 
 --
 -- Name: index_founders_on_twitter; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_founders_on_twitter ON founders USING btree (twitter);
+CREATE UNIQUE INDEX index_founders_on_twitter ON public.founders USING btree (twitter);
 
 
 --
 -- Name: index_import_tasks_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_import_tasks_on_founder_id ON import_tasks USING btree (founder_id);
+CREATE INDEX index_import_tasks_on_founder_id ON public.import_tasks USING btree (founder_id);
 
 
 --
 -- Name: index_intro_requests_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_intro_requests_on_company_id ON intro_requests USING btree (company_id);
+CREATE INDEX index_intro_requests_on_company_id ON public.intro_requests USING btree (company_id);
 
 
 --
 -- Name: index_intro_requests_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_intro_requests_on_founder_id ON intro_requests USING btree (founder_id);
+CREATE INDEX index_intro_requests_on_founder_id ON public.intro_requests USING btree (founder_id);
 
 
 --
 -- Name: index_intro_requests_on_investor_founder_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_intro_requests_on_investor_founder_and_company_id ON intro_requests USING btree (investor_id, founder_id, company_id);
+CREATE UNIQUE INDEX index_intro_requests_on_investor_founder_and_company_id ON public.intro_requests USING btree (investor_id, founder_id, company_id);
 
 
 --
 -- Name: index_intro_requests_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_intro_requests_on_investor_id ON intro_requests USING btree (investor_id);
+CREATE INDEX index_intro_requests_on_investor_id ON public.intro_requests USING btree (investor_id);
 
 
 --
 -- Name: index_intro_requests_on_target_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_intro_requests_on_target_investor_id ON intro_requests USING btree (target_investor_id);
+CREATE INDEX index_intro_requests_on_target_investor_id ON public.intro_requests USING btree (target_investor_id);
 
 
 --
 -- Name: index_intro_requests_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_intro_requests_on_token ON intro_requests USING btree (token);
+CREATE UNIQUE INDEX index_intro_requests_on_token ON public.intro_requests USING btree (token);
 
 
 --
 -- Name: index_investments_on_company_id_and_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investments_on_company_id_and_competitor_id ON investments USING btree (company_id, competitor_id);
+CREATE UNIQUE INDEX index_investments_on_company_id_and_competitor_id ON public.investments USING btree (company_id, competitor_id);
 
 
 --
 -- Name: index_investments_on_competitor_id_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investments_on_competitor_id_and_company_id ON investments USING btree (competitor_id, company_id);
+CREATE UNIQUE INDEX index_investments_on_competitor_id_and_company_id ON public.investments USING btree (competitor_id, company_id);
 
 
 --
 -- Name: index_investments_on_funded_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investments_on_funded_at ON investments USING btree (funded_at);
+CREATE INDEX index_investments_on_funded_at ON public.investments USING btree (funded_at);
 
 
 --
 -- Name: index_investments_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investments_on_investor_id ON investments USING btree (investor_id);
+CREATE INDEX index_investments_on_investor_id ON public.investments USING btree (investor_id);
 
 
 --
 -- Name: index_investor_entities_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investor_entities_on_competitor_id ON investor_entities USING btree (competitor_id);
+CREATE INDEX index_investor_entities_on_competitor_id ON public.investor_entities USING btree (competitor_id);
 
 
 --
 -- Name: index_investor_entities_on_count; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investor_entities_on_count ON investor_entities USING btree (count);
+CREATE INDEX index_investor_entities_on_count ON public.investor_entities USING btree (count);
 
 
 --
 -- Name: index_investor_entities_on_entity_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investor_entities_on_entity_id ON investor_entities USING btree (entity_id);
+CREATE INDEX index_investor_entities_on_entity_id ON public.investor_entities USING btree (entity_id);
 
 
 --
 -- Name: index_investor_entities_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investor_entities_on_investor_id ON investor_entities USING btree (investor_id);
+CREATE INDEX index_investor_entities_on_investor_id ON public.investor_entities USING btree (investor_id);
 
 
 --
 -- Name: index_investor_entities_on_investor_id_and_entity_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investor_entities_on_investor_id_and_entity_id ON investor_entities USING btree (investor_id, entity_id);
+CREATE UNIQUE INDEX index_investor_entities_on_investor_id_and_entity_id ON public.investor_entities USING btree (investor_id, entity_id);
 
 
 --
 -- Name: index_investors_on_al_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_al_id ON investors USING btree (al_id);
+CREATE INDEX index_investors_on_al_id ON public.investors USING btree (al_id);
 
 
 --
 -- Name: index_investors_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_competitor_id ON investors USING btree (competitor_id);
+CREATE INDEX index_investors_on_competitor_id ON public.investors USING btree (competitor_id);
 
 
 --
 -- Name: index_investors_on_crunchbase_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_crunchbase_id ON investors USING btree (crunchbase_id);
+CREATE UNIQUE INDEX index_investors_on_crunchbase_id ON public.investors USING btree (crunchbase_id);
 
 
 --
 -- Name: index_investors_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_email ON investors USING btree (email);
+CREATE UNIQUE INDEX index_investors_on_email ON public.investors USING btree (email);
 
 
 --
 -- Name: index_investors_on_facebook; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_facebook ON investors USING btree (facebook);
+CREATE UNIQUE INDEX index_investors_on_facebook ON public.investors USING btree (facebook);
 
 
 --
 -- Name: index_investors_on_featured; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_featured ON investors USING btree (featured);
+CREATE INDEX index_investors_on_featured ON public.investors USING btree (featured);
 
 
 --
 -- Name: index_investors_on_first_name_and_last_name_and_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_first_name_and_last_name_and_competitor_id ON investors USING btree (first_name, last_name, competitor_id);
+CREATE UNIQUE INDEX index_investors_on_first_name_and_last_name_and_competitor_id ON public.investors USING btree (first_name, last_name, competitor_id);
 
 
 --
 -- Name: index_investors_on_fund_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_fund_type ON investors USING gin (fund_type);
+CREATE INDEX index_investors_on_fund_type ON public.investors USING gin (fund_type);
 
 
 --
 -- Name: index_investors_on_hidden; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_hidden ON investors USING btree (hidden);
+CREATE INDEX index_investors_on_hidden ON public.investors USING btree (hidden);
 
 
 --
 -- Name: index_investors_on_homepage; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_homepage ON investors USING btree (homepage);
+CREATE UNIQUE INDEX index_investors_on_homepage ON public.investors USING btree (homepage);
 
 
 --
 -- Name: index_investors_on_industry; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_industry ON investors USING gin (industry);
+CREATE INDEX index_investors_on_industry ON public.investors USING gin (industry);
 
 
 --
 -- Name: index_investors_on_linkedin; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_linkedin ON investors USING btree (linkedin);
+CREATE UNIQUE INDEX index_investors_on_linkedin ON public.investors USING btree (linkedin);
 
 
 --
 -- Name: index_investors_on_photo; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_photo ON investors USING btree (photo);
+CREATE UNIQUE INDEX index_investors_on_photo ON public.investors USING btree (photo);
 
 
 --
 -- Name: index_investors_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_token ON investors USING btree (token);
+CREATE UNIQUE INDEX index_investors_on_token ON public.investors USING btree (token);
 
 
 --
 -- Name: index_investors_on_twitter; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_investors_on_twitter ON investors USING btree (twitter);
+CREATE UNIQUE INDEX index_investors_on_twitter ON public.investors USING btree (twitter);
 
 
 --
 -- Name: index_investors_on_university_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_university_id ON investors USING btree (university_id);
+CREATE INDEX index_investors_on_university_id ON public.investors USING btree (university_id);
 
 
 --
 -- Name: index_investors_on_verified; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_investors_on_verified ON investors USING btree (verified);
+CREATE INDEX index_investors_on_verified ON public.investors USING btree (verified);
 
 
 --
 -- Name: index_knowledges_on_team_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_knowledges_on_team_id ON knowledges USING btree (team_id);
+CREATE INDEX index_knowledges_on_team_id ON public.knowledges USING btree (team_id);
 
 
 --
 -- Name: index_knowledges_on_ts; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_knowledges_on_ts ON knowledges USING btree (ts);
+CREATE UNIQUE INDEX index_knowledges_on_ts ON public.knowledges USING btree (ts);
 
 
 --
 -- Name: index_knowledges_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_knowledges_on_user_id ON knowledges USING btree (user_id);
+CREATE INDEX index_knowledges_on_user_id ON public.knowledges USING btree (user_id);
 
 
 --
 -- Name: index_lists_on_pos_and_trello_board_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_lists_on_pos_and_trello_board_id ON lists USING btree (pos, trello_board_id);
+CREATE UNIQUE INDEX index_lists_on_pos_and_trello_board_id ON public.lists USING btree (pos, trello_board_id);
 
 
 --
 -- Name: index_lists_on_trello_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_lists_on_trello_id ON lists USING btree (trello_id);
+CREATE UNIQUE INDEX index_lists_on_trello_id ON public.lists USING btree (trello_id);
 
 
 --
 -- Name: index_logged_events_on_reason_and_record_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_logged_events_on_reason_and_record_id ON logged_events USING btree (reason, record_id);
+CREATE UNIQUE INDEX index_logged_events_on_reason_and_record_id ON public.logged_events USING btree (reason, record_id);
 
 
 --
 -- Name: index_news_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_news_on_company_id ON news USING btree (company_id);
+CREATE INDEX index_news_on_company_id ON public.news USING btree (company_id);
 
 
 --
 -- Name: index_news_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_news_on_investor_id ON news USING btree (investor_id);
+CREATE INDEX index_news_on_investor_id ON public.news USING btree (investor_id);
 
 
 --
 -- Name: index_news_on_url_and_investor_id_and_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_news_on_url_and_investor_id_and_company_id ON news USING btree (url, investor_id, company_id);
+CREATE UNIQUE INDEX index_news_on_url_and_investor_id_and_company_id ON public.news USING btree (url, investor_id, company_id);
 
 
 --
 -- Name: index_notes_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_notes_on_founder_id ON notes USING btree (founder_id);
+CREATE INDEX index_notes_on_founder_id ON public.notes USING btree (founder_id);
 
 
 --
 -- Name: index_notes_on_subject_type_and_subject_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_notes_on_subject_type_and_subject_id ON notes USING btree (subject_type, subject_id);
+CREATE INDEX index_notes_on_subject_type_and_subject_id ON public.notes USING btree (subject_type, subject_id);
 
 
 --
 -- Name: index_person_entities_on_entity_and_person; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_person_entities_on_entity_and_person ON person_entities USING btree (entity_id, person_type, person_id);
+CREATE UNIQUE INDEX index_person_entities_on_entity_and_person ON public.person_entities USING btree (entity_id, person_type, person_id);
 
 
 --
 -- Name: index_person_entities_on_entity_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_person_entities_on_entity_id ON person_entities USING btree (entity_id);
+CREATE INDEX index_person_entities_on_entity_id ON public.person_entities USING btree (entity_id);
 
 
 --
 -- Name: index_person_entities_on_person_type_and_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_person_entities_on_person_type_and_person_id ON person_entities USING btree (person_type, person_id);
+CREATE INDEX index_person_entities_on_person_type_and_person_id ON public.person_entities USING btree (person_type, person_id);
 
 
 --
 -- Name: index_pitches_on_card_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_pitches_on_card_id ON pitches USING btree (card_id);
+CREATE INDEX index_pitches_on_card_id ON public.pitches USING btree (card_id);
 
 
 --
 -- Name: index_pitches_on_company_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_pitches_on_company_id ON pitches USING btree (company_id);
+CREATE INDEX index_pitches_on_company_id ON public.pitches USING btree (company_id);
 
 
 --
 -- Name: index_pitches_on_prevote_doc; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_pitches_on_prevote_doc ON pitches USING btree (prevote_doc);
+CREATE UNIQUE INDEX index_pitches_on_prevote_doc ON public.pitches USING btree (prevote_doc);
 
 
 --
 -- Name: index_pitches_on_snapshot; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_pitches_on_snapshot ON pitches USING btree (snapshot);
+CREATE UNIQUE INDEX index_pitches_on_snapshot ON public.pitches USING btree (snapshot);
 
 
 --
 -- Name: index_posts_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_posts_on_investor_id ON posts USING btree (investor_id);
+CREATE INDEX index_posts_on_investor_id ON public.posts USING btree (investor_id);
 
 
 --
 -- Name: index_target_investors_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_target_investors_on_competitor_id ON target_investors USING btree (competitor_id);
+CREATE INDEX index_target_investors_on_competitor_id ON public.target_investors USING btree (competitor_id);
 
 
 --
 -- Name: index_target_investors_on_first_last_firm_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_target_investors_on_first_last_firm_name ON target_investors USING btree (first_name, last_name, firm_name, founder_id);
+CREATE UNIQUE INDEX index_target_investors_on_first_last_firm_name ON public.target_investors USING btree (first_name, last_name, firm_name, founder_id);
 
 
 --
 -- Name: index_target_investors_on_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_target_investors_on_founder_id ON target_investors USING btree (founder_id);
+CREATE INDEX index_target_investors_on_founder_id ON public.target_investors USING btree (founder_id);
 
 
 --
 -- Name: index_target_investors_on_fund_type; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_target_investors_on_fund_type ON target_investors USING gin (fund_type);
+CREATE INDEX index_target_investors_on_fund_type ON public.target_investors USING gin (fund_type);
 
 
 --
 -- Name: index_target_investors_on_industry; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_target_investors_on_industry ON target_investors USING gin (industry);
+CREATE INDEX index_target_investors_on_industry ON public.target_investors USING gin (industry);
 
 
 --
 -- Name: index_target_investors_on_investor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_target_investors_on_investor_id ON target_investors USING btree (investor_id);
+CREATE INDEX index_target_investors_on_investor_id ON public.target_investors USING btree (investor_id);
 
 
 --
 -- Name: index_target_investors_on_investor_id_and_founder_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_target_investors_on_investor_id_and_founder_id ON target_investors USING btree (investor_id, founder_id);
+CREATE UNIQUE INDEX index_target_investors_on_investor_id_and_founder_id ON public.target_investors USING btree (investor_id, founder_id);
 
 
 --
 -- Name: index_teams_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_teams_on_name ON teams USING btree (name);
+CREATE UNIQUE INDEX index_teams_on_name ON public.teams USING btree (name);
 
 
 --
 -- Name: index_tracking_pixels_on_email_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_tracking_pixels_on_email_id ON tracking_pixels USING btree (email_id);
+CREATE INDEX index_tracking_pixels_on_email_id ON public.tracking_pixels USING btree (email_id);
 
 
 --
 -- Name: index_tracking_pixels_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_tracking_pixels_on_token ON tracking_pixels USING btree (token);
+CREATE UNIQUE INDEX index_tracking_pixels_on_token ON public.tracking_pixels USING btree (token);
 
 
 --
 -- Name: index_tweeters_on_owner_type_and_owner_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_tweeters_on_owner_type_and_owner_id ON tweeters USING btree (owner_type, owner_id);
+CREATE INDEX index_tweeters_on_owner_type_and_owner_id ON public.tweeters USING btree (owner_type, owner_id);
 
 
 --
 -- Name: index_tweeters_on_username; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_tweeters_on_username ON tweeters USING btree (username);
+CREATE UNIQUE INDEX index_tweeters_on_username ON public.tweeters USING btree (username);
 
 
 --
 -- Name: index_tweets_on_tweeter_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_tweets_on_tweeter_id ON tweets USING btree (tweeter_id);
+CREATE INDEX index_tweets_on_tweeter_id ON public.tweets USING btree (tweeter_id);
 
 
 --
 -- Name: index_tweets_on_twitter_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_tweets_on_twitter_id ON tweets USING btree (twitter_id);
+CREATE UNIQUE INDEX index_tweets_on_twitter_id ON public.tweets USING btree (twitter_id);
 
 
 --
 -- Name: index_universities_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_universities_on_name ON universities USING btree (name);
+CREATE INDEX index_universities_on_name ON public.universities USING btree (name);
 
 
 --
 -- Name: index_users_on_cached_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_cached_name ON users USING btree (cached_name);
+CREATE UNIQUE INDEX index_users_on_cached_name ON public.users USING btree (cached_name);
 
 
 --
 -- Name: index_users_on_slack_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_slack_id ON users USING btree (slack_id);
+CREATE UNIQUE INDEX index_users_on_slack_id ON public.users USING btree (slack_id);
 
 
 --
 -- Name: index_users_on_team_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_users_on_team_id ON users USING btree (team_id);
+CREATE INDEX index_users_on_team_id ON public.users USING btree (team_id);
 
 
 --
 -- Name: index_users_on_trello_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_trello_id ON users USING btree (trello_id);
+CREATE UNIQUE INDEX index_users_on_trello_id ON public.users USING btree (trello_id);
 
 
 --
 -- Name: index_users_on_username; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_username ON users USING btree (username);
+CREATE UNIQUE INDEX index_users_on_username ON public.users USING btree (username);
 
 
 --
 -- Name: index_votes_on_pitch_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_votes_on_pitch_id ON votes USING btree (pitch_id);
+CREATE INDEX index_votes_on_pitch_id ON public.votes USING btree (pitch_id);
 
 
 --
 -- Name: index_votes_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_votes_on_user_id ON votes USING btree (user_id);
+CREATE INDEX index_votes_on_user_id ON public.votes USING btree (user_id);
 
 
 --
 -- Name: investors_first_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX investors_first_name_gin_trgm_idx ON investors USING gin (first_name gin_trgm_ops);
+CREATE INDEX investors_first_name_gin_trgm_idx ON public.investors USING gin (first_name public.gin_trgm_ops);
 
 
 --
 -- Name: investors_last_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX investors_last_name_gin_trgm_idx ON investors USING gin (last_name gin_trgm_ops);
+CREATE INDEX investors_last_name_gin_trgm_idx ON public.investors USING gin (last_name public.gin_trgm_ops);
 
 
 --
 -- Name: investors_location_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX investors_location_gin_trgm_idx ON investors USING gin (location gin_trgm_ops);
+CREATE INDEX investors_location_gin_trgm_idx ON public.investors USING gin (location public.gin_trgm_ops);
 
 
 --
 -- Name: investors_to_tsvector_fname; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX investors_to_tsvector_fname ON investors USING gin (to_tsvector('english'::regconfig, (first_name)::text));
+CREATE INDEX investors_to_tsvector_fname ON public.investors USING gin (to_tsvector('english'::regconfig, (first_name)::text));
 
 
 --
 -- Name: investors_to_tsvector_lname; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX investors_to_tsvector_lname ON investors USING gin (to_tsvector('english'::regconfig, (last_name)::text));
+CREATE INDEX investors_to_tsvector_lname ON public.investors USING gin (to_tsvector('english'::regconfig, (last_name)::text));
 
 
 --
 -- Name: trgm_name_indx_on_entities; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX trgm_name_indx_on_entities ON entities USING gist (name gist_trgm_ops);
+CREATE INDEX trgm_name_indx_on_entities ON public.entities USING gist (name public.gist_trgm_ops);
 
 
 --
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
 -- Name: emails fk_rails_041ca7bd32; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails
-    ADD CONSTRAINT fk_rails_041ca7bd32 FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.emails
+    ADD CONSTRAINT fk_rails_041ca7bd32 FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: intro_requests fk_rails_0c534c3fde; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY intro_requests
-    ADD CONSTRAINT fk_rails_0c534c3fde FOREIGN KEY (target_investor_id) REFERENCES target_investors(id);
+ALTER TABLE ONLY public.intro_requests
+    ADD CONSTRAINT fk_rails_0c534c3fde FOREIGN KEY (target_investor_id) REFERENCES public.target_investors(id);
 
 
 --
 -- Name: investments fk_rails_0d6258ac3c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investments
-    ADD CONSTRAINT fk_rails_0d6258ac3c FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.investments
+    ADD CONSTRAINT fk_rails_0d6258ac3c FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: competitions fk_rails_10c7683510; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY competitions
-    ADD CONSTRAINT fk_rails_10c7683510 FOREIGN KEY (a_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.competitions
+    ADD CONSTRAINT fk_rails_10c7683510 FOREIGN KEY (a_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: pitches fk_rails_115ef0c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY pitches
-    ADD CONSTRAINT fk_rails_115ef0c2b5 FOREIGN KEY (card_id) REFERENCES cards(id);
+ALTER TABLE ONLY public.pitches
+    ADD CONSTRAINT fk_rails_115ef0c2b5 FOREIGN KEY (card_id) REFERENCES public.cards(id);
 
 
 --
 -- Name: cards fk_rails_11b32bc490; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cards
-    ADD CONSTRAINT fk_rails_11b32bc490 FOREIGN KEY (list_id) REFERENCES lists(id);
+ALTER TABLE ONLY public.cards
+    ADD CONSTRAINT fk_rails_11b32bc490 FOREIGN KEY (list_id) REFERENCES public.lists(id);
 
 
 --
 -- Name: import_tasks fk_rails_1705f4b9e0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY import_tasks
-    ADD CONSTRAINT fk_rails_1705f4b9e0 FOREIGN KEY (founder_id) REFERENCES founders(id);
+ALTER TABLE ONLY public.import_tasks
+    ADD CONSTRAINT fk_rails_1705f4b9e0 FOREIGN KEY (founder_id) REFERENCES public.founders(id);
 
 
 --
 -- Name: intro_requests fk_rails_203146869d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY intro_requests
-    ADD CONSTRAINT fk_rails_203146869d FOREIGN KEY (investor_id) REFERENCES investors(id);
+ALTER TABLE ONLY public.intro_requests
+    ADD CONSTRAINT fk_rails_203146869d FOREIGN KEY (investor_id) REFERENCES public.investors(id);
 
 
 --
 -- Name: investments fk_rails_212f793a38; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investments
-    ADD CONSTRAINT fk_rails_212f793a38 FOREIGN KEY (competitor_id) REFERENCES competitors(id);
+ALTER TABLE ONLY public.investments
+    ADD CONSTRAINT fk_rails_212f793a38 FOREIGN KEY (competitor_id) REFERENCES public.competitors(id);
 
 
 --
 -- Name: knowledges fk_rails_26ba4c0c3e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY knowledges
-    ADD CONSTRAINT fk_rails_26ba4c0c3e FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE ONLY public.knowledges
+    ADD CONSTRAINT fk_rails_26ba4c0c3e FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
 -- Name: posts fk_rails_285bce5540; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY posts
-    ADD CONSTRAINT fk_rails_285bce5540 FOREIGN KEY (investor_id) REFERENCES investors(id);
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT fk_rails_285bce5540 FOREIGN KEY (investor_id) REFERENCES public.investors(id);
 
 
 --
 -- Name: competitions fk_rails_297510c89c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY competitions
-    ADD CONSTRAINT fk_rails_297510c89c FOREIGN KEY (b_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.competitions
+    ADD CONSTRAINT fk_rails_297510c89c FOREIGN KEY (b_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: cards fk_rails_31e9cb1159; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cards
-    ADD CONSTRAINT fk_rails_31e9cb1159 FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.cards
+    ADD CONSTRAINT fk_rails_31e9cb1159 FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: emails fk_rails_4f7e384dec; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails
-    ADD CONSTRAINT fk_rails_4f7e384dec FOREIGN KEY (intro_request_id) REFERENCES intro_requests(id);
+ALTER TABLE ONLY public.emails
+    ADD CONSTRAINT fk_rails_4f7e384dec FOREIGN KEY (intro_request_id) REFERENCES public.intro_requests(id);
 
 
 --
 -- Name: tracking_pixels fk_rails_586fbe02f8; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tracking_pixels
-    ADD CONSTRAINT fk_rails_586fbe02f8 FOREIGN KEY (email_id) REFERENCES emails(id);
+ALTER TABLE ONLY public.tracking_pixels
+    ADD CONSTRAINT fk_rails_586fbe02f8 FOREIGN KEY (email_id) REFERENCES public.emails(id);
 
 
 --
 -- Name: investors fk_rails_5e5b9710a2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investors
-    ADD CONSTRAINT fk_rails_5e5b9710a2 FOREIGN KEY (university_id) REFERENCES universities(id);
+ALTER TABLE ONLY public.investors
+    ADD CONSTRAINT fk_rails_5e5b9710a2 FOREIGN KEY (university_id) REFERENCES public.universities(id);
 
 
 --
 -- Name: emails fk_rails_602d137517; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails
-    ADD CONSTRAINT fk_rails_602d137517 FOREIGN KEY (investor_id) REFERENCES investors(id);
+ALTER TABLE ONLY public.emails
+    ADD CONSTRAINT fk_rails_602d137517 FOREIGN KEY (investor_id) REFERENCES public.investors(id);
 
 
 --
 -- Name: news fk_rails_646d2bd38d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY news
-    ADD CONSTRAINT fk_rails_646d2bd38d FOREIGN KEY (investor_id) REFERENCES investors(id);
+ALTER TABLE ONLY public.news
+    ADD CONSTRAINT fk_rails_646d2bd38d FOREIGN KEY (investor_id) REFERENCES public.investors(id);
 
 
 --
 -- Name: person_entities fk_rails_6d42d0b8bf; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY person_entities
-    ADD CONSTRAINT fk_rails_6d42d0b8bf FOREIGN KEY (entity_id) REFERENCES entities(id);
+ALTER TABLE ONLY public.person_entities
+    ADD CONSTRAINT fk_rails_6d42d0b8bf FOREIGN KEY (entity_id) REFERENCES public.entities(id);
 
 
 --
 -- Name: votes fk_rails_8455b71b47; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY votes
-    ADD CONSTRAINT fk_rails_8455b71b47 FOREIGN KEY (pitch_id) REFERENCES pitches(id);
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT fk_rails_8455b71b47 FOREIGN KEY (pitch_id) REFERENCES public.pitches(id);
 
 
 --
 -- Name: pitches fk_rails_87434cc962; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY pitches
-    ADD CONSTRAINT fk_rails_87434cc962 FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.pitches
+    ADD CONSTRAINT fk_rails_87434cc962 FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: calendar_events fk_rails_930e3c0bf4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY calendar_events
-    ADD CONSTRAINT fk_rails_930e3c0bf4 FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE ONLY public.calendar_events
+    ADD CONSTRAINT fk_rails_930e3c0bf4 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
 -- Name: target_investors fk_rails_9cfe54f56c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY target_investors
-    ADD CONSTRAINT fk_rails_9cfe54f56c FOREIGN KEY (founder_id) REFERENCES founders(id);
+ALTER TABLE ONLY public.target_investors
+    ADD CONSTRAINT fk_rails_9cfe54f56c FOREIGN KEY (founder_id) REFERENCES public.founders(id);
 
 
 --
 -- Name: users fk_rails_b2bbf87303; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users
-    ADD CONSTRAINT fk_rails_b2bbf87303 FOREIGN KEY (team_id) REFERENCES teams(id);
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_b2bbf87303 FOREIGN KEY (team_id) REFERENCES public.teams(id);
 
 
 --
 -- Name: intro_requests fk_rails_b2d35a8529; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY intro_requests
-    ADD CONSTRAINT fk_rails_b2d35a8529 FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.intro_requests
+    ADD CONSTRAINT fk_rails_b2d35a8529 FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: investors fk_rails_bfbc7d2c7a; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investors
-    ADD CONSTRAINT fk_rails_bfbc7d2c7a FOREIGN KEY (competitor_id) REFERENCES competitors(id);
+ALTER TABLE ONLY public.investors
+    ADD CONSTRAINT fk_rails_bfbc7d2c7a FOREIGN KEY (competitor_id) REFERENCES public.competitors(id);
 
 
 --
 -- Name: calendar_events fk_rails_c3e3b9423b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY calendar_events
-    ADD CONSTRAINT fk_rails_c3e3b9423b FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.calendar_events
+    ADD CONSTRAINT fk_rails_c3e3b9423b FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: target_investors fk_rails_c8ec711f83; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY target_investors
-    ADD CONSTRAINT fk_rails_c8ec711f83 FOREIGN KEY (competitor_id) REFERENCES competitors(id);
+ALTER TABLE ONLY public.target_investors
+    ADD CONSTRAINT fk_rails_c8ec711f83 FOREIGN KEY (competitor_id) REFERENCES public.competitors(id);
 
 
 --
 -- Name: votes fk_rails_c9b3bef597; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY votes
-    ADD CONSTRAINT fk_rails_c9b3bef597 FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT fk_rails_c9b3bef597 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
 -- Name: notes fk_rails_d6c54b7443; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY notes
-    ADD CONSTRAINT fk_rails_d6c54b7443 FOREIGN KEY (founder_id) REFERENCES founders(id);
+ALTER TABLE ONLY public.notes
+    ADD CONSTRAINT fk_rails_d6c54b7443 FOREIGN KEY (founder_id) REFERENCES public.founders(id);
 
 
 --
 -- Name: knowledges fk_rails_d823280e2d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY knowledges
-    ADD CONSTRAINT fk_rails_d823280e2d FOREIGN KEY (team_id) REFERENCES teams(id);
+ALTER TABLE ONLY public.knowledges
+    ADD CONSTRAINT fk_rails_d823280e2d FOREIGN KEY (team_id) REFERENCES public.teams(id);
 
 
 --
 -- Name: intro_requests fk_rails_d87bff6194; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY intro_requests
-    ADD CONSTRAINT fk_rails_d87bff6194 FOREIGN KEY (founder_id) REFERENCES founders(id);
+ALTER TABLE ONLY public.intro_requests
+    ADD CONSTRAINT fk_rails_d87bff6194 FOREIGN KEY (founder_id) REFERENCES public.founders(id);
 
 
 --
 -- Name: news fk_rails_ddd1ba457d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY news
-    ADD CONSTRAINT fk_rails_ddd1ba457d FOREIGN KEY (company_id) REFERENCES companies(id);
+ALTER TABLE ONLY public.news
+    ADD CONSTRAINT fk_rails_ddd1ba457d FOREIGN KEY (company_id) REFERENCES public.companies(id);
 
 
 --
 -- Name: investments fk_rails_e0aa7acb5f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY investments
-    ADD CONSTRAINT fk_rails_e0aa7acb5f FOREIGN KEY (investor_id) REFERENCES investors(id);
+ALTER TABLE ONLY public.investments
+    ADD CONSTRAINT fk_rails_e0aa7acb5f FOREIGN KEY (investor_id) REFERENCES public.investors(id);
 
 
 --
 -- Name: emails fk_rails_f6176d396e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails
-    ADD CONSTRAINT fk_rails_f6176d396e FOREIGN KEY (founder_id) REFERENCES founders(id);
+ALTER TABLE ONLY public.emails
+    ADD CONSTRAINT fk_rails_f6176d396e FOREIGN KEY (founder_id) REFERENCES public.founders(id);
 
 
 --
 -- Name: companies fk_rails_f7f30b55b8; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY companies
-    ADD CONSTRAINT fk_rails_f7f30b55b8 FOREIGN KEY (team_id) REFERENCES teams(id);
+ALTER TABLE ONLY public.companies
+    ADD CONSTRAINT fk_rails_f7f30b55b8 FOREIGN KEY (team_id) REFERENCES public.teams(id);
 
 
 --
 -- Name: target_investors fk_rails_fb3356619c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY target_investors
-    ADD CONSTRAINT fk_rails_fb3356619c FOREIGN KEY (investor_id) REFERENCES investors(id);
+ALTER TABLE ONLY public.target_investors
+    ADD CONSTRAINT fk_rails_fb3356619c FOREIGN KEY (investor_id) REFERENCES public.investors(id);
 
 
 --
@@ -3243,7 +3247,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171023230210'),
 ('20171030065046'),
 ('20171030181615'),
-('20171107012911'),
 ('20171107111143'),
 ('20171108005014'),
 ('20171110185838'),
@@ -3290,6 +3293,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180130165807'),
 ('20180202174934'),
 ('20180202175706'),
-('20180203050854');
+('20180203050854'),
+('20180404032450');
 
 

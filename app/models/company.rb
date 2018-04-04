@@ -128,7 +128,7 @@ class Company < ActiveRecord::Base
     set_crunchbase_attributes!
     set_angelist_attributes!
     set_competitors!
-    set_capital_raised!
+    set_capital_fields!
   end
 
   def invalidate_crunchbase_id!
@@ -204,6 +204,16 @@ class Company < ActiveRecord::Base
     end
   end
 
+  def self.from_crunchbase_id(cb_id)
+    return nil unless cb_id.present?
+
+    existing = Company.where(crunchbase_id: cb_id).first
+    return existing if existing.present?
+
+    domain = Util.parse_domain(Http::Crunchbase::Organization.new(cb_id).homepage)
+    from_domain domain
+  end
+
   def complete?
     name.present? && description.present? && industry.present?
   end
@@ -274,8 +284,11 @@ class Company < ActiveRecord::Base
     self.competitors += Competitor.for_company(self)
   end
 
-  def set_capital_raised!
+  def set_capital_fields!
     self.capital_raised = [crunchbase_org(5).total_funding.to_i || 0, funded? ? 20_000 : 0].max
+    self.acquisition_date = Date.parse(crunchbase_org.acquisition.announced_on) rescue nil
+    self.ipo_date = Date.parse(crunchbase_org.ipo.went_public_on) rescue nil
+    self.ipo_valuation = crunchbase_org.ipo.opening_valuation
   end
 
   def add_to_wit!

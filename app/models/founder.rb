@@ -258,12 +258,37 @@ class Founder < ApplicationRecord
 
   def graph_node
     @graph_node ||= super || begin
-      address = Mail::Address.new("\"#{name}\" <#{first_name}@#{primary_company.domain}>") rescue nil
+      address = Mail::Address.new("\"#{name}\" <#{first_name.downcase}@#{primary_company.domain}>") rescue nil
       Graph.get(address) if address.present?
     end
   end
 
   private
+
+  def set_metrics!
+    return unless crunchbase_person.present?
+
+    self.affiliated_exits = 0
+    companies = Set.new
+    (crunchbase_person.jobs + crunchbase_person.advisory_roles).each do |job|
+      company = Company.from_crunchbase_id(job.organization.permalink)
+      company.send(:set_capital_fields!)
+      company.save!
+      next unless (date = company.ipo_date || company.acquisition_date).present?
+      next if job.started_on.present? && Date.parse(job.started_on) > date
+      unless companies.include?(job.organization.permalink)
+        companies.add job.organization.permalink
+        self.affiliated_exits += 1
+      end
+    end
+  end
+
+  def crunchbase_person
+    @crunchbase_person ||= begin
+      person = Http::Crunchbase::Person.new(cb_id)
+      person if person.found?
+    end if cb_id.present?
+  end
 
   def normalize_city
     self.city = Util.normalize_city(self.city) if self.city.present?

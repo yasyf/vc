@@ -111,7 +111,11 @@ class Graph
   end
 
   def self.find(addr, label: 'Person')
-    results = retry_([Excon::Error::Socket, Neography::NeographyError]) { server.find_nodes_labeled(label, {email: addr.address}) }
+    find_with_attrs label, { email: addr.address }
+  end
+
+  def self.find_with_attrs(label, attrs)
+    results = retry_([Excon::Error::Socket, Neography::NeographyError]) { server.find_nodes_labeled(label, attrs) }
     Neography::Node.load(results.first, server) if results.present?
   end
 
