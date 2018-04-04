@@ -272,6 +272,7 @@ class Founder < ApplicationRecord
     companies = Set.new
     (crunchbase_person.jobs + crunchbase_person.advisory_roles).each do |job|
       company = Company.from_crunchbase_id(job.organization.permalink)
+      next unless company.present?
       company.send(:set_capital_fields!)
       company.save!
       next unless (date = company.ipo_date || company.acquisition_date).present?
