@@ -2,7 +2,7 @@ require_relative '../config/boot'
 require_relative '../config/environment'
 
 active_founders = Founder.where.not(history_id: nil).where.not(logged_in_at: nil).where.not("email LIKE '%dormroomfund.com'")
-active_founders.count # 552 -> number of founders who gave us their graph
+active_founders.count # 558 -> number of founders who gave us their graph
 
 # Survey Mailer
 
@@ -127,16 +127,22 @@ puts random_sorted.first(5)
 
 # Naive Founder Rank:
 
-naive_fr_scores = active_founders.find_each.map do |founder|
-  %w(pagerank betweenness harmonic).map { |prop| founder.graph_node[prop] || 0.0 }.sum / 3.0
+active_founder_graph_metrics = active_founders.find_each.map do |founder|
+  %w(pagerank betweenness harmonic).map { |prop| founder.graph_node[prop] || 0.0 }
+end
+
+naive_fr_scores = active_founder_graph_metrics.map do |metrics|
+  metrics.sum / 3.0
 end
 
 naive_fr_data, naive_fr_sorted = data_and_sorted(dataset, naive_fr_scores, relevance: relevance)
 puts naive_fr_sorted.first(5)
 
-# export to run calculations in python
-
 # Weighted Founder Rank
+
+weighted_fr_X =  dataset.map.with_index do |x, i|
+  [x[:id]] + active_founder_graph_metrics[i]
+end
 
 # Founder Rank + Investment
 

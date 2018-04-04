@@ -14,6 +14,14 @@ module Http::Crunchbase
      response.name
     end
 
+    def ipo
+      response.ipo
+    end
+
+    def acquisition
+      response.acquired_by
+    end
+
     def description
       Util.fix_encoding(response.short_description)
     end
@@ -102,11 +110,11 @@ module Http::Crunchbase
     end
 
     def id_valid?
-      @id_valid ||= @company.crunchbase_id.blank? || !@company.crunchbase_id.starts_with?(INVALID_KEY)
+      @id_valid ||= @company.is_a?(String) || @company.crunchbase_id.blank? || !@company.crunchbase_id.starts_with?(INVALID_KEY)
     end
 
     def company_id
-      @company_id ||= @company.crunchbase_id if id_valid?
+      @company_id ||= (@company.is_a?(String) ? @company : @company.crunchbase_id) if id_valid?
     end
 
     def fetch_data

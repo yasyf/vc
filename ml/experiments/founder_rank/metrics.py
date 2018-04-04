@@ -1,6 +1,7 @@
 import numpy as np
+import scipy.stats as stats
 
-# a: [[id, score, rank]]
+# dataset: [[id, score, rank]]
 
 def dcg(a):
   size = a.shape[0]
@@ -23,19 +24,10 @@ class Metrics(object):
     return np.intersect1d(desired, retrieved).size / float(n)
 
   def tau(self, a):
-    n = a.shape[0]
-    total = 0
-    for i in range(n):
-      for j in range(n):
-        if i == j:
-          continue
-        total += np.sign(a[i, 2] - a[j, 2]) * np.sign(self.baseline[i, 2] - self.baseline[j, 2])
-    return total / (n * (n - 1))
+    return stats.kendalltau(a[:, 2], self.baseline[:, 2])
 
   def rho(self, a):
-    n = a.shape[0]
-    differences = np.power(a[:, 2] - self.baseline[:, 2], 2)
-    return 1 - ((6 * np.sum(differences)) / (n * (np.power(n, 2) - 1)))
+    return stats.spearmanr(a[:, 2], self.baseline[:, 2])
 
   def rmse(self, a):
     n = a.shape[0]

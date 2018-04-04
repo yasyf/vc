@@ -15,6 +15,14 @@ module Http::Crunchbase
      response.last_name
     end
 
+    def jobs
+      response.jobs
+    end
+
+    def advisory_roles
+      response.advisory_roles
+    end
+
     def bio
       bio = response.bio
       self.class.markdown.render(Util.fix_encoding(bio)) if bio.present?

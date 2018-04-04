@@ -1,7 +1,13 @@
 import numpy as np
+import warnings
+
+warnings.filterwarnings(action="ignore", module="scipy", message="^internal gelsd")
+
+def get_dataset(module):
+  return np.array(module.data)
 
 def get_datasets(modules):
-  return {m.__name__.split('.')[-1]: np.array(m.data) for m in modules}
+  return {m.__name__.split('.')[-1]: get_dataset(m) for m in modules}
 
 def for_each_dataset(datasets, fn):
   for n, a in datasets.items():
