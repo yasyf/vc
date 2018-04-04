@@ -286,9 +286,13 @@ class Company < ActiveRecord::Base
 
   def set_capital_fields!
     self.capital_raised = [crunchbase_org(5).total_funding.to_i || 0, funded? ? 20_000 : 0].max
-    self.acquisition_date = Date.parse(crunchbase_org.acquisition.announced_on) rescue nil
-    self.ipo_date = Date.parse(crunchbase_org.ipo.went_public_on) rescue nil
-    self.ipo_valuation = crunchbase_org.ipo.opening_valuation
+    if crunchbase_org.acquisition.present?
+      self.acquisition_date = Date.parse(crunchbase_org.acquisition.announced_on) rescue nil
+    end
+    if crunchbase_org.ipo.present?
+      self.ipo_date = Date.parse(crunchbase_org.ipo.went_public_on) rescue nil
+      self.ipo_valuation = crunchbase_org.ipo.opening_valuation
+    end
   end
 
   def add_to_wit!
