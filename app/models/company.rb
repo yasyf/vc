@@ -299,4 +299,28 @@ class Company < ActiveRecord::Base
     return unless team.present?
     Http::Wit::Entity.new('company').add_value name
   end
+
+  def add_graph_relationship!
+    add_founder_graph_relationship!
+    add_investor_graph_relationship!
+  end
+
+  def add_investor_graph_relationship!
+    partners = investments.where.not(investor: nil)
+    return unless partners.count > 1
+    partners.each do |i1|
+      partners.each do |i2|
+        i1.investor.connect_to! i2.investor, :coinvest unless i1.id == i2.id
+      end
+    end
+  end
+
+  def add_founder_graph_relationship!
+    return unless founders.count > 1
+    founders.each do |f1|
+      founders.each do |f2|
+        f1.connect_to! f2, :cofound unless f1.id == f2.id
+      end
+    end
+  end
 end

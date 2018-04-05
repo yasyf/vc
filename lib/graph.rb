@@ -90,6 +90,10 @@ class Graph
     find addr
   end
 
+  def self.find_from_model(model)
+    find_with_attrs model.class.name, { model_id: model.id }
+  end
+
   def self.execute(script, params: {}, transaction: false)
     if transaction
       tx = server.begin_transaction
@@ -122,8 +126,14 @@ class Graph
   def self.init!
     add_constraint! 'Person', 'email'
     ensure_index! 'Person', 'domain'
+    ensure_index! 'Person', 'email'
+    ensure_index! 'Person', 'name'
+    ensure_index! 'Founder', 'model_id'
+    ensure_index! 'Investor', 'model_id'
     ensure_relationship_index! 'email'
     ensure_relationship_index! 'invest'
+    ensure_relationship_index! 'cofound'
+    ensure_relationship_index! 'coinvest'
   end
 
   def self.add_constraint!(name, property)
