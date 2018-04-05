@@ -1,4 +1,6 @@
 class CompanyExtraAttributesJob < ApplicationJob
+  include Concerns::Ignorable
+
   queue_as :low
 
   def perform(company_id)
