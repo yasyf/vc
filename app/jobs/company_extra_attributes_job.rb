@@ -4,6 +4,12 @@ class CompanyExtraAttributesJob < ApplicationJob
   def perform(company_id)
     company = Company.find(company_id)
     company.set_extra_attributes!
-    company.save!
+    begin
+      ignore_invalid { company.save! } if company.changed?
+    rescue *unique_errors
+      attrs = company.errors.details.map { |k,_| [k, company.send(k)] }.to_h
+      DuplicateCompanyJob.perform_later(company.id, attrs)
+      return
+    end
   end
 end
