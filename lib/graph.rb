@@ -22,22 +22,6 @@ class Graph
     method("fetch_#{type}").call(script, attrs)
   end
 
-  def self.fetch_nodes(script, attrs = {})
-    result = execute(script, params: attrs)
-    return [] unless result.present?
-    result.map do |r|
-      Parallel.map(r.first['nodes'], in_threads: 16) { |node| Neography::Node.load(node, db=server) }
-    end
-  end
-
-  def self.fetch_rels(script, attrs = {})
-    result = execute(script, params: attrs)
-    return [] unless result.present?
-    result.map do |r|
-      Parallel.map(r.first['relationships'], in_threads: 16) { |rel| Neography::Relationship.load(rel, db=server) }
-    end
-  end
-
   def self.all_sp_query(match, where, limit = 4)
     <<-CYPHER
       MATCH (#{match}), path = shortestPath((me)-[*1..#{limit}]-(other))

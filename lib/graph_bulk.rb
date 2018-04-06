@@ -19,15 +19,28 @@ class GraphBulk
     Graph.execute(scale)
   end
 
+  EMAIL_NODES = <<-CYPHER
+    MATCH (p:Person)-[:email]-() RETURN DISTINCT id(p) as id
+  CYPHER
+
+  EMAIL_RELS = <<-CYPHER
+    MATCH (p1:Person)-[r1:email]->(p2:Person), (p2)-[r2:email]->(p1)
+    WHERE r1.count > 1 AND r2.count > 1
+    RETURN id(p1) as source, id(p2) as target
+  CYPHER
+
+  INVEST_NODES = <<-CYPHER
+    MATCH (p:Person)-[:invest]-() RETURN DISTINCT id(p) as id
+  CYPHER
+
+  INVEST_RELS = <<-CYPHER
+    MATCH (p1:Person)-[r1:invest]-(p2:Person)
+    RETURN id(p1) as source, id(p2) as target
+  CYPHER
+
   def self.run_vanilla_metric!(name, options, params: {}, yields: nil)
-    nodes = <<-CYPHER
-      MATCH (p:Person)-[:email]-() RETURN DISTINCT id(p) as id
-    CYPHER
-    rels = <<-CYPHER
-      MATCH (p1:Person)-[r1:email]->(p2:Person), (p2)-[r2:email]->(p1)
-      WHERE r1.count > 1 AND r2.count > 1
-      RETURN id(p1) as source, id(p2) as target
-    CYPHER
+    nodes = INVEST_NODES
+    rels = INVEST_RELS
     cypher = <<-CYPHER
       CALL algo.#{name}(
         '#{nodes}',
@@ -39,12 +52,15 @@ class GraphBulk
     Graph.execute(cypher, params: params)
   end
 
-
   def self.add_labels_to_nodes!(klass)
-    klass.where.not(email: nil).find_each do |i|
-      return unless i.graph_node.present?
-      i.graph_node.add_label(klass.name)
-      i.graph_node[:model_id] = i.id
+    klass.find_in_batches do |batch|
+      ids = batch.map(&:id)
+      nodes = batch.map(&:graph_node).compact.reject { |n| n[:model_id].present? }
+      ops = nodes.flat_map.with_index do |node, i|
+        [[:set_node_property, node, { model_id: ids[i] }], [:add_label, node, klass.name]]
+      end
+      next unless ops.present?
+      Graph.server.batch *ops
     end
   end
 end
