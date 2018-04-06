@@ -32,13 +32,21 @@ class Graph
     CYPHER
   end
 
+  def self.rel_index_name(type)
+    "connected_on_#{type}"
+  end
+
+  def self.rel_value(n1, n2)
+    "#{n1.email} -> #{n2.email}"
+  end
+
   def self.connect(type, n1, n2)
     return if n1 == n2
     return unless n1.present? && n2.present?
     Neography::Relationship.create_unique(
-      "connected_on_#{type}",
+      rel_index_name(type),
       type,
-      "#{n1.email} -> #{n2.email}",
+      rel_value(n1, n2),
       type,
       n1,
       n2

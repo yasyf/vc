@@ -20,6 +20,21 @@ class Investment < ApplicationRecord
     [funding_type, series && "series_#{series}"].compact
   end
 
+  def bulk_graph_rels
+    return [] unless investor.present?
+    company.founders.map do |founder|
+      [
+        :create_unique_relationship,
+        Graph.rel_index_name(:invest),
+        :invest,
+        Graph.rel_value(investor.graph_node, founder.graph_node),
+        :invest,
+        investor.graph_node,
+        founder.graph_node,
+      ]
+    end
+  end
+
   private
 
   def add_graph_relationship!
