@@ -11,6 +11,8 @@ class Founder < ApplicationRecord
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
   has_and_belongs_to_many :companies, -> { distinct }
+  has_one :primary_company_join
+  has_one :primary_company, through: :primary_company_join, source: :company
   has_many :notes
   has_many :import_tasks, dependent: :destroy
   has_many :emails, dependent: :destroy
@@ -163,10 +165,6 @@ class Founder < ApplicationRecord
 
   def drf?
     cached { companies.any?(&:funded?) } || domain == ENV['DOMAIN'] || Rails.env.development?
-  end
-
-  def primary_company
-    @primary_company ||= companies.where(primary: true).last || companies.last
   end
 
   def conversations

@@ -56,7 +56,14 @@ module Concerns
 
     def graph_node
       address = Mail::Address.new("\"#{name}\" <#{email}>") rescue nil if email.present?
-      @graph_node ||= Graph.get(address) if address.present?
+      @graph_node ||= begin
+        Graph.find_from_model(self) || (Graph.get(address) if address.present?)
+      end.tap do |graph_node|
+        if graph_node.present? && graph_node[:model_id].blank?
+          graph_node.add_label(self.class.name)
+          graph_node[:model_id] = self.id
+        end
+      end
     end
 
     private

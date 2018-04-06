@@ -23,6 +23,7 @@ class RefreshJob < ApplicationJob
       competitor_partners
       competitor_velocities
       investor_entities
+      primary_company_joins
     ).each do |view|
       Scenic.database.refresh_materialized_view(view, concurrently: concurrently)
     end

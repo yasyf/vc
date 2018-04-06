@@ -1000,6 +1000,23 @@ ALTER SEQUENCE public.posts_id_seq OWNED BY public.posts.id;
 
 
 --
+-- Name: primary_company_joins; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW public.primary_company_joins AS
+ SELECT founders.id AS founder_id,
+    primary_companies.company_id
+   FROM (public.founders
+     LEFT JOIN LATERAL ( SELECT companies_founders.company_id
+           FROM (public.companies_founders
+             JOIN public.companies ON ((companies.id = companies_founders.company_id)))
+          WHERE (founders.id = companies_founders.founder_id)
+          ORDER BY companies."primary" DESC, companies.created_at DESC
+         LIMIT 1) primary_companies ON (true))
+  WITH NO DATA;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2593,6 +2610,13 @@ CREATE INDEX index_posts_on_investor_id ON public.posts USING btree (investor_id
 
 
 --
+-- Name: index_primary_company_joins_on_founder_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_primary_company_joins_on_founder_id ON public.primary_company_joins USING btree (founder_id);
+
+
+--
 -- Name: index_target_investors_on_competitor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3294,6 +3318,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180202174934'),
 ('20180202175706'),
 ('20180203050854'),
-('20180404032450');
+('20180404032450'),
+('20180406185448');
 
 

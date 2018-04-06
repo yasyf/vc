@@ -32,7 +32,7 @@ def total_funding(companies)
   [funding_from_companies, funding_from_rounds].max
 end
 
-dataset = active_founders.find_each.map do |f|
+dataset = active_founders.includes(:primary_company).find_each.map do |f|
   previous_funding = total_funding(f.companies.where.not(id: f.primary_company&.id))
   current_funding = total_funding(Company.where(id: f.primary_company&.id))
 
