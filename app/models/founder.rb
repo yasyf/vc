@@ -261,6 +261,12 @@ class Founder < ApplicationRecord
     end
   end
 
+  if Rails.env.test?
+    def primary_company
+      @primary_company ||= companies.where(primary: true).last || companies.last
+    end
+  end
+
   private
 
   def set_metrics!
