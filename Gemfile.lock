@@ -86,7 +86,7 @@ GEM
     crass (1.0.3)
     css_parser (1.6.0)
       addressable
-    dalli (2.7.7)
+    dalli (2.7.8)
     declarative (0.0.10)
     declarative-option (0.1.0)
     devise (4.4.3)
