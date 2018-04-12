@@ -32,10 +32,11 @@ def total_funding(companies)
   [funding_from_companies, funding_from_rounds].max
 end
 
-dataset = active_founders.includes(:primary_company).find_each.map do |f|
-  previous_funding = total_funding(f.companies.where.not(id: f.primary_company&.id))
-  current_funding = total_funding(Company.where(id: f.primary_company&.id))
+def graph_metric(f, name)
+  f.graph_node.present? ? (f.graph_node[name] || 0) : 0
+end
 
+dataset = active_founders.includes(:primary_company).find_each.map do |f|
   emails = f.emails.where.not(investor: nil).where(bulk: false)
   incoming_investors = emails.where(direction: :incoming).count('DISTINCT emails.investor_id')
   outgoing_investors = emails.where(direction: :outgoing).count('DISTINCT emails.investor_id')
@@ -51,9 +52,9 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
 
   {
     id: f.id,
-    pagerank: f.graph_node[:pagerank],
-    betweenness: f.graph_node[:betweenness],
-    harmonic: f.graph_node[:harmonic],
+    pagerank: graph_metric(f, :pagerank),
+    betweenness: graph_metric(f, :betweenness),
+    harmonic: graph_metric(f, :harmonic),
     previous_funding: previous_funding,
     current_funding: current_funding,
     total_funding: previous_funding + current_funding,
@@ -62,6 +63,7 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
     manual_target_responds: manually_created_targets_responded,
     manual_target_success: manual_target_success,
     incoming_sentiment: incoming_sentiment,
+    affiliated_exits: f.affiliated_exits || 0,
   }
 end
 
@@ -72,8 +74,8 @@ def top_by_metric(dataset, metric)
 end
 
 def sort_indexes_by_metric(dataset, metric)
-  order = dataset.map { |x| x[metric] }.uniq.sort
-  dataset.map { |x| order.index(x[metric]) }
+  order = dataset.map { |x| x[metric] }.uniq.sort.each_with_index.each_with_object({}) { |(x, i), h| h[x] = i }
+  dataset.map { |x| order[x[metric]] }
 end
 
 puts top_by_metric(dataset, :previous_funding) # best
@@ -144,6 +146,110 @@ weighted_fr_X =  dataset.map.with_index do |x, i|
   [x[:id]] + active_founder_graph_metrics[i]
 end
 
-# Founder Rank + Investment
+# Founder Rank + Investment Baseline
+
+def founder_sql_with_funding(start, end_)
+  <<-SQL
+    SELECT
+      founders.id,
+      founders.affiliated_exits,
+      founders.first_name,
+      founders.last_name,
+      founders.email,
+      MAX(primary_company.domain) AS primary_domain,
+      SUM(companies.capital_raised) AS funding_from_companies,
+      COALESCE(SUM(round_sizes.round_size), 0) AS funding_from_rounds
+    FROM founders
+    INNER JOIN companies_founders ON companies_founders.founder_id = founders.id
+    INNER JOIN companies ON companies.id = companies_founders.company_id
+    INNER JOIN primary_company_joins ON primary_company_joins.founder_id = founders.id
+    LEFT JOIN LATERAL (
+      SELECT primary_companies.domain
+      FROM companies AS primary_companies
+      WHERE primary_companies.id = primary_company_joins.company_id
+    ) AS primary_company ON true
+    LEFT JOIN LATERAL (
+      SELECT COALESCE(MAX(investments.round_size), 0) AS round_size
+      FROM investments
+      WHERE investments.company_id = companies_founders.company_id
+      GROUP BY investments.funding_type, investments.series
+    ) AS round_sizes ON true
+    WHERE founders.id >= #{start} AND founders.id < #{end_}
+    GROUP BY founders.id
+  SQL
+end
+
+def in_batches(klass, batch_size: 5000)
+  total = klass.count
+  start, end_ = 0, batch_size
+  results = []
+  while end_ <= total
+    Parallel.each(klass.find_by_sql(founder_sql_with_funding(start, end_)), in_threads: 64) do |f|
+      ActiveRecord::Base.connection_pool.with_connection do
+        results << (yield f)
+      end
+    end
+    start, end_ = end_, end_ + batch_size
+  end
+  results
+end
+
+def save_public_data(data, name)
+  open("ml/experiments/founder_rank/data/public/#{name}.py", 'w') do |f|
+    f.write('data = ')
+    f.write(data.to_json)
+  end
+end
+
+all_founders_dataset = in_batches(Founder) do |f|
+  {
+    id: f.id,
+    pagerank: graph_metric(f, :pagerank),
+    betweenness: graph_metric(f, :betweenness),
+    harmonic: graph_metric(f, :harmonic),
+    total_funding: [f.funding_from_companies, f.funding_from_rounds].max,
+    affiliated_exits: f.affiliated_exits || 0,
+  }
+end
+
+ALL_FOUNDERS_WEIGHTS = {
+  total_funding: 1,
+  affiliated_exits: 4,
+}
+
+all_founders_baseline_scores = ALL_FOUNDERS_WEIGHTS.map do |metric, weight|
+  sort_indexes_by_metric(all_founders_dataset, metric).map { |x| x * weight }
+end.transpose.map(&:sum)
+
+af_baseline_data, af_baseline_sorted = data_and_sorted(all_founders_dataset, all_founders_baseline_scores)
+af_relevance = af_baseline_data.each_with_object({}) { |x, h| h[x.first] = x.last }
+puts af_baseline_sorted.first(5)
+
+save_public_data af_baseline_data, :baseline
+
+# Founder Rank + Investment Random
+
+random_scores = all_founders_dataset.size.times.map { rand }
+random_data, random_sorted = data_and_sorted(all_founders_dataset, random_scores, relevance: af_relevance)
+puts random_sorted.first(5)
+
+save_public_data random_data, :random
+
+# Naive Founder Rank + Investment:
+
+naive_af_scores = all_founders_dataset.map do |f|
+  f.slice(:pagerank, :betweenness, :harmonic).values.sum / 3.0
+end
+
+naive_af_data, naive_af_sorted = data_and_sorted(all_founders_dataset, naive_af_scores, relevance: af_relevance)
+puts naive_af_sorted.first(5)
+
+save_public_data naive_af_data, :naive
 
 # Weighted Founder Rank + Investment
+
+weighted_af_X =  all_founders_dataset.map do |x|
+  [x[:id], x[:pagerank], x[:betweenness], x[:harmonic]]
+end
+
+save_public_data weighted_af_X, :graph_metrics

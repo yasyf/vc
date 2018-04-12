@@ -9,14 +9,19 @@ def dcg(a):
   relevances = np.power(2, a[:, 2]) - 1
   return scale.dot(relevances)
 
-class Metrics(object):
-  def __init__(self, baseline):
-    self.baseline = baseline
+def dcg2(a):
+  size = a.shape[0]
+  scale = 1.0 / np.log2(np.arange(2, (size + 1) + 1))
+  return scale.dot(a[:, 2])
 
-    self.idcg = dcg(self.baseline)
+class Metrics(object):
+  def __init__(self, baseline, power_dcg=True):
+    self.baseline = baseline
+    self.dcg_fn = dcg if power_dcg else dcg2
+    self.idcg = self.dcg_fn(self.baseline)
 
   def ndcg(self, a):
-    return dcg(a) / self.idcg
+    return self.dcg_fn(a) / self.idcg
 
   def precision_at(self, n, a):
     desired = self.baseline[0:n, 0]

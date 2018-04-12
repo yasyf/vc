@@ -30,11 +30,11 @@ class GraphBulk
   CYPHER
 
   INVEST_NODES = <<-CYPHER
-    MATCH (p:Person)-[:invest]-() RETURN DISTINCT id(p) as id
+    MATCH (p:Person)-[:invest|:coinvest|:cofound]-() RETURN DISTINCT id(p) as id
   CYPHER
 
   INVEST_RELS = <<-CYPHER
-    MATCH (p1:Person)-[r1:invest]-(p2:Person)
+    MATCH (p1:Person)-[r1:invest|:coinvest|:cofound]-(p2:Person)
     RETURN id(p1) as source, id(p2) as target
   CYPHER
 

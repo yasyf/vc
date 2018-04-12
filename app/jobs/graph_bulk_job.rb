@@ -4,8 +4,8 @@ class GraphBulkJob < ApplicationJob
   DAMPING_FACTOR = 0.85
 
   def perform(shallow: false)
-    GraphBulk.add_labels_to_nodes! Founder.includes(:primary_company)
     GraphBulk.add_labels_to_nodes! Investor
+    GraphBulk.add_labels_to_nodes! Founder.includes(:primary_company)
     return if shallow
     calculate! :pagerank
     calculate! :betweenness

@@ -7,6 +7,7 @@ FactoryBot.define do
     trait :with_companies do
       after :create do |founder|
         create_list :company, 3, founders: [founder]
+        # primary_company
       end
     end
   end

@@ -11,6 +11,7 @@ class Founder < ApplicationRecord
   SOCIAL_KEYS = %w(linkedin twitter homepage facebook)
 
   has_and_belongs_to_many :companies, -> { distinct }
+  has_many :investments, through: :companies
   has_one :primary_company_join
   has_one :primary_company, through: :primary_company_join, source: :company
   has_many :notes
@@ -256,9 +257,13 @@ class Founder < ApplicationRecord
 
   def graph_node
     @graph_node ||= super || begin
-      address = Mail::Address.new("\"#{name}\" <#{first_name.downcase}@#{primary_company.domain}>") rescue nil
+      address = Mail::Address.new("\"#{name}\" <#{first_name.downcase}@#{primary_domain}>") rescue nil
       Graph.get(address) if address.present?
     end
+  end
+
+  def primary_domain
+    has_attribute?(:primary_domain) ? self[:primary_domain] : primary_company.domain
   end
 
   if Rails.env.test?
@@ -277,14 +282,6 @@ class Founder < ApplicationRecord
     (crunchbase_person.jobs + crunchbase_person.advisory_roles).each do |job|
       company = Company.from_crunchbase_id(job.organization.permalink)
       next unless company.present?
-      unless (company.ipo_date || company.acquisition_date).present?
-        company.send(:set_capital_fields!)
-        begin
-          company.save!
-        rescue ActiveRecord::RecordInvalid
-          next
-        end
-      end
       next unless (date = company.ipo_date || company.acquisition_date).present?
       next if job.started_on.present? && Date.parse(job.started_on) > date
       unless companies.include?(job.organization.permalink)
