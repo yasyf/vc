@@ -348,7 +348,7 @@ GEM
     parallel (1.12.1)
     pg (0.21.0)
     pg_query (1.0.2)
-    pghero (2.1.0)
+    pghero (2.1.1)
       activerecord
     picky (4.31.3)
       activesupport
