@@ -35,7 +35,7 @@
     "js-yaml": "^3.11.0",
     "linkifyjs": "^2.1.6",
     "lodash": "^4.17.5",
-    "logrocket": "^0.6.10",
+    "logrocket": "^0.6.11",
     "logrocket-react": "1.0.0",
     "moment": "^2.21.0",
     "node-sass": "^4.9.0",
