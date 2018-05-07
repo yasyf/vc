@@ -78,7 +78,7 @@ class Util
      founder&.primary_company&.location,
      founder&.city,
      session[:city],
-   ].compact.map { |x| normalize_city(x) }.find { |x| Competitor.hub?x }
+   ].compact.map { |x| normalize_city(x) }.find { |x| Competitor.hub? x }
   end
 
   def self.ip_address(env)

@@ -64,6 +64,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
     byebug (10.0.2)
+    choice (0.2.0)
     chronic (0.10.2)
     clearbit (0.2.8)
       nestful (~> 1.1.0)
@@ -401,6 +402,11 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
+    rails-erd (1.5.2)
+      activerecord (>= 3.2)
+      activesupport (>= 3.2)
+      choice (~> 0.2.0)
+      ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
     railties (5.2.0)
@@ -472,6 +478,7 @@ GEM
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
+    ruby-graphviz (1.2.3)
     ruby-readability (0.7.0)
       guess_html_encoding (>= 0.0.4)
       nokogiri (>= 1.6.0)
@@ -670,6 +677,7 @@ DEPENDENCIES
   puma_worker_killer
   rack-timeout
   rails (~> 5.2.0)
+  rails-erd
   redcarpet
   redis
   redis-namespace

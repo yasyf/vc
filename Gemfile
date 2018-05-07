@@ -121,6 +121,7 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'spring-commands-rspec'
   gem 'bullet'
+  gem 'rails-erd', require: false
 end
 
 group :development, :test do
