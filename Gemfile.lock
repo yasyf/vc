@@ -58,7 +58,7 @@ GEM
     bullet (5.7.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
-    byebug (10.0.1)
+    byebug (10.0.2)
     chronic (0.10.2)
     clearbit (0.2.8)
       nestful (~> 1.1.0)
