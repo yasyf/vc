@@ -102,7 +102,6 @@ group :production do
   end
   gem 'scout_apm', '~> 3.0.x'
   gem 'puma_worker_killer', require: false
-  gem 'barnes'
 end
 
 group :development, :staging do

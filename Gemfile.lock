@@ -50,9 +50,6 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
     awesome_print (1.8.0)
-    barnes (0.0.4)
-      multi_json (~> 1)
-      statsd-ruby (~> 1.1)
     bcrypt (3.1.11)
     bindex (0.5.0)
     browser (2.5.3)
@@ -537,7 +534,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    statsd-ruby (1.4.0)
     suo (0.3.2)
       dalli
       msgpack
@@ -611,7 +607,6 @@ DEPENDENCIES
   activerecord-precount
   addressable
   awesome_print
-  barnes
   browser
   bullet
   byebug
