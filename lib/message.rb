@@ -42,6 +42,8 @@ class Message
     @date ||= begin
       date = header('Date')
       date.present? ? DateTime.parse(date) : DateTime.now
+    rescue ArgumentError
+      DateTime.now
     end
   end
 
