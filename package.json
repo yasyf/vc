@@ -20,7 +20,7 @@
     "bloodhound-js": "1.2.2",
     "classnames": "^2.2.5",
     "compression-webpack-plugin": "^1.1.11",
-    "core-js": "2.5.4",
+    "core-js": "2.5.5",
     "css-loader": "^0.28.11",
     "emoji-mart": "2.5.1",
     "exenv": "1.2.2",
