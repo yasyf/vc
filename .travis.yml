@@ -22,6 +22,7 @@ addons:
       - libmaxminddb-dev
       - mmdb-bin
 before_install:
+  - gem install bundler
   - gem update --system
   - nvm install 9.9.0
   - nvm use 9.9.0
