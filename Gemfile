@@ -31,6 +31,7 @@ gem 'turbolinks'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'bootsnap', require: false
 gem 'ruby-trello'
 gem 'chronic'
 gem 'slack-ruby-client'

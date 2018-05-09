@@ -15,6 +15,8 @@ module Drfvote
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.load_defaults 5.0
+
     config.eager_load_paths << Rails.root.join('lib')
     config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
     config.active_record.schema_format = :sql
