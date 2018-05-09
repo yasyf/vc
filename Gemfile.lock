@@ -341,7 +341,7 @@ GEM
       omniauth (~> 1.2)
     orm_adapter (0.5.0)
     os (0.9.6)
-    ox (2.9.0)
+    ox (2.9.2)
     parallel (1.12.1)
     pg (0.21.0)
     pg_query (1.0.2)
