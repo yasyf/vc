@@ -507,7 +507,7 @@ class Investor < ApplicationRecord
   end
 
   def popular_entities
-    ids = cached { n_popular_entities.pluck(:id) }
+    ids = cached { n_popular_entities.pluck(:id) } || []
     Entity.find(ids)
   end
 
