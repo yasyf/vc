@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :university do
-    name "MyString"
+    name "MIT"
   end
 end

@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :company do
     name "NewCo"
+    team Team.default
     industry [:food]
     description "A great company!"
 

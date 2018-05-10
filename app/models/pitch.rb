@@ -7,8 +7,8 @@ class Pitch < ApplicationRecord
   belongs_to :card
   has_one :team, through: :company
   has_many :votes
-  has_many :yes_votes, -> { yes }, class_name: 'Vote', count_loader: true
-  has_many :no_votes, -> { no }, class_name: 'Vote', count_loader: true
+  has_many :yes_votes, -> { yes }, class_name: 'Vote'
+  has_many :no_votes, -> { no }, class_name: 'Vote'
   has_many :final_votes, -> { final }, class_name: 'Vote'
 
   validates :company, presence: true

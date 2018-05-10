@@ -199,7 +199,7 @@ class Founder < ApplicationRecord
   end
 
   def cached_json
-    Rails.env.development? ? as_json : cache_for_a_hour { as_json }
+    Rails.env.production? ? cache_for_a_hour { as_json } : as_json
   end
 
   def existing_target_investor_ids

@@ -16,6 +16,7 @@ module Drfvote
     # -- all .rb files in that directory are automatically loaded.
 
     config.load_defaults 5.0
+    config.active_record.belongs_to_required_by_default = false
 
     config.eager_load_paths << Rails.root.join('lib')
     config.assets.paths << Rails.root.join('app', 'assets', 'fonts')

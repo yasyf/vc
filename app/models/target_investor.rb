@@ -106,6 +106,7 @@ class TargetInvestor < ApplicationRecord
     end
     self.email = investor.email if founder.drf?
     self.firm_name = investor.competitor.name
+    self.competitor = investor.competitor
     save!
   end
 
