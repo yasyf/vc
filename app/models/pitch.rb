@@ -72,6 +72,14 @@ class Pitch < ApplicationRecord
     user_votes(user).final.first
   end
 
+  def yes_votes_count
+    yes_votes.count
+  end
+
+  def no_votes_count
+    no_votes.count
+  end
+
   def stats
     cached(cache_unless_voting) do
       {
