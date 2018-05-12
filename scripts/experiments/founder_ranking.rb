@@ -195,7 +195,7 @@ def in_batches(klass, batch_size: 5000)
 end
 
 def save_public_data(data, name)
-  open("ml/experiments/founder_rank/data/public/#{name}.py", 'w') do |f|
+  open("ml/experiments/founder_rank/data/investment/#{name}.py", 'w') do |f|
     f.write('data = ')
     f.write(data.to_json)
   end
