@@ -53,9 +53,9 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@babel/polyfill@7.0.0-beta.46":
-  version "7.0.0-beta.46"
-  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.46.tgz#5a4203a3abee8ddfb80afd3cf6f5ff1391750695"
+"@babel/polyfill@7.0.0-beta.47":
+  version "7.0.0-beta.47"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.47.tgz#2ef0a6ee02a23a0ab98fc4eb6aed7e88560bc35d"
   dependencies:
     core-js "^2.5.3"
     regenerator-runtime "^0.11.1"
