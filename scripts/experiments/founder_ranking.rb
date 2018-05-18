@@ -48,6 +48,9 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
   manually_created_targets_responded = emails.where(investor_id: manually_created_targets.select('target_investors.investor_id')).where(direction: :incoming).count('DISTINCT emails.investor_id')
   manual_target_success = manually_created_targets_responded.to_f / manually_created_targets.count.to_f
 
+  previous_funding = total_funding(f.companies.where.not(id: f.primary_company&.id))
+  current_funding = total_funding(Company.where(id: f.primary_company&.id))
+
   incoming_sentiment = Email.connection.select_value(emails.where(direction: :incoming).select('AVG(sentiment_score * sentiment_magnitude)').to_sql) || 0
 
   {
@@ -106,6 +109,13 @@ def data_and_sorted(dataset, scores, relevance: nil)
   [data, sorted]
 end
 
+def save_private_data(data, name)
+  open("ml/experiments/founder_rank/data/email_and_investment/#{name}.py", 'w') do |f|
+    f.write('data = ')
+    f.write(data.to_json)
+  end
+end
+
 WEIGHTS = {
   total_funding: 4,
   incoming_investors: 3,
@@ -121,11 +131,15 @@ baseline_data, baseline_sorted = data_and_sorted(dataset, baseline_scores)
 relevance = baseline_data.each_with_object({}) { |x, h| h[x.first] = x.last }
 puts baseline_sorted.first(5)
 
+save_private_data baseline_data, :baseline
+
 # Random
 
 random_scores = active_founders.size.times.map { rand }
 random_data, random_sorted = data_and_sorted(dataset, random_scores, relevance: relevance)
 puts random_sorted.first(5)
+
+save_private_data random_data, :random
 
 # Naive Founder Rank:
 
@@ -140,11 +154,15 @@ end
 naive_fr_data, naive_fr_sorted = data_and_sorted(dataset, naive_fr_scores, relevance: relevance)
 puts naive_fr_sorted.first(5)
 
+save_private_data naive_fr_data, :naive
+
 # Weighted Founder Rank
 
 weighted_fr_X =  dataset.map.with_index do |x, i|
   [x[:id]] + active_founder_graph_metrics[i]
 end
+
+save_private_data weighted_fr_X, :graph_metrics
 
 # Founder Rank + Investment Baseline
 
@@ -253,3 +271,5 @@ weighted_af_X =  all_founders_dataset.map do |x|
 end
 
 save_public_data weighted_af_X, :graph_metrics
+
+# Weighted Founder Rank + Investment + Email
