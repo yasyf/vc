@@ -1,11 +1,12 @@
 class CompanyRelationshipsJob < ApplicationJob
   include Concerns::Ignorable
+  include Concerns::Timeoutable
 
   TIMEOUT = 5
 
   queue_as :long
 
-  def perform(company_id)
+  def perform_with_timeout(company_id)
     @company = Company.find(company_id)
 
     @company.al_id ||= Http::AngelList::Startup.find_id(@company.name)
