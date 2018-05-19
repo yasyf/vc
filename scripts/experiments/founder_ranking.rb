@@ -1,5 +1,5 @@
-require_relative '../config/boot'
-require_relative '../config/environment'
+require_relative '../../config/boot'
+require_relative '../../config/environment'
 
 active_founders = Founder.where.not(history_id: nil).where.not(logged_in_at: nil).where.not("email LIKE '%dormroomfund.com'")
 active_founders.count # 558 -> number of founders who gave us their graph
