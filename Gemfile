@@ -87,6 +87,7 @@ gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
 gem 'grpc', '1.11.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
+gem 'time_difference'
 
 group :test do
   gem 'minitest', '~> 5.11.2'
