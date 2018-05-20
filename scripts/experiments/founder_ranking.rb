@@ -18,6 +18,28 @@ end
 
 # Graph Backfill
 
+def add_edges!(scope)
+  scope.in_batches do |rel|
+    Parallel.each(rel, in_threads: 32) do |i|
+      ActiveRecord::Base.connection_pool.with_connection do
+        ops = i.send(:bulk_graph_rels)
+        next unless ops.present?
+        begin
+          Graph.server.batch *ops
+        rescue Neography::DeadlockDetectedException => e
+          puts e
+          retry
+        end
+      end
+    end
+  end
+end
+
+def add_investment_edges!
+  add_edges! Company.includes(investments: {investor: :competitor}, founders: :primary_company)
+  add_edges! Investment.includes(company: {founders: :primary_company}, investor: :competitor)
+end
+
 def backfill_graph!
   Founder.where.not(history_id: nil).pluck(:id).each do |id|
     FounderGmailBackfillJob.set(wait: 30.minutes * rand).perform_later(id, '5y', '1y')
@@ -47,6 +69,9 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
 
   incoming_sentiment = Email.connection.select_value(emails.where(direction: :incoming).select('AVG(sentiment_score * sentiment_magnitude)').to_sql) || 0
 
+  first_target_on, last_target_change = fundraising_range(f)
+  fundraising_time = -TimeDifference.between(first_target_on, last_target_change).in_days
+
   {
     id: f.id,
     pagerank: graph_metric(f, :pagerank),
@@ -60,6 +85,7 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
     manual_target_responds: manually_created_targets_responded,
     manual_target_success: manual_target_success,
     incoming_sentiment: incoming_sentiment,
+    fundraising_time: fundraising_time,
     affiliated_exits: f.affiliated_exits || 0,
   }
 end
@@ -114,7 +140,6 @@ WEIGHTS = {
   total_funding: 4,
   incoming_investors: 3,
   manual_target_responds: 2,
-  incoming_sentiment: 1,
 }
 
 baseline_scores = WEIGHTS.map do |metric, weight|

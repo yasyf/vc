@@ -300,6 +300,50 @@ class Company < ActiveRecord::Base
     Http::Wit::Entity.new('company').add_value name
   end
 
+  def bulk_graph_rels
+    rels = []
+
+    partners = investments.select { |i| i.investor.present? }
+    if partners.size > 1
+      partners.each do |i1|
+        partners.each do |i2|
+          unless i1.id == i2.id
+            rels << [
+              :create_unique_relationship,
+              Graph.rel_index_name(:coinvest),
+              :coinvest,
+              Graph.rel_value(i1.investor.graph_node, i2.investor.graph_node),
+              :coinvest,
+              i1.investor.graph_node,
+              i2.investor.graph_node,
+            ]
+          end
+        end
+      end
+    end
+
+    if founders.size > 1
+      founders.each do |f1|
+        founders.each do |f2|
+          unless f1.id == f2.id
+            rels << [
+              :create_unique_relationship,
+              Graph.rel_index_name(:cofound),
+              :cofound,
+              Graph.rel_value(f1.graph_node, f2.graph_node),
+              :cofound,
+              f1.graph_node,
+              f2.graph_node,
+            ]
+          end
+        end
+      end
+    end
+
+    rels
+  end
+
+
   def add_graph_relationship!
     add_founder_graph_relationship!
     add_investor_graph_relationship!
