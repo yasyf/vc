@@ -418,7 +418,7 @@ class Investor < ApplicationRecord
     return unless value.present?
     response = JSON.parse(value).with_indifferent_access
     return if response[:errors].present?
-    return if response[:review].blank? || !response[:review][:published] || response[:review][:overall] < 4
+    return if response[:review].blank? || !response[:review][:publishedAt] || response[:review][:overall] < 4
     update! review: { text: response[:review][:comment], id: response[:investorId] }
   end
 
