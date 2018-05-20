@@ -20,13 +20,15 @@ end
 
 def add_edges!(scope)
   scope.in_batches do |rel|
-    Parallel.each(rel, in_threads: 32) do |i|
+    Parallel.each(rel, in_threads: 8) do |i|
       ActiveRecord::Base.connection_pool.with_connection do
         ops = i.send(:bulk_graph_rels)
         next unless ops.present?
         begin
-          Graph.server.batch *ops
-        rescue Neography::DeadlockDetectedException => e
+          Graph.server.batch_no_streaming *ops
+          puts "Done ops for #{i.id}"
+        rescue Excon::Error::Socket, Neography::DeadlockDetectedException => e
+          sleep 1
           puts e
           retry
         end
@@ -36,7 +38,7 @@ def add_edges!(scope)
 end
 
 def add_investment_edges!
-  add_edges! Company.includes(investments: {investor: :competitor}, founders: :primary_company)
+  add_edges! Company.includes(investments: {investor: :competitor}, founders: :primary_company).where('companies.id > ?', 64963)
   add_edges! Investment.includes(company: {founders: :primary_company}, investor: :competitor)
 end
 

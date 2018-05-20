@@ -307,17 +307,17 @@ class Company < ActiveRecord::Base
     if partners.size > 1
       partners.each do |i1|
         partners.each do |i2|
-          unless i1.id == i2.id
-            rels << [
-              :create_unique_relationship,
-              Graph.rel_index_name(:coinvest),
-              :coinvest,
-              Graph.rel_value(i1.investor.graph_node, i2.investor.graph_node),
-              :coinvest,
-              i1.investor.graph_node,
-              i2.investor.graph_node,
-            ]
-          end
+          next if i1.id == i2.id
+          next unless i1.investor.graph_node.present? && i2.investor.graph_node.present?
+          rels << [
+            :create_unique_relationship,
+            Graph.rel_index_name(:coinvest),
+            :coinvest,
+            Graph.rel_value(i1.investor.graph_node, i2.investor.graph_node),
+            :coinvest,
+            i1.investor.graph_node,
+            i2.investor.graph_node,
+          ]
         end
       end
     end
@@ -325,17 +325,17 @@ class Company < ActiveRecord::Base
     if founders.size > 1
       founders.each do |f1|
         founders.each do |f2|
-          unless f1.id == f2.id
-            rels << [
-              :create_unique_relationship,
-              Graph.rel_index_name(:cofound),
-              :cofound,
-              Graph.rel_value(f1.graph_node, f2.graph_node),
-              :cofound,
-              f1.graph_node,
-              f2.graph_node,
-            ]
-          end
+          next if f1.id == f2.id
+          next unless f1.graph_node.present? && f2.graph_node.present?
+          rels << [
+            :create_unique_relationship,
+            Graph.rel_index_name(:cofound),
+            :cofound,
+            Graph.rel_value(f1.graph_node, f2.graph_node),
+            :cofound,
+            f1.graph_node,
+            f2.graph_node,
+          ]
         end
       end
     end

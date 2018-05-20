@@ -18,13 +18,34 @@ module PlotHelpers
     founder.emails.where.not(investor: nil).where(bulk: false)
   end
 
+  def average_round_sizes
+    @avg_round_sizes ||= Competitor::INDUSTRIES.keys.each_with_object({}) do |industry, h|
+      query = Company
+        .where('companies.industry @> ?', "{#{industry}}")
+        .joins(:investments)
+        .select('investments.round_size')
+        .to_sql
+      h[industry] = Company.connection.select_value("SELECT AVG(round_size) FROM (#{query}) AS sizes").to_i
+    end.with_indifferent_access
+  end
+
   def total_funding(companies)
-    funding_from_companies = companies.sum('companies.capital_raised')
+    companies.find_each.map do |company|
+      sql = Investment
+        .where(company: company)
+        .group('investments.funding_type, investments.series')
+        .select('MAX(investments.round_size)')
+        .to_sql
+      funding_from_rounds = Investment.connection.select_values(sql).compact.sum
+      amount = [company.capital_raised, funding_from_rounds].max.to_f
 
-    sql = Investment.where(company: companies).group('investments.funding_type, investments.series').select('MAX(investments.round_size)').to_sql
-    funding_from_rounds = Investment.connection.select_values(sql).compact.sum
-
-    [funding_from_companies, funding_from_rounds].max
+      blended_avg_round_size = if company.industry.present?
+        average_round_sizes.slice(*company.industry).values.sum / company.industry.length
+      else
+        average_round_sizes.values.sum / average_round_sizes.values.length
+      end.to_f
+      amount / blended_avg_round_size
+    end.sum
   end
 
   def parallel_map(founders, &block)
