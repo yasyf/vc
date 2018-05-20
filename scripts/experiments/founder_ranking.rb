@@ -30,7 +30,10 @@ def graph_metric(f, name)
   f.graph_node.present? ? (f.graph_node[name] || 0) : 0
 end
 
-dataset = parallel_map(active_founders.includes(:primary_company)) do |f|
+dataset = active_founders.includes(:primary_company).find_each.map do |f|
+  previous_funding = total_funding(f.companies.where.not(id: f.primary_company&.id))
+  current_funding = total_funding(Company.where(id: f.primary_company&.id))
+
   emails = fundraising_emails f
   incoming_investors = emails.where(direction: :incoming).count('DISTINCT emails.investor_id')
   outgoing_investors = emails.where(direction: :outgoing).count('DISTINCT emails.investor_id')
@@ -41,9 +44,6 @@ dataset = parallel_map(active_founders.includes(:primary_company)) do |f|
   manually_created_targets = f.target_investors.where.not(id: f.target_investors.joins("INNER JOIN emails ON emails.founder_id = #{f.id} AND target_investors.investor_id = emails.investor_id AND target_investors.created_at > emails.created_at").group('target_investors.id').select('target_investors.id'))
   manually_created_targets_responded = emails.where(investor_id: manually_created_targets.select('target_investors.investor_id')).where(direction: :incoming).count('DISTINCT emails.investor_id')
   manual_target_success = manually_created_targets_responded.to_f / manually_created_targets.count.to_f
-
-  previous_funding = total_funding(f.companies.where.not(id: f.primary_company&.id))
-  current_funding = total_funding(Company.where(id: f.primary_company&.id))
 
   incoming_sentiment = Email.connection.select_value(emails.where(direction: :incoming).select('AVG(sentiment_score * sentiment_magnitude)').to_sql) || 0
 
@@ -104,7 +104,7 @@ def data_and_sorted(dataset, scores, relevance: nil)
 end
 
 def save_private_data(data, name)
-  open("ml/experiments/founder_rank/data/email_and_investment/#{name}.py", 'w') do |f|
+  open("ml/experiments/founder_rank/data/private/#{name}.py", 'w') do |f|
     f.write('data = ')
     f.write(data.to_json)
   end

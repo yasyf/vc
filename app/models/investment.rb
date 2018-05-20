@@ -22,7 +22,9 @@ class Investment < ApplicationRecord
 
   def bulk_graph_rels
     return [] unless investor.present?
+    return [] if investor.graph_node.blank?
     company.founders.map do |founder|
+      next if founder.graph_node.blank?
       [
         :create_unique_relationship,
         Graph.rel_index_name(:invest),
@@ -32,7 +34,7 @@ class Investment < ApplicationRecord
         investor.graph_node,
         founder.graph_node,
       ]
-    end
+    end.compact
   end
 
   private

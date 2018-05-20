@@ -30,8 +30,10 @@ module PlotHelpers
   def parallel_map(founders, &block)
     results = []
     founders.in_batches do |rel|
-      Parallel.each(rel, in_threads: 16) do |founder|
-        results << block.call(founder)
+      Parallel.each(rel, in_threads: 32) do |founder|
+        ActiveRecord::Base.connection_pool.with_connection do
+          results << block.call(founder)
+        end
       end
     end
     results

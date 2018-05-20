@@ -255,11 +255,8 @@ class Founder < ApplicationRecord
     founder.save!
   end
 
-  def graph_node
-    @graph_node ||= super || begin
-      address = Mail::Address.new("\"#{name}\" <#{first_name.downcase}@#{primary_domain}>") rescue nil
-      Graph.get(address) if address.present?
-    end
+  def email
+    super || (primary_domain.present? ? "#{first_name.downcase.parameterize}@#{primary_domain}" : "#{id}@#{self.class.name}")
   end
 
   def primary_domain

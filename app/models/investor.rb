@@ -290,6 +290,10 @@ class Investor < ApplicationRecord
     email == ENV['DEMO_EMAIL']
   end
 
+  def email
+    super || (competitor.domain.present? ? "#{first_name.downcase.parameterize}@#{competitor.domain}" : "#{id}@#{self.class.name}")
+  end
+
   def opted_out?
     opted_in == false
   end

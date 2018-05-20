@@ -51,8 +51,8 @@ class GraphBulk
   CYPHER
 
   def self.run_vanilla_metric!(name, options, params: {}, yields: nil)
-    nodes = EMAIL_AND_INVEST_NODES
-    rels = EMAIL_AND_INVEST_RELS
+    nodes = EMAIL_NODES
+    rels = EMAIL_RELS
     cypher = <<-CYPHER
       CALL algo.#{name}(
         '#{nodes}',
