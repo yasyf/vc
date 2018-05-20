@@ -1,8 +1,11 @@
 require_relative '../../config/boot'
 require_relative '../../config/environment'
+require_relative '../plots/plot_helpers'
+
+include PlotHelpers
 
 active_founders = Founder.where.not(history_id: nil).where.not(logged_in_at: nil).where.not("email LIKE '%dormroomfund.com'")
-active_founders.count # 558 -> number of founders who gave us their graph
+active_founders.count # 625 -> number of founders who gave us their graph
 
 # Survey Mailer
 
@@ -23,21 +26,12 @@ end
 
 # Utilities
 
-def total_funding(companies)
-  funding_from_companies = companies.sum('companies.capital_raised')
-
-  sql = Investment.where(company: companies).group('investments.funding_type, investments.series').select('MAX(investments.round_size)').to_sql
-  funding_from_rounds = Investment.connection.select_values(sql).compact.sum
-
-  [funding_from_companies, funding_from_rounds].max
-end
-
 def graph_metric(f, name)
   f.graph_node.present? ? (f.graph_node[name] || 0) : 0
 end
 
-dataset = active_founders.includes(:primary_company).find_each.map do |f|
-  emails = f.emails.where.not(investor: nil).where(bulk: false)
+dataset = parallel_map(active_founders.includes(:primary_company)) do |f|
+  emails = fundraising_emails f
   incoming_investors = emails.where(direction: :incoming).count('DISTINCT emails.investor_id')
   outgoing_investors = emails.where(direction: :outgoing).count('DISTINCT emails.investor_id')
 
@@ -163,6 +157,8 @@ weighted_fr_X =  dataset.map.with_index do |x, i|
 end
 
 save_private_data weighted_fr_X, :graph_metrics
+
+exit
 
 # Founder Rank + Investment Baseline
 
