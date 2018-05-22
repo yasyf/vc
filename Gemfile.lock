@@ -382,7 +382,7 @@ GEM
       rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
-    rack-timeout (0.4.2)
+    rack-timeout (0.5.0.1)
     rack_fast_escape (2009.06.24)
       url_escape
     rails (5.2.0)
