@@ -29,7 +29,16 @@ module PlotHelpers
     end.with_indifferent_access
   end
 
-  def total_funding(companies)
+  def adjusted_funding(industries, amount)
+    blended_avg_round_size = if industries.present?
+      average_round_sizes.slice(*industries).values.sum.to_f / industries.length.to_f
+    else
+      average_round_sizes.values.sum.to_f / average_round_sizes.values.length.to_f
+    end.to_f
+    amount.to_f / blended_avg_round_size
+  end
+
+  def total_funding(companies, scale: true)
     companies.find_each.map do |company|
       sql = Investment
         .where(company: company)
@@ -38,13 +47,7 @@ module PlotHelpers
         .to_sql
       funding_from_rounds = Investment.connection.select_values(sql).compact.sum
       amount = [company.capital_raised, funding_from_rounds].max.to_f
-
-      blended_avg_round_size = if company.industry.present?
-        average_round_sizes.slice(*company.industry).values.sum / company.industry.length
-      else
-        average_round_sizes.values.sum / average_round_sizes.values.length
-      end.to_f
-      amount / blended_avg_round_size
+      adjusted_funding company.industry, amount
     end.sum
   end
 

@@ -27,7 +27,7 @@ def add_edges!(scope)
         begin
           Graph.server.batch_no_streaming *ops
           puts "Done ops for #{i.id}"
-        rescue Excon::Error::Socket, Neography::DeadlockDetectedException => e
+        rescue Excon::Error::Socket, Neography::DeadlockDetectedException, Neography::NeographyError => e
           sleep 1
           puts e
           retry
@@ -38,7 +38,7 @@ def add_edges!(scope)
 end
 
 def add_investment_edges!
-  add_edges! Company.includes(investments: {investor: :competitor}, founders: :primary_company).where('companies.id > ?', 64963)
+  add_edges! Company.includes(investments: {investor: :competitor}, founders: :primary_company).where('companies.id > ?', 76522)
   add_edges! Investment.includes(company: {founders: :primary_company}, investor: :competitor)
 end
 
@@ -76,9 +76,9 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
 
   {
     id: f.id,
-    pagerank: graph_metric(f, :pagerank),
-    betweenness: graph_metric(f, :betweenness),
-    harmonic: graph_metric(f, :harmonic),
+    # pagerank: graph_metric(f, :pagerank),
+    # betweenness: graph_metric(f, :betweenness),
+    # harmonic: graph_metric(f, :harmonic),
     previous_funding: previous_funding,
     current_funding: current_funding,
     total_funding: previous_funding + current_funding,
@@ -142,6 +142,7 @@ WEIGHTS = {
   total_funding: 4,
   incoming_investors: 3,
   manual_target_responds: 2,
+  incoming_sentiment: 1,
 }
 
 baseline_scores = WEIGHTS.map do |metric, weight|
@@ -153,6 +154,8 @@ relevance = baseline_data.each_with_object({}) { |x, h| h[x.first] = x.last }
 puts baseline_sorted.first(5)
 
 save_private_data baseline_data, :baseline
+
+exit
 
 # Random
 
@@ -199,7 +202,8 @@ def founder_sql_with_funding(start, end_)
       founders.email,
       MAX(primary_company.domain) AS primary_domain,
       SUM(companies.capital_raised) AS funding_from_companies,
-      COALESCE(SUM(round_sizes.round_size), 0) AS funding_from_rounds
+      COALESCE(SUM(round_sizes.round_size), 0) AS funding_from_rounds,
+      array_accum(companies.industry) AS all_industries
     FROM founders
     INNER JOIN companies_founders ON companies_founders.founder_id = founders.id
     INNER JOIN companies ON companies.id = companies_founders.company_id
@@ -225,7 +229,7 @@ def in_batches(klass, batch_size: 5000)
   start, end_ = 0, batch_size
   results = []
   while end_ <= total
-    Parallel.each(klass.find_by_sql(founder_sql_with_funding(start, end_)), in_threads: 64) do |f|
+    Parallel.each(klass.find_by_sql(founder_sql_with_funding(start, end_)), in_threads: 32) do |f|
       ActiveRecord::Base.connection_pool.with_connection do
         results << (yield f)
       end
@@ -236,7 +240,7 @@ def in_batches(klass, batch_size: 5000)
 end
 
 def save_public_data(data, name)
-  open("ml/experiments/founder_rank/data/investment/#{name}.py", 'w') do |f|
+  open("ml/experiments/founder_rank/data/investment_and_cofound/#{name}.py", 'w') do |f|
     f.write('data = ')
     f.write(data.to_json)
   end
@@ -248,7 +252,7 @@ all_founders_dataset = in_batches(Founder) do |f|
     pagerank: graph_metric(f, :pagerank),
     betweenness: graph_metric(f, :betweenness),
     harmonic: graph_metric(f, :harmonic),
-    total_funding: [f.funding_from_companies, f.funding_from_rounds].max,
+    total_funding: adjusted_funding(f.all_industries.uniq, [f.funding_from_companies, f.funding_from_rounds].max),
     affiliated_exits: f.affiliated_exits || 0,
   }
 end

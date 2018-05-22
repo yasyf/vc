@@ -78,6 +78,17 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
+--
+-- Name: array_accum(anyarray); Type: AGGREGATE; Schema: public; Owner: -
+--
+
+CREATE AGGREGATE public.array_accum(anyarray) (
+    SFUNC = array_cat,
+    STYPE = anyarray,
+    INITCOND = '{}'
+);
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -3319,6 +3330,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180202175706'),
 ('20180203050854'),
 ('20180404032450'),
-('20180406185448');
+('20180406185448'),
+('20180521020015');
 
 
