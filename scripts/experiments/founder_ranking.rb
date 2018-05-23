@@ -16,6 +16,12 @@ def mail_survey!
   end
 end
 
+def mail_usefulness_survey!
+  Founder.where.not(logged_in_at: nil).where.not(email: nil).find_each do |founder|
+    BulkMailer.usefulness_survey_email(founder, 'ggBb7m', 'Was VCWiz helpful for your fundraise?').deliver_later
+  end
+end
+
 # Graph Backfill
 
 def add_edges!(scope)
@@ -54,6 +60,8 @@ def graph_metric(f, name)
   f.graph_node.present? ? (f.graph_node[name] || 0) : 0
 end
 
+puts average_round_sizes
+
 dataset = active_founders.includes(:primary_company).find_each.map do |f|
   previous_funding = total_funding(f.companies.where.not(id: f.primary_company&.id))
   current_funding = total_funding(Company.where(id: f.primary_company&.id))
@@ -76,9 +84,9 @@ dataset = active_founders.includes(:primary_company).find_each.map do |f|
 
   {
     id: f.id,
-    # pagerank: graph_metric(f, :pagerank),
-    # betweenness: graph_metric(f, :betweenness),
-    # harmonic: graph_metric(f, :harmonic),
+    pagerank: graph_metric(f, :pagerank),
+    betweenness: graph_metric(f, :betweenness),
+    harmonic: graph_metric(f, :harmonic),
     previous_funding: previous_funding,
     current_funding: current_funding,
     total_funding: previous_funding + current_funding,
@@ -132,7 +140,7 @@ def data_and_sorted(dataset, scores, relevance: nil)
 end
 
 def save_private_data(data, name)
-  open("ml/experiments/founder_rank/data/private/#{name}.py", 'w') do |f|
+  open("ml/experiments/founder_rank/data/email_and_investment/#{name}.py", 'w') do |f|
     f.write('data = ')
     f.write(data.to_json)
   end
@@ -154,8 +162,6 @@ relevance = baseline_data.each_with_object({}) { |x, h| h[x.first] = x.last }
 puts baseline_sorted.first(5)
 
 save_private_data baseline_data, :baseline
-
-exit
 
 # Random
 
@@ -229,10 +235,9 @@ def in_batches(klass, batch_size: 5000)
   start, end_ = 0, batch_size
   results = []
   while end_ <= total
-    Parallel.each(klass.find_by_sql(founder_sql_with_funding(start, end_)), in_threads: 32) do |f|
-      ActiveRecord::Base.connection_pool.with_connection do
-        results << (yield f)
-      end
+    puts "#{end_} / #{total} (#{(end_ / total.to_f) * 100}%)"
+    klass.find_by_sql(founder_sql_with_funding(start, end_)).each do |f|
+      results << (yield f)
     end
     start, end_ = end_, end_ + batch_size
   end
@@ -240,7 +245,7 @@ def in_batches(klass, batch_size: 5000)
 end
 
 def save_public_data(data, name)
-  open("ml/experiments/founder_rank/data/investment_and_cofound/#{name}.py", 'w') do |f|
+  open("ml/experiments/founder_rank/data/investment/#{name}.py", 'w') do |f|
     f.write('data = ')
     f.write(data.to_json)
   end

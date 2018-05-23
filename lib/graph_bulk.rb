@@ -30,11 +30,11 @@ class GraphBulk
   CYPHER
 
   INVEST_NODES = <<-CYPHER
-    MATCH (p:Person)-[:invest|:cofound]-() RETURN DISTINCT id(p) as id
+    MATCH (p:Person)-[:invest]-() RETURN DISTINCT id(p) as id
   CYPHER
 
   INVEST_RELS = <<-CYPHER
-    MATCH (p1:Person)-[r1:invest|:cofound]-(p2:Person)
+    MATCH (p1:Person)-[r1:invest]-(p2:Person)
     RETURN id(p1) as source, id(p2) as target
   CYPHER
 
@@ -51,8 +51,8 @@ class GraphBulk
   CYPHER
 
   def self.run_vanilla_metric!(name, options, params: {}, yields: nil)
-    nodes = EMAIL_NODES
-    rels = EMAIL_RELS
+    nodes = INVEST_NODES
+    rels = INVEST_RELS
     cypher = <<-CYPHER
       CALL algo.#{name}(
         '#{nodes}',
