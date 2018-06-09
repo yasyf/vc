@@ -129,6 +129,30 @@ phl:
   time_zone: 'Eastern Time (US & Canada)'
   voting_period: 1
 
+summer_sf:
+  full_name: 'Summer SF'
+  ignore: <%= !Rails.env.production? %>
+  listserv: 'drfbot'
+  channel: 'summerteam-sf'
+  boards:
+    - 's79zLTSI'
+  snapshots:
+    - '0B5YV7AKNT7yoT1QycnluOHJFd0k'
+  prevote_discussions: '0B5YV7AKNT7yoVmoxT1VsaHdiLUk'
+  coffee_chats: '0B5YV7AKNT7yoVFRjdDlvNXdZTnM'
+  lists:
+    application: 'Applied at Website'
+    allocated: 'Allocated Point Partner'
+    ice_box: 'Defer / Check In Later'
+    scheduled: 'Pitching'
+    pre_funded: 'Invested'
+    funded:
+      - 'Invested'
+    passed: 'Passed - Pitched'
+    rejected: 'Passed - No Pitch'
+  time_zone: 'Pacific Time (US & Canada)'
+  voting_period: 1
+
 test:
   <<: *boston
   ignore: <%= Rails.env.production? %>
