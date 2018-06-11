@@ -137,8 +137,9 @@ summer_sf:
   boards:
     - 's79zLTSI'
   snapshots:
+    - '1SJyHTchf9k7h1g8v_uHbQN_9VQFfst6r'
     - '0B5YV7AKNT7yoT1QycnluOHJFd0k'
-  prevote_discussions: '0B5YV7AKNT7yoVmoxT1VsaHdiLUk'
+  prevote_discussions: '1R0lcuWSsGvGkeXu79eAj2DGqbectLluM'
   coffee_chats: '0B5YV7AKNT7yoVFRjdDlvNXdZTnM'
   lists:
     application: 'Applied at Website'
