@@ -185,6 +185,9 @@ Rails.application.routes.draw do
         get 'voting', to: 'companies#voting'
         resources :companies, only: [:index, :show] do
           resources :votes, only: [:show, :create, :new]
+          member do
+            post 'create_snapshot'
+          end
         end
       end
 

@@ -78,6 +78,10 @@ class Team < ApplicationRecord
     config['excludes'] || []
   end
 
+  def snapshot_template
+    config['snapshot_template']
+  end
+
   def prevote_discussions_folder_id
     config['prevote_discussions']
   end

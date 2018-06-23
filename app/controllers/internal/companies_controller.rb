@@ -37,6 +37,11 @@ class Internal::CompaniesController < Internal::ApplicationController
     render 'index'
   end
 
+  def create_snapshot
+    company = Company.find(params[:id])
+    redirect_to company.create_snapshot_doc!
+  end
+
   private
 
   def flash_if_no_filter
