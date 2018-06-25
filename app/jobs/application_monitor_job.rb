@@ -3,7 +3,7 @@ class ApplicationMonitorJob < ActiveJob::Base
 
   def perform
     Team.for_each do |team|
-      companies = Company.find team.lists.application.cards.pluck(:company_id)
+      companies = team.lists.application.cards.where(archived: false).map(&:company)
       next if companies.blank?
       companies.each do |company|
         next unless company.users.present?
@@ -14,7 +14,7 @@ class ApplicationMonitorJob < ActiveJob::Base
           user.send! message
         end
       end
-      links = companies.select { |company| company.cards.present? }.map { |company| "<#{company.cards.first.trello_url}|#{company.name}>" }
+      links = companies.map { |company| "<#{company.card.trello_url}|#{company.name}>" }
       message = "The following companies applied and are waiting to hear back from us!" +
         " If you're already talking with one, please move it to the 'Allocated Point Partner' column." +
         "\n#{links.join(', ')}"
