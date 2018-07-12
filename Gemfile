@@ -61,7 +61,7 @@ gem 'gon'
 gem 'retriable', '~> 3.1.1'
 gem 'metainspector'
 gem 'feedjira'
-gem 'google-cloud-language', '0.27.1'
+gem 'google-cloud-language', '0.30.0'
 gem 'google-cloud-storage'
 gem 'google-cloud-pubsub'
 gem 'gender_detector'
@@ -85,7 +85,7 @@ gem 'prop'
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
-gem 'grpc', '1.11.0' # tmp fix for grpc#13908
+gem 'grpc', '1.13.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
 
 group :test do
