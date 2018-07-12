@@ -100,7 +100,7 @@ group :production do
   install_if -> { RUBY_PLATFORM =~ /linux/ } do
     gem 'hive_geoip2'
   end
-  gem 'scout_apm', '~> 3.0.pre23'
+  gem 'scout_apm', '~> 3.0.pre25'
   gem 'puma_worker_killer', require: false
 end
 
