@@ -192,7 +192,7 @@ GEM
     googlemaps-services (1.4.8)
       http (~> 3.0, >= 3.0.0)
       nokogiri (~> 1.7, >= 1.7.1)
-    grpc (1.11.0)
+    grpc (1.12.0)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
       googleauth (>= 0.5.1, < 0.7)
@@ -641,7 +641,7 @@ DEPENDENCIES
   google-cloud-storage
   googleauth
   googlemaps-services
-  grpc (= 1.11.0)
+  grpc (= 1.12.0)
   guard-rspec
   hive_geoip2
   httparty
