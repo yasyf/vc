@@ -87,7 +87,7 @@ class Util
 
   def self.geo_search_ip(ip)
     Geocoder.search(ip)
-  rescue Geocoder::LookupTimeout
+  rescue Geocoder::LookupTimeout, Redis::CommandError
     Geocoder.search(ip, ip_lookup: :geoip2)
   end
 
