@@ -13,5 +13,7 @@ class Http::Newsriver
       'Authorization': api_key
     })
     JSON.parse body
+  rescue HTTP::Fetch::Error
+    []
   end
 end
