@@ -132,7 +132,7 @@ GEM
       faraday_middleware (>= 0.9)
       loofah (>= 2.0)
       sax-machine (>= 1.0)
-    ffi (1.9.23)
+    ffi (1.9.25)
     formatador (0.2.5)
     gender_detector (2.0.0)
     geocoder (1.4.7)
