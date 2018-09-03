@@ -167,25 +167,9 @@ Rails.application.routes.draw do
     devise_for :users, skip: :all
 
     if Rails.application.drfvote?
-      root 'welcome#index'
-
       devise_scope :internal_user do
         get 'auth/create', to: 'auth#create'
         get 'auth/failure', to: 'auth#failure'
-      end
-
-      get 'team', to: 'welcome#select_team'
-      get 'feedback', to: 'welcome#send_slack_feedback'
-      get 'stats/show'
-
-      scope "(:team)", constraints: TeamConstraint.new do
-        resources :knowledges, only: [:index]
-        resources :stats, only: [:index]
-        get 'all', to: 'companies#all'
-        get 'voting', to: 'companies#voting'
-        resources :companies, only: [:index, :show] do
-          resources :votes, only: [:show, :create, :new]
-        end
       end
 
       namespace :api, defaults: { format: :json } do
@@ -215,6 +199,11 @@ Rails.application.routes.draw do
             post 'toggle_active'
             post 'set_team'
           end
+        end
+
+        namespace :v2 do
+          jsonapi_resources :companies
+          jsonapi_resource :partner
         end
       end
 
