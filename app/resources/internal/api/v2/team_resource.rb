@@ -1,5 +1,5 @@
 class Internal::Api::V2::TeamResource < JSONAPI::Resource
-  attributes :name
+  attribute :name
 
   has_many :partners
 end

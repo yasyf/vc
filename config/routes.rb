@@ -203,7 +203,8 @@ Rails.application.routes.draw do
 
         namespace :v2 do
           jsonapi_resources :companies
-          jsonapi_resource :partner
+          jsonapi_resources :partners
+          jsonapi_resource :partner, controller: 'partners'
         end
       end
 
