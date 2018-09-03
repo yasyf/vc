@@ -61,12 +61,6 @@ class Company < ActiveRecord::Base
     cached { users.map(&:name) }
   end
 
-  def self.sync!(quiet: true, deep: false)
-    Team.for_each do |team|
-      TeamCompanySyncJob.perform_later(team, deep: deep, quiet: quiet)
-    end
-  end
-
   def capital_raised(format: false)
     format ? number_to_human(super(), locale: :money) : super()
   end

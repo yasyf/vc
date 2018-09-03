@@ -6,9 +6,6 @@ Zhong.redis = Redis.new(url: ENV['REDIS_URL'])
 Zhong.schedule do
   if Rails.application.drfvote?
     category 'sync' do
-      every(1.hour, 'list') { List.sync! }
-      every(15.minutes, 'company.shallow') { Company.sync!(quiet: false, deep: false) }
-      every(1.day, 'company.deep', at: '00:00') { Company.sync!(quiet: false, deep: true) }
       every(1.hour, 'evergreen') { Slack::CollectEvergreensJob.perform_later }
     end
 
@@ -23,7 +20,6 @@ Zhong.schedule do
     category 'monitor' do
       every(1.day, 'user', at: '08:00') { UserMonitorJob.perform_later }
       every(1.day, 'application', at: '08:00') { ApplicationMonitorJob.perform_later }
-      every(1.day, 'card', at: '09:00') { CardMonitorJob.perform_later }
       every(1.minute, 'vote') { VoteMonitorJob.perform_later }
       every(1.hour, 'news') { CompanyNewsJob.perform_later }
     end

@@ -11,10 +11,4 @@ class List < ActiveRecord::Base
     .where('pos >= ? AND pos < ?', team.lists.allocated.pos, team.lists.scheduled.pos)
     .where('pos != ?', team.lists.ice_box.pos)
   end
-
-  def self.sync!
-    Team.for_each do |team|
-      ListSyncJob.perform_later(team)
-    end
-  end
 end
