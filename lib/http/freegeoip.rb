@@ -4,6 +4,6 @@ class Http::Freegeoip
   end
 
   def locate
-    @located ||= JSON.parse(Http::Fetch.get_one("http://freegeoip.net/json/#{@ip}"))
+    @located ||= JSON.parse(Http::Fetch.get_one("http://api.ipstack.com/json/#{@ip}?access_key=#{ENV['IPSTACK_KEY']}"))
   end
 end
