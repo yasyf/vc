@@ -87,7 +87,7 @@ gem 'scenic'
 gem 'grpc', '1.11.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
 gem 'mini_racer', '~> 0.1.15', platforms: :ruby
-gem 'libv8', '6.3.292.48.1'
+gem 'libv8', '~> 6.3.0'
 
 group :test do
   gem 'minitest', '~> 5.11.2'

@@ -642,7 +642,7 @@ DEPENDENCIES
   jquery-turbolinks
   letter_opener_web
   levenshtein-ffi
-  libv8 (= 6.3.292.48.1)
+  libv8 (~> 6.3.0)
   listen (~> 3.0)
   lograge
   metainspector
