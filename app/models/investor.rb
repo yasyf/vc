@@ -324,6 +324,7 @@ class Investor < ApplicationRecord
         :al_url,
         :verified,
         :review,
+        :tags,
       ],
      methods: [
        :competitor,
