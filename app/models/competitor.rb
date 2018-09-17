@@ -132,7 +132,7 @@ class Competitor < ApplicationRecord
     elsif (al_id = Http::AngelList::Startup.find_id(name))
       from_angelist! al_id, name
     else
-      create! name: name
+      where(name: name).first_or_create!
     end
   end
 
