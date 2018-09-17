@@ -87,7 +87,6 @@ class Investor < ApplicationRecord
       end
     end
     self.description = person.bio
-    self.photo = person.image
     self.location = person.location&.name
     self.country = person.location&.country_code2
     self.gender = person.gender || self.gender
@@ -98,6 +97,7 @@ class Investor < ApplicationRecord
     person = crunchbase_person
     return unless person.present? && person.found?
 
+    self.photo = person.image
     Founder::SOCIAL_KEYS.each do |attr|
       self[attr] = person.public_send(attr) if person.public_send(attr).present?
     end

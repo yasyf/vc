@@ -20,7 +20,7 @@ module Importers::External
     def self.process!(row)
       row[:tags] = row[:tags].split(',')
 
-      first, last = Util.split_name(row[:full_name])
+      first_name, last_name = Util.split_name(row[:full_name])
       if row[:crunchbase].present?
         row[:investor] = Investor.from_crunchbase(row[:crunchbase].split('/').last)
       end
