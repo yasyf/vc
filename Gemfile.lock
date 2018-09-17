@@ -1,10 +1,3 @@
-GIT
-  remote: git://github.com/taf2/curb.git
-  revision: 5d995345827d0135b03afbff6e333f9f4a1921bb
-  ref: 5d99534
-  specs:
-    curb (0.9.4)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -88,6 +81,7 @@ GEM
     crass (1.0.4)
     css_parser (1.6.0)
       addressable
+    curb (0.9.6)
     dalli (2.7.8)
     declarative (0.0.10)
     declarative-option (0.1.0)
@@ -259,7 +253,7 @@ GEM
       railties (>= 3.2)
     levenshtein-ffi (1.1.0)
       ffi (~> 1.9)
-    libv8 (6.3.292.48.1)
+    libv8 (6.7.288.46.1)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -623,7 +617,7 @@ DEPENDENCIES
   coffee-rails
   connection_pool
   countries (~> 2.1.4)
-  curb!
+  curb
   dalli
   devise
   dotenv-rails
@@ -651,7 +645,7 @@ DEPENDENCIES
   listen (~> 3.0)
   lograge
   metainspector
-  mini_racer
+  mini_racer (~> 0.1.15)
   minitest (~> 5.11.2)
   mixpanel-ruby
   neography

@@ -64,7 +64,7 @@ gem 'google-cloud-language', '0.27.1'
 gem 'google-cloud-storage'
 gem 'google-cloud-pubsub'
 gem 'gender_detector'
-gem 'curb', github: 'taf2/curb', ref: '5d99534'
+gem 'curb'
 gem 'clearbit'
 gem 'googlemaps-services'
 gem 'sinatra', '~> 2.0', require: false
@@ -86,10 +86,7 @@ gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
 gem 'grpc', '1.11.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
-
-group :development, :production do
-  gem 'mini_racer', platforms: :ruby
-end
+gem 'mini_racer', '~> 0.1.15', platforms: :ruby
 
 group :test do
   gem 'minitest', '~> 5.11.2'
