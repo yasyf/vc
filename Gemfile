@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.5.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '< 1.0.0'
 # Use SCSS for stylesheets
@@ -60,7 +60,7 @@ gem 'gon'
 gem 'retriable', '~> 3.1.1'
 gem 'metainspector'
 gem 'feedjira'
-gem 'google-cloud-language', '0.27.1'
+gem 'google-cloud-language', '0.31.1'
 gem 'google-cloud-storage'
 gem 'google-cloud-pubsub'
 gem 'gender_detector'
@@ -84,7 +84,7 @@ gem 'prop'
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
-gem 'grpc', '1.11.0' # tmp fix for grpc#13908
+gem 'grpc', '1.15.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
 gem 'mini_racer', '~> 0.1.15', platforms: :ruby
 gem 'libv8', '6.3.292.48.1'
