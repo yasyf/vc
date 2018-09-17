@@ -24,7 +24,7 @@ module Importers::External
       if row[:crunchbase].present?
         row[:investor] = Investor.from_crunchbase(row[:crunchbase].split('/').last)
       end
-      unless row[:investor].present?
+      if row[:investor].blank? && row[:firm].present?
         competitor = Competitor.create_from_name!(row[:firm])
         row[:investor] = (
           Investor.from_name(row[:full_name]) ||
