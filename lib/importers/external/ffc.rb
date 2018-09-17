@@ -1,5 +1,7 @@
 module Importers::External
   class FFC < Importers::Base
+    extend Concerns::Ignorable
+
     HEADER_DEFAULTS = {
       full_name: 'Name',
       title: 'Title',
@@ -10,7 +12,7 @@ module Importers::External
     }
 
     def self.ids
-      @ids = Set.new
+      @ids ||= Set.new
     end
 
     def self.csv
@@ -19,29 +21,30 @@ module Importers::External
 
     def self.process!(row)
       row[:tags] = row[:tags].split(',')
-
+      row[:competitor] = Competitor.create_from_name!(row[:firm]) if row[:firm].present?
       first_name, last_name = Util.split_name(row[:full_name])
-      if row[:crunchbase].present?
-        row[:investor] = Investor.from_crunchbase(row[:crunchbase].split('/').last)
-      end
-      if row[:investor].blank? && row[:firm].present?
-        competitor = Competitor.create_from_name!(row[:firm])
-        row[:investor] = (
-          Investor.from_name(row[:full_name]) ||
-          Investor.create_for_competitor!(competitor, first_name, last_name)
-        )
-      end
+
+      row[:investor] = (
+        (row[:competitor].present? && ignore_record_errors { Investor.create_for_competitor!(row[:competitor], first_name, last_name) }) ||
+        (row[:crunchbase].present? && ignore_record_errors { Investor.from_crunchbase(row[:crunchbase].split('/').last) }) ||
+        Investor.from_name(row[:full_name])
+      )
 
       return row[:investor].present?
     end
 
     def self.import!(row)
-      row[:investor].update!(
-        tags: row[:tags],
-        crunchbase_id: row[:crunchbase],
-        linkedin: row[:linkedin],
-        role: row[:title],
-      )
+      ignore_unique do
+        row[:investor].update!(
+          tags: row[:tags],
+          crunchbase_id: row[:crunchbase],
+          linkedin: row[:linkedin],
+          role: row[:title],
+        )
+      end
+      if row[:competitor].present?
+        ignore_unique { row[:investor].update! competitor: row[:competitor] }
+      end
       ids << row[:investor].id
     end
   end
