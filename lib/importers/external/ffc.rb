@@ -1,7 +1,7 @@
 module Importers::External
   class FFC < Importers::Base
     HEADER_DEFAULTS = {
-      full_name: 'Full Name',
+      full_name: 'Name',
       title: 'Title',
       tags: 'Diversity Flag',
       firm: 'Firm',
