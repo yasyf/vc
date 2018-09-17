@@ -263,7 +263,7 @@ export default class PartnerTab extends React.Component {
     if (_.isEmpty(_.omitBy(interactions, _.isEmpty))) {
       return null;
     }
-    const { first_name } = investor;
+    const { first_name, tags } = investor;
     const { last_contact, travel_status, opened_at, open_city, overlap, entities, path } = interactions;
     const pathInteraction = this.renderPath();
     const fragments = _.compact([
@@ -272,6 +272,7 @@ export default class PartnerTab extends React.Component {
       travel_status && <div key="travel_status">Last we saw, {first_name} was {humanizeTravelStatus(travel_status, open_city)}.</div>,
       overlap && overlap.length && <div key="overlap">You and {first_name} both love to talk about {humanizeList(overlap.map(o => <b>{o.name}</b>))}!</div>,
       entities.length && (!overlap || !overlap.length) && <div key="entities">{first_name} often talks about {humanizeList(entities.map(o => <b>{o.name}</b>))}.</div>,
+      tags && tags.length && <div key="tags">Our partners at FFC have identified the following diversity flags for {first_name}: {humanizeList(tags)}.</div>,
     ]);
     if (!fragments.length && !pathInteraction) {
       return null;

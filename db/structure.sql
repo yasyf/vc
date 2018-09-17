@@ -302,7 +302,8 @@ CREATE TABLE public.investors (
     token character varying,
     average_response_time integer,
     hidden boolean DEFAULT false NOT NULL,
-    review public.hstore
+    review public.hstore,
+    tags character varying[]
 );
 
 
@@ -3294,6 +3295,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180202174934'),
 ('20180202175706'),
 ('20180203050854'),
-('20180404032450');
+('20180404032450'),
+('20180917073344');
 
 

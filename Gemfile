@@ -11,7 +11,6 @@ gem 'sass-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'mini_racer', platforms: :ruby
 
 gem 'webpacker'
 gem 'webpacker-react', '~> 0.3.2'
@@ -87,6 +86,10 @@ gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
 gem 'grpc', '1.11.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
+
+group :development, :production do
+  gem 'mini_racer', platforms: :ruby
+end
 
 group :test do
   gem 'minitest', '~> 5.11.2'
