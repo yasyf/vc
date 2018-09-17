@@ -1447,6 +1447,13 @@ browserslist@^3.2.0:
     caniuse-lite "^1.0.30000819"
     electron-to-chromium "^1.3.40"
 
+browserslist@^3.2.6:
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-3.2.8.tgz#b0005361d6471f0f5952797a76fc985f1f978fc6"
+  dependencies:
+    caniuse-lite "^1.0.30000844"
+    electron-to-chromium "^1.3.47"
+
 browserslist@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-3.2.7.tgz#aa488634d320b55e88bab0256184dbbcca1e6de9"
@@ -1579,6 +1586,10 @@ caniuse-lite@^1.0.30000815, caniuse-lite@^1.0.30000819:
 caniuse-lite@^1.0.30000835, caniuse-lite@^1.0.30000839:
   version "1.0.30000840"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000840.tgz#344513f8f843536cf99694964c09811277eee395"
+
+caniuse-lite@^1.0.30000844:
+  version "1.0.30000885"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000885.tgz#e889e9f8e7e50e769f2a49634c932b8aee622984"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -2426,6 +2437,10 @@ electron-to-chromium@^1.3.40:
 electron-to-chromium@^1.3.45:
   version "1.3.45"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.45.tgz#458ac1b1c5c760ce8811a16d2bfbd97ec30bafb8"
+
+electron-to-chromium@^1.3.47:
+  version "1.3.67"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.67.tgz#5e8f3ffac89b4b0402c7e1a565be06f3a109abbc"
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -4459,6 +4474,10 @@ mem@^1.1.0:
   dependencies:
     mimic-fn "^1.0.0"
 
+memoize-one@^4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-4.0.2.tgz#3fb8db695aa14ab9c0f1644e1585a8806adc1aee"
+
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
@@ -6033,11 +6052,12 @@ react-graph-vis@1.0.2:
     uuid "^2.0.1"
     vis "^4.18.1"
 
-react-highlight-words@0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.11.0.tgz#4f3c2039a8fd275f3ab795e59946b0324d8e6bee"
+react-highlight-words@0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.14.0.tgz#a1a40ff0a49ce78e7feb375a4e0a5fd1ca9c9609"
   dependencies:
     highlight-words-core "^1.2.0"
+    memoize-one "^4.0.0"
     prop-types "^15.5.8"
 
 react-hot-loader@3.1.3:
