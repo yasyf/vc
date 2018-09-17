@@ -21,7 +21,7 @@ module Importers::External
 
     def self.process!(row)
       row[:tags] = row[:tags].split(',')
-      row[:competitor] = Competitor.create_from_name!(row[:firm]) if row[:firm].present?
+      row[:competitor] = Competitor.create_from_name!(row[:firm].split(',').first) if row[:firm].present?
       first_name, last_name = Util.split_name(row[:full_name])
 
       row[:investor] = (
