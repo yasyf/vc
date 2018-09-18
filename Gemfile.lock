@@ -95,9 +95,9 @@ GEM
     digest-crc (0.4.1)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.4.0)
-    dotenv-rails (2.4.0)
-      dotenv (= 2.4.0)
+    dotenv (2.5.0)
+    dotenv-rails (2.5.0)
+      dotenv (= 2.5.0)
       railties (>= 3.2, < 6.0)
     email_reply_parser (0.5.9)
     equalizer (0.0.11)
@@ -374,7 +374,7 @@ GEM
       rack
     rack-proxy (0.6.4)
       rack
-    rack-test (1.0.0)
+    rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.4.2)
     rack_fast_escape (2009.06.24)
