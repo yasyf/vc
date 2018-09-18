@@ -1447,6 +1447,13 @@ browserslist@^3.2.0:
     caniuse-lite "^1.0.30000819"
     electron-to-chromium "^1.3.40"
 
+browserslist@^3.2.6:
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-3.2.8.tgz#b0005361d6471f0f5952797a76fc985f1f978fc6"
+  dependencies:
+    caniuse-lite "^1.0.30000844"
+    electron-to-chromium "^1.3.47"
+
 browserslist@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-3.2.7.tgz#aa488634d320b55e88bab0256184dbbcca1e6de9"
@@ -1579,6 +1586,10 @@ caniuse-lite@^1.0.30000815, caniuse-lite@^1.0.30000819:
 caniuse-lite@^1.0.30000835, caniuse-lite@^1.0.30000839:
   version "1.0.30000840"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000840.tgz#344513f8f843536cf99694964c09811277eee395"
+
+caniuse-lite@^1.0.30000844:
+  version "1.0.30000885"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000885.tgz#e889e9f8e7e50e769f2a49634c932b8aee622984"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -2426,6 +2437,10 @@ electron-to-chromium@^1.3.40:
 electron-to-chromium@^1.3.45:
   version "1.3.45"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.45.tgz#458ac1b1c5c760ce8811a16d2bfbd97ec30bafb8"
+
+electron-to-chromium@^1.3.47:
+  version "1.3.68"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.68.tgz#bb3ccbadcdd06de2afea8fb73e31a60b6558de1f"
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -5947,9 +5962,9 @@ range-parser@^1.0.3, range-parser@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
 
-raven-js@3.25.2:
-  version "3.25.2"
-  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.25.2.tgz#d3ad1c694f70855dda6f705204ee6ab76ba62884"
+raven-js@3.27.0:
+  version "3.27.0"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.27.0.tgz#9f47c03e17933ce756e189f3669d49c441c1ba6e"
 
 raw-body@2.3.2:
   version "2.3.2"
