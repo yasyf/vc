@@ -4,6 +4,7 @@ class Internal::Api::V2::CompanyResource < JSONAPI::Resource
   attribute :industry
   attribute :crunchbase_id
   attribute :al_id
+  attribute :stage
 
   has_one :team
   has_many :pitches

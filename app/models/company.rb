@@ -24,6 +24,16 @@ class Company < ActiveRecord::Base
 
   array :industry
 
+  STAGES = {
+    applied: 0, # default
+    pre_pitch: 1,
+    pitch: 2,
+    funding: 3,
+    portfolio: 4,
+    passed: 5,
+  }
+  enum stage: STAGES
+
   scope :pitched, -> { joins(:pitches) }
   scope :decided, -> { pitched.where('pitches.decision IS NOT NULL') }
   scope :undecided, -> { pitched.where('pitches.decision IS NULL') }

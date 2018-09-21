@@ -164,7 +164,8 @@ CREATE TABLE public.companies (
     location character varying,
     acquisition_date date,
     ipo_date date,
-    ipo_valuation bigint
+    ipo_valuation bigint,
+    stage integer DEFAULT 0
 );
 
 
@@ -1237,7 +1238,8 @@ CREATE TABLE public.users (
     access_token character varying,
     refresh_token character varying,
     logged_in_at timestamp without time zone DEFAULT '2017-03-02 19:56:21.793001'::timestamp without time zone NOT NULL,
-    ip_address inet
+    ip_address inet,
+    admin boolean DEFAULT false
 );
 
 
@@ -3247,6 +3249,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171023230210'),
 ('20171030065046'),
 ('20171030181615'),
+('20171107012911'),
 ('20171107111143'),
 ('20171108005014'),
 ('20171110185838'),
@@ -3294,6 +3297,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180202174934'),
 ('20180202175706'),
 ('20180203050854'),
-('20180404032450');
+('20180404032450'),
+('20180624224942'),
+('20180921073712');
 
 
