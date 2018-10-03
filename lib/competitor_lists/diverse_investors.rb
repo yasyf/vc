@@ -1,11 +1,9 @@
 class CompetitorLists::DiverseInvestors < CompetitorLists::Base::Base
-  TITLE = 'Investors identified by Founders for Change as diverse'
+  TITLE = 'Founders for Change: Diverse Investors'
 
   def description
     """
-    These investors have been identified by our partners at
-    <a href='https://www.foundersforchange.org'>Founders for Change</a>
-    as being diverse individuals.
+    These investors have been identified by our partners at Founders for Change as diverse!.
     """
   end
 
@@ -14,6 +12,10 @@ class CompetitorLists::DiverseInvestors < CompetitorLists::Base::Base
   end
 
   def self.matches?
+    true
+  end
+
+  def self.personalized?
     true
   end
 
