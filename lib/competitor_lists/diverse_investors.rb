@@ -3,7 +3,7 @@ class CompetitorLists::DiverseInvestors < CompetitorLists::Base::Base
 
   def description
     """
-    These investors have been identified by our partners at Founders for Change as diverse!.
+    These investors have been identified by our partners at Founders for Change as diverse!
     """
   end
 
