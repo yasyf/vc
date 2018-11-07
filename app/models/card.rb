@@ -40,6 +40,8 @@ class Card < ApplicationRecord
 
   def add_comment!(comment)
     trello_card.add_comment "**[DRFBot]** #{comment}"
+  rescue Trello::Error
+    false
   end
 
   def members

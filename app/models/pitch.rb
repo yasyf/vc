@@ -142,6 +142,8 @@ class Pitch < ApplicationRecord
           'text/html',
       )
     end.web_view_link
+  rescue Google::Apis::ClientError
+    nil
   end
 
   def set_quorum!

@@ -18,7 +18,7 @@ class TwitterApi::Client
 
   def with_client(default = nil)
     yield client
-  rescue Twitter::Error::NotFound
+  rescue Twitter::Error::NotFound, Twitter::Error::Unauthorized
     default
   end
 

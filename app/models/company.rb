@@ -78,7 +78,7 @@ class Company < ActiveRecord::Base
   end
 
   def add_comment!(comment, notify: false)
-    return unless team.present?
+    return unless team.present? && card.present?
     card.add_comment! comment
     team.notify!(comment, all: false) if notify
   end
