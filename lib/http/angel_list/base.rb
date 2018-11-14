@@ -36,6 +36,7 @@ module Http::AngelList
     end
 
     def found?
+      return false # TODO: re-enable AL API
       @data.present? && @data['id'].present?
     end
 
