@@ -2,7 +2,7 @@ class RefreshJob < ApplicationJob
   include Concerns::Batchable
   queue_as :default
 
-  MAX_DELAY = 1.days
+  MAX_DELAY = 7.days
   LIMIT_FACTOR = 10
 
   def perform(max_delay: nil, limit_factor: nil, only_views: false)
