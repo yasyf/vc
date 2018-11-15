@@ -10,7 +10,7 @@ module Http::AngelList
     def initialize(id_or_slug, timeout: nil)
       @timeout = timeout
       @id_or_slug = id_or_slug
-      fetch! if id_or_slug.present?
+      fetch! if false # id_or_slug.present?
     end
 
     def self.resource
