@@ -17,11 +17,13 @@ class Card < ApplicationRecord
     trello_card.save
 
     update! list: list
+  rescue Trello::Error
   end
 
   def move_to_rejected_list!
     list = pitch.pitched? ? team.lists.passed : team.lists.rejected
     move_to_list! list
+  rescue Trello::Error
   end
 
   def move_to_post_pitch_list!
@@ -30,6 +32,7 @@ class Card < ApplicationRecord
 
     trello_card.name = company.name
     trello_card.save
+  rescue Trello::Error
   end
 
   def add_user(user)
