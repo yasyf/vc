@@ -13,10 +13,10 @@ class Card < ApplicationRecord
   end
 
   def move_to_list!(list)
+    update! list: list
+
     trello_card.move_to_list list.trello_id
     trello_card.save
-
-    update! list: list
   rescue Trello::Error
   end
 
