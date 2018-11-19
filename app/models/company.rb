@@ -34,11 +34,11 @@ class Company < ActiveRecord::Base
   before_validation :normalize_location
 
   def pitch
-    @pitch ||= pitches.first
+    @pitch ||= pitches.last
   end
 
   def card
-    @card ||= cards.first
+    @card ||= cards.last
   end
 
   def in_list?(list)
