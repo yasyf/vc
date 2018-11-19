@@ -24,7 +24,7 @@ class Company < ActiveRecord::Base
 
   array :industry
 
-  scope :pitched, -> { joins(:pitches).group('companies.id') }
+  scope :pitched, -> { joins(:pitches).select("DISTINCT ON (companies.id) *") }
   scope :decided, -> { pitched.where('pitches.decision IS NOT NULL') }
   scope :undecided, -> { pitched.where('pitches.decision IS NULL') }
   scope :portfolio, -> { pitched.where('pitches.funded': true) }
