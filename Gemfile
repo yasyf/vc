@@ -86,7 +86,7 @@ gem 'pg_query', '>= 0.9.0'
 gem 'scenic'
 gem 'grpc', '1.11.0' # tmp fix for grpc#13908
 gem 'mixpanel-ruby'
-gem 'mini_racer', '~> 0.1.15', platforms: :ruby
+gem 'mini_racer', '~> 0.2.4', platforms: :ruby
 gem 'libv8', '~> 6.3.0'
 
 group :test do
