@@ -8,6 +8,6 @@
     </p>
   <% end %>
   <p class='companies--sub-heading'>
-   <%= company.partner_names.join(', ') %>
+   <%= company.partner_names&.join(', ') %>
   </p>
 </div>

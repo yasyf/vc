@@ -269,6 +269,8 @@ class Company < ActiveRecord::Base
     self.domain = org.url
     self.description = org.description
     self.location = org.location
+  rescue HTTP::Crunchbase::Errors::APIError => ex
+    raise ex if Rails.application.vcwiz?
   end
 
   def set_angelist_attributes!(timeout: 5)
@@ -278,6 +280,8 @@ class Company < ActiveRecord::Base
     self.domain ||= startup.url
     self.description ||= startup.description
     self.location ||= startup.locations.first
+  rescue HTTP::AngelList::Errors::APIError => ex
+    raise ex if Rails.application.vcwiz?
   end
 
   def set_competitors!
