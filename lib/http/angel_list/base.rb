@@ -110,6 +110,7 @@ module Http::AngelList
     end
 
     def self._api_get(path, query)
+      return nil
       key_cached(query.merge(path: path)) do
         Retriable.retriable(on: Errors::APIError) do
           response = get(path, query: query.merge(access_token: next_token))
