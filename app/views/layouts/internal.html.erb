@@ -12,9 +12,9 @@
   <![endif]-->
   <%= include_gon(camel_case: true, init: true) %>
   <%= javascript_pack_tag 'shared' %>
+  <%= javascript_include_tag 'internal/application', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/1.1.7/jquery.linkify.js',
                              'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'internal/application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'favicon-internal.ico' %>
 </head>
