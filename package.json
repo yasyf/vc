@@ -44,7 +44,7 @@
     "postcss-loader": "^2.1.5",
     "postcss-smart-import": "^0.7.5",
     "precss": "^3.1.2",
-    "prop-types": "^15.6.1",
+    "prop-types": "^15.7.2",
     "rails-erb-loader": "^5.4.2",
     "raven-js": "3.25.2",
     "rc-progress": "2.2.5",
