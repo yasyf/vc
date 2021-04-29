@@ -1,0 +1,55 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: sidekiq
+    versions:
+    - 5.2.4
+  - dependency-name: excon
+    versions:
+    - 0.78.1
+    - 0.79.0
+    - 0.80.1
+  - dependency-name: pg_query
+    versions:
+    - 1.3.0
+    - 2.0.1
+    - 2.0.2
+  - dependency-name: nokogiri
+    versions:
+    - 1.11.1
+    - 1.11.2
+  - dependency-name: grpc
+    versions:
+    - 1.35.0
+    - 1.36.0
+  - dependency-name: loofah
+    versions:
+    - 2.9.0
+  - dependency-name: mini_racer
+    versions:
+    - 0.2.4
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: urijs
+    versions:
+    - 1.19.5
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: elliptic
+    versions:
+    - 6.5.3
+  - dependency-name: jquery
+    versions:
+    - 3.5.1
