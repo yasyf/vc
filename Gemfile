@@ -67,7 +67,7 @@ gem 'gender_detector'
 gem 'curb'
 gem 'clearbit'
 gem 'googlemaps-services'
-gem 'sinatra', '~> 2.0', require: false
+gem 'sinatra', '~> 2.2', require: false
 gem 'rack-timeout'
 gem 'ruby-readability'
 gem 'countries', '~> 2.1.4', :require => 'countries/global'
